@@ -127,3 +127,55 @@ int CSocket::Receive( void* pBuffer, int iBufSize )
 	}
 	return res;
 }
+
+bool CSocket::IsReadyForRead( int iTimeout )
+{
+	fd_set sReadSet;
+	timeval sTimeout;
+	timeval* psTimeout = NULL;
+
+	FD_ZERO( &sReadSet );
+	FD_SET( m_Socket, &sReadSet );
+	if( -1 != iTimeout )
+	{
+		sTimeout.tv_sec = 0;
+		sTimeout.tv_usec = iTimeout;
+		psTimeout = &sTimeout;
+	}
+	if( SOCKET_ERROR == ::select( 0, &sReadSet, NULL, NULL, psTimeout ) )
+	{
+		m_iLastError = ::WSAGetLastError();
+		return false;
+	}
+	if( FD_ISSET( m_Socket, &sReadSet ) )
+	{
+		return true;
+	}
+	return false;
+}
+
+bool CSocket::IsReadyForWrite( int iTimeout )
+{
+	fd_set sWriteSet;
+	timeval sTimeout;
+	timeval* psTimeout = NULL;
+
+	FD_ZERO( &sWriteSet );
+	FD_SET( m_Socket, &sWriteSet );
+	if( -1 != iTimeout )
+	{
+		sTimeout.tv_sec = 0;
+		sTimeout.tv_usec = iTimeout;
+		psTimeout = &sTimeout;
+	}
+	if( SOCKET_ERROR == ::select( 0, NULL, &sWriteSet, NULL, psTimeout ) )
+	{
+		m_iLastError = ::WSAGetLastError();
+		return false;
+	}
+	if( FD_ISSET( m_Socket, &sWriteSet ) )
+	{
+		return true;
+	}
+	return false;
+}
