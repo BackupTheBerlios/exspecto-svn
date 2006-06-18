@@ -1,29 +1,27 @@
 //-------------------------------------------------------------------------------------
 //Module: CSocket class
 //Author: Parshin Dmitry
-//Description: Класс, реализующий взаимодействие с сокетами
+//Description: Класс, реализующий взаимодействие с сокетами (общая для клиента и сервера часть)
 //-------------------------------------------------------------------------------------
 #pragma once
 #include "winsock2.h"
 #include <string>
 
-class CSocket
+class CSocket 
 {
 public:
 	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
 	CSocket( int iType, bool bBlocking = true );
+
 	virtual ~CSocket(void);
 
 	//Функция, возвращающая код последней ошибки
 	int GetLastError(void);
 
-	//Соединение с strAddr:iPort,где sAddr - имя удаленного хоста,либо его IP-адресс
-	//								 iPort - порт, к которому необходимо подключиться
-	int Connect( std::string strAddr, int iPort );
 
 	//Функция проверки: является ли strName ip - адресом
-	bool IsAddr(std::string strName);
+	bool IsAddr( std::string strName );
 
 	//Функция закрытия сокета
     int Close( void );

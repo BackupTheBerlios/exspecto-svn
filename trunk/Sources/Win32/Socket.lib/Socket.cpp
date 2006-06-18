@@ -4,8 +4,8 @@
 #include <string>
 
 CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
-							 ,m_Socket( INVALID_SOCKET )
-							 ,m_bBlocking( bBlocking )
+											 ,m_Socket( INVALID_SOCKET )
+											 ,m_bBlocking( bBlocking )
 {
 	//Инициализация сокетов
 	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), NULL ) )
@@ -37,36 +37,6 @@ CSocket::~CSocket(void)
 int CSocket::GetLastError(void)
 {
 	return m_iLastError;
-}
-
-int CSocket::Connect( std::string strAddr, int iPort )
-{
-	sockaddr_in sAddr;
-	hostent* hn;
-	int Result;
-
-	::ZeroMemory( &sAddr, sizeof( sAddr ) );
-	sAddr.sin_family = AF_INET;
-
-	if( IsAddr( strAddr ) )
-		sAddr.sin_addr.S_un.S_addr = ::inet_addr( strAddr.c_str() );
-	else
-	{
-		if( NULL == ( hn = ::gethostbyname( strAddr.c_str() ) ) )
-		{
-			m_iLastError = ::WSAGetLastError();
-			return 0;
-		}
-		sAddr.sin_addr.S_un.S_addr = ::inet_addr( hn->h_addr_list[0] );
-	}
-	sAddr.sin_port = ::htons( iPort );
-	//Выполняем соединение
-	if( SOCKET_ERROR == ( Result = ::connect( m_Socket, (sockaddr*)&sAddr, sizeof( sAddr ) ) ) )
-	{
-		m_iLastError = ::WSAGetLastError();
-		return Result;
-	}
-	return 0;
 }
 
 bool CSocket::IsAddr(std::string strName)

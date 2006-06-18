@@ -99,6 +99,12 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\ClientSocket.cpp">
+			</File>
+			<File
+				RelativePath=".\ServerSocket.cpp">
+			</File>
+			<File
 				RelativePath=".\Socket.cpp">
 			</File>
 			<File
@@ -121,6 +127,12 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath=".\ClientSocket.h">
+			</File>
+			<File
+				RelativePath=".\ServerSocket.h">
+			</File>
 			<File
 				RelativePath=".\Socket.h">
 			</File>
