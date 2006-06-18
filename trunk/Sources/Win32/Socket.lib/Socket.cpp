@@ -3,8 +3,9 @@
 #include "winsock2.h"
 #include <string>
 
-CSocket::CSocket( int iType ):m_iLastError(0)
+CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
 							 ,m_Socket( INVALID_SOCKET )
+							 ,m_bBlocking( bBlocking )
 {
 	//Инициализация сокетов
 	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), NULL ) )
@@ -22,11 +23,14 @@ CSocket::CSocket( int iType ):m_iLastError(0)
 	{
 		m_iLastError = 0;
 	}
+	//Устанавливаем тип вызовов
+	SetBlocking( bBlocking );
 }
 
 CSocket::~CSocket(void)
 {
-	::shutdown( m_Socket, SD_BOTH );
+	if( INVALID_SOCKET != m_Socket )
+        ::shutdown( m_Socket, SD_BOTH );
 	WSACleanup();
 }
 
@@ -69,7 +73,7 @@ bool CSocket::IsAddr(std::string strName)
 {
 	//Алгоритм проверки: вырезаем подстроки между точками и пытаемся сконвертировать их в число
 	//если получается и точек не меньше 4, то всё ок,иначе strName - не ip адрес
-	std::string::size_type PrevIndex = 0,Index = 0;
+		std::string::size_type PrevIndex = 0,Index = 0;
 	for( int i = 0; i < 4; i++ )
 	{
 		if( std::string::npos != ( Index = strName.find( "." ) ) )
@@ -81,4 +85,31 @@ bool CSocket::IsAddr(std::string strName)
 			break;
 	}
 	return false;
+}
+
+int CSocket::Close( void )
+{
+	int iRes = 0;
+	if( INVALID_SOCKET != m_Socket )
+		iRes = ::shutdown( m_Socket, SD_BOTH );
+	return iRes;
+}
+
+void CSocket::SetBlocking( bool bIsBlocking )
+{
+	BOOL l = TRUE;
+	m_bBlocking = bIsBlocking;
+	if( m_bBlocking )
+		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
+	else
+	{
+		l = FALSE;
+		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
+	}
+}
+
+int CSocket::Send( void* pBuffer, int iSize )
+{
+//TODO:
+	return 0;
 }

@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------------------------
+//Module: CSocket class
+//Author: Parshin Dmitry
+//Description: Класс, реализующий взаимодействие с сокетами
+//-------------------------------------------------------------------------------------
 #pragma once
 #include "winsock2.h"
 #include <string>
@@ -5,7 +10,9 @@
 class CSocket
 {
 public:
-	CSocket( int iType );
+	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
+	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
+	CSocket( int iType, bool bBlocking = true );
 	virtual ~CSocket(void);
 
 	//Функция, возвращающая код последней ошибки
@@ -18,9 +25,22 @@ public:
 	//Функция проверки: является ли strName ip - адресом
 	bool IsAddr(std::string strName);
 
+	//Функция закрытия сокета
+    int Close( void );
+
+	//Функция посылки данных
+	int Send( void* pBuffer, int iSize );
+
+	//Функция, устанавливающая тип вызовов(true - блокирующие,false - неблокирующие )
+	void SetBlocking( bool bIsBlocking );
+
 protected:
-	
+	//Флаг,указывающий на тип используемых вызовов (блокирующие/неблокирующие)
+	bool m_bBlocking;
+
+	//Переменная, содержащая код последней ошибки
 	int m_iLastError;
+
 	//Дескриптор сокета, используемый практически во всех функциях
 	SOCKET m_Socket;
 };
