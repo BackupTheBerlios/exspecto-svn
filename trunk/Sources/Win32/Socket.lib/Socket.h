@@ -28,8 +28,11 @@ public:
 	//Функция закрытия сокета
     int Close( void );
 
-	//Функция посылки данных
+	//Функция посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт
 	int Send( void* pBuffer, int iSize );
+
+	//Функция приёма,возвращает SOCKET_ERROR либо кол-во отправленных байт
+	int Receive( void* pBuffer, int iBufSize );
 
 	//Функция, устанавливающая тип вызовов(true - блокирующие,false - неблокирующие )
 	void SetBlocking( bool bIsBlocking );

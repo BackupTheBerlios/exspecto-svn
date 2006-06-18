@@ -110,6 +110,20 @@ void CSocket::SetBlocking( bool bIsBlocking )
 
 int CSocket::Send( void* pBuffer, int iSize )
 {
-//TODO:
-	return 0;
+	int res;
+	if( SOCKET_ERROR == ( res = ::send( m_Socket, (const char*)pBuffer, iSize, 0 ) ) )
+	{
+		m_iLastError = WSAGetLastError();
+	}
+	return res;
+}
+
+int CSocket::Receive( void* pBuffer, int iBufSize )
+{
+	int res;
+	if( SOCKET_ERROR == ( res = ::recv( m_Socket, (char*)pBuffer, iBufSize, 0 ) ) )
+	{
+		m_iLastError = WSAGetLastError();
+	}
+	return res;
 }
