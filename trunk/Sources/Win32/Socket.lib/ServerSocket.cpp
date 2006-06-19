@@ -6,6 +6,12 @@ CServerSocket::CServerSocket( int iType, bool bBlocking ):CSocket( iType, bBlock
 {
 }
 
+CServerSocket::CServerSocket( CServerSocket& S ):CSocket( S.m_iType, S.m_bBlocking )
+{
+	m_Socket = S.m_Socket;
+	m_iType = S.m_iType;
+}
+
 CServerSocket::~CServerSocket(void)
 {
 }
@@ -41,4 +47,41 @@ int CServerSocket::Bind( int iPort, std::string strAddr )
 		return SOCKET_ERROR;
 	}
 	return res;
+}
+
+int CServerSocket::Listen( int iMaxConn )
+{
+	int res;
+	if( INVALID_SOCKET == ( res = ::listen( m_Socket, iMaxConn ) ) )
+	{
+		m_iLastError = ::WSAGetLastError();
+	}
+	return res;
+}
+
+CSocket* CServerSocket::Accept( structAddr& addr )
+{
+	SOCKET s;
+	CSocket* sock;
+	sockaddr_in sAddr;
+	int len = sizeof(sAddr);
+	hostent* hn;
+
+	ZeroMemory (&sAddr, sizeof (sAddr));
+	
+	if( INVALID_SOCKET == ( s = ::accept( m_Socket, (sockaddr*)&sAddr, &len ) ) )
+	{
+		m_iLastError = ::WSAGetLastError();
+		return (CSocket*)INVALID_SOCKET;
+	}else
+	{
+		addr.iPort = ::ntohs( sAddr.sin_port );
+		addr.strAddr = ::inet_ntoa( sAddr.sin_addr );
+		if( NULL != ( hn = ::gethostbyaddr( addr.strAddr.c_str(), (int)addr.strAddr.length(), m_iType ) ) )
+		{
+			addr.strName = hn->h_name;
+		}
+		sock = new CSocket( s, m_bBlocking );
+	}
+	return sock;
 }

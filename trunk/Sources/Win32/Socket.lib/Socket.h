@@ -14,6 +14,8 @@ public:
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
 	CSocket( int iType, bool bBlocking = true );
 
+	CSocket( SOCKET s, bool bBlocking );
+
 	virtual ~CSocket(void);
 
 	//Функция, возвращающая код последней ошибки
@@ -54,4 +56,7 @@ protected:
 
 	//Дескриптор сокета, используемый практически во всех функциях
 	SOCKET m_Socket;
+
+	//Тип сокета
+	int m_iType;
 };

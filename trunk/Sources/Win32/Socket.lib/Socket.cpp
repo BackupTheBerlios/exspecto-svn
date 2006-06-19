@@ -6,6 +6,7 @@
 CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
 											 ,m_Socket( INVALID_SOCKET )
 											 ,m_bBlocking( bBlocking )
+											 ,m_iType( iType )
 {
 	//Инициализация сокетов
 	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), NULL ) )
@@ -25,6 +26,21 @@ CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
 	}
 	//Устанавливаем тип вызовов
 	SetBlocking( bBlocking );
+}
+
+CSocket::CSocket( SOCKET s, bool bBlocking ):m_bBlocking( bBlocking )
+{
+	//Инициализация сокетов
+	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), NULL ) )
+	{
+		m_iLastError = ::WSAGetLastError();
+	}else
+	{
+		m_iLastError = 0;
+	}
+	m_Socket = s;
+	int Size = sizeof(int);
+	::getsockopt( m_Socket, SOL_SOCKET, SO_TYPE, (char*)&m_iType, &Size ); 
 }
 
 CSocket::~CSocket(void)
