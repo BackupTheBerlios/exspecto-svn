@@ -77,7 +77,7 @@ CSocket* CServerSocket::Accept( structAddr& addr )
 	{
 		addr.iPort = ::ntohs( sAddr.sin_port );
 		addr.strAddr = ::inet_ntoa( sAddr.sin_addr );
-		if( NULL != ( hn = ::gethostbyaddr( addr.strAddr.c_str(), (int)addr.strAddr.length(), m_iType ) ) )
+		if( NULL != ( hn = ::gethostbyaddr( (const char*)&sAddr.sin_addr.S_un.S_addr, sizeof( sAddr.sin_addr.S_un.S_addr ), m_iType ) ) )
 		{
 			addr.strName = hn->h_name;
 		}

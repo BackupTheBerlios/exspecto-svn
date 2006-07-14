@@ -8,8 +8,9 @@ CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
 											 ,m_bBlocking( bBlocking )
 											 ,m_iType( iType )
 {
-	//Инициализация сокетов
-	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), NULL ) )
+	WSADATA WSAData;
+	 //Инициализация сокетов
+	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
 	{
 		m_iLastError = ::WSAGetLastError();
 	}else
@@ -59,17 +60,27 @@ bool CSocket::IsAddr(std::string strName)
 {
 	//Алгоритм проверки: вырезаем подстроки между точками и пытаемся сконвертировать их в число
 	//если получается и точек не меньше 4, то всё ок,иначе strName - не ip адрес
-		std::string::size_type PrevIndex = 0,Index = 0;
+	std::string::size_type PrevIndex = 0,Index = 0;
+	bool res = false;
 	for( int i = 0; i < 4; i++ )
 	{
-		if( std::string::npos != ( Index = strName.find( "." ) ) )
+		if( std::string::npos != ( Index = strName.find( ".", PrevIndex ) ) )
 		{
-			if( 0 == ::atoi( strName.substr( PrevIndex, Index ).c_str() ) )
+			if( res = ( 0 != ::atoi( strName.substr( PrevIndex, Index - PrevIndex ).c_str() ) ) )
+				PrevIndex = Index + 1;
+			else
 				break;
-			PrevIndex = Index;
 		}else
-			break;
+		{
+			//последнее число
+			if( i == 3 )
+				res = ( 0 != ::atoi( strName.substr( PrevIndex, strName.size() - 1 ).c_str() ) );
+			else
+                break;
+		}
 	}
+	if( res && ( i == 4 ) )
+		return true;
 	return false;
 }
 
@@ -86,10 +97,11 @@ void CSocket::SetBlocking( bool bIsBlocking )
 	BOOL l = TRUE;
 	m_bBlocking = bIsBlocking;
 	if( m_bBlocking )
-		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
-	else
 	{
 		l = FALSE;
+		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
+	}else
+	{
 		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
 	}
 }
