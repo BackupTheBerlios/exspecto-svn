@@ -48,7 +48,6 @@ CSocket::~CSocket(void)
 {
 	if( INVALID_SOCKET != m_Socket )
         ::shutdown( m_Socket, SD_BOTH );
-	WSACleanup();
 }
 
 int CSocket::GetLastError(void)
