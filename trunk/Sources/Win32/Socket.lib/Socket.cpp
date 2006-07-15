@@ -55,34 +55,6 @@ int CSocket::GetLastError(void)
 	return m_iLastError;
 }
 
-bool CSocket::IsAddr(std::string strName)
-{
-	//јлгоритм проверки: вырезаем подстроки между точками и пытаемс€ сконвертировать их в число
-	//если получаетс€ и точек не меньше 4, то всЄ ок,иначе strName - не ip адрес
-	std::string::size_type PrevIndex = 0,Index = 0;
-	bool res = false;
-	for( int i = 0; i < 4; i++ )
-	{
-		if( std::string::npos != ( Index = strName.find( ".", PrevIndex ) ) )
-		{
-			if( res = ( 0 != ::atoi( strName.substr( PrevIndex, Index - PrevIndex ).c_str() ) ) )
-				PrevIndex = Index + 1;
-			else
-				break;
-		}else
-		{
-			//последнее число
-			if( i == 3 )
-				res = ( 0 != ::atoi( strName.substr( PrevIndex, strName.size() - 1 ).c_str() ) );
-			else
-                break;
-		}
-	}
-	if( res && ( i == 4 ) )
-		return true;
-	return false;
-}
-
 int CSocket::Close( void )
 {
 	int iRes = 0;

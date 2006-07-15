@@ -21,10 +21,6 @@ public:
 	//Функция, возвращающая код последней ошибки
 	int GetLastError(void);
 
-
-	//Функция проверки: является ли strName ip - адресом
-	bool IsAddr( std::string strName );
-
 	//Функция закрытия сокета
     int Close( void );
 
