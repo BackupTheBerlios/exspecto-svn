@@ -27,7 +27,7 @@ int CServerSocket::Bind( int iPort, std::string strAddr )
 	//Adress	
 	if( "Any" == strAddr )
         sAddr.sin_addr.S_un.S_addr =  htonl(INADDR_ANY);
-	else if( IsAddr( strAddr ) )
+	else if( INADDR_NONE != ::inet_addr( strAddr.c_str() ) )
 	{
 		sAddr.sin_addr.S_un.S_addr = ::inet_addr( strAddr.c_str() );
 	}else

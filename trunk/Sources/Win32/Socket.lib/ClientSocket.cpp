@@ -19,7 +19,7 @@ int CClientSocket::Connect( std::string strAddr, int iPort )
 	::ZeroMemory( &sAddr, sizeof( sAddr ) );
 	sAddr.sin_family = AF_INET;
 
-	if( IsAddr( strAddr ) )
+	if( INADDR_NONE != ::inet_addr( strAddr.c_str() ) )
 		sAddr.sin_addr.S_un.S_addr = ::inet_addr( strAddr.c_str() );
 	else
 	{
