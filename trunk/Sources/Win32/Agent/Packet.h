@@ -22,6 +22,8 @@ public:
 
 	void GetBuffer( OUT BYTE* pbBuffer, OUT int &iSize );
 
+	void SetBuffer( IN BYTE* pbBuffer, IN int iSize );
+
 	friend CPacket& operator <<( CSocket& sock, CPacket& packet );
 
 protected:

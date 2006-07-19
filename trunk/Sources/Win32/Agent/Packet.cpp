@@ -62,9 +62,15 @@ void CPacket::GetBuffer( OUT BYTE* pbBuffer, OUT int &iSize )
 	iSize = m_iDataSize;
 }
 
+void CPacket::SetBuffer( IN BYTE* pbBuffer, IN int iSize )
+{
+	m_pbBuf = pbBuffer;
+	m_iDataSize = iSize;
+}
+
 CPacket& operator <<( CSocket& sock, CPacket& packet )
 {
-	BYTE* Buf;
+	BYTE* Buf = NULL;
 	int iSize;
 	packet.GetBuffer( Buf, iSize );
     sock.Send( Buf, iSize );
