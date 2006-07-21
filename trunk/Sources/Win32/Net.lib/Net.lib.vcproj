@@ -31,7 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="ws2_32.lib"
+				AdditionalDependencies="ws2_32.lib Netapi32.lib"
 				OutputFile="$(OutDir)/Net.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -105,6 +105,9 @@
 				RelativePath=".\Packet.cpp">
 			</File>
 			<File
+				RelativePath=".\Scanner.cpp">
+			</File>
+			<File
 				RelativePath=".\ServerSocket.cpp">
 			</File>
 			<File
@@ -135,6 +138,9 @@
 			</File>
 			<File
 				RelativePath=".\Packet.h">
+			</File>
+			<File
+				RelativePath=".\Scanner.h">
 			</File>
 			<File
 				RelativePath=".\ServerSocket.h">

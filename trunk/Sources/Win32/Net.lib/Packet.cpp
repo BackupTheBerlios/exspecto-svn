@@ -87,7 +87,7 @@ void CPacket::Clear()
 	m_iDataSize = 0;
 }
 
-void CPacket::GetBuffer( OUT BYTE* pbBuffer, OUT int &iSize )
+void CPacket::GetBuffer( OUT BYTE* &pbBuffer, OUT int &iSize )
 {
 	pbBuffer = m_pbBuf;
 	iSize = m_iDataSize;

@@ -143,6 +143,9 @@
 				RelativePath=".\Agent.h">
 			</File>
 			<File
+				RelativePath="..\Common\commands.h">
+			</File>
+			<File
 				RelativePath=".\stdafx.h">
 			</File>
 		</Filter>

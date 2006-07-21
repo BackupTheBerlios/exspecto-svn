@@ -21,7 +21,7 @@ public:
 
 	void Clear();
 
-	void GetBuffer( OUT BYTE* pbBuffer, OUT int &iSize );
+	void GetBuffer( OUT BYTE* &pbBuffer, OUT int &iSize );
 
 	void SetBuffer( IN BYTE* pbBuffer, IN int iSize );
 

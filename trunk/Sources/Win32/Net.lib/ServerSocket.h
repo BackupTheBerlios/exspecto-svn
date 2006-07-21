@@ -17,7 +17,7 @@ struct structAddr
 class CServerSocket: public CSocket
 {
 public:
-	CServerSocket( int iType = AF_INET, bool bBlocking = false );
+	CServerSocket( int iType = SOCK_STREAM, bool bBlocking = false );
 	CServerSocket( CServerSocket& S );
 	~CServerSocket(void);
 

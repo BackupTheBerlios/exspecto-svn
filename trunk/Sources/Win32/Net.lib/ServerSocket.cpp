@@ -23,7 +23,7 @@ int CServerSocket::Bind( int iPort, std::string strAddr )
 	hostent* hn;
 
 	::ZeroMemory( &sAddr, sizeof( sAddr ) );
-	sAddr.sin_family = m_iType;
+	sAddr.sin_family = AF_INET;
 	//Adress	
 	if( "Any" == strAddr )
         sAddr.sin_addr.S_un.S_addr =  htonl(INADDR_ANY);
