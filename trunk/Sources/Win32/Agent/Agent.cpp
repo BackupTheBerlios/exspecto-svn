@@ -7,17 +7,20 @@
 #include "..\common\commands.h"
 #include "..\net.lib\packet.h"
 
-CAgent::CAgent(void):m_CurState( enumStates::Idling )
+CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( enumStates::Idling )
+												 ,m_strSchedulerAddress( strSchedulerAddress )
 {
 	DWORD dwThreadId;
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
+	::InitializeCriticalSection( &m_csCurState );
 }
 
 CAgent::~CAgent(void)
 {
+	::DeleteCriticalSection( &m_csCurState );
 }
 
-void CAgent::Process( BYTE* pBuf, int iSize )
+void CAgent::Process( BYTE* pBuf, int iSize, CSocket* sock )
 {
 
 	BYTE bCommandId;
@@ -33,16 +36,26 @@ void CAgent::Process( BYTE* pBuf, int iSize )
 		switch( bCommandId )
 		{
 		case GetStatus:
-			m_CurState = enumStates::SendingData;
+			BYTE pbBuf[2];
+			pbBuf[0] = 0xFF;
+			pbBuf[1] = m_CurState;
+			sock->Send( pbBuf, 2 );
 			break;
 		case StartScan:
 			pPacket->GetParam( iCount );
 			pPacket->GetAddress( strAddress );
 			CScanner scan;
 
-			m_CurState = enumStates::Scanning;			
+			::EnterCriticalSection( &m_csCurState );
+			m_CurState = enumStates::Scanning;	
+			::LeaveCriticalSection( &m_csCurState );
+
 			scan.Scan( strAddress, List );
-			m_CurState = enumStates::Idling;			
+			
+			::EnterCriticalSection( &m_csCurState );
+			m_CurState = enumStates::Idling;		
+			::LeaveCriticalSection( &m_csCurState );
+
 			std::vector< std::string >::iterator It;
 			for( It = List.begin(); It != List.end(); It++ )
 			{
@@ -51,6 +64,7 @@ void CAgent::Process( BYTE* pBuf, int iSize )
 			break;
 		}
 	}
+	delete sock;
 	delete pPacket;
 }
 
@@ -69,15 +83,15 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	sock.Listen();
 	while( NULL != ( client_sock = sock.Accept( adr ) ) )
 	{
-		if( SOCKET_ERROR != ( iCount = client_sock->Receive( pBuf, 10240 ) ) )
-            pThis->Process( pBuf, iCount );
+		if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( SOCKET_ERROR != ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
+            pThis->Process( pBuf, iCount, client_sock );
 	}
 	return DWORD();
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	CAgent ag;
+	CAgent ag( "127.0.0.1" );
 	Sleep( 1000000 );
 	return 0;
 }

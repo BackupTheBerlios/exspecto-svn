@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "windows.h"
 
 class CSheduler
 {
@@ -16,8 +17,9 @@ public:
 //	int GetAgentId( std::string strAdress );
 //	std::string GetAgentAddress( int iAgentId );
 
-	bool SendCommand( std::string strAdress, enumCommands Command );
-	bool SendCommand( int iAgentId, enumCommands Command );
+	bool SendCommand( std::string strAddress, enumCommands Command, BYTE* pBuffer = NULL, int iBufSize = 0 );
+
+	bool SendCommand( std::string strAddress, enumCommands Command, std::vector< std::string > vcParams );
 
 protected:
 

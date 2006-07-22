@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include ".\sheduler.h"
 #include "winsock2.h"
 #include "..\net.lib\ClientSocket.h"
 #include "..\net.lib\Packet.h"
+#include ".\sheduler.h"
 
 CSheduler::CSheduler(void)
 {
@@ -36,7 +36,33 @@ void CSheduler::RemoveAgent( int iAgentId )
 	return std::string();
 }*/
 
-bool CSheduler::SendCommand( std::string strAddress, enumCommands Command )
+bool CSheduler::SendCommand( std::string strAddress, enumCommands Command, std::vector< std::string > vcParams )
+{
+	CClientSocket sock;
+	CPacket Msg;
+	BYTE* pBuf = NULL;
+	int iSize;
+
+	switch( Command )
+	{
+	case StartScan:
+		{
+			Msg.BeginCommand( Command );
+			Msg.AddParam( (DWORD)vcParams.size() );
+			for( std::vector< std::string >::iterator It = vcParams.begin(); It != vcParams.end(); It++ )
+				Msg.AddAddress( *It );
+			Msg.EndCommand();
+			Msg.GetBuffer( pBuf, iSize );
+		}break;
+	}
+
+	sock.Connect( strAddress, 5000 );
+	sock.Send( pBuf, iSize );
+	sock.Close();
+	return true;
+}
+
+bool CSheduler::SendCommand( std::string strAddress, enumCommands Command, BYTE* pBuffer, int iBufSize )
 {
 	CClientSocket sock;
 	CPacket Msg;
@@ -44,27 +70,29 @@ bool CSheduler::SendCommand( std::string strAddress, enumCommands Command )
 	int iSize;
 
 	Msg.BeginCommand( Command );
-		Msg.AddParam( 1 );
-		Msg.AddAddress( "172.16.4.59" );
 	Msg.EndCommand();
 	Msg.GetBuffer( pBuf, iSize );
 
 	sock.Connect( strAddress, 5000 );
 	
 	sock.Send( pBuf, iSize );
+	//если ожидается ответ на команду - получить его
+	if( 0 != iBufSize )
+        sock.Receive( pBuffer, iSize );
 	sock.Close();
-	return bool();
-}
-
-bool CSheduler::SendCommand( int iAgentId, enumCommands Command )
-{
-	return bool();
+	return true;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	CSheduler shed;
+	BYTE pBuf[1024];
 
-	shed.SendCommand( "127.0.0.1", StartScan );
+	std::vector< std::string > vcAddresses;
+
+	vcAddresses.push_back( "172.16.3.58" );
+
+	shed.SendCommand( "127.0.0.1", StartScan, vcAddresses );
+	shed.SendCommand( "127.0.0.1", GetStatus, pBuf, sizeof( pBuf ) );
 	return 0;
 }
