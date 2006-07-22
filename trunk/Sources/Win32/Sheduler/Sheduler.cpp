@@ -38,7 +38,7 @@ void CSheduler::RemoveAgent( int iAgentId )
 
 bool CSheduler::SendCommand( std::string strAddress, enumCommands Command )
 {
-	CClientSocket sock( AF_INET );
+	CClientSocket sock;
 	CPacket Msg;
 	BYTE* pBuf = NULL;
 	int iSize;

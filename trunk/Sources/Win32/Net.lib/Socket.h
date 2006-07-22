@@ -5,13 +5,14 @@
 //-------------------------------------------------------------------------------------
 #pragma once
 #include <string>
+#include "winsock2.h"
 
 class CSocket 
 {
 public:
 	// онструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
-	CSocket( int iType, bool bBlocking = true );
+	CSocket( int iType = SOCK_STREAM, bool bBlocking = true );
 
 	CSocket( SOCKET s, bool bBlocking );
 

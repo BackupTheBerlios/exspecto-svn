@@ -66,11 +66,11 @@ int CSocket::Close( void )
 
 void CSocket::SetBlocking( bool bIsBlocking )
 {
-	BOOL l = TRUE;
+	unsigned long l = 1;
 	m_bBlocking = bIsBlocking;
 	if( m_bBlocking )
 	{
-		l = FALSE;
+		l = 0;
 		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
 	}else
 	{

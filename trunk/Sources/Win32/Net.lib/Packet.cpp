@@ -66,7 +66,8 @@ bool CPacket::GetParam( DWORD& dwValue )
 
 bool CPacket::GetParam( std::string& strValue, int iSize )
 {
-	BYTE* strTmp = new BYTE[ iSize ];
+	BYTE* strTmp = new BYTE[ iSize + 1 ];
+	strTmp[ iSize ] = 0; //string zero
 	if( iSize > m_iDataSize - m_iOffset )
 		return false;
 
@@ -108,14 +109,13 @@ bool CPacket::GetCommandId( BYTE& pByte )
 {
 	if( m_iOffset == m_iDataSize )
 		return false;
-	BYTE Buf;
-	Pop( &Buf, 1 );
+	Pop( &pByte, 1 );
 	return true;
 }
 
 void CPacket::Pop( BYTE *pbBuf, int iCount )
 {
-	::memcpy( pbBuf, m_pbBuf, iCount );
+	::memcpy( pbBuf, m_pbBuf + m_iOffset, iCount );
 	m_iOffset += iCount;
 	if( 'E' == m_pbBuf[ m_iOffset ] )
 		m_iOffset += 3;

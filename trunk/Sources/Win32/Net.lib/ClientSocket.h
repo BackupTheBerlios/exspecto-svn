@@ -10,7 +10,7 @@
 class CClientSocket: public CSocket
 {
 public:
-	CClientSocket( int iType, bool bBlocking = true );
+	CClientSocket( int iType = SOCK_STREAM, bool bBlocking = true );
 
 	~CClientSocket( void );
 

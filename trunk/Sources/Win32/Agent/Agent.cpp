@@ -1,9 +1,8 @@
 #pragma once
 #include "stdafx.h"
-#include ".\agent.h"
 #include "..\net.lib\Sockets.h"
-#include "..\net.lib\ServerSocket.h"
-#include "..\net.lib\ClientSocket.h"
+#include ".\agent.h"
+#include "windows.h"
 #include "..\net.lib\Scanner.h"
 #include "..\common\commands.h"
 #include "..\net.lib\packet.h"
@@ -59,11 +58,15 @@ void CAgent::Parse( BYTE* pBuf, int iSize )
 			break;
 		case StartScan:
 			pPacket->GetParam( iCount );
-			pPacket->GetParam( strAddress, 12 );
+			pPacket->GetParam( strAddress, 11 );
 			CScanner scan;
 			
 			scan.Scan( strAddress, List );
-
+			std::vector< std::string >::iterator It;
+			for( It = List.begin(); It != List.end(); It++ )
+			{
+				std::cout << *It << std::endl;
+			}
 			m_CurState = enumStates::Scanning;
 			break;
 		}
@@ -86,7 +89,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	sock.Listen();
 	while( NULL != ( client_sock = sock.Accept( adr ) ) )
 	{
-		if( SOCKET_ERROR != ( iCount = sock.Receive( pBuf, 10240 ) ) )
+		if( SOCKET_ERROR != ( iCount = client_sock->Receive( pBuf, 10240 ) ) )
             pThis->Parse( pBuf, iCount );
 	}
 	return DWORD();
