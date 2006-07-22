@@ -45,7 +45,7 @@ bool CSheduler::SendCommand( std::string strAddress, enumCommands Command )
 
 	Msg.BeginCommand( Command );
 		Msg.AddParam( 1 );
-		Msg.AddParam( "172.16.4.59" );
+		Msg.AddAddress( "172.16.4.59" );
 	Msg.EndCommand();
 	Msg.GetBuffer( pBuf, iSize );
 

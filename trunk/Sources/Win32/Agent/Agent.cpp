@@ -17,30 +17,9 @@ CAgent::~CAgent(void)
 {
 }
 
-void CAgent::StateMachine()
+void CAgent::Process( BYTE* pBuf, int iSize )
 {
-	for(;;)
-	{
-		switch( m_CurState )
-		{
-		case enumStates::Idling:
-			break;
-		case enumStates::Scanning:
-			{
-				m_CurState = enumStates::Idling;
-			}
-			break;
-		case enumStates::SendingData:
-			break;
-		case enumStates::SendingStatus:
-			m_CurState = enumStates::Idling;
-			break;
-		}
-	}
-}
 
-void CAgent::Parse( BYTE* pBuf, int iSize )
-{
 	BYTE bCommandId;
 	DWORD iCount;
 	std::string strAddress;
@@ -58,16 +37,17 @@ void CAgent::Parse( BYTE* pBuf, int iSize )
 			break;
 		case StartScan:
 			pPacket->GetParam( iCount );
-			pPacket->GetParam( strAddress, 11 );
+			pPacket->GetAddress( strAddress );
 			CScanner scan;
-			
+
+			m_CurState = enumStates::Scanning;			
 			scan.Scan( strAddress, List );
+			m_CurState = enumStates::Idling;			
 			std::vector< std::string >::iterator It;
 			for( It = List.begin(); It != List.end(); It++ )
 			{
 				std::cout << *It << std::endl;
 			}
-			m_CurState = enumStates::Scanning;
 			break;
 		}
 	}
@@ -90,7 +70,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	while( NULL != ( client_sock = sock.Accept( adr ) ) )
 	{
 		if( SOCKET_ERROR != ( iCount = client_sock->Receive( pBuf, 10240 ) ) )
-            pThis->Parse( pBuf, iCount );
+            pThis->Process( pBuf, iCount );
 	}
 	return DWORD();
 }
@@ -98,6 +78,6 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 int _tmain(int argc, _TCHAR* argv[])
 {
 	CAgent ag;
-	ag.StateMachine();
+	Sleep( 1000000 );
 	return 0;
 }

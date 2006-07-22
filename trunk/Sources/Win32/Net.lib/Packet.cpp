@@ -38,12 +38,24 @@ void CPacket::AddParam( DWORD dwParam )
 {
 	//TODO:
 	//возможна ошибка,переставить местами слова
-	Push( (BYTE*)&dwParam, 4 );
+	Push( (BYTE*)&dwParam, sizeof(DWORD) );
 }
 
 void CPacket::AddParam( std::string strParam )
 {
 	Push( (BYTE*)strParam.c_str(), (int)strParam.size() );
+}
+
+bool CPacket::AddAddress( std::string strAddress )
+{
+	u_long lAdr;
+	if( INADDR_NONE ==( lAdr = inet_addr( strAddress.c_str() ) ) )
+		return false;
+	else
+	{
+        Push( (BYTE*)&lAdr, sizeof( u_long ) );
+	}
+	return true;
 }
 
 bool CPacket::GetParam( BYTE* pbValue, int iSize )
@@ -74,6 +86,22 @@ bool CPacket::GetParam( std::string& strValue, int iSize )
 	Pop( strTmp, iSize );
 	strValue = (char*)strTmp;
 	delete strTmp;
+	return true;
+}
+
+bool CPacket::GetAddress( std::string& strAddress )
+{
+	in_addr ulAdr;
+	char* strAdr;
+	if( sizeof( u_long ) > m_iDataSize - m_iOffset )
+		return false;
+
+	Pop( (BYTE*)&ulAdr.S_un.S_addr, sizeof( u_long ) );
+
+	if( NULL == ( strAdr = ::inet_ntoa( ulAdr ) ) )
+		return false;
+
+	strAddress = strAdr;
 	return true;
 }
 

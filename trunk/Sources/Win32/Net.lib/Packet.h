@@ -17,6 +17,8 @@ public:
 
 	void AddParam( std::string strParam );
 
+	bool AddAddress( std::string strAddress );
+
 	void EndCommand();
 
 	void Clear();
@@ -32,6 +34,8 @@ public:
 	bool GetParam( DWORD& dwValue );
 
 	bool GetParam( std::string&	strValue, int iSize );
+
+	bool CPacket::GetAddress( std::string& strAddress );
 
 	friend CPacket& operator <<( CSocket& sock, CPacket& packet );
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "windows.h"
+#include "..\net.lib\packet.h"
 
 class CAgent
 {
@@ -7,7 +8,8 @@ public:
 	CAgent(void);
 	~CAgent(void);
 
-	void StateMachine();
+	void Process( BYTE* pBuf, int iSize );
+
 protected:
 
 	enum enumStates{
@@ -18,7 +20,5 @@ protected:
 	};
 
 	enumStates m_CurState;
-	void Parse( BYTE* pBuf, int iSize );
 	static DWORD WINAPI fnListenThreadProc(  LPVOID pParameter );
-
 };
