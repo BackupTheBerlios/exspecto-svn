@@ -10,15 +10,51 @@ CScanner::~CScanner(void)
 {
 }
 
+//Рекурсивная функция, перебирающая все вложенные папки/файлы
+void CScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList )
+{
+	WIN32_FIND_DATA FindFileData;
+	HANDLE hFile;
+	//TODO:разобраться с Stack overflow
+	std::string m_strBuf;
+	if( INVALID_HANDLE_VALUE != ( hFile = ::FindFirstFile( strSharePath, &FindFileData ) ) )
+	{
+		if( ( 0 != strcmp( ".", FindFileData.cFileName ) ) )
+		{
+			m_strBuf.append( strSharePath, strSharePath[ strlen( strSharePath ) - 3 ] );
+			m_strBuf += FindFileData.cFileName;
+			m_strBuf += "\\";
+			m_strBuf += "*.*";
+			vcFilesList.push_back( m_strBuf );
+			m_strBuf.clear();
+		}
+		while( 0 != ::FindNextFile( hFile, &FindFileData ) ) 
+			if( 0 != strcmp( ".", FindFileData.cFileName ) && 0 != strcmp( "..", FindFileData.cFileName ) )
+			{
+				m_strBuf.append( strSharePath, strSharePath + strlen( strSharePath ) - 3  );
+				m_strBuf += FindFileData.cFileName;
+				m_strBuf += "\\";
+				m_strBuf += "*.*";
+				vcFilesList.push_back( m_strBuf );
+				EnumFiles( m_strBuf.c_str(), vcFilesList );
+				m_strBuf.clear();
+			}
+			::FindClose( hFile );
+	}else
+		return;
+}
+
 void CScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList )
 {
 	BYTE* buf;
 	DWORD p1,p2;
 	WCHAR serv[1024];
-	::MultiByteToWideChar( CP_UTF8, 0, strAddress.c_str(), (int)strAddress.size() + 1, serv, 1024 );
+
 	DWORD handle = 0;
 	DWORD res;
-	char asd[255];
+	char strTmpShareName[255], strTmpSharePath[10240],strTmpFileFullPath[10240];
+	
+	::MultiByteToWideChar( CP_UTF8, 0, strAddress.c_str(), (int)strAddress.size() + 1, serv, 1024 );
 	do
 	{
 		res = ::NetShareEnum( (LPSTR)serv, 0, &buf, MAX_PREFERRED_LENGTH, &p1, &p2, &handle );
@@ -26,8 +62,13 @@ void CScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& 
 		for( unsigned int i = 0; i < p1; i++ )
 		{
 			int buflen = ::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, 0, 0, 0, 0);
-			int res = ::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, asd, buflen, 0, 0 );
-			vcResList.push_back( asd );
+			int res = ::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, strTmpShareName, buflen, 0, 0 );
+			//исключаем скрытые шары
+			if( strTmpShareName[ buflen - 2 ] != '$' )
+			{
+				sprintf( strTmpSharePath, "\\\\%s\\%s\\*.*", strAddress.c_str(), strTmpShareName );
+				EnumFiles( strTmpSharePath, vcResList ); 
+			}
 		}
 		::NetApiBufferFree( buf );
 	}while( res == ERROR_MORE_DATA );
