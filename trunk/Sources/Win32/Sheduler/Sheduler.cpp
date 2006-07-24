@@ -90,7 +90,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	std::vector< std::string > vcAddresses;
 
-	vcAddresses.push_back( "172.16.4.8" );
+	vcAddresses.push_back( "172.16.3.203" );
+	vcAddresses.push_back( "172.16.3.228" );
+	vcAddresses.push_back( "172.16.3.38" );
 
 	shed.SendCommand( "127.0.0.1", StartScan, vcAddresses );
 	shed.SendCommand( "127.0.0.1", GetStatus, pBuf, sizeof( pBuf ) );

@@ -49,7 +49,6 @@ void CScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& 
 	BYTE* buf;
 	DWORD p1,p2;
 	WCHAR serv[1024];
-
 	DWORD handle = 0;
 	DWORD res;
 	char strTmpShareName[255], strTmpSharePath[10240],strTmpFileFullPath[10240];

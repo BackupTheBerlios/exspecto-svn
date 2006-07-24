@@ -25,5 +25,14 @@ protected:
 
 	std::string m_strSchedulerAddress;
 
+	struct ProcessParam{
+		CAgent*	pThis;
+		BYTE*	pbBuf;
+		int		iCount;
+		CSocket*	client_sock;
+	};
+
+	static DWORD WINAPI fnProcessThreadProc( LPVOID pParameter );
+
 	static DWORD WINAPI fnListenThreadProc(  LPVOID pParameter );
 };

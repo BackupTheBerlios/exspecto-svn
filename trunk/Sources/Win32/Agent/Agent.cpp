@@ -7,6 +7,7 @@
 #include "..\common\commands.h"
 #include "..\net.lib\packet.h"
 
+
 CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( enumStates::Idling )
 												 ,m_strSchedulerAddress( strSchedulerAddress )
 {
@@ -20,9 +21,9 @@ CAgent::~CAgent(void)
 	::DeleteCriticalSection( &m_csCurState );
 }
 
-void CAgent::Process( BYTE* pBuf, int iSize, CSocket* sock )
+DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 {
-
+	ProcessParam* pParams = (ProcessParam*)pParameter;
 	BYTE bCommandId;
 	DWORD iCount;
 	std::string strAddress;
@@ -30,7 +31,7 @@ void CAgent::Process( BYTE* pBuf, int iSize, CSocket* sock )
 
 	CPacket* pPacket = new CPacket();
 
-	pPacket->SetBuffer( pBuf, iSize );
+	pPacket->SetBuffer( pParams->pbBuf, pParams->iCount );
 	while( pPacket->GetCommandId( bCommandId ) )
 	{
 		switch( bCommandId )
@@ -38,23 +39,26 @@ void CAgent::Process( BYTE* pBuf, int iSize, CSocket* sock )
 		case GetStatus:
 			BYTE pbBuf[2];
 			pbBuf[0] = 0xFF;
-			pbBuf[1] = m_CurState;
-			sock->Send( pbBuf, 2 );
+			pbBuf[1] = pParams->pThis->m_CurState;
+			pParams->client_sock->Send( pbBuf, 2 );
 			break;
 		case StartScan:
+			//TODO:добавить синхронизацию
 			pPacket->GetParam( iCount );
-			pPacket->GetAddress( strAddress );
 			CScanner scan;
 
-			::EnterCriticalSection( &m_csCurState );
-			m_CurState = enumStates::Scanning;	
-			::LeaveCriticalSection( &m_csCurState );
+			::EnterCriticalSection( &pParams->pThis->m_csCurState );
+			pParams->pThis->m_CurState = enumStates::Scanning;	
+			::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
-			scan.Scan( strAddress, List );
-			
-			::EnterCriticalSection( &m_csCurState );
-			m_CurState = enumStates::Idling;		
-			::LeaveCriticalSection( &m_csCurState );
+			for( unsigned int i = 0; i < iCount; i++ )
+			{
+				pPacket->GetAddress( strAddress );
+				scan.Scan( strAddress, List );
+			}
+			::EnterCriticalSection( &pParams->pThis->m_csCurState );
+			pParams->pThis->m_CurState = enumStates::Idling;		
+			::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
 			std::vector< std::string >::iterator It;
 			for( It = List.begin(); It != List.end(); It++ )
@@ -64,8 +68,15 @@ void CAgent::Process( BYTE* pBuf, int iSize, CSocket* sock )
 			break;
 		}
 	}
-	delete sock;
+	delete pParams->client_sock;
 	delete pPacket;
+	delete pParams;
+	return 0;
+}
+
+void CAgent::Process( BYTE* pBuf, int iSize, CSocket* sock )
+{
+	return;
 }
 
 DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
@@ -75,6 +86,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	CSocket* client_sock;
 	BYTE pBuf[10240];
 	int iCount = 0;
+	DWORD dwThreadId;
 
 	structAddr adr;
 
@@ -84,10 +96,19 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	while( NULL != ( client_sock = sock.Accept( adr ) ) )
 	{
 		if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( SOCKET_ERROR != ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
-            pThis->Process( pBuf, iCount, client_sock );
+		{
+			ProcessParam* params = new ProcessParam;
+			params->client_sock = client_sock;
+			params->iCount = iCount;
+			params->pbBuf = pBuf;
+			params->pThis = pThis;
+            //pThis->Process( pBuf, iCount, client_sock );
+			::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
+		}
 	}
-	return DWORD();
+	return 0;
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
