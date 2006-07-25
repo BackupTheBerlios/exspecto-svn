@@ -1,3 +1,9 @@
+//-------------------------------------------------------------------------------------
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: CScanner class
+//Author: Parshin Dmitry
+//Description: Класс, реализующий функцию сканирования
+//-------------------------------------------------------------------------------------
 #include "StdAfx.h"
 #include ".\scanner.h"
 #include "lm.h"
@@ -19,16 +25,16 @@ void CScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::str
 	std::string m_strBuf;
 	if( INVALID_HANDLE_VALUE != ( hFile = ::FindFirstFile( strSharePath, &FindFileData ) ) )
 	{
+		//не выводим в результат записи вида . и ..
 		if( ( 0 != strcmp( ".", FindFileData.cFileName ) ) )
 		{
 			m_strBuf.append( strSharePath, strSharePath[ strlen( strSharePath ) - 3 ] );
 			m_strBuf += FindFileData.cFileName;
-			m_strBuf += "\\";
-			m_strBuf += "*.*";
 			vcFilesList.push_back( m_strBuf );
 			m_strBuf.clear();
 		}
 		while( 0 != ::FindNextFile( hFile, &FindFileData ) ) 
+			//не выводим в результат записи вида . и ..
 			if( 0 != strcmp( ".", FindFileData.cFileName ) && 0 != strcmp( "..", FindFileData.cFileName ) )
 			{
 				m_strBuf.append( strSharePath, strSharePath + strlen( strSharePath ) - 3  );
@@ -36,6 +42,7 @@ void CScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::str
 				m_strBuf += "\\";
 				m_strBuf += "*.*";
 				vcFilesList.push_back( m_strBuf );
+				//Рекурсивно проводим поиск во вложенных папках
 				EnumFiles( m_strBuf.c_str(), vcFilesList );
 				m_strBuf.clear();
 			}
@@ -44,6 +51,7 @@ void CScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::str
 		return;
 }
 
+//Сканировать адрес strAddress, результат сложить в vcResList
 void CScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList )
 {
 	BYTE* buf;
@@ -51,11 +59,12 @@ void CScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& 
 	WCHAR serv[1024];
 	DWORD handle = 0;
 	DWORD res;
-	char strTmpShareName[255], strTmpSharePath[10240],strTmpFileFullPath[10240];
-	
+	char strTmpShareName[255], strTmpSharePath[10240];
+	//Переводим имя сервера в Unicode,т.к. WIN NET API понимает только Unicode
 	::MultiByteToWideChar( CP_UTF8, 0, strAddress.c_str(), (int)strAddress.size() + 1, serv, 1024 );
 	do
 	{
+		//Получаем список расшаренных ресурсов на serv
 		res = ::NetShareEnum( (LPSTR)serv, 0, &buf, MAX_PREFERRED_LENGTH, &p1, &p2, &handle );
 		SHARE_INFO_0* inf =  (SHARE_INFO_0*)buf;
 		for( unsigned int i = 0; i < p1; i++ )
@@ -66,6 +75,7 @@ void CScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& 
 			if( strTmpShareName[ buflen - 2 ] != '$' )
 			{
 				sprintf( strTmpSharePath, "\\\\%s\\%s\\*.*", strAddress.c_str(), strTmpShareName );
+				//получаем список файлов
 				EnumFiles( strTmpSharePath, vcResList ); 
 			}
 		}

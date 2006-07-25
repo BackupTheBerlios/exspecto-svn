@@ -1,12 +1,14 @@
-//-------------------------------------------------------------------------------------
-//Module: CClientSocket class
+//-------------------------------------------------------------------------------------//
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: CServerSocket class
 //Author: Parshin Dmitry
 //Description: Класс, реализующий серверную часть сокетов
-//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------//
 #pragma once
 #include "Socket.h"
 #include <string>
 
+//структура, описывающая адрес компьютера в сети
 struct structAddr
 {
 	std::string strAddr;
@@ -17,8 +19,14 @@ struct structAddr
 class CServerSocket: public CSocket
 {
 public:
+	//Конструктор
+	//iType - тип сокета, возможные значения - SOCK_STREAM и SOCK_DGRAM
+	//bBlocking - блокирующий либо не блокирующий сокет
 	CServerSocket( int iType = SOCK_STREAM, bool bBlocking = true );
+
+	//Копирующий конструктор
 	CServerSocket( CServerSocket& S );
+
 	~CServerSocket(void);
 
 	//Функция "прикрепления" сокета к адресу, по умолчанию ОС сама выбирает адрес и порт

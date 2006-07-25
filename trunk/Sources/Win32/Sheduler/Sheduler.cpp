@@ -1,18 +1,24 @@
+//-------------------------------------------------------------------------------------//
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: CScheduler class
+//Author: Parshin Dmitry
+//Description: Класс, реализующий функции планировщика
+//-------------------------------------------------------------------------------------//
 #include "stdafx.h"
 #include "winsock2.h"
 #include "..\net.lib\ClientSocket.h"
 #include "..\net.lib\Packet.h"
 #include ".\sheduler.h"
 
-CSheduler::CSheduler(void)
+CScheduler::CScheduler(void)
 {
 }
 
-CSheduler::~CSheduler(void)
+CScheduler::~CScheduler(void)
 {
 }
 
-void CSheduler::FindAgents( std::vector< std::string > &m_AgentList )
+void CScheduler::FindAgents( std::vector< std::string > &m_AgentList )
 {
 }
 
@@ -36,7 +42,8 @@ void CSheduler::RemoveAgent( int iAgentId )
 	return std::string();
 }*/
 
-bool CSheduler::SendCommand( std::string strAddress, enumCommands Command, std::vector< std::string > vcParams )
+//Отправить команду Command на адрес strAddress с параметрами vcParams
+bool CScheduler::SendCommand( std::string strAddress, enumCommands Command, std::vector< std::string > vcParams )
 {
 	CClientSocket sock;
 	CPacket Msg;
@@ -62,7 +69,9 @@ bool CSheduler::SendCommand( std::string strAddress, enumCommands Command, std::
 	return true;
 }
 
-bool CSheduler::SendCommand( std::string strAddress, enumCommands Command, BYTE* pBuffer, int iBufSize )
+//Отправить команду Command на адрес strAddress и получить ответ в pBuffer
+//iBufSize - размер буфера
+bool CScheduler::SendCommand( std::string strAddress, enumCommands Command, BYTE* pBuffer, int iBufSize )
 {
 	CClientSocket sock;
 	CPacket Msg;

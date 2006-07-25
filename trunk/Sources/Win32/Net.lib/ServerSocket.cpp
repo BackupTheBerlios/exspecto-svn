@@ -1,11 +1,21 @@
+//-------------------------------------------------------------------------------------//
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: CServerSocket class
+//Author: Parshin Dmitry
+//Description: Класс, реализующий серверную часть сокетов
+//-------------------------------------------------------------------------------------//
 #include "StdAfx.h"
 #include ".\serversocket.h"
 #include <string>
 
+//Конструктор
+//iType - тип сокета, возможные значения - SOCK_STREAM и SOCK_DGRAM
+//bBlocking - блокирующий либо не блокирующий сокет
 CServerSocket::CServerSocket( int iType, bool bBlocking ):CSocket( iType, bBlocking )
 {
 }
 
+//Копирующий конструктор
 CServerSocket::CServerSocket( CServerSocket& S ):CSocket( S.m_iType, S.m_bBlocking )
 {
 	m_Socket = S.m_Socket;
@@ -16,6 +26,7 @@ CServerSocket::~CServerSocket(void)
 {
 }
 
+//Функция "прикрепления" сокета к адресу, по умолчанию ОС сама выбирает адрес и порт
 int CServerSocket::Bind( int iPort, std::string strAddr )
 {
 	sockaddr_in sAddr;
@@ -49,6 +60,8 @@ int CServerSocket::Bind( int iPort, std::string strAddr )
 	return res;
 }
 
+//Функция начала "прослушивания", iMaxConn - максимальное кол-во соединения,
+//SOMAXCONN - максимальное значение
 int CServerSocket::Listen( int iMaxConn )
 {
 	int res;
@@ -59,6 +72,12 @@ int CServerSocket::Listen( int iMaxConn )
 	return res;
 }
 
+//При вызове accept, сокет блокируется вплоть до появления сигнала о входящем 
+//соединении (по аналогии к функциям из предыдущей статьи). Функция возвращает 
+//новый сокет, который будет использоваться для связи с присоединившейся машиной 
+//(система создаёт его сама, при успешном соединении). Более подробные данные 
+//о присоединившейся машине accept возвращает в параметре addr 
+//(тип адреса, IP-адрес, порт).
 CSocket* CServerSocket::Accept( structAddr& addr )
 {
 	SOCKET s;

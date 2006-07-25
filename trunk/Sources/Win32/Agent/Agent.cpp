@@ -1,3 +1,10 @@
+//------------------------------------------------------------------------------------//
+//Этот файл является частью проекта Exspecto 2006г.									  
+//Module: CAgent class																  
+//Author: Parshin Dmitry
+//Description: Класс, реализующий функции Агента
+//-------------------------------------------------------------------------------------//
+
 #pragma once
 #include "stdafx.h"
 #include "..\net.lib\Sockets.h"
@@ -7,11 +14,12 @@
 #include "..\common\commands.h"
 #include "..\net.lib\packet.h"
 
-
+//Конструктор,strSchedulerAddress - адрес планировщика
 CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( enumStates::Idling )
 												 ,m_strSchedulerAddress( strSchedulerAddress )
 {
 	DWORD dwThreadId;
+	//Запускаем поток прослушивания(ожидания входящих TCP соединений)
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
 	::InitializeCriticalSection( &m_csCurState );
 }
@@ -21,6 +29,7 @@ CAgent::~CAgent(void)
 	::DeleteCriticalSection( &m_csCurState );
 }
 
+//Поток обработки входящих сообщений
 DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 {
 	ProcessParam* pParams = (ProcessParam*)pParameter;
@@ -31,6 +40,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 
 	CPacket* pPacket = new CPacket();
 
+	//Задаем данные для разбора входящего пакета
 	pPacket->SetBuffer( pParams->pbBuf, pParams->iCount );
 	while( pPacket->GetCommandId( bCommandId ) )
 	{
@@ -40,11 +50,16 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			BYTE pbBuf[2];
 			pbBuf[0] = 0xFF;
 			pbBuf[1] = pParams->pThis->m_CurState;
+			//отправляем текущее состояние
 			pParams->client_sock->Send( pbBuf, 2 );
+			//закрываем соединение
+			client_sock->Close();
 			break;
 		case StartScan:
 			//TODO:добавить синхронизацию
+			//Получаем кол-во адресов в пакете
 			pPacket->GetParam( iCount );
+
 			CScanner scan;
 
 			::EnterCriticalSection( &pParams->pThis->m_csCurState );
@@ -53,6 +68,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 
 			for( unsigned int i = 0; i < iCount; i++ )
 			{
+				//получаем очередной адрес и производим его сканирование
 				pPacket->GetAddress( strAddress );
 				scan.Scan( strAddress, List );
 			}
@@ -74,11 +90,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 	return 0;
 }
 
-void CAgent::Process( BYTE* pBuf, int iSize, CSocket* sock )
-{
-	return;
-}
-
+//Поток ожидания входящих соединений
 DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 {
 	CAgent* pThis = (CAgent*)pParameter;
@@ -90,11 +102,14 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 
 	structAddr adr;
 
-	sock.SetBlocking( true );
+    //связываем серверный сокет с локальным адресом
 	sock.Bind( 5000, "127.0.0.1" );
+	//переводим сокет в режим прослушивания
 	sock.Listen();
+	//Ожидаем входящее соединение и обрабатываем его
 	while( NULL != ( client_sock = sock.Accept( adr ) ) )
 	{
+		//принимаем соединения только от заданного планировщика
 		if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( SOCKET_ERROR != ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
 		{
 			ProcessParam* params = new ProcessParam;
@@ -102,7 +117,6 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 			params->iCount = iCount;
 			params->pbBuf = pBuf;
 			params->pThis = pThis;
-            //pThis->Process( pBuf, iCount, client_sock );
 			::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
 		}
 	}

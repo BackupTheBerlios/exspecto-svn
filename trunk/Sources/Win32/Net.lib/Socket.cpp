@@ -1,9 +1,17 @@
+//-------------------------------------------------------------------------------------
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: CSocket class
+//Author: Parshin Dmitry
+//Description: Класс, реализующий взаимодействие с сокетами (общая для клиента и сервера часть)
+//-------------------------------------------------------------------------------------
 #pragma once
 #include "StdAfx.h"
 #include ".\socket.h"
 #include "winsock2.h"
 #include <string>
 
+//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
+//			   bBlocking - тип вызовов, по умолчанию - блокирующие
 CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
 											 ,m_Socket( INVALID_SOCKET )
 											 ,m_bBlocking( bBlocking )
@@ -30,6 +38,8 @@ CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
 	SetBlocking( bBlocking );
 }
 
+//Конструктор, s - созданный функцией ::socket сокет
+//			   bBlocking - тип вызовов, по умолчанию - блокирующие
 CSocket::CSocket( SOCKET s, bool bBlocking ):m_bBlocking( bBlocking )
 {
 	//Инициализация сокетов
@@ -51,11 +61,13 @@ CSocket::~CSocket(void)
         ::shutdown( m_Socket, SD_BOTH );
 }
 
+//Метод, возвращающий код последней ошибки
 int CSocket::GetLastError(void)
 {
 	return m_iLastError;
 }
 
+//Метод закрытия сокета
 int CSocket::Close( void )
 {
 	int iRes = 0;
@@ -64,6 +76,7 @@ int CSocket::Close( void )
 	return iRes;
 }
 
+//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
 void CSocket::SetBlocking( bool bIsBlocking )
 {
 	unsigned long l = 1;
@@ -78,6 +91,7 @@ void CSocket::SetBlocking( bool bIsBlocking )
 	}
 }
 
+//Метод посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт
 int CSocket::Send( void* pBuffer, int iSize )
 {
 	int res;
@@ -88,6 +102,7 @@ int CSocket::Send( void* pBuffer, int iSize )
 	return res;
 }
 
+//Метод приёма,возвращает SOCKET_ERROR либо кол-во отправленных байт
 int CSocket::Receive( void* pBuffer, int iBufSize )
 {
 	int res;
@@ -98,6 +113,9 @@ int CSocket::Receive( void* pBuffer, int iBufSize )
 	return res;
 }
 
+//При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
+//поступили данные и можно производить операцию Receive
+//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
 bool CSocket::IsReadyForRead( int iTimeout )
 {
 	fd_set sReadSet;
@@ -124,6 +142,9 @@ bool CSocket::IsReadyForRead( int iTimeout )
 	return false;
 }
 
+//При использовании неблокирующих вызовов, метод возвращает true,если сокет готов к
+//записи
+//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
 bool CSocket::IsReadyForWrite( int iTimeout )
 {
 	fd_set sWriteSet;
