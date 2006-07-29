@@ -94,14 +94,14 @@ bool CScheduler::SendCommand( std::string strAddress, enumCommands Command, BYTE
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	CSheduler shed;
+	CScheduler shed;
 	BYTE pBuf[1024];
 
 	std::vector< std::string > vcAddresses;
 
-	vcAddresses.push_back( "172.16.3.203" );
-	vcAddresses.push_back( "172.16.3.228" );
-	vcAddresses.push_back( "172.16.3.38" );
+	vcAddresses.push_back( "172.16.3.39" );
+	vcAddresses.push_back( "172.16.3.110" );
+	vcAddresses.push_back( "172.16.3.121" );
 
 	shed.SendCommand( "127.0.0.1", StartScan, vcAddresses );
 	shed.SendCommand( "127.0.0.1", GetStatus, pBuf, sizeof( pBuf ) );

@@ -22,6 +22,9 @@ protected:
 	//Критическая секция на запись переменной текущего состояния
 	CRITICAL_SECTION m_csCurState;
 
+	//Критическая секция на выполнение команд
+	CRITICAL_SECTION m_csCommandExec;
+
 	//Тип, описывающий возможные состояния агента
 	enum enumStates{
 		Idling = 0x1,

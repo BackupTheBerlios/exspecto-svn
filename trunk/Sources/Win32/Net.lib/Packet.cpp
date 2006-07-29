@@ -131,7 +131,7 @@ bool CPacket::GetAddress( std::string& strAddress )
 //Добавить метку конца пакета
 void CPacket::EndCommand()
 {
-	Push( (BYTE*)"END", 4 );
+	Push( (BYTE*)"END", 3 );
 }
 
 //Очистить пакет
@@ -163,7 +163,7 @@ void CPacket::SetBuffer( IN BYTE* pbBuffer, IN int iSize )
 //Получить идентификатор команды по текущему смещению в пакете
 bool CPacket::GetCommandId( BYTE& pByte )
 {
-	if( m_iOffset == m_iDataSize )
+	if( m_iOffset >= m_iDataSize )
 		return false;
 	Pop( &pByte, 1 );
 	return true;
@@ -174,7 +174,7 @@ void CPacket::Pop( BYTE *pbBuf, int iCount )
 {
 	::memcpy( pbBuf, m_pbBuf + m_iOffset, iCount );
 	m_iOffset += iCount;
-	if( 'E' == m_pbBuf[ m_iOffset ] )
+	if( !::memcmp( m_pbBuf + m_iOffset, "END", 3 ) )
 		m_iOffset += 3;
 }
 

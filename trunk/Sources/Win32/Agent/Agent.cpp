@@ -22,11 +22,13 @@ CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( enumStates::Idling
 	//Запускаем поток прослушивания(ожидания входящих TCP соединений)
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
 	::InitializeCriticalSection( &m_csCurState );
+	::InitializeCriticalSection( &m_csCommandExec );
 }
 
 CAgent::~CAgent(void)
 {
 	::DeleteCriticalSection( &m_csCurState );
+	::DeleteCriticalSection( &m_csCommandExec );
 }
 
 //Поток обработки входящих сообщений
@@ -53,18 +55,18 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			//отправляем текущее состояние
 			pParams->client_sock->Send( pbBuf, 2 );
 			//закрываем соединение
-			client_sock->Close();
+			pParams->client_sock->Close();
 			break;
 		case StartScan:
-			//TODO:добавить синхронизацию
+			::EnterCriticalSection( &pParams->pThis->m_csCommandExec );
 			//Получаем кол-во адресов в пакете
 			pPacket->GetParam( iCount );
 
 			CScanner scan;
 
-			::EnterCriticalSection( &pParams->pThis->m_csCurState );
+			//::EnterCriticalSection( &pParams->pThis->m_csCurState );
 			pParams->pThis->m_CurState = enumStates::Scanning;	
-			::LeaveCriticalSection( &pParams->pThis->m_csCurState );
+			//::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
 			for( unsigned int i = 0; i < iCount; i++ )
 			{
@@ -72,15 +74,16 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 				pPacket->GetAddress( strAddress );
 				scan.Scan( strAddress, List );
 			}
-			::EnterCriticalSection( &pParams->pThis->m_csCurState );
+		//	::EnterCriticalSection( &pParams->pThis->m_csCurState );
 			pParams->pThis->m_CurState = enumStates::Idling;		
-			::LeaveCriticalSection( &pParams->pThis->m_csCurState );
+		//	::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
 			std::vector< std::string >::iterator It;
 			for( It = List.begin(); It != List.end(); It++ )
 			{
 				std::cout << *It << std::endl;
 			}
+			::LeaveCriticalSection( &pParams->pThis->m_csCommandExec );
 			break;
 		}
 	}
