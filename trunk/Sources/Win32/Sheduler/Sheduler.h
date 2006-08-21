@@ -17,7 +17,7 @@ public:
 	CScheduler(void);
 	~CScheduler(void);
 
-	void FindAgents( std::vector< std::string > &m_AgentList );
+//	void FindAgents( std::vector< std::string > &m_AgentList );
 //	void AddAgent( std::string strAddress );
 //	void RemoveAgent( int iAgentId );
 //	int GetAgentId( std::string strAdress );
@@ -34,5 +34,4 @@ protected:
 
 	//int m_iCurId;
 
-	
 };
