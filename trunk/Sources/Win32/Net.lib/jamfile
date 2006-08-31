@@ -1,0 +1,4 @@
+lib net : packet.cpp socket.cpp serversocket.cpp scanner.cpp clientsocket.cpp stdafx.cpp ../CommonLib//ws2_32 ../CommonLib//Netapi32
+				: <link>static ;
+				
+				
