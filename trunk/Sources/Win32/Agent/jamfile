@@ -1,0 +1,4 @@
+exe agent : agent.cpp stdafx.cpp ../Net.lib//net 
+					: <link>static ;
+					
+				
