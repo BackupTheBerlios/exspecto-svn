@@ -1,2 +1,2 @@
-exe scheduler : scheduler.cpp stdafx.cpp ../Net.lib//net ;
+exe scheduler : [ glob *.cpp ] ../Net.lib//net ;
 

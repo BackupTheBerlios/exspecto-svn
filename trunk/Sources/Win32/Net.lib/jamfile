@@ -1,4 +1,4 @@
-lib net : packet.cpp socket.cpp serversocket.cpp scanner.cpp clientsocket.cpp stdafx.cpp ws2_32 Netapi32
+lib net : [ glob *.cpp ] ws2_32 Netapi32
 				: <link>static 
 				: 
 				: <link>static ;
