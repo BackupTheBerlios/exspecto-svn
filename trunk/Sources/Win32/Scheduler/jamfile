@@ -1,2 +1,2 @@
-exe scheduler : scheduler.cpp stdafx.cpp ../Net.lib//net 
-						  : <link>static ;
+exe scheduler : scheduler.cpp stdafx.cpp ../Net.lib//net ;
+
