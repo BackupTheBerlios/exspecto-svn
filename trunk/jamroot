@@ -1,3 +1,8 @@
+project Exspecto
+		 : requirements <threading>multi
+		 : default-build debug
+		 : build-dir Bin
+		 ;
 build-project Sources\\Win32\\Agent ;
 build-project Sources\\Win32\\Scheduler ;
 

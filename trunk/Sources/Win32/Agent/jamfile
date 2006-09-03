@@ -1,3 +1,6 @@
+project Agent
+		 : build-dir ../../../Bin/Win32/Agent
+		 ;
 exe agent : [ glob *.cpp ] ../Net.lib//net ;
 					
 				
