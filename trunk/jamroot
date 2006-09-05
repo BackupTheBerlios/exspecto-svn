@@ -1,8 +1,8 @@
 project Exspecto
-		 : requirements <threading>multi
+		 : requirements <threading>multi <optimization>off <debug-symbols>on <inlining>off <runtime-debugging>on
 		 : default-build debug
-		 : build-dir Bin
 		 ;
 build-project Sources\\Win32\\Agent ;
 build-project Sources\\Win32\\Scheduler ;
+install Bin : Sources\\Win32\\Agent Sources\\Win32\\Scheduler ;
 

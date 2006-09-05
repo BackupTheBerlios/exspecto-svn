@@ -1,6 +1,4 @@
-project Net
-		 : build-dir ../../../Bin/Win32/Net.lib
-		 ;
+project Net ;
 lib net : [ glob *.cpp ] ws2_32 Netapi32
 				: <link>static 
 				: 

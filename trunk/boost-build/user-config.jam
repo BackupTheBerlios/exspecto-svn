@@ -12,7 +12,7 @@
 #  Some important libraries can also be configured.
 #  Uncomment relevant parts to suite your local configuration and preferences.
 
-import toolset : using ;
+import toolset : using msvc ;
 
 #  GCC configuration
 
@@ -26,7 +26,7 @@ import toolset : using ;
 
 #  Configure msvc (default version, searched in standard location
 #  and PATH).
-  using msvc ;
+#  using msvc ;
 
 #  Borland configuration
 #  using borland ;

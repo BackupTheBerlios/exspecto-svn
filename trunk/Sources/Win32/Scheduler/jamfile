@@ -1,5 +1,3 @@
-project Scheduler
-		 : build-dir ../../../Bin/Win32/Scheduler
-		 ;
+project Scheduler ;
 exe scheduler : [ glob *.cpp ] ../Net.lib//net ;
 
