@@ -32,7 +32,7 @@ void CSheduler::RemoveAgent( int iAgentId )
 {
 }
 
-/*int CSheduler::GetAgentId( std::string strAdress )
+int CSheduler::GetAgentId( std::string strAdress )
 {
 	return int();
 }*/
@@ -60,6 +60,9 @@ bool CScheduler::SendCommand( std::string strAddress, enumCommands Command, std:
 				Msg.AddAddress( *It );
 			Msg.EndCommand();
 			Msg.GetBuffer( pBuf, iSize );
+		}break;
+	case GetStatus:
+		{
 		}break;
 	}
 

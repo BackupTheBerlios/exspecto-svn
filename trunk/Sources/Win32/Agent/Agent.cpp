@@ -4,18 +4,15 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции Агента
 //-------------------------------------------------------------------------------------//
-
-#pragma once
 #include "stdafx.h"
 #include "..\net.lib\Sockets.h"
-#include ".\agent.h"
+#include "agent.h"
 #include "windows.h"
 #include "..\net.lib\Scanner.h"
-#include "..\common\commands.h"
 #include "..\net.lib\packet.h"
 
 //Конструктор,strSchedulerAddress - адрес планировщика
-CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( enumStates::Idling )
+CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
 												 ,m_strSchedulerAddress( strSchedulerAddress )
 {
 	DWORD dwThreadId;
@@ -65,7 +62,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			CScanner scan;
 
 			//::EnterCriticalSection( &pParams->pThis->m_csCurState );
-			pParams->pThis->m_CurState = enumStates::Scanning;	
+			pParams->pThis->m_CurState = Scanning;	
 			//::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
 			for( unsigned int i = 0; i < iCount; i++ )
@@ -75,7 +72,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 				scan.Scan( strAddress, List );
 			}
 		//	::EnterCriticalSection( &pParams->pThis->m_csCurState );
-			pParams->pThis->m_CurState = enumStates::Idling;		
+			pParams->pThis->m_CurState = Idling;		
 		//	::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
 			std::vector< std::string >::iterator It;

@@ -6,8 +6,7 @@
 //-------------------------------------------------------------------------------------
 #pragma once
 #include "Socket.h"
-
-enum enumCommands;
+#include "../Common/commands.h"
 
 class CPacket
 {

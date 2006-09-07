@@ -65,12 +65,12 @@ void CScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& 
 	do
 	{
 		//Получаем список расшаренных ресурсов на serv
-		res = ::NetShareEnum( (LPSTR)serv, 0, &buf, MAX_PREFERRED_LENGTH, &p1, &p2, &handle );
+		res = ::NetShareEnum( serv, 0, &buf, MAX_PREFERRED_LENGTH, &p1, &p2, &handle );
 		SHARE_INFO_0* inf =  (SHARE_INFO_0*)buf;
 		for( unsigned int i = 0; i < p1; i++ )
 		{
 			int buflen = ::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, 0, 0, 0, 0);
-			int res = ::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, strTmpShareName, buflen, 0, 0 );
+			::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, strTmpShareName, buflen, 0, 0 );
 			//исключаем скрытые шары
 			if( strTmpShareName[ buflen - 2 ] != '$' )
 			{

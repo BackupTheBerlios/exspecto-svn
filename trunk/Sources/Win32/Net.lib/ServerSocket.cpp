@@ -65,7 +65,7 @@ int CServerSocket::Bind( int iPort, std::string strAddr )
 int CServerSocket::Listen( int iMaxConn )
 {
 	int res;
-	if( INVALID_SOCKET == ( res = ::listen( m_Socket, iMaxConn ) ) )
+	if( (int)INVALID_SOCKET == ( res = ::listen( m_Socket, iMaxConn ) ) )
 	{
 		m_iLastError = ::WSAGetLastError();
 	}

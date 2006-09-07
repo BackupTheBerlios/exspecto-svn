@@ -5,7 +5,7 @@
 //Description: Класс, реализующий функции для работы с пакетами (парсинг и подготовка)
 //-------------------------------------------------------------------------------------
 #include "StdAfx.h"
-#include ".\packet.h"
+#include "packet.h"
 
 
 CPacket::CPacket(void):m_iDataSize( 0 )
@@ -89,7 +89,7 @@ bool CPacket::GetParam( BYTE* pbValue, int iSize )
 //Получить параметр типа DWORD по текущему смещению
 bool CPacket::GetParam( DWORD& dwValue )
 {
-	if( sizeof(DWORD) > m_iDataSize - m_iOffset )
+	if( sizeof(DWORD) > ( unsigned int )( m_iDataSize - m_iOffset ) )
 		return false;
 
 	Pop( (BYTE*)&dwValue, sizeof(DWORD) );
@@ -115,7 +115,7 @@ bool CPacket::GetAddress( std::string& strAddress )
 {
 	in_addr ulAdr;
 	char* strAdr;
-	if( sizeof( u_long ) > m_iDataSize - m_iOffset )
+	if( sizeof( u_long ) > ( unsigned int ) ( m_iDataSize - m_iOffset ) )
 		return false;
 
 	Pop( (BYTE*)&ulAdr.S_un.S_addr, sizeof( u_long ) );

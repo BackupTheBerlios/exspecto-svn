@@ -4,7 +4,6 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий взаимодействие с сокетами (общая для клиента и сервера часть)
 //-------------------------------------------------------------------------------------
-#pragma once
 #include "StdAfx.h"
 #include ".\socket.h"
 #include "winsock2.h"
@@ -170,3 +169,4 @@ bool CSocket::IsReadyForWrite( int iTimeout )
 	}
 	return false;
 }
+

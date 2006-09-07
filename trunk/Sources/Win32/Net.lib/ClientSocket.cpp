@@ -4,7 +4,6 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий клиентскую часть сокетов
 //-------------------------------------------------------------------------------------//
-#pragma once
 #include "StdAfx.h"
 #include ".\clientsocket.h"
 #include "winsock2.h"
