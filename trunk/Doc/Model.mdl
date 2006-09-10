@@ -2356,7 +2356,7 @@
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(1068, 324)
+			location   	(549, 334)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -2369,7 +2369,7 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@60
-			    location   	(914, 216)
+			    location   	(395, 226)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	308
@@ -2381,7 +2381,7 @@
 			quidu      	"44B791D70325"
 			compartment 	(object Compartment
 			    Parent_View 	@60
-			    location   	(914, 283)
+			    location   	(395, 293)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
