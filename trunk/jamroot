@@ -1,6 +1,6 @@
 project Exspecto
 		 : requirements <threading>multi
-		 : default-build release
+		 : default-build debug
 		 ;
 build-project Sources\\Win32\\Agent ;
 build-project Sources\\Win32\\Scheduler ;

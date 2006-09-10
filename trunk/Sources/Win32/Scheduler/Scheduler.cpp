@@ -9,6 +9,7 @@
 #include "..\net.lib\ClientSocket.h"
 #include "..\net.lib\Packet.h"
 #include ".\scheduler.h"
+#include "conio.h"
 
 CScheduler::CScheduler(void)
 {
@@ -108,5 +109,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	shed.SendCommand( "127.0.0.1", StartScan, vcAddresses );
 	shed.SendCommand( "127.0.0.1", GetStatus, pBuf, sizeof( pBuf ) );
+	printf( "%02X ",pBuf[0] );
+	printf( "%02X ",pBuf[1] );
+	char c = getch();
 	return 0;
 }
