@@ -5,11 +5,11 @@
 //Description: Класс, реализующий функции Агента
 //-------------------------------------------------------------------------------------//
 #include "stdafx.h"
-#include "..\net.lib\Sockets.h"
+#include "..\libNet\Sockets.h"
 #include "agent.h"
 #include "windows.h"
-#include "..\net.lib\Scanner.h"
-#include "..\net.lib\packet.h"
+#include "..\libNet\Scanner.h"
+#include "..\libNet\packet.h"
 
 //Конструктор,strSchedulerAddress - адрес планировщика
 CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )

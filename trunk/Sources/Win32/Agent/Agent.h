@@ -6,7 +6,7 @@
 //-------------------------------------------------------------------------------------//
 #pragma once
 #include "windows.h"
-#include "..\net.lib\packet.h"
+#include "..\libNet\packet.h"
 
 class CAgent
 {

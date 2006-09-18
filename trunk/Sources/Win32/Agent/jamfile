@@ -1,4 +1,0 @@
-project Agent ;
-exe agent : [ glob *.cpp ] ../Net.lib//net ;
-					
-				
