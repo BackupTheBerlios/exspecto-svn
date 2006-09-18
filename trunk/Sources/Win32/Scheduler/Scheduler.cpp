@@ -6,8 +6,8 @@
 //-------------------------------------------------------------------------------------//
 #include "stdafx.h"
 #include "winsock2.h"
-#include "..\net.lib\ClientSocket.h"
-#include "..\net.lib\Packet.h"
+#include "..\libNet\ClientSocket.h"
+#include "..\libNet\Packet.h"
 #include ".\scheduler.h"
 #include "conio.h"
 
@@ -111,6 +111,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	shed.SendCommand( "127.0.0.1", GetStatus, pBuf, sizeof( pBuf ) );
 	printf( "%02X ",pBuf[0] );
 	printf( "%02X ",pBuf[1] );
-	char c = getch();
+	getch();
 	return 0;
 }

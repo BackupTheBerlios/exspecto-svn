@@ -1,3 +1,0 @@
-project Scheduler ;
-exe scheduler : [ glob *.cpp ] ../Net.lib//net ;
-
