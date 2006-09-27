@@ -120,6 +120,15 @@
 	quidu      	"44B7804502E1"
 	logical_models 	(list unit_reference_list
 	    (object Class "CSocket"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"HeaderSourceFile"
+			value      	"CSocket.h")
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"BodySourceFile"
+			value      	"CSocket.cpp"))
 		quid       	"44B7805D0230"
 		superclasses 	(list inheritance_relationship_list
 		    (object Inheritance_Relationship
@@ -184,8 +193,20 @@
 			result     	"bool"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Net.lib"
+		quidu      	"451635F002CB"
+		language   	"ANSI C++")
 	    (object Class "CClientSocket"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"HeaderSourceFile"
+			value      	"CClientSocket.h")
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"BodySourceFile"
+			value      	"CClientSocket.cpp"))
 		quid       	"44B780680348"
 		operations 	(list Operations
 		    (object Operation "Connect"
@@ -193,8 +214,20 @@
 			result     	"int"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Net.lib"
+		quidu      	"451635F002CB"
+		language   	"ANSI C++")
 	    (object Class "CServerSocket"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"HeaderSourceFile"
+			value      	"CServerSocket.h")
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"BodySourceFile"
+			value      	"CServerSocket.cpp"))
 		quid       	"44B780870086"
 		operations 	(list Operations
 		    (object Operation "Bind"
@@ -215,7 +248,10 @@
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
 			uid        	0
-			quidu      	"44B7805D0230")))
+			quidu      	"44B7805D0230"))
+		module     	"Component View::Net.lib"
+		quidu      	"451635F002CB"
+		language   	"ANSI C++")
 	    (object Class "CLogger"
 		quid       	"44B7836601D1"
 		used_nodes 	(list uses_relationship_list
@@ -239,7 +275,9 @@
 			result     	"void"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Common.Lib"
+		quidu      	"4516369C00F6")
 	    (object Class "CRegKey"
 		quid       	"44B7861C010D"
 		operations 	(list Operations
@@ -342,7 +380,9 @@
 			result     	"bool"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Common.Lib"
+		quidu      	"4516369C00F6")
 	    (object Class "CSettings"
 		quid       	"44B791D70325"
 		used_nodes 	(list uses_relationship_list
@@ -380,7 +420,9 @@
 			result     	"bool"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Common.Lib"
+		quidu      	"4516369C00F6")
 	    (object Class "CDBProvider"
 		quid       	"44B792CA028F"
 		used_nodes 	(list uses_relationship_list
@@ -463,8 +505,19 @@
 			abstract   	TRUE
 			opExportControl 	"Public"
 			uid        	0))
+		module     	"Component View::Common.Lib"
+		quidu      	"4516369C00F6"
 		abstract   	TRUE)
 	    (object Class "CScanner"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"HeaderSourceFile"
+			value      	"CScanner.h")
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"BodySourceFile"
+			value      	"CScanner.cpp"))
 		quid       	"44B87941032C"
 		used_nodes 	(list uses_relationship_list
 		    (object Uses_Relationship
@@ -521,8 +574,20 @@
 			result     	"bool"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Agent"
+		quidu      	"4516317E02FA"
+		language   	"ANSI C++")
 	    (object Class "CAgent"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"HeaderSourceFile"
+			value      	"CAgent.h")
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"BodySourceFile"
+			value      	"CAgent.cpp"))
 		quid       	"44B87C380213"
 		operations 	(list Operations
 		    (object Operation "CAgent"
@@ -551,8 +616,20 @@
 			
 			concurrency 	"Sequential"
 			opExportControl 	"Protected"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Agent"
+		quidu      	"4516317E02FA"
+		language   	"ANSI C++")
 	    (object Class "CPacket"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"HeaderSourceFile"
+			value      	"CPacket.h")
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"BodySourceFile"
+			value      	"CPacket.cpp"))
 		quid       	"44BD29990000"
 		operations 	(list Operations
 		    (object Operation "BeginCommand"
@@ -640,7 +717,10 @@
 			quid       	"44BD2C2500BB"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::Net.lib"
+		quidu      	"451635F002CB"
+		language   	"ANSI C++")
 	    (object Class "CAgentsContainer"
 		quid       	"44EA038C0000"
 		documentation 	
@@ -691,7 +771,9 @@
 			result     	"bool"
 			concurrency 	"Sequential"
 			opExportControl 	"Public"
-			uid        	0)))
+			uid        	0))
+		module     	"Component View::ScanServer"
+		quidu      	"451635F6026D")
 	    (object Class "CScheduler"
 		quid       	"44EC83EA02EE"
 		documentation 	"Вызывает метод OnStartScanEvent в экземпляре класса CScanServer, когда возникает признак начала сканирования, определяемый настройками расписания"
@@ -717,7 +799,9 @@
 			type       	"*CCallBackInterface"))
 		abstract   	TRUE)
 	    (object Class "CScanServer"
-		quid       	"44EC89D80280")
+		quid       	"44EC89D80280"
+		module     	"Component View::ScanServer"
+		quidu      	"451635F6026D")
 	    (object Class "CCallBackInterface"
 		quid       	"44EC8B7E02BF"
 		stereotype 	"Interface"
@@ -739,34 +823,27 @@
 		    (object Inheritance_Relationship
 			quid       	"44EC9511008C"
 			supplier   	"Logical View::CScheduler"
-			quidu      	"44EC83EA02EE")))
+			quidu      	"44EC83EA02EE"))
+		module     	"Component View::Common.Lib"
+		quidu      	"4516369C00F6")
 	    (object Class "CCron"
 		quid       	"44EC9456009C"
 		superclasses 	(list inheritance_relationship_list
 		    (object Inheritance_Relationship
 			quid       	"44EC950D00BB"
 			supplier   	"Logical View::CScheduler"
-			quidu      	"44EC83EA02EE")))
+			quidu      	"44EC83EA02EE"))
+		module     	"Component View::Common.Lib"
+		quidu      	"4516369C00F6")
 	    (object Class "CTimer"
 		quid       	"44EC945F02DE"
 		superclasses 	(list inheritance_relationship_list
 		    (object Inheritance_Relationship
 			quid       	"44EC950A029F"
 			supplier   	"Logical View::CScheduler"
-			quidu      	"44EC83EA02EE")))
-	    (object Class "CAgentTransport"
-		quid       	"4504645F0242"
-		operations 	(list Operations
-		    (object Operation "SendData"
-			quid       	"45046482002E"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "opname"
-			quid       	"450464960138"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)))
+			quidu      	"44EC83EA02EE"))
+		module     	"Component View::Common.Lib"
+		quidu      	"4516369C00F6")
 	    (object Association "$UNNAMED$0"
 		quid       	"44EC842E00CB"
 		roles      	(list role_list
@@ -2139,8 +2216,8 @@
 		zoom       	100
 		max_height 	28350
 		max_width  	21600
-		origin_x   	0
-		origin_y   	0
+		origin_x   	122
+		origin_y   	91
 		items      	(list diagram_item_list
 		    (object ClassView "Class" "Logical View::CSocket" @54
 			ShowCompartmentStereotypes 	TRUE
@@ -2877,7 +2954,7 @@
 			quidu      	"44EC8B7E02BF"
 			compartment 	(object Compartment
 			    Parent_View 	@72
-			    location   	(1231, 1844)
+			    location   	(1227, 1844)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -3395,7 +3472,7 @@
 			    fill_color 	13434879
 			    anchor     	2
 			    nlines     	4
-			    max_width  	463)
+			    max_width  	471)
 			width      	566
 			height     	294
 			annotation 	8
@@ -3580,7 +3657,105 @@
 		items      	(list diagram_item_list))))
     root_subsystem 	(object SubSystem "Component View"
 	quid       	"44B7804502E1"
-	physical_models 	(list unit_reference_list)
+	physical_models 	(list unit_reference_list
+	    (object module "Agent" "NotAModuleType" "NotAModulePart"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"RevEngRootDirectory"
+			value      	(value Text "D:\\Raznoe\\Programming\\WorkSpace\\Generated"))
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"FilesEncoding"
+			value      	
+|v1:KCAgent.cpp,451637e6,A
+|ICAgent.h,451637e6,A
+|MCScanner.cpp,451637e6,A
+|KCScanner.h,451637e6,A
+|
+			)
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"NamespaceBraceStyle"
+			value      	("BraceStyleSet" 1))
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"CodeItemsEncoding"
+			value      	
+|v3:CAgent,t,C,44B87C380213,A,55,1a5
+|CAgent::CAgent,f,B,45046525030D,Mstd::string,,15,61
+|CAgent::fnListenThreadProc,f,B,450465EA02FD,A,9f,d8
+|CAgent::fnProcessThreadProc,f,B,450465CA031C,A,63,9d
+|CScanner,t,E,44B87941032C,A,59,225
+|CScanner::CScanner,f,D,44B87A640232,vconst char*,std::map<std::string,ScanFuncType>,,17,96
+|
+			))
+		quid       	"4516317E02FA"
+		stereotype 	"EXE"
+		language   	"ANSI C++")
+	    (object module "Net.lib" "NotAModuleType" "NotAModulePart"
+		attributes 	(list Attribute_Set
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"RevEngRootDirectory"
+			value      	"D:\\Raznoe\\Programming\\WorkSpace\\Generated")
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"FilesEncoding"
+			value      	
+|v1:RCClientSocket.cpp,45163738,A
+|PCClientSocket.h,45163738,A
+|LCPacket.cpp,45163738,A
+|JCPacket.h,451637c0,A
+|RCServerSocket.cpp,45163738,A
+|PCServerSocket.h,45163738,A
+|LCSocket.cpp,45163738,A
+|JCSocket.h,45163738,A
+|
+			)
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"NamespaceBraceStyle"
+			value      	("BraceStyleSet" 1))
+		    (object Attribute
+			tool       	"Cplusplus"
+			name       	"CodeItemsEncoding"
+			value      	
+|v3:CClientSocket,t,C,44B780680348,A,63,cf
+|CClientSocket::Connect,f,B,44B782DC01FE,A,1c,55
+|CPacket,t,E,44BD29990000,A,57,30e
+|CPacket::AddBinParam,f,D,44BD2ABC01D4,OBYTE*,Integer,,65,b7
+|CPacket::AddDwordParam,f,D,44BD2AE2005D,GDWORD,,b9,100
+|CPacket::AddStrParam,f,D,44BD2B0B035B,Mstd::string,,102,14e
+|CPacket::BeginCommand,f,D,44BD29C1000F,NenumCommands,,16,63
+|CPacket::Clear,f,D,44BD2CA9037A,A,228,25a
+|CPacket::EndCommand,f,D,44BD2B38032C,A,150,187
+|CPacket::GetBuffer,f,D,44BD2B9B0203,KBYTE*,int,,189,1d8
+|CPacket::SetBuffer,f,D,44BE820300C7,KBYTE*,int,,1da,226
+|CServerSocket,t,G,44B780870086,A,72,140
+|CServerSocket::Accept,f,F,44B7831E0217,A,a3,e0
+|CServerSocket::Bind,f,F,44B782FA01FB,A,31,67
+|CServerSocket::Listen,f,F,44B7830F02B4,A,69,a1
+|CSocket,t,I,44B7805D0230,A,8d,269
+|CSocket::Close,f,H,44B782510180,A,b0,e1
+|CSocket::IsReadyForRead,f,H,44B782B9034A,A,16b,1a6
+|CSocket::IsReadyForWrite,f,H,44B7829F01D5,A,12d,169
+|CSocket::Receive,f,H,44B781A3029B,Kvoid*,int,,60,ae
+|CSocket::Send,f,H,44B78186029E,Kvoid*,int,,16,5e
+|CSocket::SetBlocking,f,H,44B782710219,Fbool,,e3,12b
+|
+			))
+		quid       	"451635F002CB"
+		stereotype 	"DLL"
+		language   	"ANSI C++")
+	    (object module "ScanServer" "NotAModuleType" "NotAModulePart"
+		quid       	"451635F6026D"
+		stereotype 	""
+		language   	"")
+	    (object module "Common.Lib" "NotAModuleType" "NotAModulePart"
+		quid       	"4516369C00F6"
+		stereotype 	""
+		language   	""))
 	physical_presentations 	(list unit_reference_list
 	    (object Module_Diagram "Main"
 		quid       	"44B7804B003E"
@@ -3590,7 +3765,123 @@
 		max_width  	21600
 		origin_x   	0
 		origin_y   	0
-		items      	(list diagram_item_list))))
+		items      	(list diagram_item_list
+		    (object ModView "Component View::Agent" "NotAModuleType" "NotAModulePart" @96
+			location   	(578, 487)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@96
+			    location   	(543, 462)
+			    fill_color 	13434879
+			    anchor_loc 	3
+			    nlines     	2
+			    max_width  	128
+			    label      	"Agent")
+			icon       	"EXE"
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"4516317E02FA"
+			width      	230
+			autoResize 	TRUE
+			width      	230
+			height     	162)
+		    (object ModView "Component View::Net.lib" "NotAModuleType" "NotAModulePart" @97
+			location   	(603, 768)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@97
+			    location   	(568, 743)
+			    fill_color 	13434879
+			    anchor_loc 	3
+			    nlines     	2
+			    max_width  	128
+			    label      	"Net.lib")
+			icon       	"DLL"
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451635F002CB"
+			width      	230
+			autoResize 	TRUE
+			width      	230
+			height     	162)
+		    (object ModView "Component View::ScanServer" "NotAModuleType" "NotAModulePart" @98
+			location   	(617, 1036)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@98
+			    location   	(546, 1010)
+			    fill_color 	13434879
+			    anchor_loc 	3
+			    nlines     	2
+			    max_width  	267
+			    label      	"ScanServer")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451635F6026D"
+			width      	481
+			height     	169
+			autoResize 	TRUE
+			width      	481
+			height     	169)
+		    (object ModView "Component View::Common.Lib" "NotAModuleType" "NotAModulePart" @99
+			location   	(578, 1362)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@99
+			    location   	(492, 1336)
+			    fill_color 	13434879
+			    anchor_loc 	3
+			    nlines     	2
+			    max_width  	326
+			    label      	"Common.Lib")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"4516369C00F6"
+			width      	588
+			height     	169
+			autoResize 	TRUE
+			width      	588
+			height     	169)))))
     process_structure 	(object Processes
 	quid       	"44B7804502EE"
 	ProcsNDevs 	(list
