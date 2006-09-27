@@ -15,7 +15,7 @@
 <listOptionValue value="NetApi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.1134897782" valueType="stringList">
-<listOptionValue value="&quot;D:\Raznoe\Programming\WorkSpace\Exspecto\Sources\Win32\libNet\Debug&quot;" builtIn="false"/>
+<listOptionValue value="&quot;..\..\libNet\Debug&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.677091194" name="GCC Assembler"/>
@@ -35,7 +35,7 @@
 <listOptionValue value="NetApi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.839310612" valueType="stringList">
-<listOptionValue value="&quot;D:\Raznoe\Programming\WorkSpace\Exspecto\Sources\Win32\libNet\Release&quot;" builtIn="false"/>
+<listOptionValue value="&quot;..\..\libNet\Release&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release.1090709855" name="GCC Assembler"/>
