@@ -51,4 +51,7 @@ protected:
 
 	//Поток ожидания входящих соединений
 	static DWORD WINAPI fnListenThreadProc(  LPVOID pParameter );
+	
+	//Вектор адресов объектов классов сканирования (загруженных из плагинов)
+	std::vector< 
 };
