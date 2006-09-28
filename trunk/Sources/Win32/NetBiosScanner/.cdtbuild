@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 3.0.0?>
+
+<ManagedProjectBuildInfo>
+<project id="NetBiosScanner.cdt.managedbuild.target.gnu.cygwin.so.1370840114" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.debug.552888321" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" artifactName="NetBiosScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.1038900449" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.816284881" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.798420090" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.675623418" name="GCC C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.1108369068" name="GCC C++ Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.828640061" name="GCC Assembler"/>
+<macros/>
+</toolChain>
+</configuration>
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.release.2019442097" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.release" artifactName="NetBiosScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.release" id="cdt.managedbuild.toolchain.gnu.cygwin.so.release.411411341" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release.850099997" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release.1607686688" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release.548794783" name="GCC C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release.249408717" name="GCC C++ Linker">
+<option superClass="gnu.cpp.link.option.strip" id="gnu.cpp.link.option.strip.58026928" value="true" valueType="boolean"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release.1503917390" name="GCC Assembler"/>
+<macros/>
+</toolChain>
+</configuration>
+</project>
+</ManagedProjectBuildInfo>
