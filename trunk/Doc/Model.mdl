@@ -423,91 +423,6 @@
 			uid        	0))
 		module     	"Component View::Common.Lib"
 		quidu      	"4516369C00F6")
-	    (object Class "CDBProvider"
-		quid       	"44B792CA028F"
-		used_nodes 	(list uses_relationship_list
-		    (object Uses_Relationship
-			quid       	"44EC8A720399"
-			supplier   	"Logical View::CScanServer"
-			quidu      	"44EC89D80280"))
-		operations 	(list Operations
-		    (object Operation "Open"
-			quid       	"44B7951A006E"
-			stereotype 	"virtual"
-			result     	"bool"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "Close"
-			quid       	"44B7958A0091"
-			stereotype 	"virtual"
-			result     	"bool"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "CreateTable"
-			quid       	"44B79347036C"
-			stereotype 	"virtual"
-			result     	"void"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "DeleteTable"
-			quid       	"44B795BF01B5"
-			stereotype 	"virtual"
-			result     	"void"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "AddHost"
-			quid       	"44B795CF0194"
-			stereotype 	"virtual"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "DeleteHost"
-			quid       	"44B795DC0099"
-			stereotype 	"virtual"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "AddFile"
-			quid       	"44B795E00367"
-			stereotype 	"virtual"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "DeleteFile"
-			quid       	"44B795E60134"
-			stereotype 	"virtual"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "FindRecord"
-			quid       	"44B7962A01E8"
-			stereotype 	"virtual"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "ModifyRecord"
-			quid       	"44B796320330"
-			stereotype 	"virtual"
-			concurrency 	"Sequential"
-			abstract   	TRUE
-			opExportControl 	"Public"
-			uid        	0))
-		module     	"Component View::Common.Lib"
-		quidu      	"4516369C00F6"
-		abstract   	TRUE)
 	    (object Class "CScanner"
 		attributes 	(list Attribute_Set
 		    (object Attribute
@@ -844,6 +759,54 @@
 			quidu      	"44EC83EA02EE"))
 		module     	"Component View::Common.Lib"
 		quidu      	"4516369C00F6")
+	    (object Class "CMySqlDBProvider"
+		quid       	"451B89750119")
+	    (object Class "CSqlLiteDBProvider"
+		quid       	"451B898400CB")
+	    (object Class "CDBProvider"
+		quid       	"451B8A460177"
+		stereotype 	"Interface"
+		realized_interfaces 	(list realize_rel_list
+		    (object Realize_Relationship
+			quid       	"451B8ABE030D"
+			supplier   	"Logical View::CSqlLiteDBProvider"
+			quidu      	"451B898400CB")
+		    (object Realize_Relationship
+			quid       	"451B8AC00232"
+			supplier   	"Logical View::CMySqlDBProvider"
+			quidu      	"451B89750119"))
+		operations 	(list Operations
+		    (object Operation "Open"
+			quid       	"451B8A6A000F"
+			concurrency 	"Sequential"
+			abstract   	TRUE
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "Close"
+			quid       	"451B8A6D001F"
+			concurrency 	"Sequential"
+			abstract   	TRUE
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "FindRecord"
+			quid       	"451B8A870232"
+			concurrency 	"Sequential"
+			abstract   	TRUE
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "AddHost"
+			quid       	"451B8A91003E"
+			concurrency 	"Sequential"
+			abstract   	TRUE
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "DeleteHost"
+			quid       	"451B8A9502CE"
+			concurrency 	"Sequential"
+			abstract   	TRUE
+			opExportControl 	"Public"
+			uid        	0))
+		abstract   	TRUE)
 	    (object Association "$UNNAMED$0"
 		quid       	"44EC842E00CB"
 		roles      	(list role_list
@@ -868,6 +831,131 @@
 			quid       	"44EC843400BD"
 			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC83EA02EE")))
+	    (object Association "$UNNAMED$6"
+		quid       	"451B860A0290"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$7"
+			quid       	"451B860B0213"
+			supplier   	"Logical View::CScanServer"
+			quidu      	"44EC89D80280"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$8"
+			quid       	"451B860B0222"
+			supplier   	"Logical View::CScheduler"
+			quidu      	"44EC83EA02EE"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$9"
+		quid       	"451B8877033C"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$10"
+			quid       	"451B887900CB"
+			supplier   	"Logical View::CScheduler"
+			quidu      	"44EC83EA02EE"
+			Containment 	"By Reference"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$11"
+			quid       	"451B887900DA"
+			supplier   	"Logical View::CScanServer"
+			quidu      	"44EC89D80280"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$12"
+		quid       	"451B88AC0148"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$13"
+			quid       	"451B88AC0399"
+			supplier   	"Logical View::CAgentsContainer"
+			quidu      	"44EA038C0000"
+			Containment 	"By Value"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$14"
+			quid       	"451B88AC039B"
+			supplier   	"Logical View::CScanServer"
+			quidu      	"44EC89D80280"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$15"
+		quid       	"451B88D4006D"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$16"
+			quid       	"451B88D40232"
+			supplier   	"Logical View::CSettings"
+			quidu      	"44B791D70325"
+			Containment 	"By Reference"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$17"
+			quid       	"451B88D40234"
+			supplier   	"Logical View::CScanServer"
+			quidu      	"44EC89D80280"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$18"
+		quid       	"451B88E00203"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$19"
+			quid       	"451B88E003B9"
+			supplier   	"Logical View::CLogger"
+			quidu      	"44B7836601D1"
+			Containment 	"By Reference"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$20"
+			quid       	"451B88E003BB"
+			supplier   	"Logical View::CScanServer"
+			quidu      	"44EC89D80280"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$21"
+		quid       	"451B8ADA02BF"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$22"
+			quid       	"451B8ADC02AF"
+			supplier   	"Logical View::CDBProvider"
+			quidu      	"451B8A460177"
+			Containment 	"By Reference"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$23"
+			quid       	"451B8ADC02BF"
+			supplier   	"Logical View::CScanServer"
+			quidu      	"44EC89D80280"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$24"
+		quid       	"451B8CAB002E"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$25"
+			quid       	"451B8CAC0119"
+			supplier   	"Logical View::CSettings"
+			quidu      	"44B791D70325"
+			Containment 	"By Reference"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$26"
+			quid       	"451B8CAC011B"
+			supplier   	"Logical View::CAgent"
+			quidu      	"44B87C380213"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$27"
+		quid       	"451B8CB70290"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$28"
+			quid       	"451B8CB703C8"
+			supplier   	"Logical View::CLogger"
+			quidu      	"44B7836601D1"
+			Containment 	"By Reference"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$29"
+			quid       	"451B8CB703D8"
+			supplier   	"Logical View::CAgent"
+			quidu      	"44B87C380213"
+			is_aggregate 	TRUE)))
+	    (object Association "$UNNAMED$30"
+		quid       	"451B8CC10128"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$31"
+			quid       	"451B8CC1036B"
+			supplier   	"Logical View::CScanner"
+			quidu      	"44B87941032C"
+			Containment 	"By Reference"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$32"
+			quid       	"451B8CC1037A"
+			supplier   	"Logical View::CAgent"
+			quidu      	"44B87C380213"
+			is_aggregate 	TRUE)))
 	    (object Class_Category "DataBase"
 		attributes 	(list Attribute_Set
 		    (object Attribute
@@ -1193,7 +1281,7 @@
 		    transitions 	(list transition_list
 			(object State_Transition
 			    quid       	"44EA00B2036B"
-			    supplier   	"$UNNAMED$6"
+			    supplier   	"$UNNAMED$33"
 			    quidu      	"44EA007B02CE"
 			    sendEvent  	(object sendEvent
 				quid       	"44EA00B2036E")))
@@ -1205,7 +1293,7 @@
 			partitions 	(list Partitions)
 			objects    	(list Objects)
 			statediagrams 	(list StateDiagrams)))
-		(object Decision "$UNNAMED$6"
+		(object Decision "$UNNAMED$33"
 		    quid       	"44EA007B02CE"
 		    transitions 	(list transition_list
 			(object State_Transition
@@ -1246,11 +1334,11 @@
 		    transitions 	(list transition_list
 			(object State_Transition
 			    quid       	"44EA01AE0186"
-			    supplier   	"$UNNAMED$7"
+			    supplier   	"$UNNAMED$34"
 			    quidu      	"44EA01A602EE"
 			    sendEvent  	(object sendEvent
 				quid       	"44EA01AE0189"))))
-		(object Decision "$UNNAMED$7"
+		(object Decision "$UNNAMED$34"
 		    quid       	"44EA01A602EE"
 		    transitions 	(list transition_list
 			(object State_Transition
@@ -1265,13 +1353,13 @@
 			(object State_Transition
 			    quid       	"44EA01CA032C"
 			    label      	""
-			    supplier   	"$UNNAMED$8"
+			    supplier   	"$UNNAMED$35"
 			    quidu      	"44EA01C701B5"
 			    Event      	(object Event "list is empty"
 				quid       	"44EA01CA032D")
 			    sendEvent  	(object sendEvent
 				quid       	"44EA01CA032F"))))
-		(object State "$UNNAMED$8"
+		(object State "$UNNAMED$35"
 		    quid       	"44EA01C701B5"
 		    type       	"EndState"))
 	    partitions 	(list Partitions)
@@ -1836,7 +1924,7 @@
 			    supplier   	@31
 			    line_style 	0
 			    x_offset   	FALSE)
-			(object DecisionView "$UNNAMED$6" @33
+			(object DecisionView "$UNNAMED$33" @33
 			    Parent_View 	@25
 			    location   	(300, 179)
 			    icon_style 	"Icon"
@@ -2045,7 +2133,7 @@
 			    supplier   	@41
 			    line_style 	0
 			    x_offset   	FALSE)
-			(object DecisionView "$UNNAMED$7" @44
+			(object DecisionView "$UNNAMED$34" @44
 			    Parent_View 	@25
 			    location   	(2302, 943)
 			    icon_style 	"Icon"
@@ -2100,7 +2188,7 @@
 			    supplier   	@30
 			    line_style 	0
 			    x_offset   	FALSE)
-			(object StateView "EndState" "$UNNAMED$8" @48
+			(object StateView "EndState" "$UNNAMED$35" @48
 			    Parent_View 	@25
 			    location   	(2302, 1238)
 			    font       	(object Font
@@ -2210,519 +2298,6 @@
 			    line_style 	0
 			    x_offset   	FALSE)))))
 	logical_presentations 	(list unit_reference_list
-	    (object ClassDiagram "All Classes"
-		quid       	"44B7804B005D"
-		title      	"All Classes"
-		zoom       	100
-		max_height 	28350
-		max_width  	21600
-		origin_x   	122
-		origin_y   	91
-		items      	(list diagram_item_list
-		    (object ClassView "Class" "Logical View::CSocket" @54
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(598, 1273)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@54
-			    location   	(374, 1065)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	448
-			    justify    	0
-			    label      	"CSocket")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B7805D0230"
-			compartment 	(object Compartment
-			    Parent_View 	@54
-			    location   	(374, 1132)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	7
-			    max_width  	387)
-			width      	466
-			height     	444
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CClientSocket" @55
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(298, 800)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@55
-			    location   	(90, 717)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	416
-			    justify    	0
-			    label      	"CClientSocket")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B780680348"
-			compartment 	(object Compartment
-			    Parent_View 	@55
-			    location   	(90, 784)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	2
-			    max_width  	234)
-			width      	434
-			height     	194
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CServerSocket" @56
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(898, 754)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@56
-			    location   	(679, 621)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	438
-			    justify    	0
-			    label      	"CServerSocket")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B780870086"
-			compartment 	(object Compartment
-			    Parent_View 	@56
-			    location   	(679, 688)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	4
-			    max_width  	212)
-			width      	456
-			height     	294
-			annotation 	8
-			autoResize 	TRUE)
-		    (object InheritView "" @57
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44B781060069"
-			client     	@54
-			supplier   	@55
-			line_style 	0)
-		    (object InheritView "" @58
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44B7810702F9"
-			client     	@54
-			supplier   	@56
-			line_style 	0)
-		    (object ClassView "Class" "Logical View::CLogger" @59
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(206, 312)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@59
-			    location   	(67, 229)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	278
-			    justify    	0
-			    label      	"CLogger")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B7836601D1"
-			compartment 	(object Compartment
-			    Parent_View 	@59
-			    location   	(67, 296)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	2
-			    max_width  	181)
-			width      	296
-			height     	194
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CSettings" @60
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(549, 334)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@60
-			    location   	(395, 226)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	308
-			    justify    	0
-			    label      	"CSettings")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B791D70325"
-			compartment 	(object Compartment
-			    Parent_View 	@60
-			    location   	(395, 293)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	3
-			    max_width  	268)
-			width      	326
-			height     	244
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CDBProvider" @61
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(1643, 527)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	TRUE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@61
-			    location   	(1325, 217)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	636
-			    justify    	0
-			    label      	"CDBProvider")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B792CA028F"
-			compartment 	(object Compartment
-			    Parent_View 	@61
-			    location   	(1325, 287)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	TRUE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	11
-			    max_width  	546)
-			width      	654
-			height     	648
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CScanner" @62
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(1365, 1098)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@62
-			    location   	(1214, 964)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	302
-			    justify    	0
-			    label      	"CScanner")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B87941032C"
-			compartment 	(object Compartment
-			    Parent_View 	@62
-			    location   	(1214, 1031)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	4
-			    max_width  	262)
-			width      	320
-			height     	296
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CPacket" @63
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(998, 1859)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@63
-			    location   	(368, 1576)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	1260
-			    justify    	0
-			    label      	"CPacket")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44BD29990000"
-			compartment 	(object Compartment
-			    Parent_View 	@63
-			    location   	(368, 1643)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	10
-			    max_width  	1081)
-			width      	1278
-			height     	594
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CScheduler" @64
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(2227, 1688)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	TRUE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@64
-			    location   	(1815, 1580)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	824
-			    justify    	0
-			    label      	"CScheduler")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44EC83EA02EE"
-			compartment 	(object Compartment
-			    Parent_View 	@64
-			    location   	(1815, 1650)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	TRUE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	3
-			    max_width  	709)
-			width      	842
-			height     	244
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CAgentsContainer" @65
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(1980, 1115)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@65
-			    location   	(1724, 932)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	512
-			    justify    	0
-			    label      	"CAgentsContainer")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44EA038C0000"
-			compartment 	(object Compartment
-			    Parent_View 	@65
-			    location   	(1724, 999)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	6
-			    max_width  	334)
-			width      	530
-			height     	394
-			annotation 	8
-			autoResize 	TRUE)))
 	    (object ClassDiagram "ScanServer"
 		quid       	"44B79AA7021F"
 		title      	"ScanServer"
@@ -2732,11 +2307,11 @@
 		origin_x   	0
 		origin_y   	0
 		items      	(list diagram_item_list
-		    (object ClassView "Class" "Logical View::CScanServer" @66
+		    (object ClassView "Class" "Logical View::CCallBackInterface" @54
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(1433, 1373)
+			location   	(2079, 1737)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -2748,200 +2323,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@66
-			    location   	(1237, 1316)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	392
-			    justify    	0
-			    label      	"CScanServer")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44EC89D80280"
-			width      	410
-			height     	142
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CDBProvider" @67
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(436, 743)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	TRUE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@67
-			    location   	(118, 433)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	636
-			    justify    	0
-			    label      	"CDBProvider")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B792CA028F"
-			compartment 	(object Compartment
-			    Parent_View 	@67
-			    location   	(118, 503)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	11
-			    max_width  	546)
-			width      	654
-			height     	648
-			annotation 	8
-			autoResize 	TRUE)
-		    (object UsesView "" @68
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44EC8A720399"
-			client     	@67
-			supplier   	@66
-			line_style 	0)
-		    (object ClassView "Class" "Logical View::CAgentsContainer" @69
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(2101, 587)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@69
-			    location   	(1845, 404)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	512
-			    justify    	0
-			    label      	"CAgentsContainer")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44EA038C0000"
-			compartment 	(object Compartment
-			    Parent_View 	@69
-			    location   	(1845, 471)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	6
-			    max_width  	334)
-			width      	530
-			height     	394
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CScheduler" @70
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(2924, 510)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	TRUE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@70
-			    location   	(2512, 400)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	824
-			    justify    	0
-			    label      	"CScheduler")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44EC83EA02EE"
-			compartment 	(object Compartment
-			    Parent_View 	@70
-			    location   	(2512, 470)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	TRUE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	3
-			    max_width  	709)
-			width      	842
-			height     	248
-			annotation 	8
-			autoResize 	TRUE)
-		    (object UsesView "" @71
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44EC8A9E037A"
-			client     	@70
-			supplier   	@66
-			line_style 	0)
-		    (object ClassView "Class" "Logical View::CCallBackInterface" @72
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(1438, 1664)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@72
-			    location   	(1437, 1772)
+			    Parent_View 	@54
+			    location   	(2078, 1845)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	231
@@ -2953,8 +2336,8 @@
 			fill_color 	13434879
 			quidu      	"44EC8B7E02BF"
 			compartment 	(object Compartment
-			    Parent_View 	@72
-			    location   	(1227, 1844)
+			    Parent_View 	@54
+			    location   	(1872, 1917)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -2974,25 +2357,11 @@
 			height     	58
 			annotation 	8
 			autoResize 	TRUE)
-		    (object InheritView "" @73
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44EC8BD30232"
-			client     	@72
-			supplier   	@66
-			line_style 	0)
-		    (object UsesView "" @74
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44EC8A6D0242"
-			client     	@69
-			supplier   	@66
-			line_style 	0)
-		    (object ClassView "Class" "Logical View::CCalendar" @75
+		    (object ClassView "Class" "Logical View::CCalendar" @55
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(3300, 206)
+			location   	(3941, 279)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3004,8 +2373,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@75
-			    location   	(3142, 149)
+			    Parent_View 	@55
+			    location   	(3783, 222)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	316
@@ -3019,11 +2388,11 @@
 			height     	142
 			annotation 	8
 			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CCron" @76
+		    (object ClassView "Class" "Logical View::CCron" @56
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(2928, 207)
+			location   	(3569, 280)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3035,8 +2404,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@76
-			    location   	(2816, 150)
+			    Parent_View 	@56
+			    location   	(3457, 223)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	224
@@ -3050,11 +2419,11 @@
 			height     	142
 			annotation 	8
 			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CTimer" @77
+		    (object ClassView "Class" "Logical View::CTimer" @57
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(2557, 205)
+			location   	(3198, 278)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3066,8 +2435,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@77
-			    location   	(2444, 148)
+			    Parent_View 	@57
+			    location   	(3085, 221)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	226
@@ -3081,32 +2450,81 @@
 			height     	142
 			annotation 	8
 			autoResize 	TRUE)
-		    (object InheritView "" @78
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44EC9511008C"
-			client     	@75
-			supplier   	@70
-			line_style 	0)
-		    (object InheritView "" @79
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44EC950D00BB"
-			client     	@76
-			supplier   	@70
-			line_style 	0)
-		    (object InheritView "" @80
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"44EC950A029F"
-			client     	@77
-			supplier   	@70
-			line_style 	0)
-		    (object ClassView "Class" "Logical View::CLogger" @81
+		    (object ClassView "Class" "Logical View::CScheduler" @58
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(1019, 528)
+			location   	(3565, 583)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@58
+			    location   	(3153, 473)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	824
+			    justify    	0
+			    label      	"CScheduler")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EC83EA02EE"
+			compartment 	(object Compartment
+			    Parent_View 	@58
+			    location   	(3153, 543)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	TRUE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	3
+			    max_width  	709)
+			width      	842
+			height     	248
+			annotation 	8
+			autoResize 	TRUE)
+		    (object InheritView "" @59
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC9511008C"
+			client     	@55
+			supplier   	@58
+			line_style 	0)
+		    (object InheritView "" @60
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC950D00BB"
+			client     	@56
+			supplier   	@58
+			line_style 	0)
+		    (object InheritView "" @61
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC950A029F"
+			client     	@57
+			supplier   	@58
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::CAgentsContainer" @62
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2742, 660)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3118,20 +2536,20 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@81
-			    location   	(880, 445)
+			    Parent_View 	@62
+			    location   	(2486, 477)
 			    fill_color 	13434879
 			    nlines     	1
-			    max_width  	278
+			    max_width  	512
 			    justify    	0
-			    label      	"CLogger")
+			    label      	"CAgentsContainer")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"44B7836601D1"
+			quidu      	"44EA038C0000"
 			compartment 	(object Compartment
-			    Parent_View 	@81
-			    location   	(880, 512)
+			    Parent_View 	@62
+			    location   	(2486, 544)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -3145,24 +2563,17 @@
 			    icon_style 	"Icon"
 			    fill_color 	13434879
 			    anchor     	2
-			    nlines     	2
-			    max_width  	181)
-			width      	296
-			height     	194
+			    nlines     	6
+			    max_width  	334)
+			width      	530
+			height     	394
 			annotation 	8
 			autoResize 	TRUE)
-		    (object UsesView "" @82
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"4504632E033C"
-			client     	@81
-			supplier   	@66
-			line_style 	0)
-		    (object ClassView "Class" "Logical View::CSettings" @83
+		    (object ClassView "Class" "Logical View::CSettings" @63
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(1518, 556)
+			location   	(2159, 629)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3174,8 +2585,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@83
-			    location   	(1364, 448)
+			    Parent_View 	@63
+			    location   	(2005, 521)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	308
@@ -3186,8 +2597,8 @@
 			fill_color 	13434879
 			quidu      	"44B791D70325"
 			compartment 	(object Compartment
-			    Parent_View 	@83
-			    location   	(1364, 515)
+			    Parent_View 	@63
+			    location   	(2005, 588)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -3207,27 +2618,11 @@
 			height     	244
 			annotation 	8
 			autoResize 	TRUE)
-		    (object UsesView "" @84
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"450463840213"
-			client     	@83
-			supplier   	@66
-			line_style 	0)))
-	    (object ClassDiagram "Common Classes"
-		quid       	"44B79AC702B7"
-		title      	"Common Classes"
-		zoom       	100
-		max_height 	28350
-		max_width  	21600
-		origin_x   	0
-		origin_y   	0
-		items      	(list diagram_item_list
-		    (object ClassView "Class" "Logical View::CSocket" @85
+		    (object ClassView "Class" "Logical View::CLogger" @64
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(314, 297)
+			location   	(1660, 601)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3239,8 +2634,1925 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@85
-			    location   	(48, 68)
+			    Parent_View 	@64
+			    location   	(1521, 518)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	278
+			    justify    	0
+			    label      	"CLogger")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B7836601D1"
+			compartment 	(object Compartment
+			    Parent_View 	@64
+			    location   	(1521, 585)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	2
+			    max_width  	181)
+			width      	296
+			height     	194
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CMySqlDBProvider" @65
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1378, 200)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@65
+			    location   	(1103, 146)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	550
+			    justify    	0
+			    label      	"CMySqlDBProvider")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451B89750119"
+			width      	568
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CSqlLiteDBProvider" @66
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			ShowOperationSignature 	TRUE
+			location   	(578, 204)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@66
+			    location   	(290, 150)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	576
+			    justify    	0
+			    label      	"CSqlLiteDBProvider")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451B898400CB"
+			width      	594
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CScanServer" @67
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2074, 1446)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@67
+			    location   	(1878, 1389)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	392
+			    justify    	0
+			    label      	"CScanServer")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EC89D80280"
+			width      	410
+			height     	142
+			annotation 	8
+			autoResize 	TRUE)
+		    (object InheritView "" @68
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC8BD30232"
+			client     	@54
+			supplier   	@67
+			line_style 	0)
+		    (object AssociationViewNew "$UNNAMED$9" @69
+			location   	(2770, 1040)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8877033C"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$10" @70
+				Parent_View 	@69
+				location   	(1337, -333)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B887900CB"
+				client     	@69
+				supplier   	@58
+				line_style 	0)
+			    (object RoleView "$UNNAMED$11" @71
+				Parent_View 	@69
+				location   	(1337, -333)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B887900DA"
+				client     	@69
+				supplier   	@67
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$12" @72
+			location   	(2352, 1115)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B88AC0148"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$13" @73
+				Parent_View 	@72
+				location   	(919, -258)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88AC0399"
+				client     	@72
+				supplier   	@62
+				line_style 	0)
+			    (object RoleView "$UNNAMED$14" @74
+				Parent_View 	@72
+				location   	(919, -258)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88AC039B"
+				client     	@72
+				supplier   	@67
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$15" @75
+			location   	(2112, 1062)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B88D4006D"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$16" @76
+				Parent_View 	@75
+				location   	(679, -311)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88D40232"
+				client     	@75
+				supplier   	@63
+				line_style 	0)
+			    (object RoleView "$UNNAMED$17" @77
+				Parent_View 	@75
+				location   	(679, -311)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88D40234"
+				client     	@75
+				supplier   	@67
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$18" @78
+			location   	(1872, 1036)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B88E00203"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$19" @79
+				Parent_View 	@78
+				location   	(439, -337)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88E003B9"
+				client     	@78
+				supplier   	@64
+				line_style 	0)
+			    (object RoleView "$UNNAMED$20" @80
+				Parent_View 	@78
+				location   	(439, -337)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88E003BB"
+				client     	@78
+				supplier   	@67
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::CDBProvider" @81
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			ShowOperationSignature 	TRUE
+			location   	(983, 633)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@81
+			    location   	(982, 741)
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	299
+			    justify    	0
+			    label      	"CDBProvider")
+			icon       	"Interface"
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451B8A460177"
+			compartment 	(object Compartment
+			    Parent_View 	@81
+			    location   	(840, 786)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	TRUE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    anchor     	2
+			    nlines     	6
+			    max_width  	281
+			    justify    	0)
+			width      	58
+			height     	58
+			annotation 	8
+			autoResize 	TRUE)
+		    (object RealizeView "" @82
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8ABE030D"
+			client     	@81
+			supplier   	@66
+			line_style 	0)
+		    (object RealizeView "" @83
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8AC00232"
+			client     	@81
+			supplier   	@65
+			line_style 	0)
+		    (object AssociationViewNew "$UNNAMED$21" @84
+			location   	(1556, 1059)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8ADA02BF"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$22" @85
+				Parent_View 	@84
+				location   	(123, -314)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8ADC02AF"
+				client     	@84
+				supplier   	@81
+				line_style 	0)
+			    (object RoleView "$UNNAMED$23" @86
+				Parent_View 	@84
+				location   	(123, -314)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8ADC02BF"
+				client     	@84
+				supplier   	@67
+				line_style 	0)))))
+	    (object ClassDiagram "All Classes"
+		quid       	"44B7804B005D"
+		title      	"All Classes"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list
+		    (object ClassView "Class" "Logical View::CSocket" @87
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3536, 2153)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@87
+			    location   	(3312, 1945)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	448
+			    justify    	0
+			    label      	"CSocket")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B7805D0230"
+			compartment 	(object Compartment
+			    Parent_View 	@87
+			    location   	(3312, 2012)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	7
+			    max_width  	387)
+			width      	466
+			height     	444
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CClientSocket" @88
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3328, 1524)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@88
+			    location   	(3120, 1441)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	416
+			    justify    	0
+			    label      	"CClientSocket")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B780680348"
+			compartment 	(object Compartment
+			    Parent_View 	@88
+			    location   	(3120, 1508)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	2
+			    max_width  	234)
+			width      	434
+			height     	194
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CServerSocket" @89
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3833, 1540)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@89
+			    location   	(3614, 1407)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	438
+			    justify    	0
+			    label      	"CServerSocket")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B780870086"
+			compartment 	(object Compartment
+			    Parent_View 	@89
+			    location   	(3614, 1474)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	4
+			    max_width  	212)
+			width      	456
+			height     	294
+			annotation 	8
+			autoResize 	TRUE)
+		    (object InheritView "" @90
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44B781060069"
+			client     	@87
+			supplier   	@88
+			line_style 	0)
+		    (object InheritView "" @91
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44B7810702F9"
+			client     	@87
+			supplier   	@89
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::CPacket" @92
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2145, 1902)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@92
+			    location   	(1515, 1619)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	1260
+			    justify    	0
+			    label      	"CPacket")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44BD29990000"
+			compartment 	(object Compartment
+			    Parent_View 	@92
+			    location   	(1515, 1686)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	10
+			    max_width  	1081)
+			width      	1278
+			height     	594
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CCron" @93
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(226, 1396)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@93
+			    location   	(115, 1342)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	222
+			    justify    	0
+			    label      	"CCron")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EC9456009C"
+			width      	240
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CTimer" @94
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(803, 1533)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@94
+			    location   	(690, 1479)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	226
+			    justify    	0
+			    label      	"CTimer")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EC945F02DE"
+			width      	244
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CCalendar" @95
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1411, 1473)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@95
+			    location   	(1253, 1419)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	316
+			    justify    	0
+			    label      	"CCalendar")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EC940A00EA"
+			width      	334
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CScheduler" @96
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(803, 985)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@96
+			    location   	(391, 877)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	824
+			    justify    	0
+			    label      	"CScheduler")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EC83EA02EE"
+			compartment 	(object Compartment
+			    Parent_View 	@96
+			    location   	(391, 947)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	TRUE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	3
+			    max_width  	709)
+			width      	842
+			height     	244
+			annotation 	8
+			autoResize 	TRUE)
+		    (object InheritView "" @97
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC950D00BB"
+			client     	@93
+			supplier   	@96
+			line_style 	0)
+		    (object InheritView "" @98
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC950A029F"
+			client     	@94
+			supplier   	@96
+			line_style 	0)
+		    (object InheritView "" @99
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC9511008C"
+			client     	@95
+			supplier   	@96
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::CAgentsContainer" @100
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1684, 1035)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@100
+			    location   	(1428, 852)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	512
+			    justify    	0
+			    label      	"CAgentsContainer")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EA038C0000"
+			compartment 	(object Compartment
+			    Parent_View 	@100
+			    location   	(1428, 919)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	6
+			    max_width  	334)
+			width      	530
+			height     	394
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CMySqlDBProvider" @101
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3737, 1188)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@101
+			    location   	(3462, 1134)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	550
+			    justify    	0
+			    label      	"CMySqlDBProvider")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451B89750119"
+			width      	568
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CSqlLiteDBProvider" @102
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3009, 1181)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@102
+			    location   	(2721, 1127)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	576
+			    justify    	0
+			    label      	"CSqlLiteDBProvider")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451B898400CB"
+			width      	594
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CDBProvider" @103
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2933, 453)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	TRUE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@103
+			    location   	(2932, 561)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	302
+			    justify    	0
+			    label      	"CDBProvider")
+			icon       	"Interface"
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"451B8A460177"
+			compartment 	(object Compartment
+			    Parent_View 	@103
+			    location   	(2790, 606)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    anchor     	2
+			    nlines     	6
+			    max_width  	281
+			    justify    	0)
+			width      	58
+			height     	58
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CScanServer" @104
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1166, 120)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@104
+			    location   	(970, 66)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	392
+			    justify    	0
+			    label      	"CScanServer")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44EC89D80280"
+			width      	410
+			height     	136
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$9" @105
+			location   	(994, 525)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8877033C"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$11" @106
+				Parent_View 	@105
+				location   	(-1233, -1163)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @107
+				    Parent_View 	@106
+				    location   	(1070, 240)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	0)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B887900DA"
+				client     	@105
+				supplier   	@104
+				line_style 	0)
+			    (object RoleView "$UNNAMED$10" @108
+				Parent_View 	@105
+				location   	(-1233, -1163)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @109
+				    Parent_View 	@108
+				    location   	(843, 779)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B887900CB"
+				client     	@105
+				supplier   	@96
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$12" @110
+			location   	(1370, 406)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B88AC0148"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$14" @111
+				Parent_View 	@110
+				location   	(-610, -709)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @112
+				    Parent_View 	@111
+				    location   	(1187, 169)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	0)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88AC039B"
+				client     	@110
+				supplier   	@104
+				line_style 	0)
+			    (object RoleView "$UNNAMED$13" @113
+				Parent_View 	@110
+				location   	(-610, -709)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @114
+				    Parent_View 	@113
+				    location   	(1553, 644)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	0)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88AC0399"
+				client     	@110
+				supplier   	@100
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$21" @115
+			location   	(2119, 195)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8ADA02BF"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$23" @116
+				Parent_View 	@115
+				location   	(-109, -18)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @117
+				    Parent_View 	@116
+				    location   	(1516, 40)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8ADC02BF"
+				client     	@115
+				supplier   	@104
+				line_style 	0)
+			    (object RoleView "$UNNAMED$22" @118
+				Parent_View 	@115
+				location   	(-109, -18)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @119
+				    Parent_View 	@118
+				    location   	(2740, 270)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	0)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8ADC02AF"
+				client     	@115
+				supplier   	@103
+				line_style 	0)))
+		    (object RealizeView "" @120
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8ABE030D"
+			client     	@103
+			supplier   	@102
+			line_style 	0)
+		    (object RealizeView "" @121
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8AC00232"
+			client     	@103
+			supplier   	@101
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::CSettings" @122
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2100, 663)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@122
+			    location   	(1946, 555)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	308
+			    justify    	0
+			    label      	"CSettings")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B791D70325"
+			compartment 	(object Compartment
+			    Parent_View 	@122
+			    location   	(1946, 622)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	3
+			    max_width  	268)
+			width      	326
+			height     	244
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$15" @123
+			location   	(1591, 272)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B88D4006D"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$17" @124
+				Parent_View 	@123
+				location   	(1042, -62)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @125
+				    Parent_View 	@124
+				    location   	(1351, 85)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88D40234"
+				client     	@123
+				supplier   	@104
+				line_style 	0)
+			    (object RoleView "$UNNAMED$16" @126
+				Parent_View 	@123
+				location   	(1042, -62)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @127
+				    Parent_View 	@126
+				    location   	(1831, 459)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88D40232"
+				client     	@123
+				supplier   	@122
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::CLogger" @128
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2570, 572)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@128
+			    location   	(2431, 489)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	278
+			    justify    	0
+			    label      	"CLogger")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B7836601D1"
+			compartment 	(object Compartment
+			    Parent_View 	@128
+			    location   	(2431, 556)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	2
+			    max_width  	181)
+			width      	296
+			height     	194
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$18" @129
+			location   	(1878, 248)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B88E00203"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$20" @130
+				Parent_View 	@129
+				location   	(1672, -64)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @131
+				    Parent_View 	@130
+				    location   	(1471, 74)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88E003BB"
+				client     	@129
+				supplier   	@104
+				line_style 	0)
+			    (object RoleView "$UNNAMED$19" @132
+				Parent_View 	@129
+				location   	(1672, -64)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @133
+				    Parent_View 	@132
+				    location   	(2286, 423)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B88E003B9"
+				client     	@129
+				supplier   	@128
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::CScanner" @134
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(372, 592)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@134
+			    location   	(221, 458)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	302
+			    justify    	0
+			    label      	"CScanner")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B87941032C"
+			compartment 	(object Compartment
+			    Parent_View 	@134
+			    location   	(221, 525)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	4
+			    max_width  	262)
+			width      	320
+			height     	296
+			annotation 	8
+			autoResize 	TRUE)
+		    (object UsesView "" @135
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"44EC8A79001F"
+			client     	@134
+			supplier   	@104
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::CAgent" @136
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2725, 147)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@136
+			    location   	(2451, 14)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	548
+			    justify    	0
+			    label      	"CAgent")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B87C380213"
+			compartment 	(object Compartment
+			    Parent_View 	@136
+			    location   	(2451, 81)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	4
+			    max_width  	463)
+			width      	566
+			height     	294
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$24" @137
+			location   	(2463, 428)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8CAB002E"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$26" @138
+				Parent_View 	@137
+				location   	(363, -235)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @139
+				    Parent_View 	@138
+				    location   	(2530, 295)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	0)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CAC011B"
+				client     	@137
+				supplier   	@136
+				line_style 	0)
+			    (object RoleView "$UNNAMED$25" @140
+				Parent_View 	@137
+				location   	(363, -235)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @141
+				    Parent_View 	@140
+				    location   	(2286, 505)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CAC0119"
+				client     	@137
+				supplier   	@122
+				vertices   	(list Points
+				    (2463, 428)
+				    (2422, 472)
+				    (2263, 565))
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$27" @142
+			location   	(2732, 378)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8CB70290"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$29" @143
+				Parent_View 	@142
+				location   	(162, -194)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @144
+				    Parent_View 	@143
+				    location   	(2689, 313)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	0)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CB703D8"
+				client     	@142
+				supplier   	@136
+				line_style 	0)
+			    (object RoleView "$UNNAMED$28" @145
+				Parent_View 	@142
+				location   	(162, -194)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @146
+				    Parent_View 	@145
+				    location   	(2682, 427)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CB703C8"
+				client     	@142
+				supplier   	@128
+				vertices   	(list Points
+				    (2732, 378)
+				    (2734, 438)
+				    (2688, 474))
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$30" @147
+			location   	(1422, 396)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"451B8CC10128"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$32" @148
+				Parent_View 	@147
+				location   	(1050, -196)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @149
+				    Parent_View 	@148
+				    location   	(2211, 139)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	0)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CC1037A"
+				client     	@147
+				supplier   	@136
+				vertices   	(list Points
+				    (1440, 502)
+				    (1500, 497)
+				    (2441, 226))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$31" @150
+				Parent_View 	@147
+				location   	(1050, -196)
+				font       	(object Font
+				    size       	12
+				    face       	"Arial"
+				    charSet    	204
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object SegLabel @151
+				    Parent_View 	@150
+				    location   	(694, 415)
+				    font       	(object Font
+					size       	12
+					face       	"Arial"
+					charSet    	204
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CC1036B"
+				client     	@147
+				supplier   	@134
+				line_style 	0)))))
+	    (object ClassDiagram "Common Classes"
+		quid       	"44B79AC702B7"
+		title      	"Common Classes"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list
+		    (object ClassView "Class" "Logical View::CSocket" @152
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(809, 343)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@152
+			    location   	(543, 114)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	532
@@ -3251,8 +4563,8 @@
 			fill_color 	13434879
 			quidu      	"44B7805D0230"
 			compartment 	(object Compartment
-			    Parent_View 	@85
-			    location   	(48, 135)
+			    Parent_View 	@152
+			    location   	(543, 181)
 			    font       	(object Font
 				size       	12
 				face       	"Arial"
@@ -3272,11 +4584,11 @@
 			height     	486
 			annotation 	8
 			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CSettings" @86
+		    (object ClassView "Class" "Logical View::CSettings" @153
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(1439, 165)
+			location   	(1432, 222)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3288,8 +4600,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@86
-			    location   	(1257, 48)
+			    Parent_View 	@153
+			    location   	(1250, 105)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	364
@@ -3300,8 +4612,8 @@
 			fill_color 	13434879
 			quidu      	"44B791D70325"
 			compartment 	(object Compartment
-			    Parent_View 	@86
-			    location   	(1257, 115)
+			    Parent_View 	@153
+			    location   	(1250, 172)
 			    font       	(object Font
 				size       	12
 				face       	"Arial"
@@ -3321,11 +4633,11 @@
 			height     	262
 			annotation 	8
 			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CLogger" @87
+		    (object ClassView "Class" "Logical View::CLogger" @154
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(1444, 499)
+			location   	(1946, 194)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3337,8 +4649,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@87
-			    location   	(1305, 410)
+			    Parent_View 	@154
+			    location   	(1807, 105)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	278
@@ -3349,8 +4661,8 @@
 			fill_color 	13434879
 			quidu      	"44B7836601D1"
 			compartment 	(object Compartment
-			    Parent_View 	@87
-			    location   	(1305, 477)
+			    Parent_View 	@154
+			    location   	(1807, 172)
 			    font       	(object Font
 				size       	12
 				face       	"Arial"
@@ -3370,11 +4682,11 @@
 			height     	206
 			annotation 	8
 			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CPacket" @88
+		    (object ClassView "Class" "Logical View::CPacket" @155
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(745, 1062)
+			location   	(1764, 997)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3386,8 +4698,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@88
-			    location   	(115, 779)
+			    Parent_View 	@155
+			    location   	(1134, 714)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	1260
@@ -3398,8 +4710,8 @@
 			fill_color 	13434879
 			quidu      	"44BD29990000"
 			compartment 	(object Compartment
-			    Parent_View 	@88
-			    location   	(115, 846)
+			    Parent_View 	@155
+			    location   	(1134, 781)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -3428,11 +4740,11 @@
 		origin_x   	0
 		origin_y   	0
 		items      	(list diagram_item_list
-		    (object ClassView "Class" "Logical View::CAgent" @89
+		    (object ClassView "Class" "Logical View::CSettings" @156
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(598, 834)
+			location   	(978, 184)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3444,106 +4756,8 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@89
-			    location   	(324, 701)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	548
-			    justify    	0
-			    label      	"CAgent")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B87C380213"
-			compartment 	(object Compartment
-			    Parent_View 	@89
-			    location   	(324, 768)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	4
-			    max_width  	471)
-			width      	566
-			height     	294
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CScanner" @90
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(229, 213)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@90
-			    location   	(78, 80)
-			    fill_color 	13434879
-			    nlines     	1
-			    max_width  	302
-			    justify    	0
-			    label      	"CScanner")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"44B87941032C"
-			compartment 	(object Compartment
-			    Parent_View 	@90
-			    location   	(78, 147)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    icon_style 	"Icon"
-			    fill_color 	13434879
-			    anchor     	2
-			    nlines     	4
-			    max_width  	262)
-			width      	320
-			height     	294
-			annotation 	8
-			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CSettings" @91
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(979, 185)
-			font       	(object Font
-			    size       	12
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@91
-			    location   	(825, 77)
+			    Parent_View 	@156
+			    location   	(824, 76)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	308
@@ -3554,8 +4768,8 @@
 			fill_color 	13434879
 			quidu      	"44B791D70325"
 			compartment 	(object Compartment
-			    Parent_View 	@91
-			    location   	(825, 144)
+			    Parent_View 	@156
+			    location   	(824, 143)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -3575,7 +4789,7 @@
 			height     	244
 			annotation 	8
 			autoResize 	TRUE)
-		    (object ClassView "Class" "Logical View::CLogger" @92
+		    (object ClassView "Class" "Logical View::CLogger" @157
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
@@ -3591,7 +4805,7 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@92
+			    Parent_View 	@157
 			    location   	(462, 80)
 			    fill_color 	13434879
 			    nlines     	1
@@ -3603,7 +4817,7 @@
 			fill_color 	13434879
 			quidu      	"44B7836601D1"
 			compartment 	(object Compartment
-			    Parent_View 	@92
+			    Parent_View 	@157
 			    location   	(462, 147)
 			    font       	(object Font
 				size       	10
@@ -3624,27 +4838,206 @@
 			height     	194
 			annotation 	8
 			autoResize 	TRUE)
-		    (object UsesView "" @93
+		    (object ClassView "Class" "Logical View::CAgent" @158
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(598, 834)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@158
+			    location   	(324, 701)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	548
+			    justify    	0
+			    label      	"CAgent")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B87C380213"
+			compartment 	(object Compartment
+			    Parent_View 	@158
+			    location   	(324, 768)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	4
+			    max_width  	471)
+			width      	566
+			height     	294
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$24" @159
+			location   	(794, 496)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
 			stereotype 	TRUE
 			line_color 	3342489
-			quidu      	"4504639702CE"
-			client     	@90
-			supplier   	@89
-			line_style 	0)
-		    (object UsesView "" @94
+			quidu      	"451B8CAB002E"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$25" @160
+				Parent_View 	@159
+				location   	(196, -338)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CAC0119"
+				client     	@159
+				supplier   	@156
+				line_style 	0)
+			    (object RoleView "$UNNAMED$26" @161
+				Parent_View 	@159
+				location   	(196, -338)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CAC011B"
+				client     	@159
+				supplier   	@158
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$27" @162
+			location   	(599, 473)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
 			stereotype 	TRUE
 			line_color 	3342489
-			quidu      	"4504639B02FD"
-			client     	@92
-			supplier   	@89
-			line_style 	0)
-		    (object UsesView "" @95
+			quidu      	"451B8CB70290"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$28" @163
+				Parent_View 	@162
+				location   	(1, -361)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CB703C8"
+				client     	@162
+				supplier   	@157
+				line_style 	0)
+			    (object RoleView "$UNNAMED$29" @164
+				Parent_View 	@162
+				location   	(1, -361)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CB703D8"
+				client     	@162
+				supplier   	@158
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::CScanner" @165
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(229, 213)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@165
+			    location   	(78, 80)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	302
+			    justify    	0
+			    label      	"CScanner")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"44B87941032C"
+			compartment 	(object Compartment
+			    Parent_View 	@165
+			    location   	(78, 147)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	4
+			    max_width  	262)
+			width      	320
+			height     	294
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$30" @166
+			location   	(412, 523)
+			font       	(object Font
+			    size       	12
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
 			stereotype 	TRUE
 			line_color 	3342489
-			quidu      	"4504639D038A"
-			client     	@91
-			supplier   	@89
-			line_style 	0)))
+			quidu      	"451B8CC10128"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$31" @167
+				Parent_View 	@166
+				location   	(-186, -311)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CC1036B"
+				client     	@166
+				supplier   	@165
+				line_style 	0)
+			    (object RoleView "$UNNAMED$32" @168
+				Parent_View 	@166
+				location   	(-186, -311)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"451B8CC1037A"
+				client     	@166
+				supplier   	@158
+				line_style 	0)))))
 	    (object ObjectDiagram "Collaboration"
 		mechanism_ref 	@3
 		quid       	"44BE835F0192"
@@ -3667,13 +5060,13 @@
 		    (object Attribute
 			tool       	"Cplusplus"
 			name       	"FilesEncoding"
-			value      	
+			value      	(value Text 
 |v1:KCAgent.cpp,451637e6,A
 |ICAgent.h,451637e6,A
 |MCScanner.cpp,451637e6,A
 |KCScanner.h,451637e6,A
 |
-			)
+			))
 		    (object Attribute
 			tool       	"Cplusplus"
 			name       	"NamespaceBraceStyle"
@@ -3681,7 +5074,7 @@
 		    (object Attribute
 			tool       	"Cplusplus"
 			name       	"CodeItemsEncoding"
-			value      	
+			value      	(value Text 
 |v3:CAgent,t,C,44B87C380213,A,55,1a5
 |CAgent::CAgent,f,B,45046525030D,Mstd::string,,15,61
 |CAgent::fnListenThreadProc,f,B,450465EA02FD,A,9f,d8
@@ -3689,7 +5082,7 @@
 |CScanner,t,E,44B87941032C,A,59,225
 |CScanner::CScanner,f,D,44B87A640232,vconst char*,std::map<std::string,ScanFuncType>,,17,96
 |
-			))
+			)))
 		quid       	"4516317E02FA"
 		stereotype 	"EXE"
 		language   	"ANSI C++")
@@ -3702,7 +5095,7 @@
 		    (object Attribute
 			tool       	"Cplusplus"
 			name       	"FilesEncoding"
-			value      	
+			value      	(value Text 
 |v1:RCClientSocket.cpp,45163738,A
 |PCClientSocket.h,45163738,A
 |LCPacket.cpp,45163738,A
@@ -3712,7 +5105,7 @@
 |LCSocket.cpp,45163738,A
 |JCSocket.h,45163738,A
 |
-			)
+			))
 		    (object Attribute
 			tool       	"Cplusplus"
 			name       	"NamespaceBraceStyle"
@@ -3720,7 +5113,7 @@
 		    (object Attribute
 			tool       	"Cplusplus"
 			name       	"CodeItemsEncoding"
-			value      	
+			value      	(value Text 
 |v3:CClientSocket,t,C,44B780680348,A,63,cf
 |CClientSocket::Connect,f,B,44B782DC01FE,A,1c,55
 |CPacket,t,E,44BD29990000,A,57,30e
@@ -3744,7 +5137,7 @@
 |CSocket::Send,f,H,44B78186029E,Kvoid*,int,,16,5e
 |CSocket::SetBlocking,f,H,44B782710219,Fbool,,e3,12b
 |
-			))
+			)))
 		quid       	"451635F002CB"
 		stereotype 	"DLL"
 		language   	"ANSI C++")
@@ -3766,7 +5159,7 @@
 		origin_x   	0
 		origin_y   	0
 		items      	(list diagram_item_list
-		    (object ModView "Component View::Agent" "NotAModuleType" "NotAModulePart" @96
+		    (object ModView "Component View::Agent" "NotAModuleType" "NotAModulePart" @169
 			location   	(578, 487)
 			font       	(object Font
 			    size       	12
@@ -3779,7 +5172,7 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@96
+			    Parent_View 	@169
 			    location   	(543, 462)
 			    fill_color 	13434879
 			    anchor_loc 	3
@@ -3795,7 +5188,7 @@
 			autoResize 	TRUE
 			width      	230
 			height     	162)
-		    (object ModView "Component View::Net.lib" "NotAModuleType" "NotAModulePart" @97
+		    (object ModView "Component View::Net.lib" "NotAModuleType" "NotAModulePart" @170
 			location   	(603, 768)
 			font       	(object Font
 			    size       	12
@@ -3808,7 +5201,7 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@97
+			    Parent_View 	@170
 			    location   	(568, 743)
 			    fill_color 	13434879
 			    anchor_loc 	3
@@ -3824,7 +5217,7 @@
 			autoResize 	TRUE
 			width      	230
 			height     	162)
-		    (object ModView "Component View::ScanServer" "NotAModuleType" "NotAModulePart" @98
+		    (object ModView "Component View::ScanServer" "NotAModuleType" "NotAModulePart" @171
 			location   	(617, 1036)
 			font       	(object Font
 			    size       	12
@@ -3837,7 +5230,7 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@98
+			    Parent_View 	@171
 			    location   	(546, 1010)
 			    fill_color 	13434879
 			    anchor_loc 	3
@@ -3853,7 +5246,7 @@
 			autoResize 	TRUE
 			width      	481
 			height     	169)
-		    (object ModView "Component View::Common.Lib" "NotAModuleType" "NotAModulePart" @99
+		    (object ModView "Component View::Common.Lib" "NotAModuleType" "NotAModulePart" @172
 			location   	(578, 1362)
 			font       	(object Font
 			    size       	12
@@ -3866,22 +5259,21 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@99
-			    location   	(492, 1336)
+			    Parent_View 	@172
+			    location   	(535, 1337)
 			    fill_color 	13434879
 			    anchor_loc 	3
 			    nlines     	2
-			    max_width  	326
+			    max_width  	159
 			    label      	"Common.Lib")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
 			quidu      	"4516369C00F6"
-			width      	588
-			height     	169
+			width      	286
 			autoResize 	TRUE
-			width      	588
-			height     	169)))))
+			width      	286
+			height     	162)))))
     process_structure 	(object Processes
 	quid       	"44B7804502EE"
 	ProcsNDevs 	(list
