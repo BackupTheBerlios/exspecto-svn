@@ -6,7 +6,7 @@
 //-------------------------------------------------------------------------------------
 #pragma once
 #include "Socket.h"
-#include "../Common/commands.h"
+#include "../CommonFiles/commands.h"
 
 class CPacket
 {
