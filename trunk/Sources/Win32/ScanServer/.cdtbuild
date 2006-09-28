@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 3.0.0?>
+
+<ManagedProjectBuildInfo>
+<project id="ScanServer.cdt.managedbuild.target.gnu.cygwin.exe.490128651" name="Executable (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.exe">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1990899398" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug" artifactName="ScanServer" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug.1301553627" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.debug.1935340995" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug.116793182" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug.881578533" name="GCC C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.debug.1477324973" name="GCC C++ Linker">
+<option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.1839117535" valueType="libs">
+<listOptionValue value="Net" builtIn="false"/>
+<listOptionValue value="ws2_32" builtIn="false"/>
+<listOptionValue value="netapi32" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.964587821" valueType="stringList">
+<listOptionValue value="&quot;D:\Raznoe\Programming\WorkSpace\Exspecto\Sources\Win32\libNet\Debug&quot;" builtIn="false"/>
+</option>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.1842326114" name="GCC Assembler"/>
+<macros/>
+</toolChain>
+</configuration>
+<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.release.2023842670" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.exe.release" artifactName="ScanServer" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.release" id="cdt.managedbuild.toolchain.gnu.cygwin.exe.release.2052817511" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.release.574210189" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.release.695766356" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.release.928752098" name="GCC C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.release.143694929" name="GCC C++ Linker">
+<option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.876457878" valueType="libs">
+<listOptionValue value="Net" builtIn="false"/>
+<listOptionValue value="ws2_32" builtIn="false"/>
+<listOptionValue value="netapi32" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.719369519" valueType="stringList">
+<listOptionValue value="&quot;D:\Raznoe\Programming\WorkSpace\Exspecto\Sources\Win32\libNet\release&quot;" builtIn="false"/>
+</option>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release.85668383" name="GCC Assembler"/>
+<macros/>
+</toolChain>
+</configuration>
+</project>
+</ManagedProjectBuildInfo>
