@@ -4,7 +4,8 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции Агента
 //-------------------------------------------------------------------------------------//
-#include "stdafx.h"
+#include <iostream>
+#include <tchar.h>
 #include "..\libNet\Sockets.h"
 #include "agent.h"
 #include "windows.h"
