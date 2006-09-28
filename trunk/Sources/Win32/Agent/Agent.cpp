@@ -6,10 +6,10 @@
 //-------------------------------------------------------------------------------------//
 #include <iostream>
 #include <tchar.h>
+#include <vector>
 #include "..\libNet\Sockets.h"
 #include "agent.h"
 #include "windows.h"
-#include "..\libNet\Scanner.h"
 #include "..\libNet\packet.h"
 
 // онструктор,strSchedulerAddress - адрес планировщика
@@ -60,7 +60,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			//ѕолучаем кол-во адресов в пакете
 			pPacket->GetParam( iCount );
 
-			CScanner scan;
+//			CScanner scan;
 
 			//::EnterCriticalSection( &pParams->pThis->m_csCurState );
 			pParams->pThis->m_CurState = Scanning;	
@@ -70,7 +70,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			{
 				//получаем очередной адрес и производим его сканирование
 				pPacket->GetAddress( strAddress );
-				scan.Scan( strAddress, List );
+//				scan.Scan( strAddress, List );
 			}
 		//	::EnterCriticalSection( &pParams->pThis->m_csCurState );
 			pParams->pThis->m_CurState = Idling;		
