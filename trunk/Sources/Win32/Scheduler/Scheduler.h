@@ -10,7 +10,7 @@
 #include <vector>
 #include "windows.h"
 
-class CScheduler
+class CSchedule
 {
 public:
 	CScheduler(void);
