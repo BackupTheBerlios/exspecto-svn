@@ -11,6 +11,7 @@
 #include "agent.h"
 #include "windows.h"
 #include "..\libNet\packet.h"
+#include "constants.h"
 
 //Конструктор,strSchedulerAddress - адрес планировщика
 CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
@@ -25,8 +26,55 @@ CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
 
 CAgent::~CAgent(void)
 {
+	ClearScannersList();
 	::DeleteCriticalSection( &m_csCurState );
 	::DeleteCriticalSection( &m_csCommandExec );
+}
+
+//Заполняет vecScanners
+int CAgent::FillScannersList()
+{
+	WIN32_FIND_DATA FindData;
+	HANDLE hFindFile;
+	HINSTANCE hLib;
+	CScanner* pScanner;
+	fnGetScannerFunc fnGetScanner;
+	fnReleaseScannerFunc fnReleaseScanner;
+	int iScannersCount = 0;
+	std::string strPluginPath = PLUGIN_PATH;
+	strPluginPath += "\\*.dll";
+	//Находим все dll в папке с plugin-ами
+	if( INVALID_HANDLE_VALUE == ( hFindFile = ::FindFirstFileA( strPluginPath.c_str(), &FindData ) ) )
+	{
+		return 0;
+	}
+	while( ::FindNextFile( hFindFile, &FindData ) && ( NULL != ( hLib = ::LoadLibraryA( FindData.cFileName ) ) ) )
+	{ 
+		if( NULL == ( fnGetScanner = ( fnGetScannerFunc )::GetProcAddress( hLib, "GetScanner" ) )
+		 	|| NULL == ( fnReleaseScanner = ( fnReleaseScannerFunc )::GetProcAddress( hLib, "ReleaseScanner" )) 
+		 	|| NULL == ( pScanner = fnGetScanner() ) )
+		{
+			::FreeLibrary( hLib );
+			continue;
+		}
+		//Заполняем массив m_mapLibraries для дальнейшей корректной выгрузки dll и удаления
+		//соответствующего объекта CScanner
+		m_mapLibraries[ hLib ] = fnReleaseScanner;
+
+		m_vecScanners.push_back( pScanner );
+		iScannersCount++;
+	}
+	return iScannersCount;
+}	
+
+//Очищает m_vecScanners и m_mapLibraries
+void CAgent::ClearScannersList()
+{
+	for( LibrariesMapType::iterator It = m_mapLibraries.begin(); It != m_mapLibraries.end(); It++ )
+	{
+		It->second();
+		::FreeLibrary( It->first );
+	}
 }
 
 //Поток обработки входящих сообщений

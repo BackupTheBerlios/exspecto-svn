@@ -7,6 +7,8 @@
 #pragma once
 #include "windows.h"
 #include "..\libNet\packet.h"
+#include "CScanner.h"
+#include <map>
 
 class CAgent
 {
@@ -19,6 +21,11 @@ public:
 
 protected:
 
+	//Заполняет m_vecScanners и m_mapLibraries,возвращает кол-во найденных plugin-ов сканирования
+	int FillScannersList();
+	//Очищает m_vecScanners и m_mapLibraries
+	void ClearScannersList();
+	
 	//Критическая секция на запись переменной текущего состояния
 	CRITICAL_SECTION m_csCurState;
 
@@ -52,6 +59,14 @@ protected:
 	//Поток ожидания входящих соединений
 	static DWORD WINAPI fnListenThreadProc(  LPVOID pParameter );
 	
+	//Типы функций, содержащихся в dll с plugin-ом
+	typedef CScanner* (*fnGetScannerFunc)();
+	typedef void (*fnReleaseScannerFunc)();
+	
 	//Вектор адресов объектов классов сканирования (загруженных из плагинов)
-	std::vector< 
+	std::vector< CScanner* > m_vecScanners;
+	
+	typedef std::map< HINSTANCE , fnReleaseScannerFunc > LibrariesMapType;
+	//Вектор дескрипторов открытых библиотек для дальнейшего их закрытия
+	LibrariesMapType m_mapLibraries;
 };
