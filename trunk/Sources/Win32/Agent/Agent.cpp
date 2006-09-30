@@ -18,6 +18,7 @@ CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
 												 ,m_strSchedulerAddress( strSchedulerAddress )
 {
 	DWORD dwThreadId;
+	FillScannersList();
 	//Запускаем поток прослушивания(ожидания входящих TCP соединений)
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
 	::InitializeCriticalSection( &m_csCurState );
@@ -41,16 +42,18 @@ int CAgent::FillScannersList()
 	fnGetScannerFunc fnGetScanner;
 	fnReleaseScannerFunc fnReleaseScanner;
 	int iScannersCount = 0;
-	std::string strPluginPath = PLUGIN_PATH;
-	strPluginPath += "\\*.dll";
+	std::string strPluginPath;// = PLUGIN_PATH;
+	strPluginPath += "*.dll";
 	//Находим все dll в папке с plugin-ами
-	if( INVALID_HANDLE_VALUE == ( hFindFile = ::FindFirstFileA( strPluginPath.c_str(), &FindData ) ) )
+	if( INVALID_HANDLE_VALUE == ( hFindFile = ::FindFirstFile( strPluginPath.c_str(), &FindData ) ) )
 	{
+		volatile int err = ::GetLastError();
 		return 0;
 	}
-	while( ::FindNextFile( hFindFile, &FindData ) && ( NULL != ( hLib = ::LoadLibraryA( FindData.cFileName ) ) ) )
+	do
 	{ 
-		if( NULL == ( fnGetScanner = ( fnGetScannerFunc )::GetProcAddress( hLib, "GetScanner" ) )
+		if( NULL == ( hLib = ::LoadLibraryA( FindData.cFileName ) )
+			|| NULL == ( fnGetScanner = ( fnGetScannerFunc )::GetProcAddress( hLib, "GetScanner" ) )
 		 	|| NULL == ( fnReleaseScanner = ( fnReleaseScannerFunc )::GetProcAddress( hLib, "ReleaseScanner" )) 
 		 	|| NULL == ( pScanner = fnGetScanner() ) )
 		{
@@ -63,7 +66,7 @@ int CAgent::FillScannersList()
 
 		m_vecScanners.push_back( pScanner );
 		iScannersCount++;
-	}
+	}while( ::FindNextFile( hFindFile, &FindData ) );
 	return iScannersCount;
 }	
 
