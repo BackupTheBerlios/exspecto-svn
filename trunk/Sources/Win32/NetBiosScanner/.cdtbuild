@@ -3,7 +3,7 @@
 
 <ManagedProjectBuildInfo>
 <project id="NetBiosScanner.cdt.managedbuild.target.gnu.cygwin.so.1370840114" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
-<configuration id="cdt.managedbuild.config.gnu.cygwin.so.debug.552888321" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" artifactName="NetBiosScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.debug.552888321" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" artifactName="../../../../Bin/NetBiosScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.1038900449" name="GCC Tool Chain">
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.816284881" name="GCC C Compiler"/>
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.798420090" name="GCC C++ Compiler"/>
