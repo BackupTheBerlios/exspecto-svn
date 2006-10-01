@@ -47,7 +47,6 @@ int CAgent::FillScannersList()
 	//Находим все dll в папке с plugin-ами
 	if( INVALID_HANDLE_VALUE == ( hFindFile = ::FindFirstFile( strPluginPath.c_str(), &FindData ) ) )
 	{
-		volatile int err = ::GetLastError();
 		return 0;
 	}
 	do
@@ -111,21 +110,24 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			//Получаем кол-во адресов в пакете
 			pPacket->GetParam( iCount );
 
-//			CScanner scan;
 
-			//::EnterCriticalSection( &pParams->pThis->m_csCurState );
+
+			::EnterCriticalSection( &pParams->pThis->m_csCurState );
 			pParams->pThis->m_CurState = Scanning;	
-			//::LeaveCriticalSection( &pParams->pThis->m_csCurState );
+			::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
 			for( unsigned int i = 0; i < iCount; i++ )
 			{
-				//получаем очередной адрес и производим его сканирование
+				//получаем очередной адрес и производим его сканирование по всем доступным протоколам
 				pPacket->GetAddress( strAddress );
-//				scan.Scan( strAddress, List );
+				for( std::vector< CScanner* >::iterator It = pParams->pThis->m_vecScanners.begin(); It != pParams->pThis->m_vecScanners.end(); It++ )
+				{
+					(*It)->Scan( strAddress, List );
+				}
 			}
-		//	::EnterCriticalSection( &pParams->pThis->m_csCurState );
+			::EnterCriticalSection( &pParams->pThis->m_csCurState );
 			pParams->pThis->m_CurState = Idling;		
-		//	::LeaveCriticalSection( &pParams->pThis->m_csCurState );
+			::LeaveCriticalSection( &pParams->pThis->m_csCurState );
 
 			std::vector< std::string >::iterator It;
 			for( It = List.begin(); It != List.end(); It++ )
