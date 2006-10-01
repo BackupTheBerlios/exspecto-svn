@@ -18,6 +18,9 @@ public:
 	//Сканировать адрес strAddress, результат сложить в vcResList
 	void Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList ); 
 
+	//Вернуть имя протокола	
+	const char* GetProtocolName(){ return "NetBios"; }
+
 protected:
 
 	//Рекурсивная функция, перебирающая все вложенные папки/файлы
