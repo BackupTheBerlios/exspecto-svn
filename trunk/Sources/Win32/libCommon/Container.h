@@ -3,14 +3,21 @@
 
 #include <vector>
 
-template< class T, class FindStrategy >class Container
+/*class LoadStrategy
+{
+public:
+	virtual void Load() = 0;
+};
+*/
+template< class T, class LoadStrategy >
+class Container
 {
 public:
 
 	typedef typename std::vector< T >::iterator iterator;
 
-	Container(){};
-	virtual ~Container(){};
+	Container();
+	virtual ~Container();
 	
 	iterator begin();
 	iterator end();
@@ -20,6 +27,8 @@ public:
 	
 private:
 	
+//	LoadStrategy m_Loader;
+		
 	std::vector< T > m_vecStorage;
 };
 

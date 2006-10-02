@@ -1,17 +1,27 @@
 #include "Container.h"
 
-Container< class T, class FindStrategy >::iterator Container< T, FindStrategy >::begin()
+template< class T, class LoadStrategy >
+Container< T, LoadStrategy >::Container()
+{
+}
+
+template< class T, class LoadStrategy >
+Container< T, LoadStrategy >::~Container()
+{
+}
+
+Container< class T, class LoadStrategy >::iterator Container< T, LoadStrategy >::begin()
 {
 	return m_vecStorage.begin();
 }
 
-Container< class T, class FindStrategy >::iterator Container< T, FindStrategy >::end()
+Container< class T, class LoadStrategy >::iterator Container< T, LoadStrategy >::end()
 {
 	return m_vecStorage.end();
 }
 
-template< class T, class FindStrategy >
-int Container< T, FindStrategy >::count()
+template< class T, class LoadStrategy >
+int Container< T, LoadStrategy >::count()
 {
 	return m_vecStorage.size();
 }
