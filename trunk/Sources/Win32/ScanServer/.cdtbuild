@@ -15,7 +15,7 @@
 <listOptionValue value="netapi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.964587821" valueType="stringList">
-<listOptionValue value="&quot;D:\Raznoe\Programming\WorkSpace\Exspecto\Sources\Win32\libNet\Debug&quot;" builtIn="false"/>
+<listOptionValue value="&quot;..\..\libNet\Debug&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.1842326114" name="GCC Assembler"/>
