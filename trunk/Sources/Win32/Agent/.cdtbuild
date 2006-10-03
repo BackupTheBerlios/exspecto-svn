@@ -15,11 +15,13 @@
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.debug.2055173039" name="GCC C++ Linker">
 <option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.1155612619" valueType="libs">
 <listOptionValue value="Net" builtIn="false"/>
+<listOptionValue value="Common" builtIn="false"/>
 <listOptionValue value="ws2_32" builtIn="false"/>
 <listOptionValue value="NetApi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.1134897782" valueType="stringList">
 <listOptionValue value="&quot;..\..\libNet\Debug&quot;" builtIn="false"/>
+<listOptionValue value="&quot;..\..\libCommon\Debug&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.677091194" name="GCC Assembler"/>

@@ -18,7 +18,7 @@ CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
 												 ,m_strSchedulerAddress( strSchedulerAddress )
 {
 	DWORD dwThreadId;
-	FillScannersList();
+	m_PluginContainer.begin();
 	//Запускаем поток прослушивания(ожидания входящих TCP соединений)
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
 	::InitializeCriticalSection( &m_csCurState );
@@ -27,56 +27,8 @@ CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
 
 CAgent::~CAgent(void)
 {
-	ClearScannersList();
 	::DeleteCriticalSection( &m_csCurState );
 	::DeleteCriticalSection( &m_csCommandExec );
-}
-
-//Заполняет vecScanners
-int CAgent::FillScannersList()
-{
-	WIN32_FIND_DATA FindData;
-	HANDLE hFindFile;
-	HINSTANCE hLib;
-	CScanner* pScanner;
-	fnGetScannerFunc fnGetScanner;
-	fnReleaseScannerFunc fnReleaseScanner;
-	int iScannersCount = 0;
-	std::string strPluginPath;// = PLUGIN_PATH;
-	strPluginPath += "*.dll";
-	//Находим все dll в папке с plugin-ами
-	if( INVALID_HANDLE_VALUE == ( hFindFile = ::FindFirstFile( strPluginPath.c_str(), &FindData ) ) )
-	{
-		return 0;
-	}
-	do
-	{ 
-		if( NULL == ( hLib = ::LoadLibraryA( FindData.cFileName ) )
-			|| NULL == ( fnGetScanner = ( fnGetScannerFunc )::GetProcAddress( hLib, "GetScanner" ) )
-		 	|| NULL == ( fnReleaseScanner = ( fnReleaseScannerFunc )::GetProcAddress( hLib, "ReleaseScanner" )) 
-		 	|| NULL == ( pScanner = fnGetScanner() ) )
-		{
-			::FreeLibrary( hLib );
-			continue;
-		}
-		//Заполняем массив m_mapLibraries для дальнейшей корректной выгрузки dll и удаления
-		//соответствующего объекта CScanner
-		m_mapLibraries[ hLib ] = fnReleaseScanner;
-
-		m_vecScanners.push_back( pScanner );
-		iScannersCount++;
-	}while( ::FindNextFile( hFindFile, &FindData ) );
-	return iScannersCount;
-}	
-
-//Очищает m_vecScanners и m_mapLibraries
-void CAgent::ClearScannersList()
-{
-	for( LibrariesMapType::iterator It = m_mapLibraries.begin(); It != m_mapLibraries.end(); It++ )
-	{
-		It->second();
-		::FreeLibrary( It->first );
-	}
 }
 
 //Поток обработки входящих сообщений
@@ -120,7 +72,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			{
 				//получаем очередной адрес и производим его сканирование по всем доступным протоколам
 				pPacket->GetAddress( strAddress );
-				for( std::vector< CScanner* >::iterator It = pParams->pThis->m_vecScanners.begin(); It != pParams->pThis->m_vecScanners.end(); It++ )
+				for( PluginIterator It = pParams->pThis->m_PluginContainer.begin(); It != pParams->pThis->m_PluginContainer.end(); It++ )
 				{
 					(*It)->Scan( strAddress, List );
 				}
