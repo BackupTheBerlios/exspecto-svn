@@ -3,12 +3,17 @@
 
 <ManagedProjectBuildInfo>
 <project id="libCommon.cdt.managedbuild.target.gnu.cygwin.lib.1322698676" name="Static Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.lib">
-<configuration id="cdt.managedbuild.config.gnu.cygwin.lib.debug.1516581303" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.lib.debug" artifactName="libCommon" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.lib.debug.1516581303" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.lib.debug" artifactName="Common" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.824002710" name="GCC Tool Chain">
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug.243222927" name="GCC C Compiler"/>
-<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug.2123747660" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug.2123747660" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.613384823" valueType="includePath">
+<listOptionValue value="../../CommonFiles" builtIn="false"/>
+</option>
+</tool>
 <tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug.445925288" name="GCC Archiver"/>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug.2035866447" name="GCC Assembler"/>
+<macros/>
 </toolChain>
 </configuration>
 <configuration id="cdt.managedbuild.config.gnu.cygwin.lib.release.1375492483" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.lib.release" artifactName="libCommon" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">

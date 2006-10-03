@@ -3,6 +3,7 @@
 	<name>libCommon</name>
 	<comment></comment>
 	<projects>
+		<project>CommonFiles</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
