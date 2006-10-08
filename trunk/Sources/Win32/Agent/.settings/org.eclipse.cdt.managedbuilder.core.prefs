@@ -1,7 +1,9 @@
-#Mon Sep 18 19:03:48 MSD 2006
+#Sat Oct 07 00:11:00 MSD 2006
+cdt.managedbuild.config.gnu.cygwin.exe.debug.1735311550/internalBuilder/enabled=false
+cdt.managedbuild.config.gnu.cygwin.exe.debug.1735311550/internalBuilder/ignoreErr=true
 eclipse.preferences.version=1
 environment/buildEnvironmentInclude/cdt.managedbuild.config.gnu.cygwin.exe.debug.1710345733=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="CPATH" operation\="remove"/>\r\n<variable name\="CPLUS_INCLUDE_PATH" operation\="remove"/>\r\n</environment>\r\n
-environment/buildEnvironmentInclude/cdt.managedbuild.config.gnu.cygwin.exe.debug.1735311550=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="CPATH" operation\="remove"/>\r\n<variable name\="CPLUS_INCLUDE_PATH" operation\="remove"/>\r\n</environment>\r\n
+environment/buildEnvironmentInclude/cdt.managedbuild.config.gnu.cygwin.exe.debug.1735311550=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="CPATH" value\="" operation\="remove"/>\r\n<variable name\="C_INCLUDE_PATH" operation\="remove"/>\r\n<variable name\="CPLUS_INCLUDE_PATH" value\="" operation\="remove"/>\r\n</environment>\r\n
 environment/buildEnvironmentInclude/cdt.managedbuild.config.gnu.cygwin.exe.release.1481100917=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="CPATH" operation\="remove"/>\r\n<variable name\="CPLUS_INCLUDE_PATH" operation\="remove"/>\r\n</environment>\r\n
 environment/buildEnvironmentLibrary/cdt.managedbuild.config.gnu.cygwin.exe.debug.1710345733=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="LIBRARY_PATH" operation\="remove"/>\r\n</environment>\r\n
 environment/buildEnvironmentLibrary/cdt.managedbuild.config.gnu.cygwin.exe.debug.1735311550=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="LIBRARY_PATH" operation\="remove"/>\r\n</environment>\r\n
