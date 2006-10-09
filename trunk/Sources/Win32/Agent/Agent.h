@@ -9,7 +9,7 @@
 #include "..\libNet\packet.h"
 #include "CScanner.h"
 #include "..\libCommon\Container.hpp"
-#include "..\libCommon\PluginLoadStrategy.h"
+#include "PluginLoadStrategy.h"
 #include <map>
 
 class CAgent
