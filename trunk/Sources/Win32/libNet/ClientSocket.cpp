@@ -39,7 +39,7 @@ int CClientSocket::Connect( std::string strAddr, int iPort )
 		if( NULL == ( hn = ::gethostbyname( strAddr.c_str() ) ) )
 		{
 			m_iLastError = ::WSAGetLastError();
-			return 0;
+			return -1;
 		}
 		sAddr.sin_addr.S_un.S_addr = ::inet_addr( hn->h_addr_list[0] );
 	}
