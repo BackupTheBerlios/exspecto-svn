@@ -7,6 +7,8 @@
 #ifndef CAGENTHANDLER_H_
 #define CAGENTHANDLER_H_
 
+#include <string>
+
 class CAgentHandler
 {
 public:

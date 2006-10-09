@@ -9,6 +9,7 @@
 #define AGENTSLOADSTRATEGY_H_
 
 #include "CAgentHandler.h"
+#include <vector>
 
 class AgentsLoadStrategy
 {
