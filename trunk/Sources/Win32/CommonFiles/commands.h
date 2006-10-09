@@ -4,7 +4,20 @@
 //Author: Parshin Dmitry
 //Description: Набор команд,используемый планировщиком и агентом
 //-------------------------------------------------------------------------------------//
+
+#ifndef COMMANDS_H_
+#define COMMANDS_H_
+
 enum enumCommands{
 	GetStatus = 0x1,
 	StartScan = 0x2
 };
+
+//Тип определяющий реакцию агента на команды
+enum enumCommandResult{
+	RES_OK = 0x00,			//всё хорошо
+	RES_NO_AGENT,			//видимо неправильно задали адрес,либо агент не запущен
+	RES_AGENT_ERR			//агент не смог выполнить команду
+};
+
+#endif
