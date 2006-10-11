@@ -2461,7 +2461,7 @@
 		zoom       	100
 		max_height 	28350
 		max_width  	21600
-		origin_x   	2444
+		origin_x   	2144
 		origin_y   	0
 		items      	(list diagram_item_list
 		    (object ClassView "Class" "Logical View::CCallBackInterface" @54
@@ -3094,10 +3094,10 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@83
-			    location   	(2375, 95)
+			    location   	(2374, 95)
 			    fill_color 	13434879
 			    nlines     	1
-			    max_width  	432
+			    max_width  	434
 			    justify    	0
 			    label      	"CAgentHandler")
 			icon_style 	"Icon"
@@ -3106,7 +3106,7 @@
 			quidu      	"4529495D0119"
 			compartment 	(object Compartment
 			    Parent_View 	@83
-			    location   	(2375, 162)
+			    location   	(2374, 162)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -3122,7 +3122,7 @@
 			    anchor     	2
 			    nlines     	8
 			    max_width  	334)
-			width      	450
+			width      	452
 			height     	494
 			annotation 	8
 			autoResize 	TRUE)
