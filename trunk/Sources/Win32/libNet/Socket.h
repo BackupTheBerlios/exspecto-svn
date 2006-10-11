@@ -11,6 +11,7 @@
 class CSocket 
 {
 public:
+
 	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
 	CSocket( int iType = SOCK_STREAM, bool bBlocking = true );
@@ -30,7 +31,7 @@ public:
 	//Метод посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт
 	int Send( void* pBuffer, int iSize );
 
-	//Метод приёма,возвращает SOCKET_ERROR либо кол-во отправленных байт
+	//Метод приёма данных,возвращает SOCKET_ERROR либо кол-во принятых байт
 	int Receive( void* pBuffer, int iBufSize );
 
 	//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
