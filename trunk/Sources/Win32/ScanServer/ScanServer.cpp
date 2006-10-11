@@ -52,9 +52,9 @@ bool CScanServer::SendCommand( std::string strAddress, enumCommands Command, std
 	BYTE* pBuf = NULL;
 	int iSize;
 
-	switch( Command )
+/*	switch( Command )
 	{
-	case StartScan:
+	case START_SCAN:
 		{
 			Msg.BeginCommand( Command );
 			Msg.AddParam( (DWORD)vcParams.size() );
@@ -63,10 +63,10 @@ bool CScanServer::SendCommand( std::string strAddress, enumCommands Command, std
 			Msg.EndCommand();
 			Msg.GetBuffer( pBuf, iSize );
 		}break;
-	case GetStatus:
+	case GET_STATUS:
 		{
 		}break;
-	}
+	}*/
 
 	sock.Connect( strAddress, 5000 );
 	sock.Send( pBuf, iSize );
@@ -108,8 +108,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	vcAddresses.push_back( "172.16.3.110" );
 	vcAddresses.push_back( "172.16.3.121" );
 
-	shed.SendCommand( "127.0.0.1", StartScan, vcAddresses );
-	shed.SendCommand( "127.0.0.1", GetStatus, pBuf, sizeof( pBuf ) );
+	shed.SendCommand( "127.0.0.1", START_SCAN, vcAddresses );
+	shed.SendCommand( "127.0.0.1", GET_STATUS, pBuf, sizeof( pBuf ) );
 	printf( "%02X ",pBuf[0] );
 	printf( "%02X ",pBuf[1] );
 	getch();

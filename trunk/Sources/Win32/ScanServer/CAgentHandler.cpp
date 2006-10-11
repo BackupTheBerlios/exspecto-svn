@@ -7,23 +7,41 @@
 #include "CAgentHandler.h"
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
+														   ,m_bOpened( false )
 {
 }
 
 CAgentHandler::~CAgentHandler()
 {
+	Close();
 }
 
-enumCommandResult CAgentHandler::SendMessage( CPacket &Msg )
+CAgentHandler::enumCommandResult CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )
 {
+	if( !m_bOpened )
+		return RES_NOT_OPENED;
+	BYTE* pBuf = NULL;
 	int iSize = 0;
-	BYTE* pBuf;
 	Msg.GetBuffer( pBuf, iSize );
 	if( 0 != iSize )
 		m_Sock.Send( pBuf, iSize );
 	else;
 		//TODO:
-	return RES_OK;
+
+	if( SOCKET_ERROR == m_Sock.Send( pBuf, iSize ) )
+	{
+		//TODO:
+		return RES_SOCK_ERR;
+	}
+	int iRecvRes = 0;
+	if( SOCKET_ERROR == ( iRecvRes = m_Sock.Receive( pbRespBuf, iRespSize ) || 0 == iRecvRes ) )
+	{
+		if( WSAEMSGSIZE == m_Sock.GetLastError() )
+			return RES_INCORRECT;
+		//TODO:
+		return RES_NO_RESPONSE;
+	}
+	return RES_OK;		
 }
 
 bool CAgentHandler::Open()
@@ -31,67 +49,130 @@ bool CAgentHandler::Open()
 	if( 0 != m_Sock.Connect( m_strAddress, PORT ) )
 	{
 		//TODO:
+		return false;
 	};
+	m_bOpened = false;
 	//вывести ошибку в лог m_Sock.GetLastError
 	 return true;
 }
 
 bool CAgentHandler::Close()
 {
-	return  0 == m_Sock.Close()?true:false; 
-}
-/*
-//Отправить команду Command на адрес strAddress с параметрами vcParams
-bool CScanServer::SendCommand( )
-{
-	CClientSocket sock;
-	CPacket Msg;
-	BYTE* pBuf = NULL;
-	int iSize;
-
-	switch( Command )
+	if( 0 != m_Sock.Close() )
 	{
-	case StartScan:
-		{
-			Msg.BeginCommand( Command );
-			Msg.AddParam( (DWORD)vcParams.size() );
-			for( std::vector< std::string >::iterator It = vcParams.begin(); It != vcParams.end(); It++ )
-				Msg.AddAddress( *It );
-			Msg.EndCommand();
-			Msg.GetBuffer( pBuf, iSize );
-		}break;
-	case GetStatus:
-		{
-		}break;
+		//TODO:
+		return false;
 	}
-
-	sock.Connect( strAddress, 5000 );
-	sock.Send( pBuf, iSize );
-	sock.Close();
-	return true;
+	m_bOpened = false;
+	return  true; 
 }
 
-//Отправить команду Command на адрес strAddress и получить ответ в pBuffer
-//iBufSize - размер буфера
-bool CScanServer::SendCommand( std::string strAddress, enumCommands Command, BYTE* pBuffer, int iBufSize )
+bool CAgentHandler::IsOpened()
 {
-	CClientSocket sock;
+	return m_bOpened;
+}
+
+CAgentHandler::enumCommandResult CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )
+{
 	CPacket Msg;
-	BYTE* pBuf = NULL;
-	int iSize;
+	BYTE pbRecvBuf[255];
+	enumCommandResult Res;
 
-	Msg.BeginCommand( Command );
+	Msg.BeginCommand( START_SCAN );
+	Msg.AddParam( (DWORD)vecAddresses.size() );
+	for( std::vector< std::string >::iterator It = vecAddresses.begin(); It != vecAddresses.end(); It++ )
+		Msg.AddAddress( *It );
 	Msg.EndCommand();
-	Msg.GetBuffer( pBuf, iSize );
-
-	sock.Connect( strAddress, 5000 );
 	
-	sock.Send( pBuf, iSize );
-	//если ожидается ответ на команду - получить его
-	if( 0 != iBufSize )
-        sock.Receive( pBuffer, iSize );
-	sock.Close();
-	return true;
-}*/
+	
+	if( RES_OK != ( Res = SendMessage( Msg, pbRecvBuf, 1 ) ) )
+	{
+		//TODO:
+		return Res;
+	} 
+	return RESP_OK == pbRecvBuf[0]? RES_OK:RES_AGENT_ERR; 
+}
+	
+CAgentHandler::enumCommandResult CAgentHandler::StopScan()
+{
+	CPacket Msg;
+	BYTE pbRecvBuf[255];
+	enumCommandResult Res;
+
+	Msg.BeginCommand( STOP_SCAN );
+	Msg.EndCommand();
+
+	if( RES_OK != ( Res = SendMessage( Msg, pbRecvBuf, 1 ) ) )
+	{
+		//TODO:
+		return Res;
+	} 
+
+	return RESP_OK == pbRecvBuf[0]? RES_OK:RES_AGENT_ERR;;		
+}
+	
+CAgentHandler::enumCommandResult CAgentHandler::GetStatus( enumAgentStatus& Status )
+{
+	CPacket Msg;
+	BYTE pbRecvBuf[255];
+	enumCommandResult Res;
+
+	Msg.BeginCommand( GET_STATUS );
+	Msg.EndCommand();
+
+	if( RES_OK != ( Res = SendMessage( Msg, pbRecvBuf, 1 ) ) )
+	{
+		//TODO:
+		return Res;
+	} 
+	if( RESP_OK != pbRecvBuf[0] )
+	{
+		//TODO:
+		return RES_AGENT_ERR;
+	}
+	if( RES_OK != ( Res = SendMessage( Msg, pbRecvBuf, 1 ) ) )
+	{
+		//TODO:
+		return Res;
+	} 
+	Status = (enumAgentStatus)pbRecvBuf[0];
+	return RES_OK;
+}
+	
+CAgentHandler::enumCommandResult CAgentHandler::GetData()
+{
+	CPacket Msg;
+	BYTE pbRecvBuf[255];
+	enumCommandResult Res;
+
+	Msg.BeginCommand( GET_DATA );
+	Msg.EndCommand();
+
+	if( RES_OK != ( Res = SendMessage( Msg, pbRecvBuf, 1 ) ) )
+	{
+		//TODO:
+		return Res;
+	} 
+	if( RESP_OK != pbRecvBuf[0] )
+	{
+		//TODO:
+		return RES_AGENT_ERR;
+	}
+	if( RES_OK != ( Res = SendMessage( Msg, pbRecvBuf, 3 ) ) )
+	{
+		//TODO:
+		return Res;
+	} 
+	int iDataSize;
+	::memcpy( (BYTE*)&iDataSize + 3, pbRecvBuf, 3 );
+	BYTE* pbData = new BYTE[ iDataSize ];
+	if( RES_OK != ( Res = SendMessage( Msg, pbData, iDataSize ) ) )
+	{
+		//TODO:
+		return Res;
+	} 
+	delete pbData;
+	return RES_OK;
+}
 
 
