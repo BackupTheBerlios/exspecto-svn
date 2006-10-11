@@ -9,15 +9,22 @@
 #define COMMANDS_H_
 
 enum enumCommands{
-	GetStatus = 0x1,
-	StartScan = 0x2
+	GET_STATUS = 0x01,
+	START_SCAN = 0x02,
+	GET_DATA = 0x03,
+	STOP_SCAN = 0x04
 };
 
-//“ип определ€ющий реакцию агента на команды
-enum enumCommandResult{
-	RES_OK = 0x00,			//всЄ хорошо
-	RES_NO_AGENT,			//видимо неправильно задали адрес,либо агент не запущен
-	RES_AGENT_ERR			//агент не смог выполнить команду
+enum enumAgentResponse{
+	RESP_OK = 0x00,
+	RESP_INPUT_DATA_ERR,
+	RESP_PROC_ERR
 };
 
+enum enumAgentStatus{
+	Idling = 0x01,
+	Scanning = 0x02,
+	SendingData = 0x03,
+	SendingStatus = 0x04
+};
 #endif
