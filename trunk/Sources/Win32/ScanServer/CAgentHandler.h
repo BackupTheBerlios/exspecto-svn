@@ -30,6 +30,7 @@ public:
 	};
 
 	virtual ~CAgentHandler();
+	
 	CAgentHandler( std::string strAgentAddress );
 	
 	bool Open();
