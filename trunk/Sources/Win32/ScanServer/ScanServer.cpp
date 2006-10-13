@@ -6,14 +6,13 @@
 //-------------------------------------------------------------------------------------//
 #include <iostream>
 #include <tchar.h>
-#include "winsock2.h"
-#include "..\libNet\ClientSocket.h"
-#include "..\libNet\Packet.h"
 #include ".\ScanServer.h"
-#include "conio.h"
+#include "windows.h"
 
 CScanServer::CScanServer(void)
 {
+	m_pTrigger = new CTimer( this );
+	m_pTrigger->Start();
 }
 
 CScanServer::~CScanServer(void)
@@ -23,10 +22,12 @@ CScanServer::~CScanServer(void)
 void CScanServer::OnStartScan()
 {
 	//TODO:
+	MessageBox( NULL, "asdasd", "Asdasd", MB_OK );
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	CScanServer shed;
+	Sleep(20000);
 	return 0;
 }

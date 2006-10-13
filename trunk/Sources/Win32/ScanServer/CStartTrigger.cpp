@@ -18,7 +18,7 @@ CStartTrigger::~CStartTrigger()
 CTimer::CTimer( CStartScanEventInterface* pCallBack ):CStartTrigger( pCallBack )
 {
 	//TODO:доставать значение таймера из параметров
-	m_ulTimerValue = 1200; //1200 сек
+	m_ulTimerValue = 5; //5 сек
 	m_hCancelEvent = CreateEvent( 0, 0, 0, NULL ); 
 }
 
@@ -33,7 +33,7 @@ void CTimer::Start()
 {
 	if( WAIT_TIMEOUT == ::WaitForSingleObject( m_hThread, 0 ) )
 		Stop();
-	m_hThread = (HANDLE)_beginthreadex( NULL, 0, &fnTimerProc, NULL, 0, NULL );
+	m_hThread = (HANDLE)_beginthreadex( NULL, 0, &fnTimerProc, this, 0, NULL );
 }
 	
 void CTimer::Stop()
@@ -45,8 +45,12 @@ void CTimer::Stop()
 unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 {
 	CTimer* pThis = static_cast<CTimer*>( pParam );
-	::WaitForSingleObject( pThis->m_hCancelEvent, pThis->m_ulTimerValue );
-	pThis->m_pCallBack->OnStartScan();
+	for(;;)
+	{
+		if( WAIT_OBJECT_0 == ::WaitForSingleObject( pThis->m_hCancelEvent, pThis->m_ulTimerValue*1000 ) )
+			break;
+		pThis->m_pCallBack->OnStartScan();
+	}
 	return 0;
 }
 
