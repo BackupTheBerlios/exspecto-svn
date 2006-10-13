@@ -13,15 +13,19 @@ CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAge
 
 CAgentHandler::~CAgentHandler()
 {
+	//Перед уничтожением закрываем соединение с агентом
 	Close();
 }
 
+//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
 CAgentHandler::enumCommandResult CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )
 {
 	if( !m_bOpened )
 		return RES_NOT_OPENED;
+
 	BYTE* pBuf = NULL;
 	int iSize = 0;
+	//Получаем буфер с данными сообщения Msg для отправки по сети
 	Msg.GetBuffer( pBuf, iSize );
 	if( 0 != iSize )
 		m_Sock.Send( pBuf, iSize );
@@ -33,13 +37,19 @@ CAgentHandler::enumCommandResult CAgentHandler::SendMessage( CPacket &Msg, BYTE*
 		//TODO:
 		return RES_SOCK_ERR;
 	}
+	//Получаем ответ на сообщение
 	int iRecvRes = 0;
 	if( SOCKET_ERROR == ( iRecvRes = m_Sock.Receive( pbRespBuf, iRespSize ) || 0 == iRecvRes ) )
 	{
 		if( WSAEMSGSIZE == m_Sock.GetLastError() )
-			return RES_INCORRECT;
+			return RES_INCORRECT;					//Ожидаемый размер ответа оказался меньше фактического
 		//TODO:
 		return RES_NO_RESPONSE;
+	}
+	if( iRecvRes != iRespSize )
+	{
+		//TODO:
+		return RES_INCORRECT;						//Ожидаемый размер не совпал с фактическим
 	}
 	return RES_OK;		
 }
