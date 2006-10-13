@@ -18,6 +18,7 @@ public:
 	virtual ~AgentsLoadStrategy();
 private:
 
+	//Вектор указателей на созданные в процессе загрузки классы для дальнейшего их удаления
 	std::vector< CAgentHandler* > m_ReleseCont;
 };
 
