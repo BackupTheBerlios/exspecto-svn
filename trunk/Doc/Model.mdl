@@ -257,7 +257,7 @@
 		used_nodes 	(list uses_relationship_list
 		    (object Uses_Relationship
 			quid       	"4504632E033C"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280")
 		    (object Uses_Relationship
 			quid       	"4504639B02FD"
@@ -278,117 +278,12 @@
 			uid        	0))
 		module     	"Component View::Common.Lib"
 		quidu      	"4516369C00F6")
-	    (object Class "CRegKey"
-		quid       	"44B7861C010D"
-		operations 	(list Operations
-		    (object Operation "CRegKey"
-			quid       	"44B786D802FD"
-			parameters 	(list Parameters
-			    (object Parameter "const char*"
-				quid       	"44B786E901E2"
-				type       	"strKey"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "SetStrParam"
-			quid       	"44B786FA0357"
-			parameters 	(list Parameters
-			    (object Parameter "strParamName"
-				quid       	"44B7872A03B0"
-				type       	"const char*")
-			    (object Parameter "strValue"
-				quid       	"44B787C5016E"
-				type       	"char*")
-			    (object Parameter "bCreate"
-				quid       	"44B7875603AC"
-				type       	"bool"
-				initv      	"false"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "SetDwordParam"
-			quid       	"44B787AD0067"
-			parameters 	(list Parameters
-			    (object Parameter "strParamName"
-				quid       	"44B787E703DB"
-				type       	"const char*")
-			    (object Parameter "dwValue"
-				quid       	"44B787F70263"
-				type       	"DWORD")
-			    (object Parameter "bCreate"
-				quid       	"44B78836000A"
-				type       	"bool"
-				initv      	"false"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "SetBinParam"
-			quid       	"44B7884400F3"
-			parameters 	(list Parameters
-			    (object Parameter "strParamName"
-				quid       	"44B7885300F2"
-				type       	"const char*")
-			    (object Parameter "bValue"
-				quid       	"44B788600277"
-				type       	"BYTE*")
-			    (object Parameter "bCreate"
-				quid       	"44B788BD0329"
-				type       	"bool"
-				initv      	"false"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "GetStrParam"
-			quid       	"44B788DA0122"
-			parameters 	(list Parameters
-			    (object Parameter "strParamName"
-				quid       	"44B788EA01EC"
-				type       	"const char*")
-			    (object Parameter "strValue"
-				quid       	"44B788F4017E"
-				type       	"char*"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "GetDwordParam"
-			quid       	"44B789F403E4"
-			parameters 	(list Parameters
-			    (object Parameter "strParamName"
-				quid       	"44B79089029B"
-				type       	"const char*")
-			    (object Parameter "dwValue"
-				quid       	"44B790CA012D"
-				type       	"DWORD&"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "GetBinParam"
-			quid       	"44B790E402E0"
-			parameters 	(list Parameters
-			    (object Parameter "strParamName"
-				quid       	"44B790F402A0"
-				type       	"const char*")
-			    (object Parameter "bValue"
-				quid       	"44B79103029E"
-				type       	"BYTE*"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0))
-		module     	"Component View::Common.Lib"
-		quidu      	"4516369C00F6")
 	    (object Class "CSettings"
 		quid       	"44B791D70325"
 		used_nodes 	(list uses_relationship_list
 		    (object Uses_Relationship
 			quid       	"450463840213"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280")
 		    (object Uses_Relationship
 			quid       	"4504639D038A"
@@ -437,7 +332,7 @@
 		used_nodes 	(list uses_relationship_list
 		    (object Uses_Relationship
 			quid       	"44EC8A79001F"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280")
 		    (object Uses_Relationship
 			quid       	"4504639702CE"
@@ -642,64 +537,13 @@
 		module     	"Component View::Net.lib"
 		quidu      	"451635F002CB"
 		language   	"ANSI C++")
-	    (object Class "CAgentsContainer"
-		quid       	"44EA038C0000"
-		documentation 	
-|Содержит пул агентов
-|
-		
-		operations 	(list Operations
-		    (object Operation "AddAgent"
-			quid       	"44EA03B503B9"
-			parameters 	(list Parameters
-			    (object Parameter "strAgentAddress"
-				quid       	"451C1060032C"
-				type       	"std::string"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "RemoveAgent"
-			quid       	"44EA03EA0280"
-			parameters 	(list Parameters
-			    (object Parameter "strAgentAddress"
-				quid       	"451C10A0006D"
-				type       	"std::string"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "FindAgents"
-			quid       	"44EA03F202FD"
-			result     	"int"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "IsAgent"
-			quid       	"44EA0400008C"
-			parameters 	(list Parameters
-			    (object Parameter "strAgentAddress"
-				quid       	"451C10B1033C"
-				type       	"std::string"))
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0)
-		    (object Operation "AgentsCount"
-			quid       	"44EA040501E4"
-			result     	"bool"
-			concurrency 	"Sequential"
-			opExportControl 	"Public"
-			uid        	0))
-		module     	"Component View::ScanServer"
-		quidu      	"451635F6026D")
 	    (object Class "CStartTrigger"
 		quid       	"44EC83EA02EE"
 		documentation 	"Вызывает метод OnStartScanEvent в экземпляре класса CScanServer, когда возникает признак начала сканирования, определяемый настройками расписания"
 		used_nodes 	(list uses_relationship_list
 		    (object Uses_Relationship
 			quid       	"44EC8A9E037A"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"))
 		operations 	(list Operations
 		    (object Operation "CStartTrigger"
@@ -730,7 +574,7 @@
 			quid       	"44EC97CE03B9"
 			type       	"*CCallBackInterface"))
 		abstract   	TRUE)
-	    (object Class "CScanServer"
+	    (object Class "CScheduler"
 		quid       	"44EC89D80280"
 		module     	"Component View::ScanServer"
 		quidu      	"451635F6026D")
@@ -740,7 +584,7 @@
 		superclasses 	(list inheritance_relationship_list
 		    (object Inheritance_Relationship
 			quid       	"44EC8BD30232"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"))
 		operations 	(list Operations
 		    (object Operation "OnStartScanEvent"
@@ -931,7 +775,7 @@
 		roles      	(list role_list
 		    (object Role "$UNNAMED$1"
 			quid       	"451B860B0213"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"
 			is_navigable 	TRUE)
 		    (object Role "$UNNAMED$2"
@@ -950,7 +794,7 @@
 			is_navigable 	TRUE)
 		    (object Role "$UNNAMED$5"
 			quid       	"451B887900DA"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"
 			is_aggregate 	TRUE)))
 	    (object Association "$UNNAMED$6"
@@ -964,7 +808,7 @@
 			is_navigable 	TRUE)
 		    (object Role "$UNNAMED$8"
 			quid       	"451B88D40234"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"
 			is_aggregate 	TRUE)))
 	    (object Association "$UNNAMED$9"
@@ -978,7 +822,7 @@
 			is_navigable 	TRUE)
 		    (object Role "$UNNAMED$11"
 			quid       	"451B88E003BB"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"
 			is_aggregate 	TRUE)))
 	    (object Association "$UNNAMED$12"
@@ -992,7 +836,7 @@
 			is_navigable 	TRUE)
 		    (object Role "$UNNAMED$14"
 			quid       	"451B8ADC02BF"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"
 			is_aggregate 	TRUE)))
 	    (object Association "$UNNAMED$15"
@@ -1050,7 +894,7 @@
 			is_navigable 	TRUE)
 		    (object Role "$UNNAMED$26"
 			quid       	"451C0F9A0233"
-			supplier   	"Logical View::CScanServer"
+			supplier   	"Logical View::CScheduler"
 			quidu      	"44EC89D80280"
 			is_aggregate 	TRUE)))
 	    (object Association "$UNNAMED$27"
@@ -1067,60 +911,48 @@
 			supplier   	"Logical View::CAgent"
 			quidu      	"44B87C380213")))
 	    (object Association "$UNNAMED$30"
-		quid       	"452948C80119"
-		roles      	(list role_list
-		    (object Role "$UNNAMED$31"
-			quid       	"452948C90290"
-			supplier   	"Logical View::Container<AgentsLoadStrategy>"
-			quidu      	"452947B70261"
-			is_navigable 	TRUE)
-		    (object Role "$UNNAMED$32"
-			quid       	"452948C9029F"
-			supplier   	"Logical View::CAgentsContainer"
-			quidu      	"44EA038C0000")))
-	    (object Association "$UNNAMED$33"
 		quid       	"452948D10290"
 		roles      	(list role_list
-		    (object Role "$UNNAMED$34"
+		    (object Role "$UNNAMED$31"
 			quid       	"452948D20157"
 			supplier   	"Logical View::CAgent"
 			quidu      	"44B87C380213"
 			client_cardinality 	(value cardinality "0..n")
 			Containment 	"By Reference"
 			is_navigable 	TRUE)
-		    (object Role "$UNNAMED$35"
+		    (object Role "$UNNAMED$32"
 			quid       	"452948D20159"
 			supplier   	"Logical View::Container<AgentsLoadStrategy>"
 			quidu      	"452947B70261"
 			client_cardinality 	(value cardinality "1")
 			is_aggregate 	TRUE)))
-	    (object Association "$UNNAMED$36"
+	    (object Association "$UNNAMED$33"
 		quid       	"452949B103C8"
 		roles      	(list role_list
-		    (object Role "$UNNAMED$37"
+		    (object Role "$UNNAMED$34"
 			quid       	"452949B20203"
 			supplier   	"Logical View::CAgent"
 			quidu      	"44B87C380213"
 			client_cardinality 	(value cardinality "0..n")
 			Containment 	"By Reference"
 			is_navigable 	TRUE)
-		    (object Role "$UNNAMED$38"
+		    (object Role "$UNNAMED$35"
 			quid       	"452949B20214"
 			supplier   	"Logical View::Container<AgentsLoadStrategy>"
 			quidu      	"452947B70261"
 			client_cardinality 	(value cardinality "1")
 			is_aggregate 	TRUE)))
-	    (object Association "$UNNAMED$39"
+	    (object Association "$UNNAMED$36"
 		quid       	"45294F77002E"
 		roles      	(list role_list
-		    (object Role "$UNNAMED$40"
+		    (object Role "$UNNAMED$37"
 			quid       	"45294F770157"
 			supplier   	"Logical View::CAgentHandler"
 			quidu      	"4529495D0119"
 			client_cardinality 	(value cardinality "0..n")
 			Containment 	"By Reference"
 			is_navigable 	TRUE)
-		    (object Role "$UNNAMED$41"
+		    (object Role "$UNNAMED$38"
 			quid       	"45294F770168"
 			supplier   	"Logical View::Container<AgentsLoadStrategy>"
 			quidu      	"452947B70261"
@@ -1451,7 +1283,7 @@
 		    transitions 	(list transition_list
 			(object State_Transition
 			    quid       	"44EA00B2036B"
-			    supplier   	"$UNNAMED$42"
+			    supplier   	"$UNNAMED$39"
 			    quidu      	"44EA007B02CE"
 			    sendEvent  	(object sendEvent
 				quid       	"44EA00B2036E")))
@@ -1463,7 +1295,7 @@
 			partitions 	(list Partitions)
 			objects    	(list Objects)
 			statediagrams 	(list StateDiagrams)))
-		(object Decision "$UNNAMED$42"
+		(object Decision "$UNNAMED$39"
 		    quid       	"44EA007B02CE"
 		    transitions 	(list transition_list
 			(object State_Transition
@@ -1504,11 +1336,11 @@
 		    transitions 	(list transition_list
 			(object State_Transition
 			    quid       	"44EA01AE0186"
-			    supplier   	"$UNNAMED$43"
+			    supplier   	"$UNNAMED$40"
 			    quidu      	"44EA01A602EE"
 			    sendEvent  	(object sendEvent
 				quid       	"44EA01AE0189"))))
-		(object Decision "$UNNAMED$43"
+		(object Decision "$UNNAMED$40"
 		    quid       	"44EA01A602EE"
 		    transitions 	(list transition_list
 			(object State_Transition
@@ -1523,13 +1355,13 @@
 			(object State_Transition
 			    quid       	"44EA01CA032C"
 			    label      	""
-			    supplier   	"$UNNAMED$44"
+			    supplier   	"$UNNAMED$41"
 			    quidu      	"44EA01C701B5"
 			    Event      	(object Event "list is empty"
 				quid       	"44EA01CA032D")
 			    sendEvent  	(object sendEvent
 				quid       	"44EA01CA032F"))))
-		(object State "$UNNAMED$44"
+		(object State "$UNNAMED$41"
 		    quid       	"44EA01C701B5"
 		    type       	"EndState"))
 	    partitions 	(list Partitions)
@@ -2094,7 +1926,7 @@
 			    supplier   	@31
 			    line_style 	0
 			    x_offset   	FALSE)
-			(object DecisionView "$UNNAMED$42" @33
+			(object DecisionView "$UNNAMED$39" @33
 			    Parent_View 	@25
 			    location   	(300, 179)
 			    icon_style 	"Icon"
@@ -2303,7 +2135,7 @@
 			    supplier   	@41
 			    line_style 	0
 			    x_offset   	FALSE)
-			(object DecisionView "$UNNAMED$43" @44
+			(object DecisionView "$UNNAMED$40" @44
 			    Parent_View 	@25
 			    location   	(2302, 943)
 			    icon_style 	"Icon"
@@ -2358,7 +2190,7 @@
 			    supplier   	@30
 			    line_style 	0
 			    x_offset   	FALSE)
-			(object StateView "EndState" "$UNNAMED$44" @48
+			(object StateView "EndState" "$UNNAMED$41" @48
 			    Parent_View 	@25
 			    location   	(2302, 1238)
 			    font       	(object Font
@@ -2474,7 +2306,7 @@
 		zoom       	100
 		max_height 	28350
 		max_width  	21600
-		origin_x   	2444
+		origin_x   	1262
 		origin_y   	0
 		items      	(list diagram_item_list
 		    (object ClassView "Class" "Logical View::CCallBackInterface" @54
@@ -2727,7 +2559,7 @@
 			    fill_color 	13434879
 			    anchor     	2
 			    nlines     	5
-			    max_width  	700)
+			    max_width  	709)
 			width      	842
 			height     	348
 			annotation 	8
@@ -2916,11 +2748,11 @@
 			client     	@66
 			supplier   	@58
 			line_style 	0)
-		    (object ClassView "Class" "Logical View::CScanServer" @69
+		    (object ClassView "Class" "Logical View::CScheduler" @69
 			ShowCompartmentStereotypes 	TRUE
 			IncludeAttribute 	TRUE
 			IncludeOperation 	TRUE
-			location   	(2011, 1886)
+			location   	(2011, 1885)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -2933,17 +2765,17 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@69
-			    location   	(1815, 1829)
+			    location   	(1842, 1828)
 			    fill_color 	13434879
 			    nlines     	1
-			    max_width  	392
+			    max_width  	338
 			    justify    	0
-			    label      	"CScanServer")
+			    label      	"CScheduler")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
 			quidu      	"44EC89D80280"
-			width      	410
+			width      	356
 			height     	142
 			annotation 	8
 			autoResize 	TRUE)
@@ -3023,7 +2855,7 @@
 				supplier   	@69
 				line_style 	0)))
 		    (object AssociationViewNew "$UNNAMED$9" @77
-			location   	(1883, 1469)
+			location   	(1883, 1468)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3040,7 +2872,7 @@
 			roleview_list 	(list RoleViews
 			    (object RoleView "$UNNAMED$10" @78
 				Parent_View 	@77
-				location   	(450, 96)
+				location   	(450, 95)
 				stereotype 	TRUE
 				line_color 	3342489
 				quidu      	"451B88E003B9"
@@ -3049,7 +2881,7 @@
 				line_style 	0)
 			    (object RoleView "$UNNAMED$11" @79
 				Parent_View 	@77
-				location   	(450, 96)
+				location   	(450, 95)
 				stereotype 	TRUE
 				line_color 	3342489
 				quidu      	"451B88E003BB"
@@ -3057,7 +2889,7 @@
 				supplier   	@69
 				line_style 	0)))
 		    (object AssociationViewNew "$UNNAMED$12" @80
-			location   	(1493, 1499)
+			location   	(1493, 1498)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3074,7 +2906,7 @@
 			roleview_list 	(list RoleViews
 			    (object RoleView "$UNNAMED$13" @81
 				Parent_View 	@80
-				location   	(60, 126)
+				location   	(60, 125)
 				stereotype 	TRUE
 				line_color 	3342489
 				quidu      	"451B8ADC02AF"
@@ -3083,7 +2915,7 @@
 				line_style 	0)
 			    (object RoleView "$UNNAMED$14" @82
 				Parent_View 	@80
-				location   	(60, 126)
+				location   	(60, 125)
 				stereotype 	TRUE
 				line_color 	3342489
 				quidu      	"451B8ADC02BF"
@@ -3189,7 +3021,7 @@
 			annotation 	8
 			autoResize 	TRUE)
 		    (object AssociationViewNew "$UNNAMED$24" @85
-			location   	(2250, 1568)
+			location   	(2250, 1567)
 			font       	(object Font
 			    size       	12
 			    face       	"Arial"
@@ -3206,7 +3038,7 @@
 			roleview_list 	(list RoleViews
 			    (object RoleView "$UNNAMED$25" @86
 				Parent_View 	@85
-				location   	(176, 122)
+				location   	(176, 121)
 				stereotype 	TRUE
 				line_color 	3342489
 				quidu      	"451C0F9A0222"
@@ -3215,14 +3047,14 @@
 				line_style 	0)
 			    (object RoleView "$UNNAMED$26" @87
 				Parent_View 	@85
-				location   	(176, 122)
+				location   	(176, 121)
 				stereotype 	TRUE
 				line_color 	3342489
 				quidu      	"451C0F9A0233"
 				client     	@85
 				supplier   	@69
 				line_style 	0)))
-		    (object AssociationViewNew "$UNNAMED$39" @88
+		    (object AssociationViewNew "$UNNAMED$36" @88
 			location   	(2591, 748)
 			font       	(object Font
 			    size       	12
@@ -3238,7 +3070,7 @@
 			line_color 	3342489
 			quidu      	"45294F77002E"
 			roleview_list 	(list RoleViews
-			    (object RoleView "$UNNAMED$40" @89
+			    (object RoleView "$UNNAMED$37" @89
 				Parent_View 	@88
 				location   	(-1, -374)
 				font       	(object Font
@@ -3279,7 +3111,7 @@
 				    pctDist    	0.900000
 				    height     	54
 				    orientation 	1))
-			    (object RoleView "$UNNAMED$41" @91
+			    (object RoleView "$UNNAMED$38" @91
 				Parent_View 	@88
 				location   	(-1, -374)
 				font       	(object Font
