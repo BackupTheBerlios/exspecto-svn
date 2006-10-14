@@ -34,7 +34,8 @@ class CScheduler: public CStartScanEventInterface
 public:
 	CScheduler(void);
 	virtual ~CScheduler(void);
-	
+
+	//Метод вызывается триггером при срабатывании
 	virtual void OnStartScan();
 
 private:
