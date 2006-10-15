@@ -4,22 +4,27 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий клиентскую часть сокетов
 //-------------------------------------------------------------------------------------//
-#pragma once
+#ifndef CCLIENTSOCKET_H_
+#define CCLIENTSOCKET_H_
+
+#include "precomp.h"
 #include "Socket.h"
-#include <string>
 
 class CClientSocket: public CSocket
 {
 public:
+
 	//Конструктор
 	//iType - тип сокета, возможные значения - SOCK_STREAM и SOCK_DGRAM
 	//bBlocking - блокирующий либо не блокирующий сокет
-	CClientSocket( int iType = SOCK_STREAM, bool bBlocking = true );
+	CClientSocket( int iType = SOCK_STREAM, bool bBlocking = true )throw( SocketErr );
 
-	~CClientSocket( void );
+	~CClientSocket( void )throw( SocketErr );
 
 
 	//Соединение с strAddr:iPort,где sAddr - имя удаленного хоста,либо его IP-адресс
 	//								 iPort - порт, к которому необходимо подключиться
-	int Connect( std::string strAddr, int iPort );
+	void Connect( std::string strAddr, int iPort )throw( SocketDNSErr, CSocket::SocketErr );
 };
+
+#endif

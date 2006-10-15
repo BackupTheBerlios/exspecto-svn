@@ -4,35 +4,76 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий взаимодействие с сокетами (общая для клиента и сервера часть)
 //-------------------------------------------------------------------------------------
-#pragma once
+
+#ifndef CSOCKET_H_
+#define CSOCKET_H_
+
+#include "precomp.h"
 #include <string>
-#include "winsock2.h"
+#include <stdexcept>
 
 class CSocket 
 {
 public:
 
+	//Исключения, генерируемые CSocket и классами, наследующими от него
+	class SocketErr: public std::exception
+	{
+	public:
+		SocketErr( int iLastError )throw()
+		{
+			if( 0 == FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM, NULL, iLastError, 0, data, 0, NULL ) )
+			{
+				data = new char[ sizeof( "Error during formating error message" ) ];
+				strcpy( data, "Error during formating error message" );
+			} 
+		};
+		
+		virtual ~SocketErr()throw(){};
+		
+		virtual const char* what() const throw()
+		{
+		 	return data;	 
+		};
+		
+	private:
+	
+		char* data;
+	};
+
+	class SocketDNSErr: public CSocket::SocketErr 
+	{
+		public:
+			SocketDNSErr():CSocket::SocketErr( WSAHOST_NOT_FOUND ){};
+		virtual ~SocketDNSErr()throw(){};
+	};
+	
+	class SocketRespSizeErr: public CSocket::SocketErr 
+	{
+		public:
+			SocketRespSizeErr():CSocket::SocketErr( WSAEMSGSIZE ){};
+		virtual ~SocketRespSizeErr()throw(){};
+	};
+	
+	
 	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
-	CSocket( int iType = SOCK_STREAM, bool bBlocking = true );
+	CSocket( int iType = SOCK_STREAM, bool bBlocking = true )throw( SocketErr );
 
 	//Конструктор, s - созданный функцией ::socket сокет
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
-	CSocket( SOCKET s, bool bBlocking );
+	CSocket( SOCKET s, bool bBlocking )throw( SocketErr );
 
 	virtual ~CSocket(void);
 
-	//Метод, возвращающий код последней ошибки
-	int GetLastError(void);
-
 	//Метод закрытия сокета
-    int Close( void );
+    void Close( void )throw( SocketErr );
 
-	//Метод посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт
-	int Send( void* pBuffer, int iSize );
+	//Метод посылки данных,возвращает кол-во отправленных байт
+	int Send( void* pBuffer, int iSize )throw( SocketErr );
 
-	//Метод приёма данных,возвращает SOCKET_ERROR либо кол-во принятых байт
-	int Receive( void* pBuffer, int iBufSize );
+	//Метод приёма данных,возвращает кол-во принятых байт
+	int Receive( void* pBuffer, int iBufSize )throw( SocketErr );
 
 	//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
 	void SetBlocking( bool bIsBlocking );
@@ -40,17 +81,14 @@ public:
 	//При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
 	//поступили данные и можно производить операцию Receive
 	//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
-	bool IsReadyForRead( int iTimeout = -1 );
+	bool IsReadyForRead( int iTimeout = -1 )throw( SocketErr );
 
 	//При использовании неблокирующих вызовов, метод возвращает true,если сокет готов к
 	//записи
 	//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
-	bool IsReadyForWrite( int iTimeout = -1 );
+	bool IsReadyForWrite( int iTimeout = -1 )throw( SocketErr );
 
 protected:
-
-	//Переменная, содержащая код последней ошибки
-	int m_iLastError;
 
 	//Дескриптор сокета, используемый практически во всех функциях
 	SOCKET m_Socket;
@@ -61,3 +99,5 @@ protected:
 	//Тип сокета
 	int m_iType;
 };
+
+#endif

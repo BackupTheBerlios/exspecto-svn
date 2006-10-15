@@ -4,7 +4,7 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий серверную часть сокетов
 //-------------------------------------------------------------------------------------//
-#include "StdAfx.h"
+#include "precomp.h"
 #include ".\serversocket.h"
 #include <string>
 
@@ -27,10 +27,9 @@ CServerSocket::~CServerSocket(void)
 }
 
 //Функция "прикрепления" сокета к адресу, по умолчанию ОС сама выбирает адрес и порт
-int CServerSocket::Bind( int iPort, std::string strAddr )
+void CServerSocket::Bind( int iPort, std::string strAddr )throw( SocketDNSErr, SocketErr )
 {
 	sockaddr_in sAddr;
-	int res;
 	hostent* hn;
 
 	::ZeroMemory( &sAddr, sizeof( sAddr ) );
@@ -45,40 +44,35 @@ int CServerSocket::Bind( int iPort, std::string strAddr )
 	{
 		if( NULL == ( hn = ::gethostbyname( strAddr.c_str() ) ) )
 		{
-			m_iLastError = ::WSAGetLastError();
-			return 0;
+			int iLastError = ::WSAGetLastError();
+			if( WSAHOST_NOT_FOUND == iLastError )
+				throw SocketDNSErr();
+			else
+				throw SocketErr( iLastError );
 		}
 		sAddr.sin_addr.S_un.S_addr = ::inet_addr( hn->h_addr_list[0] );
 	}
 	//Port
 	sAddr.sin_port = htons( iPort );
-    if ( SOCKET_ERROR == ( res = bind( m_Socket, (sockaddr* )&sAddr, sizeof ( sAddr ) ) ) )
-	{
-		m_iLastError = WSAGetLastError();
-		return SOCKET_ERROR;
-	}
-	return res;
+    if ( SOCKET_ERROR == bind( m_Socket, (sockaddr* )&sAddr, sizeof ( sAddr ) ) )
+		throw SocketErr( WSAGetLastError() );
 }
 
 //Функция начала "прослушивания", iMaxConn - максимальное кол-во соединения,
 //SOMAXCONN - максимальное значение
-int CServerSocket::Listen( int iMaxConn )
+void CServerSocket::Listen( int iMaxConn )throw( SocketErr )
 {
-	int res;
-	if( (int)INVALID_SOCKET == ( res = ::listen( m_Socket, iMaxConn ) ) )
-	{
-		m_iLastError = ::WSAGetLastError();
-	}
-	return res;
+	if( (int)INVALID_SOCKET == ::listen( m_Socket, iMaxConn ) )
+		throw SocketErr( WSAGetLastError() );
 }
 
 //При вызове accept, сокет блокируется вплоть до появления сигнала о входящем 
-//соединении (по аналогии к функциям из предыдущей статьи). Функция возвращает 
+//соединении . Функция возвращает 
 //новый сокет, который будет использоваться для связи с присоединившейся машиной 
 //(система создаёт его сама, при успешном соединении). Более подробные данные 
 //о присоединившейся машине accept возвращает в параметре addr 
 //(тип адреса, IP-адрес, порт).
-CSocket* CServerSocket::Accept( structAddr& addr )
+CSocket* CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 {
 	SOCKET s;
 	CSocket* sock;
@@ -90,8 +84,7 @@ CSocket* CServerSocket::Accept( structAddr& addr )
 	
 	if( INVALID_SOCKET == ( s = ::accept( m_Socket, (sockaddr*)&sAddr, &len ) ) )
 	{
-		m_iLastError = ::WSAGetLastError();
-		return (CSocket*)INVALID_SOCKET;
+			throw SocketErr( WSAGetLastError() );	
 	}else
 	{
 		addr.iPort = ::ntohs( sAddr.sin_port );

@@ -4,51 +4,35 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий взаимодействие с сокетами (общая для клиента и сервера часть)
 //-------------------------------------------------------------------------------------
-#include "StdAfx.h"
-#include ".\socket.h"
-#include "winsock2.h"
-#include <string>
+#include "Socket.h"
 
 //Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
-CSocket::CSocket( int iType, bool bBlocking ):m_iLastError(0)
-											 ,m_Socket( INVALID_SOCKET )
-											 ,m_bBlocking( bBlocking )
-											 ,m_iType( iType )
+CSocket::CSocket( int iType, bool bBlocking )throw( SocketErr ):m_Socket( INVALID_SOCKET ),
+											 					m_bBlocking( bBlocking ),
+											 					m_iType( iType )
 {
 	WSADATA WSAData;
 	 //Инициализация сокетов
 	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
-	{
-		m_iLastError = ::WSAGetLastError();
-	}else
-	{
-		m_iLastError = 0;
-	}
+		throw SocketErr( WSAGetLastError() );
+
 	//Создаем сокет
 	if( INVALID_SOCKET == ( m_Socket = ::socket( AF_INET, iType, 0 ) ) )
-	{
-		m_iLastError = ::WSAGetLastError();
-	}else
-	{
-		m_iLastError = 0;
-	}
+		throw SocketErr( WSAGetLastError() );
+
 	//Устанавливаем тип вызовов
 	SetBlocking( bBlocking );
 }
 
 //Конструктор, s - созданный функцией ::socket сокет
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
-CSocket::CSocket( SOCKET s, bool bBlocking ):m_bBlocking( bBlocking )
+CSocket::CSocket( SOCKET s, bool bBlocking )throw( SocketErr ):m_bBlocking( bBlocking )
 {
 	//Инициализация сокетов
 	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), NULL ) )
-	{
-		m_iLastError = ::WSAGetLastError();
-	}else
-	{
-		m_iLastError = 0;
-	}
+		throw SocketErr( WSAGetLastError() );
+
 	m_Socket = s;
 	int Size = sizeof(int);
 	::getsockopt( m_Socket, SOL_SOCKET, SO_TYPE, (char*)&m_iType, &Size ); 
@@ -56,23 +40,14 @@ CSocket::CSocket( SOCKET s, bool bBlocking ):m_bBlocking( bBlocking )
 
 CSocket::~CSocket(void)
 {
-	if( INVALID_SOCKET != m_Socket )
-        ::shutdown( m_Socket, SD_BOTH );
-}
-
-//Метод, возвращающий код последней ошибки
-int CSocket::GetLastError(void)
-{
-	return m_iLastError;
+	Close();
 }
 
 //Метод закрытия сокета
-int CSocket::Close( void )
+void CSocket::Close( void )throw( SocketErr )
 {
-	int iRes = 0;
-	if( INVALID_SOCKET != m_Socket )
-		iRes = ::shutdown( m_Socket, SD_BOTH );
-	return iRes;
+	if( INVALID_SOCKET != m_Socket || SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) )
+		throw SocketErr( WSAGetLastError() );
 }
 
 //Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
@@ -91,23 +66,25 @@ void CSocket::SetBlocking( bool bIsBlocking )
 }
 
 //Метод посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт
-int CSocket::Send( void* pBuffer, int iSize )
+int CSocket::Send( void* pBuffer, int iSize )throw( SocketErr )
 {
 	int res;
 	if( SOCKET_ERROR == ( res = ::send( m_Socket, (const char*)pBuffer, iSize, 0 ) ) )
-	{
-		m_iLastError = WSAGetLastError();
-	}
+		throw SocketErr( WSAGetLastError() );
 	return res;
 }
 
 //Метод приёма,возвращает SOCKET_ERROR либо кол-во отправленных байт
-int CSocket::Receive( void* pBuffer, int iBufSize )
+int CSocket::Receive( void* pBuffer, int iBufSize )throw( SocketErr )
 {
 	int res;
 	if( SOCKET_ERROR == ( res = ::recv( m_Socket, (char*)pBuffer, iBufSize, 0 ) ) )
 	{
-		m_iLastError = WSAGetLastError();
+		int iLastError = WSAGetLastError();
+		if( WSAEMSGSIZE == iLastError )
+			throw SocketRespSizeErr();
+		else
+			throw SocketErr( WSAGetLastError() );
 	}
 	return res;
 }
@@ -115,7 +92,7 @@ int CSocket::Receive( void* pBuffer, int iBufSize )
 //При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
 //поступили данные и можно производить операцию Receive
 //Timeout - время ожидания (мкс),если -1,бесконечное ожидание
-bool CSocket::IsReadyForRead( int iTimeout )
+bool CSocket::IsReadyForRead( int iTimeout )throw( SocketErr )
 {
 	fd_set sReadSet;
 	timeval sTimeout;
@@ -130,21 +107,16 @@ bool CSocket::IsReadyForRead( int iTimeout )
 		psTimeout = &sTimeout;
 	}
 	if( SOCKET_ERROR == ::select( 0, &sReadSet, NULL, NULL, psTimeout ) )
-	{
-		m_iLastError = ::WSAGetLastError();
-		return false;
-	}
+		throw SocketErr( WSAGetLastError() );
 	if( FD_ISSET( m_Socket, &sReadSet ) )
-	{
 		return true;
-	}
 	return false;
 }
 
 //При использовании неблокирующих вызовов, метод возвращает true,если сокет готов к
 //записи
 //Timeout - время ожидания (мкс),если -1,бесконечное ожидание
-bool CSocket::IsReadyForWrite( int iTimeout )
+bool CSocket::IsReadyForWrite( int iTimeout )throw( SocketErr )
 {
 	fd_set sWriteSet;
 	timeval sTimeout;
@@ -159,14 +131,9 @@ bool CSocket::IsReadyForWrite( int iTimeout )
 		psTimeout = &sTimeout;
 	}
 	if( SOCKET_ERROR == ::select( 0, NULL, &sWriteSet, NULL, psTimeout ) )
-	{
-		m_iLastError = ::WSAGetLastError();
-		return false;
-	}
+		throw SocketErr( WSAGetLastError() );
 	if( FD_ISSET( m_Socket, &sWriteSet ) )
-	{
 		return true;
-	}
 	return false;
 }
 

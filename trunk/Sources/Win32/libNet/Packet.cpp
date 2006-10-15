@@ -4,36 +4,39 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции для работы с пакетами (парсинг и подготовка)
 //-------------------------------------------------------------------------------------
-#include "StdAfx.h"
+#include "precomp.h"
 #include "packet.h"
 
 
-CPacket::CPacket(void):m_iDataSize( 0 )
+CPacket::CPacket(void)throw( PacketErr ):m_iDataSize( 0 )
 					  ,m_iBufSize( 1024 )
 					  ,m_iOffset( 0 )
 {
 	//Выделяем память под буфер,предварительно 1Кб 
-	m_pbBuf = (BYTE*)malloc( 1024 );
+	if( NULL == ( m_pbBuf = (BYTE*)malloc( 1024 ) ) )
+		throw PacketErr( "Not enough memory to form the packet" );
 }
 
 CPacket::~CPacket(void)
 {
-	free( m_pbBuf );
+	if( NULL != m_pbBuf )
+		free( m_pbBuf );
 }
 
 //Добавить в пакет идентификатор команды
-void CPacket::BeginCommand( enumCommands Command )
+void CPacket::BeginCommand( enumCommands Command )throw( PacketErr )
 {
 	Push( (BYTE*)&Command, 1 );
 }
 
 //Добавить массив байт к пакету
-void CPacket::Push( BYTE* pbData, int iSize )
+void CPacket::Push( BYTE* pbData, int iSize )throw( PacketErr )
 {
 	m_iDataSize += iSize;
 
 	if( m_iDataSize > m_iBufSize )
-		m_pbBuf = (BYTE*)realloc( m_pbBuf, m_iBufSize + 1024 );
+		if( NULL == ( m_pbBuf = (BYTE*)realloc( m_pbBuf, m_iBufSize + 1024 ) ) )
+			throw PacketErr( "Not enough memory to form the packet" );
 
 	::memcpy( m_pbBuf + m_iDataSize - iSize, pbData, iSize );
 }
@@ -41,95 +44,84 @@ void CPacket::Push( BYTE* pbData, int iSize )
 //Добавить параметр
 //	pbParam - буфер с данными
 //	iSize - размер данных
-void CPacket::AddParam( BYTE* pbParam, int iSize )
+void CPacket::AddParam( BYTE* pbParam, int iSize )throw( PacketErr )
 {
 	Push( pbParam, iSize );
 }
 
 //Добавить параметр
 //	dwParam - параметр типа DWORD
-void CPacket::AddParam( DWORD dwParam )
+void CPacket::AddParam( DWORD dwParam )throw( PacketErr )
 {
-	//TODO:
-	//возможна ошибка,переставить местами слова
 	Push( (BYTE*)&dwParam, sizeof(DWORD) );
 }
 
 //Добавить параметр
 //	strParam - строковый параметр
-void CPacket::AddParam( std::string strParam )
+void CPacket::AddParam( std::string strParam )throw( PacketErr )
 {
 	Push( (BYTE*)strParam.c_str(), (int)strParam.size() );
 }
 
 //Добавить IP - адрес в пакет
-bool CPacket::AddAddress( std::string strAddress )
+void CPacket::AddAddress( std::string strAddress )throw( PacketErr, PacketFormatErr )
 {
 	u_long lAdr;
 	//Передаем адрес в сетевом формате - 4 байта
 	if( INADDR_NONE ==( lAdr = inet_addr( strAddress.c_str() ) ) )
-		return false;
-	else
-	{
-        Push( (BYTE*)&lAdr, sizeof( u_long ) );
-	}
-	return true;
+		throw PacketFormatErr( "Address is incorrect" );
+    Push( (BYTE*)&lAdr, sizeof( u_long ) );
 }
 
 //Получить массив байт из пакета по текущему смещению
-bool CPacket::GetParam( BYTE* pbValue, int iSize )
+void CPacket::GetParam( BYTE* pbValue, int iSize )throw( PacketFormatErr )
 {
 	if( iSize > m_iDataSize - m_iOffset )
-		return false;
-
+		throw PacketFormatErr( "Incorrect param size" );
 	Pop( pbValue, iSize );
-	return true;
 }
 
 //Получить параметр типа DWORD по текущему смещению
-bool CPacket::GetParam( DWORD& dwValue )
+void CPacket::GetParam( DWORD& dwValue )throw( PacketFormatErr )
 {
 	if( sizeof(DWORD) > ( unsigned int )( m_iDataSize - m_iOffset ) )
-		return false;
+		throw PacketFormatErr( "Incorrect param size" );
 
 	Pop( (BYTE*)&dwValue, sizeof(DWORD) );
-	return true;
 }
 
 //Получить строку длиной iSize из пакета по текущему смещению
-bool CPacket::GetParam( std::string& strValue, int iSize )
+void CPacket::GetParam( std::string& strValue, int iSize )throw( PacketFormatErr )
 {
 	BYTE* strTmp = new BYTE[ iSize + 1 ];
 	strTmp[ iSize ] = 0; //string zero
 	if( iSize > m_iDataSize - m_iOffset )
-		return false;
+		throw PacketFormatErr( "Incorrect param size" );
 
 	Pop( strTmp, iSize );
 	strValue = (char*)strTmp;
 	delete strTmp;
-	return true;
 }
 
 //Получить IP-адрес из пакета по текущему смещению
-bool CPacket::GetAddress( std::string& strAddress )
+void CPacket::GetAddress( std::string& strAddress )throw( PacketFormatErr )
 {
 	in_addr ulAdr;
 	char* strAdr;
 	if( sizeof( u_long ) > ( unsigned int ) ( m_iDataSize - m_iOffset ) )
-		return false;
+		throw PacketFormatErr( "Incorrect param size" );
 
 	Pop( (BYTE*)&ulAdr.S_un.S_addr, sizeof( u_long ) );
 
 	//Переводим адрес из сетевого формата в строку
 	if( NULL == ( strAdr = ::inet_ntoa( ulAdr ) ) )
-		return false;
+		throw PacketFormatErr( "Address is incorrect" );
 
 	strAddress = strAdr;
-	return true;
 }
 
 //Добавить метку конца пакета
-void CPacket::EndCommand()
+void CPacket::EndCommand()throw( PacketErr )
 {
 	Push( (BYTE*)"END", 3 );
 }
@@ -149,24 +141,22 @@ void CPacket::GetBuffer( OUT BYTE* &pbBuffer, OUT int &iSize )
 }
 
 //Установить данные для разбора
-void CPacket::SetBuffer( IN BYTE* pbBuffer, IN int iSize )
+void CPacket::SetBuffer( IN BYTE* pbBuffer, IN int iSize )throw( PacketErr )
 {
 	if( m_iBufSize < iSize )
-	{
-		m_pbBuf = (BYTE*)realloc( m_pbBuf, iSize );
-	}
+		if( NULL == ( m_pbBuf = (BYTE*)realloc( m_pbBuf, iSize ) ) )
+			throw PacketErr( "Not enough memory to form the packet" );
 	::memcpy( m_pbBuf ,pbBuffer, iSize );
 	m_iDataSize = iSize;
 	m_iOffset = 0;
 }
 
 //Получить идентификатор команды по текущему смещению в пакете
-bool CPacket::GetCommandId( BYTE& pByte )
+void CPacket::GetCommandId( BYTE& pByte )throw( PacketFormatErr )
 {
 	if( m_iOffset >= m_iDataSize )
-		return false;
+		throw PacketFormatErr( "Incorrect packet format" );
 	Pop( &pByte, 1 );
-	return true;
 }
 
 //Получить массив байт из пакета
@@ -182,6 +172,7 @@ void CPacket::Pop( BYTE *pbBuf, int iCount )
 //Синтаксис: CSocket sock;CPacket packet; sock << packet;
 CPacket& operator <<( CSocket& sock, CPacket& packet )
 {
+	//TODO:
 	BYTE* Buf = NULL;
 	int iSize;
 	packet.GetBuffer( Buf, iSize );
