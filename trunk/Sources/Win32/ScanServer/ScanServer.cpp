@@ -1,9 +1,15 @@
+#include "precomp.h"
 #include "CScheduler.h"
-#include "windows.h"
 
 int main(int argc, _TCHAR* argv[])
 {
-	CScheduler shed;
-	Sleep(20000);
+	try
+	{
+		CScheduler shed;
+		Sleep(20000);
+	}catch(...)
+	{
+		MessageBox( NULL, "Some error occured", "Error:", MB_OK );
+	}
 	return 0;
 }

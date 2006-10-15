@@ -11,13 +11,11 @@
 
 CScheduler::CScheduler(void)
 {
-	m_pTrigger = new CTimer( this );
+	m_pTrigger = std::auto_ptr< CTimer>( new CTimer( this ) );
 	m_pTrigger->Start();
 }
 
-CScheduler::~CScheduler(void)
-{
-}
+CScheduler::~CScheduler(void){}
 
 void CScheduler::OnStartScan()
 {

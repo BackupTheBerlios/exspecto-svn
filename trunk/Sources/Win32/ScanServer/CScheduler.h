@@ -8,10 +8,7 @@
 #ifndef CSCHEDULER_H_
 #define CSCHEDULER_H_
 
-#include "windows.h"
-#include <string>
-#include <map>
-#include <vector>
+#include "precomp.h"
 #include "CAgentHandler.h"
 #include "CStartTrigger.h"
 #include "../libCommon/Container.hpp"
@@ -44,7 +41,7 @@ private:
 	Container< CAgentHandler*, AgentsLoadStrategy > m_AgentsContainer;
 	
 	//Триггер, срабатывающий при необходимости начать сканирование
-	CStartTrigger* m_pTrigger;
+	std::auto_ptr< CStartTrigger > m_pTrigger;
 
 };
 

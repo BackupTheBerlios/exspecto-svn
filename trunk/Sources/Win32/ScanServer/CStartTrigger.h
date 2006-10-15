@@ -7,8 +7,8 @@
 #ifndef CSTARTTRIGGER_H_
 #define CSTARTTRIGGER_H_
 
+#include "precomp.h"
 #include "CScheduler.h"
-#include "windows.h"
 
 //Предварительное обьявление класса CStartScanEventInterface
 class CStartScanEventInterface;

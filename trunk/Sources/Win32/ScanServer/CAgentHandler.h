@@ -7,8 +7,7 @@
 #ifndef CAGENTHANDLER_H_
 #define CAGENTHANDLER_H_
 
-#include <vector>
-#include <string>
+#include "precomp.h"
 #include "commands.h"
 #include "..\libNet\packet.h"
 #include "..\libNet\ClientSocket.h"
@@ -19,49 +18,48 @@ class CAgentHandler
 {
 public:
 
-	//Тип определяющий реакцию агента на команды
-	enum enumCommandResult{
-		RES_OK = 0x00,			//всё хорошо
-		RES_NOT_OPENED,			//видимо неправильно задали адрес,либо агент не запущен
-		RES_NO_RESPONSE,		//ответа от агента на команду не последовало
-		RES_AGENT_ERR,			//агент не смог выполнить команду
-		RES_INCORRECT,			//неверный ответ
-		RES_SOCK_ERR			//любая другая ошибка
-	};
-
-	virtual ~CAgentHandler();
+	//классы исключений, генерируемых CAgentHandler
+	class HandlerErr: public std::runtime_error
+	{
+	public:
+	
+		HandlerErr( const std::string& strErr )throw():std::runtime_error( strErr ){};
+		virtual ~HandlerErr()throw(){};	
+	}; 
+	
+	virtual ~CAgentHandler()throw( CSocket::SocketErr );
 	
 	//Создать обьект взаимодействия с агентом по адресу strAgentAddress 
 	CAgentHandler( std::string strAgentAddress );
 	
 	//Открыть соединение с агентом
-	bool Open();
+	void Open()throw( CSocket::SocketErr );
 	
 	//Закрыть соединение с агентом
-	bool Close();
+	void Close()throw( CSocket::SocketErr );
 	
 	//Команды, передаваемые агенту:
 	
 	//Начать сканирование
-	enumCommandResult BeginScan( std::vector< std::string > vecAddresses );
+	enumAgentResponse BeginScan( std::vector< std::string > vecAddresses )throw( HandlerErr, CSocket::SocketErr );
 	
 	//Остановить сканирование
-	enumCommandResult StopScan();
+	enumAgentResponse StopScan()throw( HandlerErr, CSocket::SocketErr );
 	
 	//Получить статус
-	enumCommandResult GetStatus( enumAgentStatus& Status );
+	enumAgentResponse GetStatus( enumAgentStatus& Status )throw( HandlerErr, CSocket::SocketErr );
 	
 	//Получить данные последнего сканирования
-	enumCommandResult GetData();
+	enumAgentResponse GetData()throw( HandlerErr, CSocket::SocketErr );
 	
 	//Открыто ли соединение с агентом
-	bool IsOpened();
+	bool IsOpened()const;
 	
 
 protected:
 	
 	//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-	enumCommandResult SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize );
+	void SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )throw( HandlerErr, CSocket::SocketErr );
 
 private:
 	
