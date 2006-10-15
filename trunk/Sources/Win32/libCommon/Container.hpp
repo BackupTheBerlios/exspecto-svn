@@ -8,6 +8,7 @@
 #define CONTAINER_H_
 
 #include <vector>
+#include <memory>
 
 /*Параметрами шаблона класса являются: 
 	class T - тип хранимых значений
@@ -28,13 +29,10 @@ public:
 
 	Container()
 	{
-		m_Loader = new LoadStrategy( m_vecStorage );
+		m_pLoader = std::auto_ptr< LoadStrategy >( new LoadStrategy( m_vecStorage ) );
 	}
 	
-	virtual ~Container()
-	{
-		 delete m_Loader; 
-	}
+	virtual ~Container(){};
 
 	//Возвращает итератор первого элемента контейнера	
 	iterator begin()
@@ -56,7 +54,7 @@ public:
 	
 private:
 	
-	LoadStrategy* m_Loader;
+	std::auto_ptr< LoadStrategy > m_pLoader;
 		
 	std::vector< T > m_vecStorage;
 };
