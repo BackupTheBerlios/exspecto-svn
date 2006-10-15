@@ -5,9 +5,8 @@
 //Description: Класс, описывающий стратегию загрузки плагинов в класс Container
 //-------------------------------------------------------------------------------------//
 #include "PluginLoadStrategy.h"
-#include "windows.h"
 
-PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )
+PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )throw( PluginLoadErr )
 {
 	WIN32_FIND_DATA FindData;
 	HANDLE hFindFile;
@@ -18,9 +17,10 @@ PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )
 	int iScannersCount = 0;
 	std::string strPluginPath;// = PLUGIN_PATH;
 	strPluginPath += "*.dll";
+	
 	//Находим все dll в папке с plugin-ами
 	if( INVALID_HANDLE_VALUE == ( hFindFile = ::FindFirstFile( strPluginPath.c_str(), &FindData ) ) )
-		return;
+		throw PluginLoadErr( "Не найдено ни одного плагина" );
 	do
 	{ 
 		if( NULL == ( hLib = ::LoadLibraryA( FindData.cFileName ) )

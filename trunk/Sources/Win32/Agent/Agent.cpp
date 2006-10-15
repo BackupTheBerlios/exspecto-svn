@@ -4,21 +4,16 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции Агента
 //-------------------------------------------------------------------------------------//
-#include <iostream>
-#include <tchar.h>
-#include <vector>
-#include "..\libNet\Sockets.h"
 #include "agent.h"
-#include "windows.h"
-#include "..\libNet\packet.h"
+#include "..\libNet\ServerSocket.h"
 #include "constants.h"
+
 
 //Конструктор,strSchedulerAddress - адрес планировщика
 CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
 												 ,m_strSchedulerAddress( strSchedulerAddress )
 {
 	DWORD dwThreadId;
-	m_PluginContainer.begin();
 	//Запускаем поток прослушивания(ожидания входящих TCP соединений)
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
 	::InitializeCriticalSection( &m_csCurState );
@@ -40,15 +35,21 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 	std::string strAddress;
 	std::vector< std::string > List;
 
-	CPacket* pPacket = new CPacket();
+	std::auto_ptr< CPacket > pPacket = std::auto_ptr< CPacket >( new CPacket() );
 
 	//Задаем данные для разбора входящего пакета
 	pPacket->SetBuffer( pParams->pbBuf, pParams->iCount );
-	while( pPacket->GetCommandId( bCommandId ) )
+	for(;;)
 	{
+		try{
+			 pPacket->GetCommandId( bCommandId );
+		}catch( CPacket::PacketFormatErr )
+		{
+			break;
+		}
 		switch( bCommandId )
 		{
-		case GetStatus:
+		case GET_STATUS:
 			BYTE pbBuf[2];
 			pbBuf[0] = 0xFF;
 			pbBuf[1] = pParams->pThis->m_CurState;
@@ -57,7 +58,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			//закрываем соединение
 			pParams->client_sock->Close();
 			break;
-		case StartScan:
+		case START_SCAN:
 			::EnterCriticalSection( &pParams->pThis->m_csCommandExec );
 			//Получаем кол-во адресов в пакете
 			pPacket->GetParam( iCount );
@@ -84,14 +85,13 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			std::vector< std::string >::iterator It;
 			for( It = List.begin(); It != List.end(); It++ )
 			{
-				std::cout << *It << std::endl;
+				//std::cout << *It << std::endl;
 			}
 			::LeaveCriticalSection( &pParams->pThis->m_csCommandExec );
 			break;
 		}
 	}
 	delete pParams->client_sock;
-	delete pPacket;
 	delete pParams;
 	return 0;
 }
@@ -106,7 +106,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	int iCount = 0;
 	DWORD dwThreadId;
 
-	structAddr adr;
+	CServerSocket::structAddr adr;
 
     //связываем серверный сокет с локальным адресом
 	sock.Bind( 5000, "127.0.0.1" );
@@ -115,24 +115,36 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	//Ожидаем входящее соединение и обрабатываем его
 	while( NULL != ( client_sock = sock.Accept( adr ) ) )
 	{
-		//принимаем соединения только от заданного планировщика
-		if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( SOCKET_ERROR != ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
+		try{
+			//принимаем соединения только от заданного планировщика
+			if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
+			{
+				ProcessParam* params = new ProcessParam;
+				params->client_sock = client_sock;
+				params->iCount = iCount;
+				params->pbBuf = pBuf;
+				params->pThis = pThis;
+				::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
+			}
+		}catch( CSocket::SocketErr )
 		{
-			ProcessParam* params = new ProcessParam;
-			params->client_sock = client_sock;
-			params->iCount = iCount;
-			params->pbBuf = pBuf;
-			params->pThis = pThis;
-			::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
+			//Если прислали пакет больше 10кб
+			continue;
 		}
 	}
 	return 0;
 }
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, _TCHAR* argv[])
 {
-	CAgent ag( "127.0.0.1" );
-	Sleep( 1000000 );
+	try
+	{
+		CAgent ag( "127.0.0.1" );
+		Sleep( 1000000 );
+	}catch(...)
+	{
+		MessageBox( NULL, "Some error occured", "Error:", MB_OK );
+	}
 	return 0;
 }

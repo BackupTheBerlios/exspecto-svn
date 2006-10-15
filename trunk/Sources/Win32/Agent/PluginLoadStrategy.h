@@ -7,14 +7,21 @@
 #ifndef PLUGINLOADSTRATEGY_H_
 #define PLUGINLOADSTRATEGY_H_
 
-#include "windows.h"
+#include "precomp.h"
 #include "CScanner.h"
-#include <map>
 
 class PluginLoadStrategy
 {
 public:
-	PluginLoadStrategy( std::vector< CScanner* >& vecStorage );
+	//Классы исключений, генерируемые PluginLoadStrategy
+	class PluginLoadErr:public std::runtime_error
+	{
+	public:
+		PluginLoadErr( const std::string& strErr )throw():std::runtime_error( strErr ){};
+		virtual ~PluginLoadErr()throw(){};
+	};
+	
+	PluginLoadStrategy( std::vector< CScanner* >& vecStorage )throw( PluginLoadErr );
 	virtual ~PluginLoadStrategy();
 	
 private:	

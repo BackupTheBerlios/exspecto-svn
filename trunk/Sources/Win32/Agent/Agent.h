@@ -4,13 +4,14 @@
 //Author: Parshin Dmitry
 //Description:  ласс, реализующий функции јгента
 //-------------------------------------------------------------------------------------//
-#pragma once
-#include "windows.h"
+#ifndef AGENT_H_
+#define AGENT_H_
+
+#include "precomp.h"
 #include "..\libNet\packet.h"
-#include "CScanner.h"
 #include "..\libCommon\Container.hpp"
+#include "CScanner.h"
 #include "PluginLoadStrategy.h"
-#include <map>
 
 class CAgent
 {
@@ -62,3 +63,5 @@ protected:
 	//“ип итератор дл€ манипул€ций с контейнером плагинов
 	typedef Container< CScanner*, PluginLoadStrategy >::iterator PluginIterator;
 };
+
+#endif
