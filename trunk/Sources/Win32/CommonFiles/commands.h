@@ -21,10 +21,11 @@ enum enumAgentResponse{
 	RESP_PROC_ERR
 };
 
-enum enumAgentStatus{
+enum enumAgentState{
 	Idling = 0x01,
 	Scanning = 0x02,
 	SendingData = 0x03,
 	SendingStatus = 0x04
 };
+
 #endif
