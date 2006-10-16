@@ -22,7 +22,7 @@ public:
 	
 	~CAgent(void);
 
-protected:
+private:
 	
 	//Критическая секция на запись переменной текущего состояния
 	CRITICAL_SECTION m_csCurState;
@@ -30,15 +30,8 @@ protected:
 	//Критическая секция на выполнение команд
 	CRITICAL_SECTION m_csCommandExec;
 
-	//Тип, описывающий возможные состояния агента
-	enum enumStates{
-		Idling = 0x1,
-		Scanning = 0x2,
-		SendingData = 0x3,
-	};
-
 	//Текущее состояние агента
-	enumStates m_CurState;
+	enumAgentState m_CurState;
 
 	//Адрес планировщика
 	std::string m_strSchedulerAddress;
@@ -62,6 +55,17 @@ protected:
 	
 	//Тип итератор для манипуляций с контейнером плагинов
 	typedef Container< CScanner*, PluginLoadStrategy >::iterator PluginIterator;
+	
+	std::map< int, enumAgentResponse(CAgent::*)( CPacket&, CSocket* pSchedSocket )> m_mapHandlers;
+	
+	//Обработчики команд
+	enumAgentResponse GetStatus( CPacket& Msg, CSocket* pSchedSocket );
+	
+	enumAgentResponse StartScan( CPacket& Msg, CSocket* pSchedSocket );
+	
+	enumAgentResponse GetData( CPacket& Msg, CSocket* pSchedSocket );
+	
+	enumAgentResponse StopScan( CPacket& Msg, CSocket* pSchedSocket );
 };
 
 #endif
