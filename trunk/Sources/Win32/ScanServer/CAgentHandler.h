@@ -47,7 +47,7 @@ public:
 	enumAgentResponse StopScan()throw( HandlerErr, CSocket::SocketErr );
 	
 	//Получить статус
-	enumAgentResponse GetStatus( enumAgentStatus& Status )throw( HandlerErr, CSocket::SocketErr );
+	enumAgentResponse GetStatus( enumAgentState& Status )throw( HandlerErr, CSocket::SocketErr );
 	
 	//Получить данные последнего сканирования
 	enumAgentResponse GetData()throw( HandlerErr, CSocket::SocketErr );

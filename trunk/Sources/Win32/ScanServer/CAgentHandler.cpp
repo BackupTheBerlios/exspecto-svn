@@ -86,7 +86,7 @@ enumAgentResponse CAgentHandler::StopScan()throw( HandlerErr, CSocket::SocketErr
 	return (enumAgentResponse)pbRecvBuf[0];		
 }
 	
-enumAgentResponse CAgentHandler::GetStatus( enumAgentStatus& Status )throw( HandlerErr, CSocket::SocketErr )
+enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( HandlerErr, CSocket::SocketErr )
 {
 	CPacket Msg;
 	BYTE pbRecvBuf[255];
@@ -98,7 +98,7 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentStatus& Status )throw( Hand
 	if( RESP_OK != pbRecvBuf[0] )
 		return (enumAgentResponse)pbRecvBuf[0];
 	SendMessage( Msg, pbRecvBuf, 1 );
-	Status = (enumAgentStatus)pbRecvBuf[0];
+	Status = (enumAgentState)pbRecvBuf[0];
 	return RESP_OK;
 }
 	
