@@ -3,56 +3,12 @@
 #include <windows.h>
 #include "CLog.h"
 
+char FileName[40];
+FILE *fp;
+SYSTEMTIME st;
+
 CLog::CLog()
 {
-}
-
-CLog::~CLog()
-{
-}
-
-void CLog::Trace(int level, char* trace_text, ...)
-{
-	SYSTEMTIME st;
-    GetSystemTime(&st);
-    st.wHour = (st.wHour + 4) % 24; 
-	
-	char filename[30];  // на имя модуля добавить
-	FILE *fp;
-	fp = fopen("temp", "w+");
-	fprintf(fp, "%d_%d_%d_%d_%d.log", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute);
-	rewind(fp);
-	
-	char ch = getc(fp);
-	int i=0;
-	while (ch != EOF) { filename[i++] = ch; ch = getc(fp); }
-	
-	fclose(fp);
-	remove("temp");
-	filename[i++] = '\0';
-	
-	fp = fopen( filename, "a+");
-
-	fprintf(fp, "%d, ", level);
-	va_list args;
-	va_start(args, trace_text);
-	
-	vfprintf(fp, trace_text, args);
-	putc('\n', fp);
-						
-	va_end(args);
-	fclose(fp);		
-}
-
-void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
-{
-	SYSTEMTIME st;
-    GetSystemTime(&st);
-    st.wHour = (st.wHour + 4) % 24; 
-	
-	FILE *fp;
-	fp = fopen("dump", "w+");
-	
 	char str[255];
 	GetModuleFileName( NULL, str, sizeof(str) );
 	
@@ -67,17 +23,60 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 	
 	int i = 0;
 	int j = 0;
-	char ModuleName[255];
+	bool flag = false;
+	
 	for (pc = str; *pc; pc++)
 	{ 
-		if ( i == k) ModuleName[j++] = *pc;
+		if ( *pc == '.') flag = false;
+		if ( i == k)
+			if (flag) FileName[j++] = *pc;
 		if ( *pc == '\\') i++;
 	}
-	ModuleName[j] = '\0';
+	FileName[j] = '\0';	
+	
+    GetSystemTime(&st);
+    st.wHour = (st.wHour + 4) % 24; 
+		
+	fp = fopen("temp", "w+");
+	fprintf(fp, "%s_%d%d%d_%d%d.log", FileName, st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute);
+	rewind(fp);
+	
+	char ch = getc(fp);
+	i = 0;
+	while (ch != EOF) { FileName[i++] = ch; ch = getc(fp); }
+	FileName[i] = '\0';
+	
+	fclose(fp);
+	remove("temp");
+	
+}
 
-    fprintf(fp, "%s\n", ModuleName);  
-    fprintf(fp, "%d.%d.%d %d:%d:%d.%d\n", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-//    не учитывает часовой пояс!!!! Для нас часы +3!!!!????
+CLog::~CLog()
+{
+}
+
+void CLog::Trace(int level, char* trace_text, ...)
+{
+	
+	fp = fopen( FileName, "a+");
+	fprintf(fp, "%d.%d.%d %d:%d:%d.%d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	
+	fprintf(fp, "%d, ", level);
+	va_list args;
+	va_start(args, trace_text);
+	
+	vfprintf(fp, trace_text, args);
+	putc('\n', fp);
+						
+	va_end(args);
+	fclose(fp);		
+}
+
+void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
+{
+	
+	fp = fopen( FileName, "a+");
+	fprintf(fp, "%d.%d.%d %d:%d:%d.%d\n", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
     
 	va_list args;
 	va_start(args, strAbout);
@@ -88,7 +87,7 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 	va_end(args);
 
 	BYTE *p;
-	k = 1;
+	BYTE k = 1;
 	for ( p = pbDumpData; p <= (pbDumpData + iDataSize); p++ )
 	{
 		if ( k == 16 ) { fprintf(fp, "%X\n", *p); k = 0; }
