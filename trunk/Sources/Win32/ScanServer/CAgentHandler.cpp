@@ -115,9 +115,9 @@ enumAgentResponse CAgentHandler::GetData()throw( HandlerErr, CSocket::SocketErr 
 	if( RESP_OK != pbRecvBuf[0] )
 		return (enumAgentResponse)pbRecvBuf[0];
 	//ещё раз,в ответ должен прийти размер данных
-	SendMessage( Msg, pbRecvBuf, 3 );
+	SendMessage( Msg, pbRecvBuf, 4 );
 	int iDataSize;
-	::memcpy( (BYTE*)&iDataSize + 3, pbRecvBuf, 3 );
+	::memcpy( (BYTE*)&iDataSize + 4, pbRecvBuf, 4 );
 	BYTE* pbData = new BYTE[ iDataSize ];
 	//последний раз, в ответ приходят данные
 	SendMessage( Msg, pbData, iDataSize );
