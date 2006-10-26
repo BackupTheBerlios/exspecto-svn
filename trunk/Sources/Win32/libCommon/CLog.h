@@ -1,14 +1,42 @@
+//-------------------------------------------------------------------------------------//
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: CLog class
+//Author: Bezborodov Dmitry
+//Description: Класс, реализующий функции системы журналирования
+//-------------------------------------------------------------------------------------//
 #ifndef _CLOG_H
 #define _CLOG_H
+#include "windows.h"
+#include <string>
 
-#define BYTE unsigned char
+
 class CLog
 {
 public:
 	CLog();
 	~CLog();
-	void Trace(int level, char* trace_text, ...);
-	void Dump(int level, BYTE* pbDumpData, int iDataSize, char* about, ...);
+	
+	//Метод используется дял записи форматированной записи в журнал
+	//	iLevel - приоритет записи, все записи с приоритетом > установленного не записываются в журнал
+	//	trace_text - строка, содержащая формат записи (аналогичный printf)
+	//	... - аргументы форматирования
+	void Trace(int iLevel, char* trace_text, ...);
+	
+	//Метод используется дял записи форматированной записи в журнал, с добавлением
+	//дампа участка памяти 
+	//	iLevel - приоритет записи, все записи с приоритетом > установленного не записываются в журнал
+	//	pbDumpData, iDataSize - указатель на уч-к памяти и его размер
+	//	trace_text - строка, содержащая формат записи (аналогичный printf)
+	//	... - аргументы форматирования
+	void Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* about, ...);
+	
+private:
+	
+	//имя файла лога
+	std::string m_strFileName;
+	
+	//критическая секция на запись в файл
+	CRITICAL_SECTION m_cs;
 };
 
 #endif

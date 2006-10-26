@@ -1,82 +1,78 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <iostream>
 #include <windows.h>
 #include "CLog.h"
 
-char FileName[40];
-FILE *fp;
-SYSTEMTIME st;
+//TODO: заменить после реализации хранилища параметров
+int log_level = 100;
+
 
 CLog::CLog()
 {
+	::InitializeCriticalSection( &m_cs );
 	char str[255];
+	
+	//Получаем имя файла текущего процесса и составляем ищ него имя файла журнала
 	GetModuleFileName( NULL, str, sizeof(str) );
+
+	m_strFileName = str;
 	
-	int k = 0;
-	char *pc;
-	for (pc = str; *pc; pc++)
-	{
-		if ( *pc == '\\') k++; 
-		str[pc - str] = *pc;
-	}
-	str[pc - str] = '\0'; 
+	int iPointPos = m_strFileName.find_first_of( '.' );
+	int iSlashPos = m_strFileName.find_last_of( '\\' ) + 1;
+	m_strFileName = m_strFileName.substr( iSlashPos, iPointPos - iSlashPos );
 	
-	int i = 0;
-	int j = 0;
-	bool flag = false;
-	
-	for (pc = str; *pc; pc++)
-	{ 
-		if ( *pc == '.') flag = false;
-		if ( i == k)
-			if (flag) FileName[j++] = *pc;
-		if ( *pc == '\\') i++;
-	}
-	FileName[j] = '\0';	
-	
-    GetSystemTime(&st);
-    st.wHour = (st.wHour + 4) % 24; 
-		
-	fp = fopen("temp", "w+");
-	fprintf(fp, "%s_%d%d%d_%d%d.log", FileName, st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute);
-	rewind(fp);
-	
-	char ch = getc(fp);
-	i = 0;
-	while (ch != EOF) { FileName[i++] = ch; ch = getc(fp); }
-	FileName[i] = '\0';
-	
-	fclose(fp);
-	remove("temp");
-	
+
+	SYSTEMTIME st;
+   	GetLocalTime(&st);
+	sprintf( str, "_%02d%02d%04d_%02d%02d.log", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute);
+	m_strFileName += str;
 }
 
 CLog::~CLog()
 {
+	::DeleteCriticalSection( &m_cs );
 }
 
-void CLog::Trace(int level, char* trace_text, ...)
+void CLog::Trace(int iLevel, char* trace_text, ...)
 {
+	//Если приоритет записи больше чем установленный - не выполняем никаких действий
+	if( iLevel > log_level ) return;
 	
-	fp = fopen( FileName, "a+");
-	fprintf(fp, "%d.%d.%d %d:%d:%d.%d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	SYSTEMTIME st;
+	FILE* fp;
+
+   	GetLocalTime(&st);
+	fp = fopen( m_strFileName.c_str(), "a+");
+
+	::EnterCriticalSection( &m_cs );
+	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d.%03d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 	
-	fprintf(fp, "%d, ", level);
+	fprintf(fp, "%d ", iLevel);
 	va_list args;
 	va_start(args, trace_text);
 	
 	vfprintf(fp, trace_text, args);
 	putc('\n', fp);
-						
+	::LeaveCriticalSection( &m_cs );
+							
 	va_end(args);
-	fclose(fp);		
+	fclose(fp);
 }
 
 void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
 {
+	//Если приоритет записи больше чем установленный - не выполняем никаких действий
+	if( iLevel > log_level ) return;
 	
-	fp = fopen( FileName, "a+");
-	fprintf(fp, "%d.%d.%d %d:%d:%d.%d\n", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	SYSTEMTIME st;
+	FILE* fp;
+
+   	GetLocalTime(&st);
+	fp = fopen( m_strFileName.c_str(), "a+");
+	
+	::EnterCriticalSection( &m_cs );
+	fprintf(fp, "%02d.%02d.%02d %02d:%02d:%02d.%03d\n", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
     
 	va_list args;
 	va_start(args, strAbout);
@@ -86,6 +82,7 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 						
 	va_end(args);
 
+	//Запись дампа
 	BYTE *p;
 	BYTE k = 1;
 	for ( p = pbDumpData; p <= (pbDumpData + iDataSize); p++ )
@@ -96,5 +93,6 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 		k++;
 	}
 	fprintf(fp, "\n");
-	fclose(fp);		
+	::LeaveCriticalSection( &m_cs );	
+	fclose(fp);	
 }
