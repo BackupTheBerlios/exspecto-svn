@@ -39,4 +39,7 @@ private:
 	CRITICAL_SECTION m_cs;
 };
 
+static CLog log;
+
 #endif
+

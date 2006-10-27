@@ -25,7 +25,7 @@ CLog::CLog()
 
 	SYSTEMTIME st;
    	GetLocalTime(&st);
-	sprintf( str, "_%02d%02d%04d_%02d%02d.log", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute);
+	sprintf( str, "_%02d%02d%04d_%02d%02d%02d.log", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond );
 	m_strFileName += str;
 }
 
@@ -85,7 +85,7 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 	//Запись дампа
 	BYTE *p;
 	BYTE k = 1;
-	for ( p = pbDumpData; p <= (pbDumpData + iDataSize); p++ )
+	for ( p = pbDumpData; p < (pbDumpData + iDataSize); ++p )
 	{
 		if ( k == 16 ) { fprintf(fp, "%X\n", *p); k = 0; }
 		else	if ( k == 8 ) fprintf(fp, "%X|", *p);
