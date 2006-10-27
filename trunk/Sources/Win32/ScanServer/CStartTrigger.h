@@ -10,6 +10,7 @@
 #include "precomp.h"
 #include "CScheduler.h"
 
+
 //Предварительное обьявление класса CStartScanEventInterface
 class CStartScanEventInterface;
 

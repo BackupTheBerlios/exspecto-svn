@@ -8,6 +8,8 @@
 #include <vector>
 #include <stdexcept>
 #include <map>
+#include "CLog.h"
+
 
 
 #endif /*PRECOMP_H_*/

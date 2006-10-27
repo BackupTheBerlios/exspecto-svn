@@ -3,6 +3,7 @@
 	<name>ScanServer</name>
 	<comment></comment>
 	<projects>
+		<project>libCommon</project>
 		<project>libNet</project>
 	</projects>
 	<buildSpec>

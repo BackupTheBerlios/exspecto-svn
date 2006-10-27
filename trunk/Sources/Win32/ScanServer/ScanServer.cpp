@@ -1,5 +1,8 @@
 #include "precomp.h"
 #include "CScheduler.h"
+#include "CLog.h"
+
+
 
 int main(int argc, _TCHAR* argv[])
 {

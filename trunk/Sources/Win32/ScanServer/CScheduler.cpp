@@ -11,6 +11,7 @@
 
 CScheduler::CScheduler(void)
 {
+	log.Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer>( new CTimer( this ) );
 	m_pTrigger->Start();
 }
