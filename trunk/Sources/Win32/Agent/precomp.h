@@ -6,5 +6,7 @@
 #include <string>
 #include <map>
 #include <stdexcept>
+#include "CLog.h"
+#include "constants.h"
 
 #endif /*PRECOMP_H_*/

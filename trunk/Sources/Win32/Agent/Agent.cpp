@@ -7,9 +7,9 @@ int main(int argc, _TCHAR* argv[])
 	{
 		CAgent ag( "127.0.0.1" );
 		Sleep( 1000000 );
-	}catch(...)
+	}catch( std::exception& e)
 	{
-		MessageBox( NULL, "Some error occured", "Error:", MB_OK );
+		log.Trace( 5, "Возникло исключение: %s", e.what() );
 	}
 	return 0;
 }

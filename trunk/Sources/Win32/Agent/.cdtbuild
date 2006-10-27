@@ -8,7 +8,9 @@
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.debug.118535386" name="GCC C Compiler"/>
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug.2137122" name="GCC C++ Compiler">
 <option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.735418548" valueType="includePath">
-<listOptionValue value="&quot;..\..\CommonFiles&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug.21240367" name="GCC C Linker"/>
@@ -20,8 +22,8 @@
 <listOptionValue value="NetApi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.1134897782" valueType="stringList">
-<listOptionValue value="&quot;..\..\libNet\Debug&quot;" builtIn="false"/>
-<listOptionValue value="&quot;..\..\libCommon\Debug&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet/Debug}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon/Debug}&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.677091194" name="GCC Assembler"/>
