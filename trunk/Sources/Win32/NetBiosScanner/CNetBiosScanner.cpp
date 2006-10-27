@@ -3,6 +3,12 @@
 #include "lm.h"
 #include "CNetBiosScanner.h"
 
+
+CNetBiosScanner::CNetBiosScanner()
+{
+	strcpy( m_strProtoName, "NetBios" );
+}
+
 //Рекурсивная функция, перебирающая все вложенные папки/файлы
 void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList )
 {
