@@ -19,21 +19,18 @@ public:
 	virtual ~CNetBiosScanner(){};
 
 	//Сканировать адрес strAddress, результат сложить в vcResList
-	void Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList ); 
+	virtual void Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList ); 
 
 	//Вернуть имя протокола	
-	const char* GetProtocolName()
+	virtual const char* GetProtocolName()
 	{
-		log.Trace( 1, "dsfs %s", m_strProtoName ); 
-		return m_strProtoName; 
+		return "NetBios";
 	}
 
 protected:
 
 	//Рекурсивная функция, перебирающая все вложенные папки/файлы
 	void EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList );
-	
-	char m_strProtoName[ 8 ];
 	
 };
 

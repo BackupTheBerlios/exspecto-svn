@@ -6,7 +6,6 @@
 
 CNetBiosScanner::CNetBiosScanner()
 {
-	strcpy( m_strProtoName, "NetBios" );
 }
 
 //Рекурсивная функция, перебирающая все вложенные папки/файлы
@@ -74,4 +73,5 @@ void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::str
 		}
 		::NetApiBufferFree( buf );
 	}while( res == ERROR_MORE_DATA );
-};
+}
+
