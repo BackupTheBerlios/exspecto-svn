@@ -9,7 +9,7 @@ int main(int argc, _TCHAR* argv[])
 		Sleep( 1000000 );
 	}catch( std::exception& e)
 	{
-		log.Trace( 5, "Возникло исключение: %s", e.what() );
+		Log::instance().Trace( 5, "Возникло исключение: %s", e.what() );
 	}
 	return 0;
 }

@@ -45,7 +45,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 			 Msg.GetCommandId( bCommandId );
 		}catch( CPacket::PacketFormatErr )
 		{
-			log.Trace( 11, "CAgent::fnProcessThreadProc: Пришел пакет неверного формата" );
+			Log::instance().Trace( 11, "CAgent::fnProcessThreadProc: Пришел пакет неверного формата" );
 			break;
 		}
 		(pParams->pThis->*(pParams->pThis->m_mapHandlers[ bCommandId ]))( Msg, pParams->client_sock );
@@ -74,7 +74,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	//Ожидаем входящее соединение и обрабатываем его
 	while( NULL != ( client_sock = sock.Accept( adr ) ) )
 	{
-		log.Trace( 51, "CAgent::fnListenThreadProc: Входящее соединение с адреса: %s", adr.strAddr.c_str() );
+		Log::instance().Trace( 51, "CAgent::fnListenThreadProc: Входящее соединение с адреса: %s", adr.strAddr.c_str() );
 		try{
 			//принимаем соединения только от заданного сервера сканирования
 			if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
@@ -98,7 +98,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 //Обработчики команд
 enumAgentResponse CAgent::GetStatus( CPacket& Msg, CSocket* pSchedSocket )
 {
-	log.Trace( 90, "CAgent: Поступил запрос на получение статуса" );
+	Log::instance().Trace( 90, "CAgent: Поступил запрос на получение статуса" );
 	BYTE pbBuf[2];
 	pbBuf[0] = 0xFF;
 	pbBuf[1] = m_CurState;
@@ -112,7 +112,7 @@ enumAgentResponse CAgent::GetStatus( CPacket& Msg, CSocket* pSchedSocket )
 	
 enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
 {
-	log.Trace( 90, "CAgent: Поступил запрос на начало сканирования" );
+	Log::instance().Trace( 90, "CAgent: Поступил запрос на начало сканирования" );
 	DWORD dwCount = 0;
 	std::string strAddress;
 	std::vector< std::string > List;
@@ -120,7 +120,7 @@ enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
 	::EnterCriticalSection( &m_csCommandExec );
 	//Получаем кол-во адресов в пакете
 	Msg.GetParam( dwCount );
-	log.Trace( 80, "CAgent:StartScan: Кол-во адресов для сканирования: %d", dwCount );
+	Log::instance().Trace( 80, "CAgent:StartScan: Кол-во адресов для сканирования: %d", dwCount );
 	
 	::EnterCriticalSection( &m_csCurState );
 	m_CurState = Scanning;	
@@ -132,7 +132,7 @@ enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
 		Msg.GetAddress( strAddress );
 		for( PluginIterator It = m_PluginContainer.begin(); It != m_PluginContainer.end(); It++ )
 		{
-			log.Trace( 80, "CAgent::StartScan: Сканируем адрес %s с помощью плагина %s", strAddress.c_str(), (*It)->GetProtocolName() );
+			Log::instance().Trace( 80, "CAgent::StartScan: Сканируем адрес %s с помощью плагина %s", strAddress.c_str(), (*It)->GetProtocolName() );
 			(*It)->Scan( strAddress, List );
 		}
 	}
@@ -151,13 +151,13 @@ enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
 
 enumAgentResponse CAgent::GetData( CPacket& Msg, CSocket* pSchedSocket )
 {
-	log.Trace( 90, "CAgent: Поступил запрос на получение данных" );
+	Log::instance().Trace( 90, "CAgent: Поступил запрос на получение данных" );
 	return RESP_OK;
 }
 	
 enumAgentResponse CAgent::StopScan( CPacket& Msg, CSocket* pSchedSocket )
 {
-	log.Trace( 90, "CAgent: Поступил запрос на окончание сканирования" );
+	Log::instance().Trace( 90, "CAgent: Поступил запрос на окончание сканирования" );
 	return RESP_OK;
 }
 
