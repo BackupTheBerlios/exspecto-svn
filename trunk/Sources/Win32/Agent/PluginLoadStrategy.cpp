@@ -60,7 +60,7 @@ PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )th
 		Log::instance().Trace( 90, "PluginLoadStrategy: Загружаем библиотеку %s с плагином %s", FindData.cFileName, pScanner->GetProtocolName() );
 		iScannersCount++;
 	}while( ::FindNextFile( hFindFile, &FindData ) );
-	Log::instance().Trace( 90, "PluginLoadStrategy: всего загружено %d плагинов", iScannersCount );
+	Log::instance().Trace( 90, "PluginLoadStrategy: всего загружено плагинов: %d", iScannersCount );
 }
 
 PluginLoadStrategy::~PluginLoadStrategy()
