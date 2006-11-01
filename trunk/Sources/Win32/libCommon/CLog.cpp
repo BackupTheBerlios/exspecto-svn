@@ -7,9 +7,12 @@
 //TODO: заменить после реализации хранилища параметров
 int log_level = 100;
 
+//Инициализация статической переменной
+Log* Log::m_pInstance = NULL;
 
-CLog::CLog()
+Log::Log()
 {
+	MessageBox( NULL, "asdas","",MB_OK);
 	::InitializeCriticalSection( &m_cs );
 	char str[255];
 	
@@ -29,12 +32,12 @@ CLog::CLog()
 	m_strFileName += str;
 }
 
-CLog::~CLog()
+Log::~Log()
 {
 	::DeleteCriticalSection( &m_cs );
 }
 
-void CLog::Trace(int iLevel, char* trace_text, ...)
+void Log::Trace(int iLevel, char* trace_text, ...)
 {
 	//Если приоритет записи больше чем установленный - не выполняем никаких действий
 	if( iLevel > log_level ) return;
@@ -60,7 +63,7 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 	fclose(fp);
 }
 
-void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
+void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
 {
 	//Если приоритет записи больше чем установленный - не выполняем никаких действий
 	if( iLevel > log_level ) return;

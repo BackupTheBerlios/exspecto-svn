@@ -9,13 +9,33 @@
 #include "windows.h"
 #include <string>
 
-
-class CLog
+/*
+ * Класс Log является Singleton-ом( см. паттерн проектирования Singleton )
+ * Гарантированно существует только один экземпляр этого класса, доступ к 
+ * нему осуществляется через метод instance()
+ * 
+ * Пример.
+ * 
+ * в любом модуле
+ * 
+ * #include "CLog.h"
+ * ...
+ * Log::instance().Trace( 10, "LALALA" );
+ * ...
+ */
+class Log
 {
 public:
-	CLog();
-	~CLog();
 	
+	//Метод доступа к экземпляру класса Log
+	static Log& instance()
+	{
+		//Если доступ осуществляется в первый раз - создать экземпляр
+		if( NULL == Log::m_pInstance )
+			Log::m_pInstance = new Log();
+		return *Log::m_pInstance;
+	}
+		
 	//Метод используется дял записи форматированной записи в журнал
 	//	iLevel - приоритет записи, все записи с приоритетом > установленного не записываются в журнал
 	//	trace_text - строка, содержащая формат записи (аналогичный printf)
@@ -31,15 +51,18 @@ public:
 	void Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* about, ...);
 	
 private:
+	Log();
+	~Log();
 	
 	//имя файла лога
 	std::string m_strFileName;
 	
 	//критическая секция на запись в файл
 	CRITICAL_SECTION m_cs;
+	
+	static Log* m_pInstance;
 };
 
-static CLog log;
 
 #endif
 
