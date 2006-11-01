@@ -24,7 +24,7 @@ CStartTrigger::~CStartTrigger()
 //------------------------------------------------------------------------------------------------------
 CTimer::CTimer( CStartScanEventInterface* pCallBack ):CStartTrigger( pCallBack )
 {
-	log.Trace( 90, "CTimer: создание" );
+	Log::instance().Trace( 90, "CTimer: создание" );
 	//TODO:доставать значение таймера из параметров
 	m_ulTimerValue = 5; //5 сек
 	m_hCancelEvent = CreateEvent( 0, 0, 0, NULL ); 
@@ -32,7 +32,7 @@ CTimer::CTimer( CStartScanEventInterface* pCallBack ):CStartTrigger( pCallBack )
 
 CTimer::~CTimer()
 {
-	log.Trace( 90, "CTimer: уничтожение" );
+	Log::instance().Trace( 90, "CTimer: уничтожение" );
 	//Останавливаем служебный поток перед уничтожением
 	Stop();
 	
@@ -45,7 +45,7 @@ void CTimer::Start()
 {
 	//Останавливаем таймер
 	Stop();
-	log.Trace( 90, "CTimer: старт" );
+	Log::instance().Trace( 90, "CTimer: старт" );
 	//Запускаем служебный поток таймера
 	m_hThread = (HANDLE)_beginthreadex( NULL, 0, &fnTimerProc, this, 0, NULL );
 }
@@ -53,7 +53,7 @@ void CTimer::Start()
 //Остановить и сбросить таймер	
 void CTimer::Stop()
 {
-	log.Trace( 90, "CTimer: стоп" );
+	Log::instance().Trace( 90, "CTimer: стоп" );
 	//Если поток запущен
 	if( WAIT_TIMEOUT == ::WaitForSingleObject( m_hThread, 0 ) )
 	{
@@ -73,7 +73,7 @@ unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 		//Ожидаем либо отмены(останов таймера) либо выхода таймаута, который задает период таймера
 		if( WAIT_OBJECT_0 == ::WaitForSingleObject( pThis->m_hCancelEvent, pThis->m_ulTimerValue*1000 ) )
 			break;
-		log.Trace( 95, "CTimer: событие таймера" );
+		Log::instance().Trace( 95, "CTimer: событие таймера" );
 		//Вызываем обработчик в планировщике и ждем его отработки
 		pThis->m_pCallBack->OnStartScan();
 	}

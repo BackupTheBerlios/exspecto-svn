@@ -8,7 +8,6 @@
 #ifndef AGENTSLOADSTRATEGY_H_
 #define AGENTSLOADSTRATEGY_H_
 
-#include "precomp.h"
 #include "CAgentHandler.h"
 
 class AgentsLoadStrategy

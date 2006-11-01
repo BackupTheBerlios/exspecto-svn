@@ -9,8 +9,10 @@
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug.116793182" name="GCC C++ Compiler">
 <option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.1937690199" valueType="includePath">
 <listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet}&quot;" builtIn="false"/>
 <listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
 </option>
+<option superClass="gnu.cpp.compiler.option.preprocessor.preprocess" id="gnu.cpp.compiler.option.preprocessor.preprocess.982258254" value="false" valueType="boolean"/>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug.881578533" name="GCC C Linker"/>
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.debug.1477324973" name="GCC C++ Linker">

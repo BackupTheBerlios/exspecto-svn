@@ -7,10 +7,9 @@
 #ifndef CAGENTHANDLER_H_
 #define CAGENTHANDLER_H_
 
-#include "precomp.h"
 #include "commands.h"
-#include "..\libNet\packet.h"
-#include "..\libNet\ClientSocket.h"
+#include "packet.h"
+#include "ClientSocket.h"
 
 #define PORT 5000
 
