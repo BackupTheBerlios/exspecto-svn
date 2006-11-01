@@ -12,7 +12,6 @@ Log* Log::m_pInstance = NULL;
 
 Log::Log()
 {
-	MessageBox( NULL, "asdas","",MB_OK);
 	::InitializeCriticalSection( &m_cs );
 	char str[255];
 	
