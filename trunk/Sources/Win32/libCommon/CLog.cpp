@@ -10,20 +10,23 @@ int log_level = 100;
 //Инициализация статической переменной
 Log* Log::m_pInstance = NULL;
 
-Log::Log()
+Log::Log( const char* strModuleName )
 {
 	::InitializeCriticalSection( &m_cs );
 	char str[255];
 	
-	//Получаем имя файла текущего процесса и составляем ищ него имя файла журнала
-	GetModuleFileName( NULL, str, sizeof(str) );
-
-	m_strFileName = str;
+	if( NULL == strModuleName )
+	{
+		//Получаем имя файла текущего процесса и составляем ищ него имя файла журнала
+		GetModuleFileName( NULL, str, sizeof(str) );
 	
-	int iPointPos = m_strFileName.find_first_of( '.' );
-	int iSlashPos = m_strFileName.find_last_of( '\\' ) + 1;
-	m_strFileName = m_strFileName.substr( iSlashPos, iPointPos - iSlashPos );
-	
+		m_strFileName = str;
+		
+		int iPointPos = m_strFileName.find_first_of( '.' );
+		int iSlashPos = m_strFileName.find_last_of( '\\' ) + 1;
+		m_strFileName = m_strFileName.substr( iSlashPos, iPointPos - iSlashPos );
+	}else
+		m_strFileName = strModuleName;	
 
 	SYSTEMTIME st;
    	GetLocalTime(&st);

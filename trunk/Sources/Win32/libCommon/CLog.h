@@ -28,14 +28,18 @@ class Log
 public:
 	
 	//ћетод доступа к экземпл€ру класса Log
-	static Log& instance()
+	//позвол€ет изменить им€ модул€, из которого формируетс€ им€ файла
+	//по умолчанию им€ модул€ вы€сн€етс€ с помощью системной функции
+	//GetModuleFileName
+	static Log& instance( const char* strModuleName = NULL )
 	{
 		//≈сли доступ осуществл€етс€ в первый раз - создать экземпл€р
 		if( NULL == Log::m_pInstance )
-			Log::m_pInstance = new Log();
+			Log::m_pInstance = new Log( strModuleName );
 		return *Log::m_pInstance;
 	}
-		
+	
+	
 	//ћетод используетс€ д€л записи форматированной записи в журнал
 	//	iLevel - приоритет записи, все записи с приоритетом > установленного не записываютс€ в журнал
 	//	trace_text - строка, содержаща€ формат записи (аналогичный printf)
@@ -51,7 +55,7 @@ public:
 	void Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* about, ...);
 	
 private:
-	Log();
+	Log( const char* strModuleName = NULL );
 	~Log();
 	
 	//им€ файла лога
