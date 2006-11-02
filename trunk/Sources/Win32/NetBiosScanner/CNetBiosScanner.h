@@ -12,6 +12,8 @@
 #include "CScanner.h"
 #include "CLog.h"
 
+#define MOD_NAME "NetBios"
+
 class CNetBiosScanner: public CScanner
 {
 public:
@@ -24,7 +26,7 @@ public:
 	//Вернуть имя протокола	
 	virtual const char* GetProtocolName()
 	{
-		return "NetBios";
+		return MOD_NAME;
 	}
 
 protected:

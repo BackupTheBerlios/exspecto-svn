@@ -6,6 +6,7 @@
 
 CNetBiosScanner::CNetBiosScanner()
 {
+	Log::instance(MOD_NAME).Trace( 90, "Инициализация плагина NetBios" );
 }
 
 //Рекурсивная функция, перебирающая все вложенные папки/файлы
@@ -40,7 +41,10 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< s
 			}
 			::FindClose( hFile );
 	}else
+	{
+		
 		return;
+	}
 }
 
 //Сканировать адрес strAddress, результат сложить в vcResList
@@ -52,12 +56,18 @@ void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::str
 	DWORD handle = 0;
 	DWORD res;
 	char strTmpShareName[255], strTmpSharePath[10240];
+	Log::instance().Trace( 80, "NetBios: Начинаем сканирование адреса %s", strAddress.c_str() );
 	//Переводим имя сервера в Unicode,т.к. WIN NET API понимает только Unicode
 	::MultiByteToWideChar( CP_UTF8, 0, strAddress.c_str(), (int)strAddress.size() + 1, serv, 1024 );
 	do
 	{
 		//Получаем список расшаренных ресурсов на serv
 		res = ::NetShareEnum( serv, 0, &buf, MAX_PREFERRED_LENGTH, &p1, &p2, &handle );
+		if( ERROR_SUCCESS != res && ERROR_MORE_DATA != res )
+		{
+			Log::instance().Trace( 10, "NetBios: Не удалось просканировать хост: %s, код ошибки: %d", strAddress.c_str(), res );
+			return;
+		}
 		SHARE_INFO_0* inf =  (SHARE_INFO_0*)buf;
 		for( unsigned int i = 0; i < p1; i++ )
 		{
