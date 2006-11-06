@@ -32,19 +32,17 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< s
 			{
 				m_strBuf.append( strSharePath, strSharePath + strlen( strSharePath ) - 3  );
 				m_strBuf += FindFileData.cFileName;
+				Log::instance().Trace( 100, "CNetBiosScanner::EnumFiles: Добавляем ресурс: %s", m_strBuf.c_str() ); 
+				vcFilesList.push_back( m_strBuf );
 				m_strBuf += "\\";
 				m_strBuf += "*.*";
-				vcFilesList.push_back( m_strBuf );
 				//Рекурсивно проводим поиск во вложенных папках
 				EnumFiles( m_strBuf.c_str(), vcFilesList );
 				m_strBuf.clear();
 			}
-			::FindClose( hFile );
+		::FindClose( hFile );
 	}else
-	{
-		
 		return;
-	}
 }
 
 //Сканировать адрес strAddress, результат сложить в vcResList
