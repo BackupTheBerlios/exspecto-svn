@@ -51,9 +51,8 @@ void Log::Trace(int iLevel, char* trace_text, ...)
 	fp = fopen( m_strFileName.c_str(), "a+");
 
 	::EnterCriticalSection( &m_cs );
-	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d.%03d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d.%03d:%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
 	
-	fprintf(fp, "%d ", iLevel);
 	va_list args;
 	va_start(args, trace_text);
 	
@@ -77,7 +76,7 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	fp = fopen( m_strFileName.c_str(), "a+");
 	
 	::EnterCriticalSection( &m_cs );
-	fprintf(fp, "%02d.%02d.%02d %02d:%02d:%02d.%03d\n", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	fprintf(fp, "%02d.%02d.%02d %02d:%02d:%02d.%03d:%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
     
 	va_list args;
 	va_start(args, strAbout);
@@ -92,9 +91,9 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	BYTE k = 1;
 	for ( p = pbDumpData; p < (pbDumpData + iDataSize); ++p )
 	{
-		if ( k == 16 ) { fprintf(fp, "%X\n", *p); k = 0; }
-		else	if ( k == 8 ) fprintf(fp, "%X|", *p);
-				else fprintf(fp, "%X ", *p);
+		if ( k == 16 ) { fprintf(fp, "%02X\n", *p); k = 0; }
+		else	if ( k == 8 ) fprintf(fp, "%02X|", *p);
+				else fprintf(fp, "%02X ", *p);
 		k++;
 	}
 	fprintf(fp, "\n");
