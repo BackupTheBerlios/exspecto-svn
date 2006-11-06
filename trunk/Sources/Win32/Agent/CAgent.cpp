@@ -36,61 +36,83 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 	ProcessParam* pParams = (ProcessParam*)pParameter;
 	BYTE bCommandId;
 	CPacket Msg;
-
-	//«адаем данные дл€ разбора вход€щего пакета
-	Msg.SetBuffer( pParams->pbBuf, pParams->iCount );
-	for(;;)
+	try
 	{
-		try{
-			 Msg.GetCommandId( bCommandId );
-		}catch( CPacket::PacketFormatErr )
+		//«адаем данные дл€ разбора вход€щего пакета
+		Msg.SetBuffer( pParams->pbBuf, pParams->iCount );
+		for(;;)
 		{
-			Log::instance().Trace( 11, "CAgent::fnProcessThreadProc: ѕришел пакет неверного формата" );
-			break;
+				if( !Msg.IsDone() )	
+					Msg.GetCommandId( bCommandId );
+				else
+				{
+					Log::instance().Trace( 95, "CAgent::fnProcessThreadProc: ќбработка вход€щего пакета завершена" ); 
+					break;
+				}
+			(pParams->pThis->*(pParams->pThis->m_mapHandlers[ bCommandId ]))( Msg, pParams->client_sock );
 		}
-		(pParams->pThis->*(pParams->pThis->m_mapHandlers[ bCommandId ]))( Msg, pParams->client_sock );
+		
+		delete pParams->client_sock;
+		delete pParams;
+		return 0;
+	}catch( CPacket::PacketFormatErr )
+	{
+		Log::instance().Trace( 50, "CAgent::fnProcessThreadProc: ѕришел пакет неверного формата" );
+		delete pParams->client_sock;
+		delete pParams;
+		return 0;
 	}
-	delete pParams->client_sock;
-	delete pParams;
-	return 0;
+	catch( std::exception& e )
+	{
+		Log::instance().Trace( 50, "CAgent::fnProcessThreadProc: ¬озникло исключение: %s", e.what() );
+	}
+	return 0;	
 }
 
 //ѕоток ожидани€ вход€щих соединений
 DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 {
-	CAgent* pThis = (CAgent*)pParameter;
-	CServerSocket sock;
-	CSocket* client_sock;
-	BYTE pBuf[10240];
-	int iCount = 0;
-	DWORD dwThreadId;
-
-	CServerSocket::structAddr adr;
-
-    //св€зываем серверный сокет с локальным адресом
-	sock.Bind( 5000, "127.0.0.1" );
-	//переводим сокет в режим прослушивани€
-	sock.Listen();
-	//ќжидаем вход€щее соединение и обрабатываем его
-	while( NULL != ( client_sock = sock.Accept( adr ) ) )
-	{
-		Log::instance().Trace( 51, "CAgent::fnListenThreadProc: ¬ход€щее соединение с адреса: %s", adr.strAddr.c_str() );
-		try{
-			//принимаем соединени€ только от заданного сервера сканировани€
-			if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
-			{
-				ProcessParam* params = new ProcessParam;
-				params->client_sock = client_sock;
-				params->iCount = iCount;
-				params->pbBuf = pBuf;
-				params->pThis = pThis;
-				::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
-			}
-		}catch( CSocket::SocketErr )
+	try{
+		CAgent* pThis = (CAgent*)pParameter;
+		CServerSocket sock;
+		CSocket* client_sock;
+		BYTE pBuf[10240];
+		int iCount = 0;
+		DWORD dwThreadId;
+	
+		CServerSocket::structAddr adr;
+	
+		Log::instance().Trace( 90, "CAgent:: «апуск потока ожидани€ вход€щих соединений" ); 
+	    //св€зываем серверный сокет с локальным адресом
+		sock.Bind( 5000, "127.0.0.1" );
+		//переводим сокет в режим прослушивани€
+		sock.Listen();
+		//ќжидаем вход€щее соединение и обрабатываем его
+		while( NULL != ( client_sock = sock.Accept( adr ) ) )
 		{
-			//≈сли прислали пакет больше 10кб
-			continue;
+			Log::instance().Trace( 51, "CAgent::ListenThread: ¬ход€щее соединение с адреса: %s", adr.strAddr.c_str() );
+			try{
+				//принимаем соединени€ только от заданного сервера сканировани€
+				if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
+				{
+					ProcessParam* params = new ProcessParam;
+					params->client_sock = client_sock;
+					params->iCount = iCount;
+					params->pbBuf = pBuf;
+					params->pThis = pThis;
+					Log::instance().Dump( 90, pBuf, iCount, "CAgent::ListenThread: ќбрабатываем пакет:" );
+					::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
+				}
+			}catch( CSocket::SocketErr )
+			{
+				Log::instance().Trace( 50, "CAgent::ListenThread: ѕришел пакет слишком большого размера" );
+				//≈сли прислали пакет больше 10кб
+				continue;
+			}
 		}
+	}catch( std::exception& e )
+	{
+		Log::instance().Trace( 10," CAgent::ListenThread: ¬озникло исключение: %s", e.what() );
 	}
 	return 0;
 }
@@ -104,9 +126,7 @@ enumAgentResponse CAgent::GetStatus( CPacket& Msg, CSocket* pSchedSocket )
 	pbBuf[1] = m_CurState;
 	//отправл€ем текущее состо€ние
 	pSchedSocket->Send( pbBuf, 2 );
-	//закрываем соединение
-	pSchedSocket->Close();
-	
+
 	return RESP_OK;
 }
 	
@@ -126,6 +146,9 @@ enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
 	m_CurState = Scanning;	
 	::LeaveCriticalSection( &m_csCurState );
 
+	//отправл€ем ответ серверу, команда прин€та на обработку
+	enumAgentResponse resp = RESP_OK;
+	pSchedSocket->Send( (BYTE*)&resp, 1 );
 	for( unsigned int i = 0; i < dwCount; i++ )
 	{
 		//получаем очередной адрес и производим его сканирование по всем доступным протоколам
@@ -140,11 +163,6 @@ enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
 	m_CurState = Idling;		
 	::LeaveCriticalSection( &m_csCurState );
 	
-	std::vector< std::string >::iterator It;
-	for( It = List.begin(); It != List.end(); It++ )
-	{
-		//std::cout << *It << std::endl;
-	}
 	::LeaveCriticalSection( &m_csCommandExec );
 	return RESP_OK;
 }
