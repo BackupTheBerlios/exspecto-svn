@@ -77,6 +77,9 @@ public:
 
 	//Получить IP-адрес из пакета по текущему смещению
 	void GetAddress( std::string& strAddress )throw( PacketFormatErr );
+	
+	//Выяснить закончена обработка пакета или нет
+	bool IsDone();
 
 	//Отправить пакет в сокет
 	//Синтаксис: CSocket sock;CPacket packet; sock << packet;

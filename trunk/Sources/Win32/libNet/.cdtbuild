@@ -6,7 +6,12 @@
 <configuration id="cdt.managedbuild.config.gnu.cygwin.lib.debug.144867959" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.lib.debug" artifactName="Net" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.1580589528" name="GCC Tool Chain">
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug.629381218" name="GCC C Compiler"/>
-<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug.92567813" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug.92567813" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.1035492081" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+</option>
+</tool>
 <tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug.43295887" name="GCC Archiver"/>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug.1659645368" name="GCC Assembler"/>
 <macros/>
@@ -21,5 +26,6 @@
 <macros/>
 </toolChain>
 </configuration>
+<macros/>
 </project>
 </ManagedProjectBuildInfo>

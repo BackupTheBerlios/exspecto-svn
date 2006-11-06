@@ -29,24 +29,33 @@ CSocket::CSocket( int iType, bool bBlocking )throw( SocketErr ):m_Socket( INVALI
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
 CSocket::CSocket( SOCKET s, bool bBlocking )throw( SocketErr ):m_bBlocking( bBlocking )
 {
+	WSADATA WSAData;
 	//Инициализация сокетов
-	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), NULL ) )
+	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
+	{
 		throw SocketErr( WSAGetLastError() );
+	}
 
 	m_Socket = s;
 	int Size = sizeof(int);
-	::getsockopt( m_Socket, SOL_SOCKET, SO_TYPE, (char*)&m_iType, &Size ); 
+	::getsockopt( m_Socket, SOL_SOCKET, SO_TYPE, (char*)&m_iType, &Size );
 }
 
 CSocket::~CSocket(void)
 {
-	Close();
+	try
+	{
+		Close();
+	}catch( std::exception& e )
+	{
+		Log::instance().Trace( 50, "CSocket::~CSocket: Возникло исключение: %s", e.what() );
+	};
 }
 
 //Метод закрытия сокета
 void CSocket::Close( void )throw( SocketErr )
 {
-	if( INVALID_SOCKET != m_Socket || SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) )
+	if( INVALID_SOCKET == m_Socket || SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) || SOCKET_ERROR == ::closesocket( m_Socket ) )
 		throw SocketErr( WSAGetLastError() );
 }
 

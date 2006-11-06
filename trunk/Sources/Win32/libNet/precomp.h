@@ -8,5 +8,6 @@
 #include <map>
 #include <vector>
 #include <stdexcept>
+#include "CLog.h"
 
 #endif

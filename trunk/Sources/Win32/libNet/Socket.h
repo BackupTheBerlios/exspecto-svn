@@ -22,10 +22,10 @@ public:
 	public:
 		SocketErr( int iLastError )throw()
 		{
-			if( 0 == FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM, NULL, iLastError, 0, data, 0, NULL ) )
+			if( 0 == FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, iLastError, 0, data, sizeof(data), NULL ) )
 			{
-				data = new char[ sizeof( "Error during formating error message" ) ];
 				strcpy( data, "Error during formating error message" );
+				Log::instance().Trace( 0, "SocketErr: ошибка: %d", GetLastError() );
 			} 
 		};
 		
@@ -38,7 +38,7 @@ public:
 		
 	private:
 	
-		char* data;
+		char data[1024];
 	};
 
 	class SocketDNSErr: public CSocket::SocketErr 

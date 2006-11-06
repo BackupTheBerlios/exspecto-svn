@@ -168,6 +168,12 @@ void CPacket::Pop( BYTE *pbBuf, int iCount )
 		m_iOffset += 3;
 }
 
+//Выяснить закончена обработка пакета или нет
+bool CPacket::IsDone()
+{
+	return m_iOffset >= m_iDataSize;
+}
+
 //Отправить пакет в сокет
 //Синтаксис: CSocket sock;CPacket packet; sock << packet;
 CPacket& operator <<( CSocket& sock, CPacket& packet )

@@ -81,11 +81,9 @@ CSocket* CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 	hostent* hn;
 
 	ZeroMemory (&sAddr, sizeof (sAddr));
-	
 	if( INVALID_SOCKET == ( s = ::accept( m_Socket, (sockaddr*)&sAddr, &len ) ) )
-	{
-			throw SocketErr( WSAGetLastError() );	
-	}else
+		throw SocketErr( WSAGetLastError() );	
+	else
 	{
 		addr.iPort = ::ntohs( sAddr.sin_port );
 		addr.strAddr = ::inet_ntoa( sAddr.sin_addr );
