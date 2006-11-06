@@ -20,7 +20,13 @@ CScheduler::~CScheduler(void){}
 
 void CScheduler::OnStartScan()
 {
-	//TODO:
-	MessageBox( NULL, "asdasd", "Asdasd", MB_OK );
+	std::vector< std::string > vecAdr;
+	vecAdr.push_back( "127.0.0.1" );
+	for( Container< CAgentHandler*, AgentsLoadStrategy >::iterator It = m_AgentsContainer.begin(); It != m_AgentsContainer.end(); It++ )
+	{
+		(*It)->Open();
+		if( (*It)->IsOpened() )
+			Log::instance().Trace( 10, "CScheduler: Агент вернул: %d", (*It)->BeginScan( vecAdr ) );
+	}
 }
 

@@ -12,18 +12,23 @@ CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAge
 {
 }
 
-CAgentHandler::~CAgentHandler()throw( CSocket::SocketErr )
+CAgentHandler::~CAgentHandler()
 {
-	//Перед уничтожением закрываем соединение с агентом
-	Close();
+	try
+	{
+		//Перед уничтожением закрываем соединение с агентом
+		Close();
+	}catch( ... ){}
 }
 
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
 void CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )throw( HandlerErr, CSocket::SocketErr )
 {
 	if( !m_bOpened )
+	{
+		Log::instance().Trace( 10, "CAgentHandler::SendMessage: Ошибка!Сессия не открыта!" );
 		throw HandlerErr( "Session has not been opened, but SendMessage called" );
-
+	}
 	BYTE* pBuf = NULL;
 	int iSize = 0;
 	//Получаем буфер с данными сообщения Msg для отправки по сети
@@ -39,23 +44,39 @@ void CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )t
 	iRecvRes = m_Sock.Receive( pbRespBuf, iRespSize );
 	Log::instance().Dump( 80, pbRespBuf, iRespSize, "CAgentHandler::SendMessage: Получили ответ:" );
 	if( 0 == iRecvRes )
-		throw HandlerErr( "Zero length response received" );
+		throw HandlerErr( "Connection closed" );
 	if( iRecvRes != iRespSize )
 		throw HandlerErr( "Received response with incorrect size" );						//Ожидаемый размер не совпал с фактическим
 }
 
-void CAgentHandler::Open()throw( CSocket::SocketErr )
+void CAgentHandler::Open()
 {
-	Log::instance().Trace( 90, "CAgentHandler::Open: открытие" );
-	m_Sock.Connect( m_strAddress, PORT );
-	m_bOpened = true;
+	if( m_bOpened )
+		return;
+	try
+	{
+		Log::instance().Trace( 90, "CAgentHandler::Open: открытие" );
+		m_Sock.Connect( m_strAddress, PORT );
+		m_bOpened = true;
+	}catch( CSocket::SocketErr& e )
+	{
+		Log::instance().Trace( 50, "CAgentHandler::Open: Ошибка соединения с агентом: %s; Описание ошибки: %s", m_strAddress.c_str(), e.what() );
+		m_bOpened = false;
+	}
 }
 
-void CAgentHandler::Close()throw( CSocket::SocketErr )
+void CAgentHandler::Close()
 {
-	Log::instance().Trace( 90, "CAgentHandler::Close: закрытие" );
-	m_Sock.Close();
-	m_bOpened = false;
+	try
+	{
+		Log::instance().Trace( 90, "CAgentHandler::Close: закрытие" );
+		m_Sock.Close();
+		m_bOpened = false;
+	}catch( CSocket::SocketErr& e )
+	{
+		Log::instance().Trace( 50, "CAgentHandler::Close: ошибка закрытия соединения %s", e.what() );
+		m_bOpened = false;
+	}
 }
 
 bool CAgentHandler::IsOpened()const
@@ -80,6 +101,7 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	Msg.EndCommand();
 	
 	
+	Log::instance().Trace( 92, "CAgentHandler::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str() );
 	SendMessage( Msg, pbRecvBuf, 1 );
 	return (enumAgentResponse)pbRecvBuf[0]; 
 }

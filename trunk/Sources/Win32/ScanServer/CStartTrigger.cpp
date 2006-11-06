@@ -67,6 +67,7 @@ void CTimer::Stop()
 //Поток таймера
 unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 {
+	try{
 	CTimer* pThis = static_cast<CTimer*>( pParam );
 	for(;;)
 	{
@@ -77,6 +78,11 @@ unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 		//Вызываем обработчик в планировщике и ждем его отработки
 		pThis->m_pCallBack->OnStartScan();
 	}
+	}catch( std::exception& e )
+	{
+		//TODO:
+		Log::instance().Trace( 0, "Возникло исключение: %s" , e.what() );
+	};
 	return 0;
 }
 

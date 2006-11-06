@@ -26,16 +26,16 @@ public:
 		virtual ~HandlerErr()throw(){};	
 	}; 
 	
-	virtual ~CAgentHandler()throw( CSocket::SocketErr );
+	virtual ~CAgentHandler();
 	
 	//Создать обьект взаимодействия с агентом по адресу strAgentAddress 
 	CAgentHandler( std::string strAgentAddress );
 	
 	//Открыть соединение с агентом
-	void Open()throw( CSocket::SocketErr );
+	void Open();
 	
 	//Закрыть соединение с агентом
-	void Close()throw( CSocket::SocketErr );
+	void Close();
 	
 	//Команды, передаваемые агенту:
 	
