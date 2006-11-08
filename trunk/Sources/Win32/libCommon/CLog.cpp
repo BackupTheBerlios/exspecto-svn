@@ -90,12 +90,14 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	char str[17];
 	BYTE *p;
 	int k = 1;
+	fprintf(fp, "\t\t\t\t");
 	for ( p = pbDumpData; p < (pbDumpData + iDataSize); p++ )
 	{
-		str[k-1] = *p;
-		if ( k == 16 ) { str[k] = '\0'; fprintf(fp, "%X\t| %s\n", *p, str); k = 0; }
-		else	if ( k == 8 ) fprintf(fp, "%X|", *p);
-				else fprintf(fp, "%X ", *p);
+		if ( *p < 32 || *p == 127 ) str[k-1] = '.';
+		else	str[k-1] = *p;
+		if ( k == 16 ) { str[k] = '\0'; fprintf(fp, "%02X\t| %s\n\t\t\t\t", *p, str); k = 0; }
+		else	if ( k == 8 ) fprintf(fp, "%02X|", *p);
+				else fprintf(fp, "%02X ", *p);
 		k++;
 	}
 	
