@@ -87,16 +87,30 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	va_end(args);
 
 	//Запись дампа
+	char str[17];
 	BYTE *p;
-	BYTE k = 1;
-	for ( p = pbDumpData; p < (pbDumpData + iDataSize); ++p )
+	int k = 1;
+	for ( p = pbDumpData; p < (pbDumpData + iDataSize); p++ )
 	{
-		if ( k == 16 ) { fprintf(fp, "%02X\n", *p); k = 0; }
-		else	if ( k == 8 ) fprintf(fp, "%02X|", *p);
-				else fprintf(fp, "%02X ", *p);
+		str[k-1] = *p;
+		if ( k == 16 ) { str[k] = '\0'; fprintf(fp, "%X\t| %s\n", *p, str); k = 0; }
+		else	if ( k == 8 ) fprintf(fp, "%X|", *p);
+				else fprintf(fp, "%X ", *p);
 		k++;
 	}
-	fprintf(fp, "\n");
-	::LeaveCriticalSection( &m_cs );	
+	
+	k--;
+	
+	if (k)
+	{
+		int i;
+		for ( i = 0; i <= (16-k)*3/8; i++ ) fprintf(fp, "\t");
+		str[k] = '\0';
+		fprintf(fp, "| %s\n", str);
+	}
+	else putc('\n', fp);
+	
+	::LeaveCriticalSection( &m_cs );
+		
 	fclose(fp);	
 }
