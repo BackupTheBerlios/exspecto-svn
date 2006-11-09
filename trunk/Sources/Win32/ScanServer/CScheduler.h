@@ -11,7 +11,7 @@
 #include "precomp.h"
 #include "CAgentHandler.h"
 #include "CStartTrigger.h"
-#include "../libCommon/Container.hpp"
+#include "Container.hpp"
 #include "AgentsLoadStrategy.h"
 
 //Предварительное обьявление класса CStartTrigger

@@ -4,6 +4,7 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции планировщика
 //-------------------------------------------------------------------------------------//
+#include "memleakdetector.h"
 #include <iostream>
 #include <tchar.h>
 #include "CScheduler.h"
@@ -11,6 +12,8 @@
 
 CScheduler::CScheduler(void)
 {
+	//TODO:
+	volatile int* i = new int();
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer>( new CTimer( this ) );
 	m_pTrigger->Start();
@@ -29,4 +32,3 @@ void CScheduler::OnStartScan()
 			Log::instance().Trace( 10, "CScheduler: Агент вернул: %d", (*It)->BeginScan( vecAdr ) );
 	}
 }
-
