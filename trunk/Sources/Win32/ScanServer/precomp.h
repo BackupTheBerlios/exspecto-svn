@@ -8,6 +8,8 @@
 #include <vector>
 #include <stdexcept>
 #include <map>
+
+#include "MemLeakDetector.h"
 #include "CLog.h"
 
 

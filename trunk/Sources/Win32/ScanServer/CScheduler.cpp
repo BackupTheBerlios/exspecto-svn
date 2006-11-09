@@ -4,7 +4,6 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции планировщика
 //-------------------------------------------------------------------------------------//
-#include "memleakdetector.h"
 #include <iostream>
 #include <tchar.h>
 #include "CScheduler.h"

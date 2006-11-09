@@ -25,8 +25,8 @@
 <listOptionValue value="netapi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.964587821" valueType="stringList">
-<listOptionValue value="&quot;${workspace_loc:/libNet/Release}&quot;" builtIn="false"/>
-<listOptionValue value="&quot;${workspace_loc:/libCommon/Release}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet/Debug}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon/Debug}&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.1842326114" name="GCC Assembler"/>
@@ -52,8 +52,8 @@
 <listOptionValue value="netapi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.719369519" valueType="stringList">
-<listOptionValue value="&quot;${workspace_loc:/libNet/Debug}&quot;" builtIn="false"/>
-<listOptionValue value="&quot;${workspace_loc:/libCommon/Debug}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet/Release}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon/Release}&quot;" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.strip" id="gnu.cpp.link.option.strip.211524954" value="true" valueType="boolean"/>
 </tool>
