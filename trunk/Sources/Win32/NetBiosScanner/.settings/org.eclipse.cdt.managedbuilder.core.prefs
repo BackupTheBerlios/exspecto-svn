@@ -1,8 +1,13 @@
-#Fri Oct 27 13:12:20 MSD 2006
+#Thu Nov 09 20:53:45 MSK 2006
 cdt.managedbuild.config.gnu.cygwin.so.debug.552888321/internalBuilder/enabled=false
 cdt.managedbuild.config.gnu.cygwin.so.debug.552888321/internalBuilder/ignoreErr=true
+cdt.managedbuild.config.gnu.cygwin.so.release.2019442097/internalBuilder/enabled=false
+cdt.managedbuild.config.gnu.cygwin.so.release.2019442097/internalBuilder/ignoreErr=true
 eclipse.preferences.version=1
 environment/buildEnvironmentInclude/cdt.managedbuild.config.gnu.cygwin.so.debug.552888321=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="CPATH" value\="" operation\="remove"/>\r\n<variable name\="C_INCLUDE_PATH" operation\="remove"/>\r\n<variable name\="CPLUS_INCLUDE_PATH" value\="" operation\="remove"/>\r\n</environment>\r\n
+environment/buildEnvironmentInclude/cdt.managedbuild.config.gnu.cygwin.so.release.2019442097=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="CPATH" operation\="remove"/>\r\n<variable name\="C_INCLUDE_PATH" operation\="remove"/>\r\n<variable name\="CPLUS_INCLUDE_PATH" operation\="remove"/>\r\n</environment>\r\n
 environment/buildEnvironmentLibrary/cdt.managedbuild.config.gnu.cygwin.so.debug.552888321=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="LIBRARY_PATH" operation\="remove"/>\r\n</environment>\r\n
+environment/buildEnvironmentLibrary/cdt.managedbuild.config.gnu.cygwin.so.release.2019442097=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment>\r\n<variable name\="LIBRARY_PATH" operation\="remove"/>\r\n</environment>\r\n
 environment/project=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment/>\r\n
 environment/project/cdt.managedbuild.config.gnu.cygwin.so.debug.552888321=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment/>\r\n
+environment/project/cdt.managedbuild.config.gnu.cygwin.so.release.2019442097=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment/>\r\n

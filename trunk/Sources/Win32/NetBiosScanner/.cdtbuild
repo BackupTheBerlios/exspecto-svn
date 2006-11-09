@@ -27,13 +27,26 @@
 <macros/>
 </toolChain>
 </configuration>
-<configuration id="cdt.managedbuild.config.gnu.cygwin.so.release.2019442097" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.release" artifactName="NetBiosScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.release.2019442097" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.release" artifactName="${workspace_loc:/Bin}\Plugins\NetBiosScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.release" id="cdt.managedbuild.toolchain.gnu.cygwin.so.release.411411341" name="GCC Tool Chain">
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release.850099997" name="GCC C Compiler"/>
-<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release.1607686688" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release.1607686688" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.1345704505" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+</option>
+</tool>
 <tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release.548794783" name="GCC C Linker"/>
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release.249408717" name="GCC C++ Linker">
 <option superClass="gnu.cpp.link.option.strip" id="gnu.cpp.link.option.strip.58026928" value="true" valueType="boolean"/>
+<option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.1838464692" valueType="libs">
+<listOptionValue value="netapi32" builtIn="false"/>
+<listOptionValue value="Common" builtIn="false"/>
+<listOptionValue value="ws2_32" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.2127377615" valueType="stringList">
+<listOptionValue value="&quot;${workspace_loc:/libCommon/Release}&quot;" builtIn="false"/>
+</option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release.1503917390" name="GCC Assembler"/>
 <macros/>

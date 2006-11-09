@@ -3,7 +3,7 @@
 	<name>NetBiosScanner</name>
 	<comment></comment>
 	<projects>
-		<project>libNet</project>
+		<project>libCommon</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
