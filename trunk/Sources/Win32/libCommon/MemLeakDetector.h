@@ -1,16 +1,17 @@
 #ifndef MEMLEAKDETECTOR_H_
 #define MEMLEAKDETECTOR_H_
 
+#ifndef NDEBUG
+
 #include <new>
 #include <iostream>
 
-static int i = 0;
-static void* pointers[10240];
-static char strFuncs[10240][255];
-static char strFiles[10240][255];
-static int Lines[10240];
+extern int i;
+extern void* pointers[10240];
+extern char strFuncs[10240][255];
+extern char strFiles[10240][255];
+extern int Lines[10240];
 
-#ifndef NDEBUG
 
 void erase( void** pArray, int iSize, void* pSrc );
 

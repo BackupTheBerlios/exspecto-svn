@@ -1,5 +1,12 @@
+#ifndef NDEBUG
+
 #include "MemLeakDetector.h" 
 
+int i;
+void* pointers[10240];
+char strFuncs[10240][255];
+char strFiles[10240][255];
+int Lines[10240];
 
 #define new	new
 
@@ -50,3 +57,5 @@ void Dump()
 
 #define DEBUG_NEW new(__FILE__, __LINE__, __FUNCTION__ )
 #define new DEBUG_NEW
+
+#endif
