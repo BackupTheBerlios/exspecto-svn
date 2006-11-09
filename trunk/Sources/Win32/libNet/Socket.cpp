@@ -55,7 +55,8 @@ CSocket::~CSocket(void)
 //Метод закрытия сокета
 void CSocket::Close( void )throw( SocketErr )
 {
-	if( INVALID_SOCKET == m_Socket || SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) || SOCKET_ERROR == ::closesocket( m_Socket ) )
+	//TODO:разобраться что происходит при вызове shutdown если соединение не установлено либо разорвано
+	if( INVALID_SOCKET == m_Socket )//|| SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) || SOCKET_ERROR == ::closesocket( m_Socket ) )
 		throw SocketErr( WSAGetLastError() );
 }
 
