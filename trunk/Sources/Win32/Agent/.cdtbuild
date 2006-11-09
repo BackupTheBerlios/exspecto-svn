@@ -30,20 +30,28 @@
 <macros/>
 </toolChain>
 </configuration>
-<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.release.1481100917" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.exe.release" artifactName="Agent" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.release.1481100917" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.exe.release" artifactName="${workspace_loc:/Bin}\Agent" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.release" id="cdt.managedbuild.toolchain.gnu.cygwin.exe.release.1257102059" name="GCC Tool Chain">
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.release.895798660" name="GCC C Compiler"/>
-<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.release.1882635912" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.release.1882635912" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.2135856342" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet}&quot;" builtIn="false"/>
+</option>
+</tool>
 <tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.release.1728677441" name="GCC C Linker"/>
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.release.1915868218" name="GCC C++ Linker">
 <option superClass="gnu.cpp.link.option.strip" id="gnu.cpp.link.option.strip.829099938" value="true" valueType="boolean"/>
 <option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.257000387" valueType="libs">
 <listOptionValue value="Net" builtIn="false"/>
+<listOptionValue value="Common" builtIn="false"/>
 <listOptionValue value="ws2_32" builtIn="false"/>
 <listOptionValue value="NetApi32" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.839310612" valueType="stringList">
-<listOptionValue value="&quot;..\..\libNet\Release&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet/Release}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon/Release}&quot;" builtIn="false"/>
 </option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release.1090709855" name="GCC Assembler"/>

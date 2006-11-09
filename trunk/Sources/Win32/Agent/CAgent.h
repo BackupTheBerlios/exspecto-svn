@@ -41,7 +41,7 @@ private:
 		CAgent*	pThis;
 		BYTE*	pbBuf;
 		int		iCount;
-		CSocket*	client_sock;
+		std::auto_ptr< CSocket > client_sock;
 	};
 
 	//Поток обработки входящих сообщений

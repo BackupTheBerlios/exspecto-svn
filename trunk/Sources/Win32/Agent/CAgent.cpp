@@ -33,7 +33,7 @@ CAgent::~CAgent(void)
 //Поток обработки входящих сообщений
 DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 {
-	ProcessParam* pParams = (ProcessParam*)pParameter;
+	std::auto_ptr< ProcessParam > pParams( (ProcessParam*)pParameter );
 	BYTE bCommandId;
 	CPacket Msg;
 	try
@@ -49,17 +49,13 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 					Log::instance().Trace( 95, "CAgent::fnProcessThreadProc: Обработка входящего пакета завершена" ); 
 					break;
 				}
-			(pParams->pThis->*(pParams->pThis->m_mapHandlers[ bCommandId ]))( Msg, pParams->client_sock );
+			(pParams->pThis->*(pParams->pThis->m_mapHandlers[ bCommandId ]))( Msg, pParams->client_sock.get() );
 		}
 		
-		delete pParams->client_sock;
-		delete pParams;
 		return 0;
 	}catch( CPacket::PacketFormatErr )
 	{
 		Log::instance().Trace( 50, "CAgent::fnProcessThreadProc: Пришел пакет неверного формата" );
-		delete pParams->client_sock;
-		delete pParams;
 		return 0;
 	}
 	catch( std::exception& e )
@@ -96,7 +92,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 				if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
 				{
 					ProcessParam* params = new ProcessParam;
-					params->client_sock = client_sock;
+					params->client_sock = std::auto_ptr< CSocket >( client_sock );
 					params->iCount = iCount;
 					params->pbBuf = pBuf;
 					params->pThis = pThis;
