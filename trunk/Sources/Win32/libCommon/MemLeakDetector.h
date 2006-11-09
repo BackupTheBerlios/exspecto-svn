@@ -1,30 +1,38 @@
+//-------------------------------------------------------------------------------------//
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: Memory leak detection routines
+//Author: Parshin Dmitry
+//Description: Операции, необходимые для поиска утечек памяти
+//-------------------------------------------------------------------------------------//
 #ifndef MEMLEAKDETECTOR_H_
 #define MEMLEAKDETECTOR_H_
 
+//Модуль будет использован только в отладочной версии программы
 #ifndef NDEBUG
 
 #include <new>
 #include <iostream>
 
-extern int i;
-extern void* pointers[10240];
-extern char strFuncs[10240][255];
-extern char strFiles[10240][255];
-extern int Lines[10240];
 
 
-void erase( void** pArray, int iSize, void* pSrc );
-
+//Перегружаем оператор new в глобальном пространстве имен, дополняем его параметрами
+//strFile - имя файла
+//iLine - номер строки
+//strFuncName - имя функции 
 void* operator new( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc );
 
+//Перегружаем две версии оператора delete
 void operator delete( void* address )throw();
-
 void operator delete( void *address , size_t bytes );
 
-void Dump();
+//Вспомогательная функция, для удаления неиспользуемых указателей( к которым применили delete )
+void erase( void** pArray, int iSize, void* pSrc );
 
-#define DEBUG_NEW new(__FILE__, __LINE__, __FUNCTION__ )
-#define new DEBUG_NEW
+//Этой функцией выводим все не удаленные участки памяти на момент вызова
+void DumpMemLeaks();
+
+//обьявляем макрос new с дополнительными параметрами, чтобы пользовательский код не изменялся
+#define new new(__FILE__, __LINE__, __FUNCTION__ )
 
       
 #endif

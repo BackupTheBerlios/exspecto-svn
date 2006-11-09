@@ -1,17 +1,32 @@
+//-------------------------------------------------------------------------------------//
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: Memory leak detection routines
+//Author: Parshin Dmitry
+//Description: Операции, необходимые для поиска утечек памяти, реализация
+//TODO:В данной версии для хранения информации об утечках используются глобальные
+//	   переменные-массивы большого размера.Необходимо переделать.
+//-------------------------------------------------------------------------------------//
 #ifndef NDEBUG
 
 #include "MemLeakDetector.h" 
 
+//Кол-во выделений памяти
 int i;
+//Указатели на выделенную память
 void* pointers[10240];
+//Имена функций, в которых выделялась память
 char strFuncs[10240][255];
+//Имена файлов, в которых выделялась память
 char strFiles[10240][255];
+//Номера строк,в которых выделялась память
 int Lines[10240];
 
+//возвращаем макрос на место для корректной реализации
 #define new	new
 
 void erase( void** pArray, int iSize, void* pSrc )
 {
+	//Удаленные указатели обнуляем
 	for( int j = 0; j < iSize; j++ )
 	{
 		if( pArray[ j ] = pSrc )
@@ -41,8 +56,9 @@ void operator delete( void *address , size_t bytes)
 	free( address );
 }
 
-void Dump()
+void DumpMemLeaks()
 {
+	//TODO:Пока выводим на экран
 	for( int k = 0; k < i; k++ )
 	{
 		if( pointers[k] )
@@ -50,12 +66,9 @@ void Dump()
 			printf( "%p\n", pointers[k] );
 			printf( "%s\n", strFiles[k] );
 			printf( "%d\n", Lines[k] );
-			printf( "%s\n", strFuncs[k] );
+			printf( "%s\n\n", strFuncs[k] );
 		} 
 	}
 }
-
-#define DEBUG_NEW new(__FILE__, __LINE__, __FUNCTION__ )
-#define new DEBUG_NEW
 
 #endif
