@@ -20,10 +20,13 @@
 //iLine - номер строки
 //strFuncName - имя функции 
 void* operator new( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc );
+void* operator new[]( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc );
 
 //Перегружаем две версии оператора delete
 void operator delete( void* address )throw();
 void operator delete( void *address , size_t bytes );
+void operator delete[]( void* address )throw();
+void operator delete[]( void *address , size_t bytes );
 
 //Вспомогательная функция, для удаления неиспользуемых указателей( к которым применили delete )
 void erase( void** pArray, int iSize, void* pSrc );

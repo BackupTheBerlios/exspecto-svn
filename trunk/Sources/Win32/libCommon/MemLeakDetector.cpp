@@ -44,6 +44,16 @@ void* operator new( size_t size, const char* strFile, int iLine, const char* str
 	return p;
 } 
 
+void* operator new[]( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc )
+{
+	void* p = malloc( size );
+	strcpy( strFuncs[ i ], strFuncName );
+	strcpy( strFiles[ i ], strFile );
+	Lines[ i ] = iLine;
+	pointers[ i++ ] = p;
+	return p;	
+}
+
 void operator delete( void* address )throw()
 {
 	erase( pointers, i, address );
@@ -51,6 +61,18 @@ void operator delete( void* address )throw()
 } 
 
 void operator delete( void *address , size_t bytes)
+{
+	erase( pointers, i, address );
+	free( address );
+}
+
+void operator delete[]( void* address )throw()
+{
+	erase( pointers, i, address );
+	free( address );
+}
+
+void operator delete[]( void *address , size_t bytes )
 {
 	erase( pointers, i, address );
 	free( address );
@@ -69,6 +91,7 @@ void DumpMemLeaks()
 			printf( "%s\n\n", strFuncs[k] );
 		} 
 	}
+	printf( "Leaks detection complete!\n" );
 }
 
 #endif
