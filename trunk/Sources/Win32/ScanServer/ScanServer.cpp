@@ -8,7 +8,9 @@ int main(int argc, _TCHAR* argv[])
 {
 	try
 	{
-		CScheduler shed;
+		CScheduler* shed = new CScheduler;
+		getch();
+		delete shed;
 		DumpMemLeaks();
 		getch();
 		return 0;
