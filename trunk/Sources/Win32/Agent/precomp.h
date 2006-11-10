@@ -6,6 +6,8 @@
 #include <string>
 #include <map>
 #include <stdexcept>
+
+#include "MemLeakDetector.h"
 #include "CLog.h"
 #include "constants.h"
 
