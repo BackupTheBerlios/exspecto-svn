@@ -68,16 +68,16 @@ void CTimer::Stop()
 unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 {
 	try{
-	CTimer* pThis = static_cast<CTimer*>( pParam );
-	for(;;)
-	{
-		//Ожидаем либо отмены(останов таймера) либо выхода таймаута, который задает период таймера
-		if( WAIT_OBJECT_0 == ::WaitForSingleObject( pThis->m_hCancelEvent, pThis->m_ulTimerValue*1000 ) )
-			break;
-		Log::instance().Trace( 95, "CTimer: событие таймера" );
-		//Вызываем обработчик в планировщике и ждем его отработки
-		pThis->m_pCallBack->OnStartScan();
-	}
+		CTimer* pThis = static_cast<CTimer*>( pParam );
+		for(;;)
+		{
+			//Ожидаем либо отмены(останов таймера) либо выхода таймаута, который задает период таймера
+			if( WAIT_OBJECT_0 == ::WaitForSingleObject( pThis->m_hCancelEvent, pThis->m_ulTimerValue*1000 ) )
+				break;
+			Log::instance().Trace( 95, "CTimer: событие таймера" );
+			//Вызываем обработчик в планировщике и ждем его отработки
+			pThis->m_pCallBack->OnStartScan();
+		}
 	}catch( std::exception& e )
 	{
 		//TODO:

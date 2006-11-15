@@ -12,7 +12,6 @@ int main(int argc, _TCHAR* argv[])
 		getch();
 		delete shed;
 		DumpMemLeaks();
-		getch();
 		return 0;
 	}catch(...)
 	{
