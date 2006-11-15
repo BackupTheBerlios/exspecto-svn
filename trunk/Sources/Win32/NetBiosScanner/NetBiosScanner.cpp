@@ -1,4 +1,5 @@
 #include "windows.h"
+#include "MemLeakDetector.h"
 #include "CNetBiosScanner.h"
 
 CScanner* m_pScanner;
@@ -26,6 +27,7 @@ void ReleaseScanner()
 	
 	delete m_pScanner;
 	m_pScanner = NULL;
+	DumpMemLeaks();
 }
 
 
@@ -34,6 +36,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
                        LPVOID lpReserved
 					 )
 {
+	if( DLL_PROCESS_DETACH == ul_reason_for_call )
+		DumpMemLeaks();
     return TRUE;
 }
 

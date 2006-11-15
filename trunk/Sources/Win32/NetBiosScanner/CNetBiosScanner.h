@@ -7,6 +7,7 @@
 #ifndef _CNETBIOSSCANNER
 #define _CNETBIOSSCANNER
 
+#include "MemLeakDetector.h"
 #include <string>
 #include <vector>
 #include "CScanner.h"
