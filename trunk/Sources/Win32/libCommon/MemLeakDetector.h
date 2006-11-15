@@ -11,7 +11,8 @@
 #ifndef NDEBUG
 
 #include <new>
-#include <iostream>
+//Подключаем логер здесь,чтобы не заменять в нем операторы new и delete
+#include "CLog.h"
 
 
 
@@ -23,7 +24,9 @@ void* operator new( size_t size, const char* strFile, int iLine, const char* str
 void* operator new[]( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc );
 
 //Перегружаем две версии оператора delete
+//void operator delete( void* address, const char* strFile, int iLine, const char* strFuncName )throw();
 void operator delete( void* address )throw();
+
 void operator delete( void *address , size_t bytes );
 void operator delete[]( void* address )throw();
 void operator delete[]( void *address , size_t bytes );
