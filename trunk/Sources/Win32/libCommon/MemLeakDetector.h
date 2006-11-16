@@ -11,6 +11,8 @@
 #ifndef NDEBUG
 
 #include <new>
+#include <map>
+#include <string>
 //Подключаем логер здесь,чтобы не заменять в нем операторы new и delete
 #include "CLog.h"
 
@@ -30,9 +32,6 @@ void operator delete( void* address )throw();
 void operator delete( void *address , size_t bytes );
 void operator delete[]( void* address )throw();
 void operator delete[]( void *address , size_t bytes );
-
-//Вспомогательная функция, для удаления неиспользуемых указателей( к которым применили delete )
-void erase( void** pArray, int iSize, void* pSrc );
 
 //Этой функцией выводим все не удаленные участки памяти на момент вызова
 void DumpMemLeaks();

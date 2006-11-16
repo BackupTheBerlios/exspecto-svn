@@ -11,88 +11,88 @@
 #include "MemLeakDetector.h"
 #include "windows.h"
 
-//Кол-во выделений памяти
-static int i = 0;
-static int Sizes[10240];
-//Указатели на выделенную память
-static void* pointers[10240];
+//Запись, содеражащая инцормацию о выделенной памяти
+struct structLeakRec{
+	//Размер выделенного блока
+	int	iSize;
+	//Имя функции, в которой выделен блок
+	std::string	strFuncName;
+	//Имя файла, в которой выделен блок
+	std::string	strFileName;
+	//Номер строки, в которой выделен блок
+	int	iLine;
+};
 
-//Имена функций, в которых выделялась память
-static char strFuncs[10240][255];
-//Имена файлов, в которых выделялась память
-static char strFiles[10240][255];
-//Номера строк,в которых выделялась память
-static int Lines[10240];
+//Ассоциативный массив,в котором собержится информация о всех
+//выделенных блоках памяти
+std::map< void*, structLeakRec > mapMem;
 
 //возвращаем макрос на место для корректной реализации
 #define new	new
 
-void erase_ptr( void** pArray, int iSize, void* pSrc )
+//Вспомогательная функция удаления неиспользуемых указателей из mapMem
+void erase( void* pSrc )
 {
-	//Удаленные указатели обнуляем
-	for( int j = 0; j < iSize; j++ )
-	{
-		if( pArray[ j ] == pSrc )
-			pArray[ j ] = 0;
-	}
+	if( mapMem.find( pSrc ) != mapMem.end() )
+		mapMem.erase( pSrc );
 }
 
 void* operator new( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc )
 {
 	void* p = malloc( size );
-	Sizes[ i ] = (int)size;
-	strcpy( strFuncs[ i ], strFuncName );
-	strcpy( strFiles[ i ], strFile );
-	Lines[ i ] = iLine;
-	pointers[ i++ ] = p;
+	structLeakRec Rec;
+	Rec.iSize = (int)size;
+	Rec.strFuncName = strFuncName;
+	Rec.strFileName = strFile;
+	Rec.iLine = iLine;
+	mapMem[p] = Rec;
 	return p;
 } 
 
 void* operator new[]( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc )
 {
 	void* p = malloc( size );
-	Sizes[ i ] = (int)size;
-	strcpy( strFuncs[ i ], strFuncName );
-	strcpy( strFiles[ i ], strFile );
-	Lines[ i ] = iLine;
-	pointers[ i++ ] = p;
+	structLeakRec Rec;
+	Rec.iSize = (int)size;
+	Rec.strFuncName = strFuncName;
+	Rec.strFileName = strFile;
+	Rec.iLine = iLine;
+	mapMem[p] = Rec;
 	return p;	
 }
 
 void operator delete( void* address )throw()
 {
-	erase_ptr( pointers, i, address );
+	erase( address );
 	free( address );
 } 
 
 void operator delete( void *address , size_t bytes)
 {
-	erase_ptr( pointers, i, address );
+	erase( address );
 	free( address );
 }
 
 void operator delete[]( void* address )throw()
 {
-	erase_ptr( pointers, i, address );
+	erase( address );
 	free( address );
 }
 
 void operator delete[]( void *address , size_t bytes )
 {
-	erase_ptr( pointers, i, address );
+	erase( address );
 	free( address );
 }
 
+//Этой функцией выводим все не удаленные участки памяти на момент вызова
 void DumpMemLeaks()
 {
-	for( int k = 0; k < i; k++ )
+	for( std::map< void*, structLeakRec >::iterator It = mapMem.begin(); It != mapMem.end(); It++ )
 	{
-		if( pointers[k] )
-		{
-			Log::instance().Trace( 0, "MemLeakDetector:Не очищенный участок: %p, размером: %d", pointers[k], Sizes[k] );
-			Log::instance().Trace( 0, "MemLeakDetector:Выделен в %s:%d:%s()", strFiles[k], Lines[k], strFuncs[k] );
-		} 
-	}
+		Log::instance().Trace( 0, "MemLeakDetector:Не очищенный участок: %p, размером: %d", It->first, It->second.iSize );
+		Log::instance().Trace( 0, "MemLeakDetector:Выделен в %s:%d:%s()", It->second.strFileName.c_str(), It->second.iLine, It->second.strFuncName.c_str() );
+	}		
 }
 
 #endif
