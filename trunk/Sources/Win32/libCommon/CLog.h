@@ -55,6 +55,8 @@ public:
 	//	... - аргументы форматирования
 	void Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* about, ...);
 	
+	void SetLoglevel( int iLoglevel );
+	
 private:
 	Log( const char* strModuleName = NULL );
 	~Log();
@@ -66,6 +68,8 @@ private:
 	CRITICAL_SECTION m_cs;
 	
 	static Log* m_pInstance;
+	
+	int m_iLogLevel;
 };
 
 

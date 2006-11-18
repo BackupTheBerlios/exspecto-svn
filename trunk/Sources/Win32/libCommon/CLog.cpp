@@ -2,10 +2,8 @@
 #include <stdarg.h>
 #include <iostream>
 #include <windows.h>
+#include "SettingsContainer.h"
 #include "CLog.h"
-
-//TODO: заменить после реализации хранилища параметров
-int log_level = 100;
 
 //Инициализация статической переменной
 Log* Log::m_pInstance = NULL;
@@ -42,7 +40,7 @@ Log::~Log()
 void Log::Trace(int iLevel, char* trace_text, ...)
 {
 	//Если приоритет записи больше чем установленный - не выполняем никаких действий
-	if( iLevel > log_level ) return;
+	if( iLevel > m_iLogLevel ) return;
 	
 	SYSTEMTIME st;
 	FILE* fp;
@@ -67,7 +65,7 @@ void Log::Trace(int iLevel, char* trace_text, ...)
 void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
 {
 	//Если приоритет записи больше чем установленный - не выполняем никаких действий
-	if( iLevel > log_level ) return;
+	if( iLevel > m_iLogLevel ) return;
 	
 	SYSTEMTIME st;
 	FILE* fp;
@@ -115,4 +113,9 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	::LeaveCriticalSection( &m_cs );
 		
 	fclose(fp);	
+}
+
+void Log::SetLoglevel( int iLoglevel )
+{
+	m_iLogLevel = iLoglevel;
 }
