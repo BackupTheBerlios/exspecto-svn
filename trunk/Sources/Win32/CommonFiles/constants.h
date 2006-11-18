@@ -7,3 +7,8 @@
 
 #define PLUGIN_PATH	"Plugins"
 
+//Имен параметров в файле Settings.ini
+#define TIMER_VALUE	"TimerValue"
+#define LOG_LEVEL	"LogLevel"
+
+
