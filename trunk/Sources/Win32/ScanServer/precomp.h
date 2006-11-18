@@ -11,6 +11,7 @@
 
 #include "MemLeakDetector.h"
 #include "CLog.h"
+#include "SettingsContainer.h"
 
 
 

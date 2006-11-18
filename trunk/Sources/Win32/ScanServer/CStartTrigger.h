@@ -59,7 +59,7 @@ private:
 	HANDLE m_hCancelEvent;
 	
 	//Значение периода таймера
-	unsigned long m_ulTimerValue;
+	int m_iTimerValue;
 	
 	//Поток таймера
 	static unsigned __stdcall fnTimerProc( void* pParam );
