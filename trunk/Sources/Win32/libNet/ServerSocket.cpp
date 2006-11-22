@@ -72,10 +72,11 @@ void CServerSocket::Listen( int iMaxConn )throw( SocketErr )
 //(система создаёт его сама, при успешном соединении). Более подробные данные 
 //о присоединившейся машине accept возвращает в параметре addr 
 //(тип адреса, IP-адрес, порт).
-CSocket* CServerSocket::Accept( structAddr& addr )throw( SocketErr )
+std::auto_ptr< CSocket > CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 {
+	Log::instance().Trace( 100, "CServerSocket::Accept: " );
 	SOCKET s;
-	CSocket* sock;
+	std::auto_ptr< CSocket > sock;
 	sockaddr_in sAddr;
 	int len = sizeof(sAddr);
 	hostent* hn;
@@ -91,7 +92,7 @@ CSocket* CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 		{
 			addr.strName = hn->h_name;
 		}
-		sock = new CSocket( s, m_bBlocking );
+		sock = std::auto_ptr< CSocket >( new CSocket( s, m_bBlocking ) );
 	}
 	return sock;
 }

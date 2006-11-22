@@ -56,8 +56,14 @@ CSocket::~CSocket(void)
 void CSocket::Close( void )throw( SocketErr )
 {
 	//TODO:разобраться что происходит при вызове shutdown если соединение не установлено либо разорвано
-	if( INVALID_SOCKET == m_Socket )//|| SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) || SOCKET_ERROR == ::closesocket( m_Socket ) )
-		throw SocketErr( WSAGetLastError() );
+	if( INVALID_SOCKET != m_Socket )
+	{
+		// SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) ||SOCKET_ERROR == ::closesocket( m_Socket ) 
+		if(SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH )  )
+			throw SocketErr( WSAGetLastError() );
+		else
+			m_Socket = INVALID_SOCKET;
+	}
 }
 
 //Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )

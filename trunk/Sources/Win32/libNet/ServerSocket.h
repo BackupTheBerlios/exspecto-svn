@@ -47,7 +47,7 @@ public:
 	//(система создаёт его сама, при успешном соединении). Более подробные данные 
 	//о присоединившейся машине accept возвращает в параметре addr 
 	//(тип адреса, IP-адрес, порт).
-	CSocket* Accept( structAddr& addr )throw( SocketErr );
+	std::auto_ptr< CSocket > Accept( structAddr& addr )throw( SocketErr );
 protected:
 };
 
