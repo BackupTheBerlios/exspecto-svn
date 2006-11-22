@@ -174,6 +174,9 @@ enumAgentResponse CAgent::GetData( CPacket& Msg, CSocket* pSchedSocket )
 enumAgentResponse CAgent::StopScan( CPacket& Msg, CSocket* pSchedSocket )
 {
 	Log::instance().Trace( 90, "CAgent: ѕоступил запрос на окончание сканировани€" );
+	if( m_CurState != Scanning )
+		return RESP_OK;
+	
 	return RESP_OK;
 }
 
