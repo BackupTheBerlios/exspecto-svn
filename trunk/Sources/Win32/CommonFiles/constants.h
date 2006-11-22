@@ -10,5 +10,6 @@
 //Имен параметров в файле Settings.ini
 #define TIMER_VALUE	"TimerValue"
 #define LOG_LEVEL	"LogLevel"
+#define SCHEDULER_ADDRESS "SchedulerAddress"
 
 
