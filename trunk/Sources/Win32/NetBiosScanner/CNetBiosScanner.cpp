@@ -6,7 +6,7 @@
 
 CNetBiosScanner::CNetBiosScanner()
 {
-	Log::instance(MOD_NAME).Trace( 90, "Инициализация плагина NetBios" );
+	Log::instance().Trace( 90, "Инициализация плагина NetBios" );
 }
 
 //Рекурсивная функция, перебирающая все вложенные папки/файлы
