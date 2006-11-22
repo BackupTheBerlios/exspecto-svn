@@ -8,7 +8,7 @@
 //Инициализация статической переменной
 Log* Log::m_pInstance = NULL;
 
-Log::Log( const char* strModuleName )
+Log::Log( const char* strModuleName ):m_iLogLevel(100)
 {
 	::InitializeCriticalSection( &m_cs );
 	char str[255];

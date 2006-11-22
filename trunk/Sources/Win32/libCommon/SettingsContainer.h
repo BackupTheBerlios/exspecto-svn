@@ -71,11 +71,8 @@ public:
 	//Метод доступа к экземпляру класса Settings
 	static Settings& instance()
 	{
-		//Если доступ осуществляется в первый раз - создать экземпляр
-		if( NULL == Settings::m_pInstance )
-		//TODO: разобраться с удалением объекта, может воспользоваться atexit()
-			Settings::m_pInstance = new Settings();
-		return *Settings::m_pInstance;
+		static Settings settings;
+		return settings;
 	}
 	
 	static void SetModule( const char* strModuleName, char** pModuleParams, int iParamCount )

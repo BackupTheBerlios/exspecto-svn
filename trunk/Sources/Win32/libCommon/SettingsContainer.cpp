@@ -17,7 +17,6 @@ Settings::Settings()
 	std::string strArg1, strArg2, strTmp;
 	char *pFirstPos, *pSecondPos;
 
-	//Log::instance().Trace( 100, "Settings::Settings: Кол-во параметров для модуля: %d", m_iParamCount );
 	for( int i = 0; i < m_iParamCount; i+=2 )
 		mapParamTypes.insert( std::make_pair( m_pParamTypes[ i ], m_pParamTypes[ i + 1 ] ) );
 
@@ -48,14 +47,15 @@ Settings::Settings()
 			{
 				strTmp = strBuffer;
 				//Удаляем пробелы
-				std::remove( strTmp.begin(), strTmp.end(), ' ' );
+				std::string::iterator itNewEnd = std::remove( strTmp.begin(), strTmp.end() - 1, ' ' );
+				strTmp.resize( itNewEnd - strTmp.begin() );
 				//Сохраняем параметр до знака = и после 
 				if( ( iTmp = strTmp.find( '=' ) ) != std::string::npos )
 				{
 					strArg1 = strTmp.substr( 0, iTmp );
 					strArg2 = strTmp.substr( iTmp + 1 );
-					Log::instance().Trace( 100, "!!!Settings::Settings: Загружаем параметр %s", strArg1.c_str() );
-				}
+				}else
+					continue;
 				//Если это параметр есть в списке параметров
 				if( mapParamTypes.find( strArg1 ) != mapParamTypes.end() )
 				{
@@ -70,9 +70,12 @@ Settings::Settings()
 							throw ParamLoadErr( strTmp );
 						}
 						PutParam( strArg1, iParam );
-						Log::instance().Trace( 100, "Settings::Settings: Загружаем параметр %s", strArg1.c_str() );
+						Log::instance().Trace( 100, "Settings::Settings: Загружаем параметр %s = %d", strArg1.c_str(), iParam );
 					}else if( mapParamTypes[ strArg1 ] == "string" )
-						PutParam( strArg1, iParam );
+					{
+						Log::instance().Trace( 100, "Settings::Settings: Загружаем параметр %s = %s", strArg1.c_str(), strArg2.c_str() );
+						PutParam( strArg1, strArg2 );
+					}
 				}
 			}
 		}

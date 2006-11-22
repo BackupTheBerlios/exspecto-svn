@@ -33,11 +33,8 @@ public:
 	//GetModuleFileName
 	static Log& instance( const char* strModuleName = NULL )
 	{
-		//Если доступ осуществляется в первый раз - создать экземпляр
-		if( NULL == Log::m_pInstance )
-		//TODO: разобраться с удалением объекта, может воспользоваться atexit()
-			Log::m_pInstance = new Log( strModuleName );
-		return *Log::m_pInstance;
+		static Log log( strModuleName );
+		return log;
 	}
 	
 	
