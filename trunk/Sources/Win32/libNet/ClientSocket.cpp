@@ -22,6 +22,12 @@ CClientSocket::~CClientSocket(void)throw( SocketErr )
 //								 iPort - порт, к которому необходимо подключиться
 void CClientSocket::Connect( std::string strAddr, int iPort )throw( SocketDNSErr, CSocket::SocketErr )
 {
+	//Если соединение закрывали - восстанавливаем сокет
+	if( INVALID_SOCKET == ( m_Socket = ::socket( AF_INET, m_iType, 0 ) ) )
+		throw SocketErr( WSAGetLastError() );
+	//Устанавливаем тип вызовов
+	SetBlocking( m_bBlocking );
+	
 	sockaddr_in sAddr;
 	hostent* hn;
 

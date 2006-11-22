@@ -74,7 +74,6 @@ void CServerSocket::Listen( int iMaxConn )throw( SocketErr )
 //(тип адреса, IP-адрес, порт).
 std::auto_ptr< CSocket > CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 {
-	Log::instance().Trace( 100, "CServerSocket::Accept: " );
 	SOCKET s;
 	std::auto_ptr< CSocket > sock;
 	sockaddr_in sAddr;
