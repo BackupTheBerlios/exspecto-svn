@@ -103,6 +103,7 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	
 	Log::instance().Trace( 92, "CAgentHandler::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str() );
 	SendMessage( Msg, pbRecvBuf, 1 );
+	//Закрываем соединение
 	Close();
 	return (enumAgentResponse)pbRecvBuf[0]; 
 }
@@ -117,6 +118,8 @@ enumAgentResponse CAgentHandler::StopScan()throw( HandlerErr, CSocket::SocketErr
 	Msg.EndCommand();
 
 	SendMessage( Msg, pbRecvBuf, 1 );
+	//Закрываем соединение
+	Close();
 	return (enumAgentResponse)pbRecvBuf[0];		
 }
 	
@@ -136,6 +139,8 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( Handl
 		return (enumAgentResponse)pbRecvBuf[0];
 	}
 	SendMessage( Msg, pbRecvBuf, 1 );
+	//Закрываем соединение
+	Close();
 	Status = (enumAgentState)pbRecvBuf[0];
 	Log::instance().Trace( 80, "CAgentHandler::GetStatus: Получен статус: %d", Status );
 	return RESP_OK;
@@ -165,6 +170,8 @@ enumAgentResponse CAgentHandler::GetData()throw( HandlerErr, CSocket::SocketErr 
 	BYTE* pbData = new BYTE[ iDataSize ];
 	//последний раз, в ответ приходят данные
 	SendMessage( Msg, pbData, iDataSize );
+	//Закрываем соединение
+	Close();
 	Log::instance().Dump( 90, pbData, iDataSize, "CAgentHandler::GetData: Получены данные:" );
 	delete pbData;
 	return RESP_OK;
