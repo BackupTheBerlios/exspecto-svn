@@ -11,7 +11,7 @@
 #include "packet.h"
 #include "ClientSocket.h"
 
-#define PORT 5000
+#define PORT 4000
 
 class CAgentHandler
 {

@@ -103,6 +103,7 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	
 	Log::instance().Trace( 92, "CAgentHandler::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str() );
 	SendMessage( Msg, pbRecvBuf, 1 );
+	Close();
 	return (enumAgentResponse)pbRecvBuf[0]; 
 }
 	
