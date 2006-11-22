@@ -2,11 +2,21 @@
 #include "CAgent.h"
 #include "conio.h"
 
+//Описание типов параметров
+static char* pAgentParamTypes[] = {
+	SCHEDULER_ADDRESS, "string",
+	LOG_LEVEL,	"int"
+};
+
 int main(int argc, _TCHAR* argv[])
 {
 	try
 	{
-		CAgent* ag = new CAgent( "127.0.0.1" );
+		int iLogLevel;
+		Settings::SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
+		Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
+		Log::instance().SetLoglevel( iLogLevel );
+		CAgent* ag = new CAgent();
 		getch();
 		delete ag;
 		DumpMemLeaks();

@@ -9,9 +9,9 @@
 
 
 //Конструктор,strSchedulerAddress - адрес планировщика
-CAgent::CAgent( std::string strSchedulerAddress ):m_CurState( Idling )
-												 ,m_strSchedulerAddress( strSchedulerAddress )
+CAgent::CAgent():m_CurState( Idling )
 {
+	Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress ); 
 	DWORD dwThreadId;
 	//Запускаем поток прослушивания(ожидания входящих TCP соединений)
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
@@ -61,8 +61,8 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 	catch( std::exception& e )
 	{
 		Log::instance().Trace( 50, "CAgent::fnProcessThreadProc: Возникло исключение: %s", e.what() );
+		return 0;
 	}
-	return 0;	
 }
 
 //Поток ожидания входящих соединений
@@ -71,7 +71,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	try{
 		CAgent* pThis = (CAgent*)pParameter;
 		CServerSocket sock;
-		CSocket* client_sock;
+		std::auto_ptr< CSocket > client_sock;
 		BYTE pBuf[10240];
 		int iCount = 0;
 		DWORD dwThreadId;
@@ -80,11 +80,11 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	
 		Log::instance().Trace( 90, "CAgent:: Запуск потока ожидания входящих соединений" ); 
 	    //связываем серверный сокет с локальным адресом
-		sock.Bind( 5000, "127.0.0.1" );
+		sock.Bind( 5000, "172.16.6.53" );
 		//переводим сокет в режим прослушивания
 		sock.Listen();
 		//Ожидаем входящее соединение и обрабатываем его
-		while( NULL != ( client_sock = sock.Accept( adr ) ) )
+		while( NULL != ( client_sock = sock.Accept( adr ) ).get() )
 		{
 			Log::instance().Trace( 51, "CAgent::ListenThread: Входящее соединение с адреса: %s", adr.strAddr.c_str() );
 			try{
@@ -92,13 +92,14 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 				if( ( pThis->m_strSchedulerAddress == adr.strAddr ) && ( ( iCount = client_sock->Receive( pBuf, 10240 ) ) ) )
 				{
 					ProcessParam* params = new ProcessParam;
-					params->client_sock = std::auto_ptr< CSocket >( client_sock );
+					params->client_sock = client_sock;
 					params->iCount = iCount;
 					params->pbBuf = pBuf;
 					params->pThis = pThis;
 					Log::instance().Dump( 90, pBuf, iCount, "CAgent::ListenThread: Обрабатываем пакет:" );
 					::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
-				}
+				}else
+					Log::instance().Trace( 50, "CAgent::ListenThread: Пришле пакет с адреса: %s. Игнорируем" );
 			}catch( CSocket::SocketErr )
 			{
 				Log::instance().Trace( 50, "CAgent::ListenThread: Пришел пакет слишком большого размера" );
@@ -110,6 +111,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 	{
 		Log::instance().Trace( 10," CAgent::ListenThread: Возникло исключение: %s", e.what() );
 	}
+	Log::instance().Trace( 50, "CAgent::ListenThread: Завершение потока ожидания входящих сообщений" );
 	return 0;
 }
 

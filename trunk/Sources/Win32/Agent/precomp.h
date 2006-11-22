@@ -10,5 +10,6 @@
 #include "MemLeakDetector.h"
 #include "CLog.h"
 #include "constants.h"
+#include "SettingsContainer.h"
 
 #endif /*PRECOMP_H_*/

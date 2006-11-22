@@ -18,7 +18,7 @@ class CAgent
 public:
 	
 	//Конструктор,strSchedulerAddress - адрес планировщика
-	CAgent( std::string strSchedulerAddress );
+	CAgent();
 	
 	~CAgent(void);
 
