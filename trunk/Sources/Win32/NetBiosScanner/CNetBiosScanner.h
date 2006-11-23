@@ -22,7 +22,7 @@ public:
 	virtual ~CNetBiosScanner(){};
 
 	//Сканировать адрес strAddress, результат сложить в vcResList
-	virtual void Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList ); 
+	virtual void Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList, HANDLE hCancelEvent ); 
 
 	//Вернуть имя протокола	
 	virtual const char* GetProtocolName()
@@ -33,7 +33,7 @@ public:
 protected:
 
 	//Рекурсивная функция, перебирающая все вложенные папки/файлы
-	void EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList );
+	void EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList, HANDLE hCancelEvent );
 	
 };
 

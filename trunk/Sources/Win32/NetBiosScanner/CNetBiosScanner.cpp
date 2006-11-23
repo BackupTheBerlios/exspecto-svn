@@ -10,8 +10,11 @@ CNetBiosScanner::CNetBiosScanner()
 }
 
 //Рекурсивная функция, перебирающая все вложенные папки/файлы
-void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList )
+void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList, HANDLE hCancelEvent )
 {
+	//Если задание отменили - завершаем выполнение
+	if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
+		return;
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFile;
 	//TODO:разобраться с Stack overflow
@@ -26,7 +29,7 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< s
 			vcFilesList.push_back( m_strBuf );
 			m_strBuf.clear();
 		}
-		while( 0 != ::FindNextFile( hFile, &FindFileData ) ) 
+		while( 0 != ::FindNextFile( hFile, &FindFileData ) && WAIT_OBJECT_0 != WaitForSingleObject( hCancelEvent, 0 )) 
 			//не выводим в результат записи вида . и ..
 			if( 0 != strcmp( ".", FindFileData.cFileName ) && 0 != strcmp( "..", FindFileData.cFileName ) )
 			{
@@ -37,7 +40,7 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< s
 				m_strBuf += "\\";
 				m_strBuf += "*.*";
 				//Рекурсивно проводим поиск во вложенных папках
-				EnumFiles( m_strBuf.c_str(), vcFilesList );
+				EnumFiles( m_strBuf.c_str(), vcFilesList, hCancelEvent );
 				m_strBuf.clear();
 			}
 		::FindClose( hFile );
@@ -46,7 +49,7 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< s
 }
 
 //Сканировать адрес strAddress, результат сложить в vcResList
-void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList )
+void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList, HANDLE hCancelEvent )
 {
 	BYTE* buf;
 	DWORD p1,p2;
@@ -76,10 +79,12 @@ void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::str
 			{
 				sprintf( strTmpSharePath, "\\\\%s\\%s\\*.*", strAddress.c_str(), strTmpShareName );
 				//получаем список файлов
-				EnumFiles( strTmpSharePath, vcResList ); 
+				EnumFiles( strTmpSharePath, vcResList, hCancelEvent );
+				if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
+					break; 
 			}
 		}
 		::NetApiBufferFree( buf );
-	}while( res == ERROR_MORE_DATA );
+	}while( res == ERROR_MORE_DATA && WAIT_OBJECT_0 != WaitForSingleObject( hCancelEvent, 0 ));
 }
 
