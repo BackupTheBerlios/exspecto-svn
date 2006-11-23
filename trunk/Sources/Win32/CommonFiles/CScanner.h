@@ -10,7 +10,7 @@ public:
 	CScanner(){};
 	virtual ~CScanner(){};
 		
-	virtual void Scan( IN std::string strAddress, OUT std::vector< std::string >& vecResList ) = 0;
+	virtual void Scan( IN std::string strAddress, OUT std::vector< std::string >& vecResList, HANDLE hCancelEvent ) = 0;
 	
 	virtual const char* GetProtocolName() = 0;
 
