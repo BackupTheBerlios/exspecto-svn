@@ -9,7 +9,8 @@
 
 
 //Конструктор,strSchedulerAddress - адрес планировщика
-CAgent::CAgent():m_CurState( Idling )
+CAgent::CAgent():m_LastCommand( STOP_SCAN )
+				,m_CurState( Idling )
 {
 	Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress ); 
 	DWORD dwThreadId;
@@ -17,6 +18,8 @@ CAgent::CAgent():m_CurState( Idling )
 	::CloseHandle( ::CreateThread( 0, 0, fnListenThreadProc, this, 0, &dwThreadId ) );
 	::InitializeCriticalSection( &m_csCurState );
 	::InitializeCriticalSection( &m_csCommandExec );
+	//Инициализируем событие
+	m_hCancelEvent = CreateEvent( 0, 1, 0, 0 );
 	//Инициализируем карту обработчиков команд
 	m_mapHandlers[ GET_STATUS ] = &CAgent::GetStatus;
 	m_mapHandlers[ START_SCAN ] = &CAgent::StartScan;
@@ -28,6 +31,7 @@ CAgent::~CAgent(void)
 {
 	::DeleteCriticalSection( &m_csCurState );
 	::DeleteCriticalSection( &m_csCommandExec );
+	CloseHandle( m_hCancelEvent );
 }
 
 //Поток обработки входящих сообщений
@@ -49,7 +53,7 @@ DWORD WINAPI CAgent::fnProcessThreadProc( LPVOID pParameter )
 					Log::instance().Trace( 95, "CAgent::fnProcessThreadProc: Обработка входящего пакета завершена" ); 
 					break;
 				}
-			(pParams->pThis->*(pParams->pThis->m_mapHandlers[ bCommandId ]))( Msg, pParams->client_sock.get() );
+			(pParams->pThis->*(pParams->pThis->m_mapHandlers[ bCommandId ]))( Msg, pParams->client_sock.get(), pParams->hCancelEvent );
 		}
 		
 		return 0;
@@ -74,7 +78,6 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 		std::auto_ptr< CSocket > client_sock;
 		BYTE pBuf[10240];
 		int iCount = 0;
-		DWORD dwThreadId;
 	
 		CServerSocket::structAddr adr;
 	
@@ -97,7 +100,7 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 					params->pbBuf = pBuf;
 					params->pThis = pThis;
 					Log::instance().Dump( 90, pBuf, iCount, "CAgent::ListenThread: Обрабатываем пакет:" );
-					::CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, &dwThreadId ) );
+					CloseHandle( ::CreateThread( 0, 0, fnProcessThreadProc, params, 0, NULL ) );
 				}else
 					Log::instance().Trace( 50, "CAgent::ListenThread: Пришле пакет с адреса: %s. Игнорируем" );
 			}catch( CSocket::SocketErr )
@@ -116,19 +119,17 @@ DWORD WINAPI CAgent::fnListenThreadProc(  void* pParameter )
 }
 
 //Обработчики команд
-enumAgentResponse CAgent::GetStatus( CPacket& Msg, CSocket* pSchedSocket )
+void CAgent::GetStatus( CPacket& Msg, CSocket* pSchedSocket, HANDLE hCancelEvent )
 {
 	Log::instance().Trace( 90, "CAgent: Поступил запрос на получение статуса" );
-	BYTE pbBuf[2];
-	pbBuf[0] = 0xFF;
-	pbBuf[1] = m_CurState;
-	//отправляем текущее состояние
-	pSchedSocket->Send( pbBuf, 2 );
-
-	return RESP_OK;
+	//отправляем ответ серверу
+	BYTE pbResp[2];
+	pbResp[0] = (BYTE)RESP_OK;
+	pbResp[1] = m_CurState;
+	pSchedSocket->Send( pbResp, sizeof( pbResp ) );
 }
 	
-enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
+void CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket, HANDLE hCancelEvent )
 {
 	Log::instance().Trace( 90, "CAgent: Поступил запрос на начало сканирования" );
 	DWORD dwCount = 0;
@@ -147,36 +148,40 @@ enumAgentResponse CAgent::StartScan( CPacket& Msg, CSocket* pSchedSocket )
 	//отправляем ответ серверу, команда принята на обработку
 	enumAgentResponse resp = RESP_OK;
 	pSchedSocket->Send( (BYTE*)&resp, 1 );
-	for( unsigned int i = 0; i < dwCount; i++ )
+	for( unsigned int i = 0; ( i < dwCount ) && ( WAIT_OBJECT_0 != WaitForSingleObject( hCancelEvent, 0 ) ); i++ )
 	{
 		//получаем очередной адрес и производим его сканирование по всем доступным протоколам
 		Msg.GetAddress( strAddress );
-		for( PluginIterator It = m_PluginContainer.begin(); It != m_PluginContainer.end(); It++ )
+		for( PluginIterator It = m_PluginContainer.begin(); ( It != m_PluginContainer.end() ) && ( WAIT_OBJECT_0 != WaitForSingleObject( hCancelEvent, 0 ) ); It++ )
 		{
 			Log::instance().Trace( 80, "CAgent::StartScan: Сканируем адрес %s с помощью плагина %s", strAddress.c_str(), (*It)->GetProtocolName() );
-			(*It)->Scan( strAddress, List );
+			(*It)->Scan( strAddress, List, hCancelEvent );
 		}
 	}
 	::EnterCriticalSection( &m_csCurState );
 	m_CurState = Idling;		
 	::LeaveCriticalSection( &m_csCurState );
 	
+	m_LastCommand = START_SCAN;
 	::LeaveCriticalSection( &m_csCommandExec );
-	return RESP_OK;
 }
 
-enumAgentResponse CAgent::GetData( CPacket& Msg, CSocket* pSchedSocket )
+void CAgent::GetData( CPacket& Msg, CSocket* pSchedSocket, HANDLE hCancelEvent )
 {
 	Log::instance().Trace( 90, "CAgent: Поступил запрос на получение данных" );
-	return RESP_OK;
 }
 	
-enumAgentResponse CAgent::StopScan( CPacket& Msg, CSocket* pSchedSocket )
+void CAgent::StopScan( CPacket& Msg, CSocket* pSchedSocket, HANDLE hCancelEvent )
 {
-	Log::instance().Trace( 90, "CAgent: Поступил запрос на окончание сканирования" );
-	if( m_CurState != Scanning )
-		return RESP_OK;
-	
-	return RESP_OK;
+	Log::instance().Trace( 90, "CAgent::StopScan: Поступил запрос на окончание сканирования" );
+	//отправляем ответ серверу, команда принята на обработку
+	enumAgentResponse resp = RESP_OK;
+	pSchedSocket->Send( (BYTE*)&resp, 1 );
+	if( m_CurState == Scanning )
+	{
+		Log::instance().Trace( 90, "CAgent::StopScan: Останавливаем сканирование" ); 
+		//Взводим событие отмены выполнения команды и ждем завершения потока обработки
+		SetEvent( m_hCancelEvent );
+	}
 }
 
