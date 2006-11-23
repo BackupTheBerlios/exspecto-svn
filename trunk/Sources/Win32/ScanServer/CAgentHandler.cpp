@@ -132,16 +132,15 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( Handl
 	Msg.BeginCommand( GET_STATUS );
 	Msg.EndCommand();
 
-	SendMessage( Msg, pbRecvBuf, 1 );
+	SendMessage( Msg, pbRecvBuf, 2 );
+	//Закрываем соединение
+	Close();
 	if( RESP_OK != pbRecvBuf[0] )
 	{
 		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", pbRecvBuf[0] );
 		return (enumAgentResponse)pbRecvBuf[0];
 	}
-	SendMessage( Msg, pbRecvBuf, 1 );
-	//Закрываем соединение
-	Close();
-	Status = (enumAgentState)pbRecvBuf[0];
+	Status = (enumAgentState)pbRecvBuf[1];
 	Log::instance().Trace( 80, "CAgentHandler::GetStatus: Получен статус: %d", Status );
 	return RESP_OK;
 }

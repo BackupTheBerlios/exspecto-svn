@@ -24,8 +24,23 @@ void CScheduler::OnStartScan()
 	vecAdr.push_back( "127.0.0.1" );
 	for( Container< CAgentHandler*, AgentsLoadStrategy >::iterator It = m_AgentsContainer.begin(); It != m_AgentsContainer.end(); It++ )
 	{
+		enumAgentState bStatus;
 		(*It)->Open();
 		if( (*It)->IsOpened() )
+		{
+			(*It)->GetStatus( bStatus );
+			Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
+		}
+		(*It)->Open();
+		if( (*It)->IsOpened() )
+		{
 			Log::instance().Trace( 10, "CScheduler: Агент вернул: %d", (*It)->BeginScan( vecAdr ) );
+		}
+		(*It)->Open();
+		if( (*It)->IsOpened() )
+		{
+			(*It)->GetStatus( bStatus );
+			Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
+		}
 	}
 }
