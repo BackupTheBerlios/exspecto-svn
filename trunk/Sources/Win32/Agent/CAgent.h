@@ -8,10 +8,11 @@
 #define AGENT_H_
 
 #include "precomp.h"
-#include "..\libNet\packet.h"
-#include "..\libCommon\Container.hpp"
+#include "packet.h"
+#include "Container.hpp"
 #include "CScanner.h"
 #include "PluginLoadStrategy.h"
+#include <set>
 
 class CAgent
 {
@@ -24,16 +25,16 @@ public:
 
 private:
 
-	//Некоторые команды выполняются за несколько запросов( GET_STATUS, GET_DATA ... )
-	//чтобы определить ситуацию когда пришел один запрос, а вместо последующих пришла следующая команда
-	//введена эта переменная, содержащая последнюю команду
-	enumCommands m_LastCommand;
+	std::vector< std::string > m_vecData;
 	
 	//Критическая секция на запись переменной текущего состояния
 	CRITICAL_SECTION m_csCurState;
 
 	//Критическая секция на выполнение команд
 	CRITICAL_SECTION m_csCommandExec;
+
+	//Критическая секция на доступ к m_vecCloseHandles
+	CRITICAL_SECTION m_csCloseHandles;
 
 	//Текущее состояние агента
 	enumAgentState m_CurState;
@@ -52,6 +53,12 @@ private:
 
 	//Событие отмены выполнения команды
 	HANDLE m_hCancelEvent;
+	
+	//Множество хэндлов запущенных потоков обработки команд
+	std::set< HANDLE > m_setProcessThreads;
+	
+	//Вектор дескрипторов для закрытия 
+	std::vector< HANDLE > m_vecCloseHandles;
 	
 	//Поток обработки входящих сообщений
 	static DWORD WINAPI fnProcessThreadProc( LPVOID pParameter );
