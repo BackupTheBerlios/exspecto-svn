@@ -42,5 +42,11 @@ void CScheduler::OnStartScan()
 			(*It)->GetStatus( bStatus );
 			Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
 		}
+		(*It)->Open();
+		if( (*It)->IsOpened() )
+		{
+			Log::instance().Trace( 10, "CScheduler: Агент вернул: %d", (*It)->StopScan() );
+		}
+		
 	}
 }
