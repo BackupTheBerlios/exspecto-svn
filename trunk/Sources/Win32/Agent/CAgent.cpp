@@ -7,7 +7,7 @@
 #include "CAgent.h"
 #include "ServerSocket.h"
 #include <process.h>
-
+#include "SmartPtr.h"
 
 //Конструктор,strSchedulerAddress - адрес планировщика
 CAgent::CAgent():m_CurState( Idling )
@@ -96,7 +96,7 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 	try{
 		CAgent* pThis = (CAgent*)pParameter;
 		CServerSocket sock;
-		std::auto_ptr< CSocket > client_sock;
+		SmartPtr< CSocket > client_sock;
 		BYTE pBuf[10240];
 		int iCount = 0;
 	

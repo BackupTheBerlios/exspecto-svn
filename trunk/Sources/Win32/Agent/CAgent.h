@@ -14,6 +14,7 @@
 #include "PluginLoadStrategy.h"
 #include <set>
 
+
 class CAgent
 {
 public:
