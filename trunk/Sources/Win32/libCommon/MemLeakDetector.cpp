@@ -90,7 +90,7 @@ void DumpMemLeaks()
 {
 	for( std::map< void*, structLeakRec >::iterator It = mapMem.begin(); It != mapMem.end(); It++ )
 	{
-		Log::instance().Trace( 0, "MemLeakDetector:Не очищенный участок: %p, размером: %d", It->first, It->second.iSize );
+		Log::instance().Trace( 0, "MemLeakDetector:Неочищенный участок: %p, размером: %d", It->first, It->second.iSize );
 		Log::instance().Trace( 0, "MemLeakDetector:Выделен в %s:%d:%s()", It->second.strFileName.c_str(), It->second.iLine, It->second.strFuncName.c_str() );
 	}		
 }
