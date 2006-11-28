@@ -18,7 +18,7 @@ class CAgent
 {
 public:
 	
-	//Конструктор,strSchedulerAddress - адрес планировщика
+	//Конструктор
 	CAgent();
 	
 	~CAgent(void);
@@ -35,6 +35,9 @@ private:
 
 	//Критическая секция на доступ к m_vecCloseHandles
 	CRITICAL_SECTION m_csCloseHandles;
+	
+	//Критическая секция на доступ к m_setProcessThreads
+	CRITICAL_SECTION m_csProcessThreads;
 
 	//Текущее состояние агента
 	enumAgentState m_CurState;
@@ -47,13 +50,16 @@ private:
 		CAgent*	pThis;
 		BYTE*	pbBuf;
 		int		iCount;
-		std::auto_ptr< CSocket > client_sock;
+		CSocket* client_sock;
 		HANDLE	hCancelEvent;
 	};
 
 	//Событие отмены выполнения команды
 	HANDLE m_hCancelEvent;
 	
+	//Дескриптор потока ожидания соединений
+	HANDLE m_hListenThread;
+		
 	//Множество хэндлов запущенных потоков обработки команд
 	std::set< HANDLE > m_setProcessThreads;
 	
@@ -61,10 +67,10 @@ private:
 	std::vector< HANDLE > m_vecCloseHandles;
 	
 	//Поток обработки входящих сообщений
-	static DWORD WINAPI fnProcessThreadProc( LPVOID pParameter );
+	static unsigned _stdcall fnProcessThreadProc( void* pParameter );
 
 	//Поток ожидания входящих соединений
-	static DWORD WINAPI fnListenThreadProc(  LPVOID pParameter );
+	static unsigned _stdcall fnListenThreadProc(  void* pParameter );
 
 	//Контейнер плагинов
 	Container< CScanner*, PluginLoadStrategy > m_PluginContainer;
