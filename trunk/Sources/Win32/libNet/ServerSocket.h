@@ -9,6 +9,7 @@
 
 #include "precomp.h"
 #include "Socket.h"
+#include "SmartPtr.h"
 
 class CServerSocket: public CSocket
 {
@@ -47,7 +48,7 @@ public:
 	//(система создаёт его сама, при успешном соединении). Более подробные данные 
 	//о присоединившейся машине accept возвращает в параметре addr 
 	//(тип адреса, IP-адрес, порт).
-	std::auto_ptr< CSocket > Accept( structAddr& addr )throw( SocketErr );
+	SmartPtr< CSocket > Accept( structAddr& addr )throw( SocketErr );
 protected:
 };
 
