@@ -62,7 +62,9 @@ private:
 	
 	T* m_pPointer;
 	
-	static std::map< void*, int > m_mapRefs;
+	static std::map< T*, int > m_mapRefs;
 };
+
+template< class T > std::map< T*, int > SmartPtr< T >::m_mapRefs;
 
 #endif /*CSMARTPTR_H_*/
