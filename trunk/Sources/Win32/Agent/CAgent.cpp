@@ -7,7 +7,7 @@
 #include "CAgent.h"
 #include "ServerSocket.h"
 #include <process.h>
-#include "SmartPtr.h"
+#include "SmartPtr.hpp"
 
 //Конструктор,strSchedulerAddress - адрес планировщика
 CAgent::CAgent():m_CurState( Idling )
@@ -124,9 +124,9 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 					pThis->m_setProcessThreads.insert( (HANDLE)_beginthreadex( 0, 0, fnProcessThreadProc, params, 0, NULL ) );
 				}else
 					Log::instance().Trace( 50, "CAgent::ListenThread: Пришле пакет с адреса: %s. Игнорируем" );
-			}catch( CSocket::SocketErr )
+			}catch( CSocket::SocketErr& e )
 			{
-				Log::instance().Trace( 50, "CAgent::ListenThread: Пришел пакет слишком большого размера" );
+				Log::instance().Trace( 50, "CAgent::ListenThread: Исключение socket: %s", e.what() );
 				//Если прислали пакет больше 10кб
 				continue;
 			}
