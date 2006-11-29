@@ -9,7 +9,7 @@
 
 #include "precomp.h"
 #include "Socket.h"
-#include "SmartPtr.h"
+#include "SmartPtr.hpp"
 
 class CServerSocket: public CSocket
 {
