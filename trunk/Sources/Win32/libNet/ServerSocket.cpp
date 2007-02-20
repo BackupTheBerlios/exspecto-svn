@@ -54,7 +54,7 @@ void CServerSocket::Bind( int iPort, std::string strAddr )throw( SocketDNSErr, S
 	}
 	//Port
 	sAddr.sin_port = htons( iPort );
-    if ( SOCKET_ERROR == bind( m_Socket, (sockaddr* )&sAddr, sizeof ( sAddr ) ) )
+	if ( SOCKET_ERROR == bind( m_Socket, (sockaddr* )&sAddr, sizeof ( sAddr ) ) )
 		throw SocketErr( WSAGetLastError() );
 }
 
