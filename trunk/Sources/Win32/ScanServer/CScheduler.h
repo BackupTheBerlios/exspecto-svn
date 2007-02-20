@@ -13,6 +13,8 @@
 #include "CStartTrigger.h"
 #include "Container.hpp"
 #include "AgentsLoadStrategy.h"
+#include "SmartPtr.hpp"
+#include "Event.hpp"
 
 //Предварительное обьявление класса CStartTrigger
 class CStartTrigger;
@@ -38,10 +40,14 @@ public:
 private:
 
 	//Контейнер, содержащий обьекты управления агентами, загружаемые стратегией AgentsLoadStrategy
-	Container< CAgentHandler*, AgentsLoadStrategy > m_AgentsContainer;
+	std::map< std::string, SmartPtr< CAgentHandler > > m_mapAgentsContainer;
 	
 	//Триггер, срабатывающий при необходимости начать сканирование
 	std::auto_ptr< CStartTrigger > m_pTrigger;
+
+	unsigned _stdcall fnListenThreadProc(  void* pParameter );
+	
+	CEvent m_CloseEv;
 
 };
 

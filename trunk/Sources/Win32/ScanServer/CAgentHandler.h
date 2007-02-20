@@ -10,6 +10,7 @@
 #include "commands.h"
 #include "packet.h"
 #include "ClientSocket.h"
+#include "SmartPtr.hpp"
 
 #define PORT 4000
 
@@ -54,7 +55,6 @@ public:
 	//Открыто ли соединение с агентом
 	bool IsOpened()const;
 	
-
 protected:
 	
 	//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
