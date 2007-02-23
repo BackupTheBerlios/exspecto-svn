@@ -6,10 +6,13 @@
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
 #include "CAgentHandler.h"
+#include <process.h>
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
 														   ,m_bOpened( false )
+														   ,m_bFinished( false )
 {
+	m_pConnectionHandler = SmartPtr< CConnectionHandler >( new CConnectionHandler( this ) );
 }
 
 CAgentHandler::~CAgentHandler()
@@ -84,6 +87,23 @@ bool CAgentHandler::IsOpened()const
 	return m_bOpened;
 }
 
+void CAgentHandler::OnConnection( SmartPtr< CSocket > pSocket )
+{
+	m_pConnectionHandler->Listen( pSocket );
+}
+
+void CAgentHandler::OnMessage( CPacket& Msg )
+{
+	BYTE bCommandId;
+	Msg.GetCommandId( bCommandId );
+	switch( bCommandId )
+	{
+		case ScanComplete:
+			m_bFinished = true;
+			break;
+	};
+}
+
 enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )throw( HandlerErr, CSocket::SocketErr )
 {
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Отправка команды начала сканирования" );
@@ -103,8 +123,6 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	
 	Log::instance().Trace( 92, "CAgentHandler::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str() );
 	SendMessage( Msg, pbRecvBuf, 1 );
-	//Закрываем соединение
-	Close();
 	return (enumAgentResponse)pbRecvBuf[0]; 
 }
 	
@@ -118,8 +136,6 @@ enumAgentResponse CAgentHandler::StopScan()throw( HandlerErr, CSocket::SocketErr
 	Msg.EndCommand();
 
 	SendMessage( Msg, pbRecvBuf, 1 );
-	//Закрываем соединение
-	Close();
 	return (enumAgentResponse)pbRecvBuf[0];		
 }
 	
@@ -133,8 +149,6 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( Handl
 	Msg.EndCommand();
 
 	SendMessage( Msg, pbRecvBuf, 2 );
-	//Закрываем соединение
-	Close();
 	if( RESP_OK != pbRecvBuf[0] )
 	{
 		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", pbRecvBuf[0] );
@@ -169,11 +183,35 @@ enumAgentResponse CAgentHandler::GetData()throw( HandlerErr, CSocket::SocketErr 
 	BYTE* pbData = new BYTE[ iDataSize ];
 	//последний раз, в ответ приходят данные
 	SendMessage( Msg, pbData, iDataSize );
-	//Закрываем соединение
-	Close();
 	Log::instance().Dump( 90, pbData, iDataSize, "CAgentHandler::GetData: Получены данные:" );
 	delete pbData;
 	return RESP_OK;
 }
 
+void CConnectionHandler::Listen( SmartPtr<CSocket> pSocket )
+{
+	if( WAIT_OBJECT_0 == WaitForSingleObject( m_hListenThread, 0 ) )
+		m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThread, this, 0, NULL );
+}
 
+unsigned __stdcall CConnectionHandler::fnListenThread( void* param )
+{
+	CConnectionHandler* pThis = (CConnectionHandler*)param;
+	CPacket Msg;
+	BYTE pBuf[10240];
+	int iCount;
+	while( iCount = pThis->m_pSocket->Receive( pBuf, 10240 ) )
+	{
+		Msg.SetBuffer( pBuf, iCount );
+		pThis->m_pAgentHandler->OnMessage( Msg );
+	}
+	CloseHandle( pThis->m_hListenThread );
+	return 0;
+}
+
+CConnectionHandler::~CConnectionHandler()
+{
+	SetEvent( m_hCloseEv );
+	WaitForSingleObject( m_hListenThread, 10000 );
+	CloseHandle( m_hCloseEv );
+}

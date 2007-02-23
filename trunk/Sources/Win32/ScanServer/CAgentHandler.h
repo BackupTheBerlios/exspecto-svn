@@ -14,6 +14,8 @@
 
 #define PORT 4000
 
+class CConnectionHandler;
+
 class CAgentHandler
 {
 public:
@@ -55,11 +57,17 @@ public:
 	//Открыто ли соединение с агентом
 	bool IsOpened()const;
 	
+	void OnConnection( SmartPtr< CSocket > pSocket );
+	
+	void OnMessage( CPacket& Msg );
+	
+	bool IsScanFinished(){ return m_bFinished; };
+		
 protected:
 	
 	//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
 	void SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )throw( HandlerErr, CSocket::SocketErr );
-
+	
 private:
 	
 	//Адрес агента
@@ -71,6 +79,38 @@ private:
 	//Флаг открытия соединения
 	bool m_bOpened;
 	
+	SmartPtr< CSocket > m_pAgentConnection;
+	
+	SmartPtr< CConnectionHandler > m_pConnectionHandler;
+	
+	bool m_bFinished;
+	
+};
+
+class CConnectionHandler
+{
+public:
+	
+	typedef void(CConnectionHandler::*fnOnMessageProc)(CPacket&);
+	
+	CConnectionHandler( CAgentHandler* pAgentHandler ):m_pAgentHandler( pAgentHandler )
+	{
+		m_hCloseEv = CreateEvent( 0,0,0,0 );
+	};
+	
+	~CConnectionHandler();
+	
+	void Listen( SmartPtr<CSocket> pSocket );
+	
+private:
+	
+	static unsigned __stdcall fnListenThread( void* );
+	
+	HANDLE m_hListenThread, m_hCloseEv;
+	
+	CAgentHandler* m_pAgentHandler;
+	
+	SmartPtr< CSocket > m_pSocket;
 };
 
 #endif /*CAGENTHANDLER_H_*/
