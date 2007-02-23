@@ -28,4 +28,8 @@ enum enumAgentState{
 	SendingStatus = 0x04
 };
 
+enum enumAgentEvents{
+	ScanComplete = 0x01
+};
+
 #endif
