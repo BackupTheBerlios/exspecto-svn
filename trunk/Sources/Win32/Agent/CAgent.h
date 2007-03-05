@@ -21,6 +21,8 @@
 #include "SmartPtr.hpp"
 #include "CriticalSection.hpp"
 #include "Event.hpp" 
+#include "ServerSocket.h"
+
 
 class CConnectionHandler;
 
@@ -35,6 +37,9 @@ public:
 
 private:
 
+	
+	CServerSocket m_sock;
+	
 	//Адрес планировщика
 	std::string m_strSchedulerAddress;
 
@@ -66,8 +71,11 @@ public:
 	
 	void Cancel()
 	{
+		Log::instance().Trace( 80, "CTask::Cancel: Отмена операции" );
 		m_CancelEv.Set();
 	};
+	
+	virtual std::string GetDescription() = 0;
 	
 protected:
 
@@ -87,7 +95,8 @@ class CMessageParser
 {
 public:
 
-	CMessageParser( SmartPtr< CSocket > pSocket):m_pSocket( pSocket ){};
+	CMessageParser( SmartPtr< CSocket > pSocket):m_pSocket( pSocket )
+	{};
 
 	SmartPtr< CTask > TaskFactory( BYTE bCommandId, CPacket& Msg );
 	
@@ -111,24 +120,30 @@ private:
 
 	static unsigned _stdcall fnProcessThread( void* );
 	
-	HANDLE m_hProcessThread, m_hCloseEv, m_hCancelOpEv;
+	HANDLE m_hProcessThread;
+	
+	CEvent m_CloseEv, m_CancelOpEv;
 	
 	std::deque< SmartPtr< CTask > > m_deqTasks;
 	
-	CRITICAL_SECTION m_csTasks, m_csCurState;
+	CCriticalSection m_csTasks, m_csCurState;
 };
 
 class CConnectionHandler
 {
 public:
 
-	CConnectionHandler( SmartPtr< CSocket > pSocket ):m_pSocket( pSocket )
-													 ,m_MessageParser( m_pSocket )
-	{};
-
-	void Listen();
+	CConnectionHandler( SmartPtr< CSocket > pSocket );
+	
+	~CConnectionHandler();
 
 private:
+	
+	CEvent m_CloseEv;
+	
+	HANDLE m_hListenThread;
+	
+	static unsigned _stdcall fnListenThread( void* );
 	
 	SmartPtr< CSocket > m_pSocket;
 	
@@ -141,11 +156,18 @@ class CGetStatus: public CTask
 {
 public:
 	
-	CGetStatus( SmartPtr< CSocket > pSocket ):CTask( pSocket ){};
+	CGetStatus( SmartPtr< CSocket > pSocket ):CTask( pSocket )
+	{};
 	
 	virtual bool Immidiate();
 	
 	virtual void Execute(){};
+	
+	virtual std::string GetDescription()
+	{
+		return "Получение статуса агента"; 
+	};
+
 };
 
 class CStopScan: public CTask
@@ -157,6 +179,12 @@ public:
 	virtual bool Immidiate();
 	
 	virtual void Execute(){};
+
+	virtual std::string GetDescription()
+	{
+		return "Останов сканирования"; 
+	};
+	
 };
 
 class CGetData: public CTask
@@ -168,6 +196,12 @@ public:
 	virtual bool Immidiate();
 	
 	virtual void Execute(){};
+
+	virtual std::string GetDescription()
+	{
+		return "Получение данных"; 
+	};
+	
 };
 
 class CStartScan: public CTask
@@ -176,18 +210,32 @@ public:
 	
 	CStartScan( SmartPtr< CSocket > pSocket, std::vector< std::string > vecAddresses ):CTask( pSocket )
 																					  ,m_vecAddresses( vecAddresses )
-	{};
+	{
+		m_strDescription = "Сканирование адресов:";
+		for( std::vector< std::string >::const_iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
+		{
+			m_strDescription += *It;
+			m_strDescription += " ";
+		}
+	};
 	
 	virtual bool Immidiate();
 	
 	virtual void Execute();
 	
+	virtual std::string GetDescription()
+	{
+		return m_strDescription; 
+	};
+	
 private:
+
+	std::string m_strDescription;
 
 	std::vector< std::string > m_vecAddresses;
 	
 	//Контейнер плагинов
-	Container< CScanner*, PluginLoadStrategy > m_PluginContainer;
+	static Container< CScanner*, PluginLoadStrategy > m_PluginContainer;
 	
 	//Тип итератор для манипуляций с контейнером плагинов
 	typedef Container< CScanner*, PluginLoadStrategy >::iterator PluginIterator;

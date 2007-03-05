@@ -65,6 +65,7 @@ PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )th
 
 PluginLoadStrategy::~PluginLoadStrategy()
 {
+	Log::instance().Trace( 90, "PluginLoadStrategy: ”ничтожение" );
 	for( LibrariesMapType::iterator It = m_mapLibraries.begin(); It != m_mapLibraries.end(); It++ )
 	{
 		It->second();

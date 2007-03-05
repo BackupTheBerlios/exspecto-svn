@@ -20,9 +20,13 @@ int main(int argc, _TCHAR* argv[])
 		getch();
 		delete ag;
 		DumpMemLeaks();
-		return 0;
 	}catch( std::exception& e)
 	{
 		Log::instance().Trace( 5, "Возникло исключение: %s", e.what() );
+	}catch( ... )
+	{
+		Log::instance().Trace( 5, "Возникло исключение !!!" );
 	}
+	return 0;
+	
 }
