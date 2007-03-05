@@ -16,8 +16,10 @@ CScheduler::CScheduler(void)
 	m_mapAgentsContainer[ "127.0.0.1" ] = SmartPtr< CAgentHandler >( new CAgentHandler( "127.0.0.1" ) ); 
 	
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
-	m_pTrigger = std::auto_ptr< CTimer>( new CTimer( this ) );
+	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
 	m_pTrigger->Start();
+	Sleep(8000);
+	m_pTrigger->Stop();
 }
 
 CScheduler::~CScheduler(void){}
@@ -67,7 +69,7 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 	
 		Log::instance().Trace( 90, "CScheduler:: «апуск потока ожидани€ вход€щих соединений" ); 
 	    //св€зываем серверный сокет с локальным адресом
-		sock.Bind( 5000, "192.168.1.189" );
+		sock.Bind( 3000, "127.0.0.1" );
 		//переводим сокет в режим прослушивани€
 		sock.Listen();
 		//ќжидаем вход€щее соединение и обрабатываем его
