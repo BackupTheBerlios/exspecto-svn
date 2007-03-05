@@ -62,6 +62,12 @@ void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::str
 	::MultiByteToWideChar( CP_UTF8, 0, strAddress.c_str(), (int)strAddress.size() + 1, serv, 1024 );
 	do
 	{
+		if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
+		{
+			Log::instance().Trace( 10, "NetBios: Сканирование отменено" );
+			break;
+		}
+		
 		//Получаем список расшаренных ресурсов на serv
 		res = ::NetShareEnum( serv, 0, &buf, MAX_PREFERRED_LENGTH, &p1, &p2, &handle );
 		if( ERROR_SUCCESS != res && ERROR_MORE_DATA != res )
@@ -85,6 +91,7 @@ void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::str
 			}
 		}
 		::NetApiBufferFree( buf );
-	}while( res == ERROR_MORE_DATA && WAIT_OBJECT_0 != WaitForSingleObject( hCancelEvent, 0 ));
+	}while( res == ERROR_MORE_DATA );
+	Log::instance().Trace( 10, "NetBios: Завершение сканирования адреса %s", strAddress.c_str() );
 }
 
