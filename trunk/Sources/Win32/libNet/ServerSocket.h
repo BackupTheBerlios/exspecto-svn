@@ -15,16 +15,6 @@ class CServerSocket: public CSocket
 {
 public:
 
-	
-
-	//структура, описывающа€ адрес компьютера в сети
-	struct structAddr
-	{
-		std::string strAddr;
-		std::string strName;
-		int iPort;
-	};
-
 	// онструктор
 	//iType - тип сокета, возможные значени€ - SOCK_STREAM и SOCK_DGRAM
 	//bBlocking - блокирующий либо не блокирующий сокет

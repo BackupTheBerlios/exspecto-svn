@@ -58,10 +58,9 @@ void CSocket::Close( void )throw( SocketErr )
 	//TODO:разобратьс€ что происходит при вызове shutdown если соединение не установлено либо разорвано
 	if( INVALID_SOCKET != m_Socket )
 	{
-		if( SOCKET_ERROR == ::shutdown( m_Socket, SD_BOTH ) || SOCKET_ERROR == ::closesocket( m_Socket ) )
+		if( SOCKET_ERROR == ::closesocket( m_Socket ) )
 			throw SocketErr( WSAGetLastError() );
-		else
-			m_Socket = INVALID_SOCKET;
+		m_Socket = INVALID_SOCKET;
 	}
 }
 
@@ -95,7 +94,9 @@ int CSocket::Receive( void* pBuffer, int iBufSize )throw( SocketErr )
 	int res;
 	if( SOCKET_ERROR == ( res = ::recv( m_Socket, (char*)pBuffer, iBufSize, 0 ) ) )
 	{
+		Log::instance().Trace( 10," Reveive " );
 		int iLastError = WSAGetLastError();
+		Log::instance().Trace( 10," Reveive %d", iLastError );
 		if( WSAEMSGSIZE == iLastError )
 			throw SocketRespSizeErr();
 		else
@@ -104,6 +105,26 @@ int CSocket::Receive( void* pBuffer, int iBufSize )throw( SocketErr )
 	return res;
 }
 
+//ћетод возврщает адрес удаленного хоста
+CSocket::structAddr CSocket::GetRemoteHost()
+{
+	structAddr res;
+	sockaddr_in sAddr;
+	int len = sizeof(sAddr);
+	hostent* hn;
+	
+	if( SOCKET_ERROR == getpeername( m_Socket, (sockaddr*)&sAddr, &len ) )
+			throw SocketErr( WSAGetLastError() );
+	else
+	{
+		res.iPort = ::ntohs( sAddr.sin_port );
+		res.strAddr = ::inet_ntoa( sAddr.sin_addr );
+		if( NULL != ( hn = ::gethostbyaddr( (const char*)&sAddr.sin_addr.S_un.S_addr, sizeof( sAddr.sin_addr.S_un.S_addr ), m_iType ) ) )
+			res.strName = hn->h_name;
+		return res;
+	}
+}
+	
 //ѕри использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
 //поступили данные и можно производить операцию Receive
 //Timeout - врем€ ожидани€ (мкс),если -1,бесконечное ожидание

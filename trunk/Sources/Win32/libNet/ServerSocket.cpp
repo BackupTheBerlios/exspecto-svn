@@ -79,11 +79,15 @@ SmartPtr< CSocket > CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 	sockaddr_in sAddr;
 	int len = sizeof(sAddr);
 	hostent* hn;
-
 	ZeroMemory (&sAddr, sizeof (sAddr));
 	if( INVALID_SOCKET == ( s = ::accept( m_Socket, (sockaddr*)&sAddr, &len ) ) )
+	{
+		int iLastErr;
+		//Если ожидание отменено - выходим без ошибки
+		if( WSAEINTR == ( iLastErr = WSAGetLastError() ) )
+			return sock;
 		throw SocketErr( WSAGetLastError() );	
-	else
+	}else
 	{
 		addr.iPort = ::ntohs( sAddr.sin_port );
 		addr.strAddr = ::inet_ntoa( sAddr.sin_addr );

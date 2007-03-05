@@ -55,6 +55,14 @@ public:
 		virtual ~SocketRespSizeErr()throw(){};
 	};
 	
+	//структура, описывающая адрес компьютера в сети
+	struct structAddr
+	{
+		std::string strAddr;
+		std::string strName;
+		int iPort;
+	};	
+	
 	
 	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
@@ -74,6 +82,9 @@ public:
 
 	//Метод приёма данных,возвращает кол-во принятых байт
 	int Receive( void* pBuffer, int iBufSize )throw( SocketErr );
+	
+	//Метод возврщает адрес удаленного хоста
+	structAddr GetRemoteHost(); 
 
 	//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
 	void SetBlocking( bool bIsBlocking );
