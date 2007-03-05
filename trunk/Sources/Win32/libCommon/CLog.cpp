@@ -10,7 +10,6 @@ Log* Log::m_pInstance = NULL;
 
 Log::Log( const char* strModuleName ):m_iLogLevel(100)
 {
-	::InitializeCriticalSection( &m_cs );
 	char str[255];
 	
 	if( NULL == strModuleName )
@@ -34,7 +33,6 @@ Log::Log( const char* strModuleName ):m_iLogLevel(100)
 
 Log::~Log()
 {
-	::DeleteCriticalSection( &m_cs );
 }
 
 void Log::Trace(int iLevel, char* trace_text, ...)
@@ -42,9 +40,10 @@ void Log::Trace(int iLevel, char* trace_text, ...)
 	//Если приоритет записи больше чем установленный - не выполняем никаких действий
 	if( iLevel > m_iLogLevel ) return;
 
-	::EnterCriticalSection( &m_cs );	
 	SYSTEMTIME st;
 	FILE* fp;
+
+	m_cs.Enter();	
 
    	GetLocalTime(&st);
 	fp = fopen( m_strFileName.c_str(), "a+");
@@ -60,7 +59,7 @@ void Log::Trace(int iLevel, char* trace_text, ...)
 
 	va_end(args);
 	fclose(fp);
-	::LeaveCriticalSection( &m_cs );
+	m_cs.Leave();
 }
 
 void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
@@ -71,10 +70,10 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	SYSTEMTIME st;
 	FILE* fp;
 
+	m_cs.Enter();
    	GetLocalTime(&st);
 	fp = fopen( m_strFileName.c_str(), "a+");
 	
-	::EnterCriticalSection( &m_cs );
 	fprintf(fp, "%02d.%02d.%02d %02d:%02d:%02d.%03d:%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
     
 	va_list args;
@@ -112,7 +111,7 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	}
 	else putc('\n', fp);
 	
-	::LeaveCriticalSection( &m_cs );
+	m_cs.Leave();
 		
 	fclose(fp);	
 }

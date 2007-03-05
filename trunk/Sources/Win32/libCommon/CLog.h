@@ -8,6 +8,8 @@
 #define _CLOG_H
 #include "windows.h"
 #include <string>
+#include "CriticalSection.hpp"
+
 
 /*
  * Класс Log является Singleton-ом( см. паттерн проектирования Singleton )
@@ -62,7 +64,7 @@ private:
 	std::string m_strFileName;
 	
 	//критическая секция на запись в файл
-	CRITICAL_SECTION m_cs;
+	CCriticalSection m_cs;
 	
 	static Log* m_pInstance;
 	
