@@ -41,25 +41,26 @@ void Log::Trace(int iLevel, char* trace_text, ...)
 {
 	//Если приоритет записи больше чем установленный - не выполняем никаких действий
 	if( iLevel > m_iLogLevel ) return;
-	
+
+	::EnterCriticalSection( &m_cs );	
 	SYSTEMTIME st;
 	FILE* fp;
 
    	GetLocalTime(&st);
 	fp = fopen( m_strFileName.c_str(), "a+");
 
-	::EnterCriticalSection( &m_cs );
+	va_list args;
 	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d.%03d:%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
 	
-	va_list args;
 	va_start(args, trace_text);
 	
 	vfprintf(fp, trace_text, args);
 	putc('\n', fp);
-	::LeaveCriticalSection( &m_cs );
-							
+	putc('\n', fp);
+
 	va_end(args);
 	fclose(fp);
+	::LeaveCriticalSection( &m_cs );
 }
 
 void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
@@ -80,6 +81,7 @@ void Log::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... 
 	va_start(args, strAbout);
 	
 	vfprintf(fp, strAbout, args);
+	putc('\n', fp);
 	putc('\n', fp);
 						
 	va_end(args);

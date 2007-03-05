@@ -4,9 +4,12 @@
 class CEvent
 {
 public:
-	CEvent()
+	CEvent( bool bAutoReset = true )
 	{
-		m_hEv = CreateEvent( 0,1,0,0 );
+		if( bAutoReset )
+			m_hEv = CreateEvent( 0,0,0,0 );
+		else
+			m_hEv = CreateEvent( 0,1,0,0 );
 	};
 	
 	~CEvent()
