@@ -1,0 +1,105 @@
+									Краткое описание библиотеки libNet
+	libNet предостовляет набор классов для работы с сокетами, практически все функции являются оболочками соответствующих
+функций библиотеки ws2_32.lib, все эти функции описаны в MSDN. Иерархия классов состоит из 3-х классов: CSocket и 2-х его
+потомков - CServerSocket и CClientSocket.
+
+1.CSocket
+
+	Класс CSocket содержит функции для записи,чтения данных, закрытия соединения и несколько дополнительных функций.
+
+	Краткое описание методов:
+	
+	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
+	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
+	CSocket( int iType = SOCK_STREAM, bool bBlocking = true )throw( SocketErr );
+
+	//Конструктор, s - созданный функцией ::socket сокет
+	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
+	CSocket( SOCKET s, bool bBlocking )throw( SocketErr );
+
+	//Метод закрытия сокета
+    void Close( void )throw( SocketErr );
+
+	//Метод посылки данных,возвращает кол-во отправленных байт
+	int Send( void* pBuffer, int iSize )throw( SocketErr );
+
+	//Метод приёма данных,возвращает кол-во принятых байт
+	int Receive( void* pBuffer, int iBufSize )throw( SocketErr );
+	
+	//Метод возврщает адрес удаленного хоста
+	structAddr GetRemoteHost(); 
+
+	//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
+	void SetBlocking( bool bIsBlocking );
+	
+	//Метод возвращает true, если соединение установлено
+	bool IsConnected();
+
+	//При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
+	//поступили данные и можно производить операцию Receive
+	//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
+	bool IsReadyForRead( int iTimeout = -1 )throw( SocketErr );
+
+	//При использовании неблокирующих вызовов, метод возвращает true,если сокет готов к
+	//записи
+	//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
+	bool IsReadyForWrite( int iTimeout = -1 )throw( SocketErr );	
+	
+	Сам по себе класс CSocket создавать нет смысла, нужно либо создавать один из классов CServerSocket,CClientSocket
+	либо создавать сокет функцией socket(...), устанавливать соединение, затем передавать дескриптор сокета классу CSocket
+
+2.CServerSocket
+	
+	Класс CServerSocket ориентирован на установление соединения со стороны сервера.
+	
+	Краткое описание методов:
+	
+	//Функция "прикрепления" сокета к адресу, по умолчанию ОС сама выбирает адрес и порт
+	void Bind( int iPort = 0, std::string strAddr = "Any" )throw( SocketDNSErr, SocketErr );
+
+	//Функция начала "прослушивания", iMaxConn - максимальное кол-во соединения,
+	//SOMAXCONN - максимальное значение. Переводит сокет в пассивное состояние
+	void Listen( int iMaxConn = SOMAXCONN )throw( SocketErr );
+
+	//При вызове accept, сокет блокируется вплоть до появления сигнала о входящем 
+	//соединении. Функция возвращает 
+	//новый сокет, который будет использоваться для связи с присоединившейся машиной 
+	//(система создаёт его сама, при успешном соединении). Более подробные данные 
+	//о присоединившейся машине accept возвращает в параметре addr 
+	//(тип адреса, IP-адрес, порт).
+	SmartPtr< CSocket > Accept( structAddr& addr )throw( SocketErr );
+	
+	Пример использования:
+	
+	CServerSocket serv();
+	serv.Bind();
+	serv.Listen();
+	while( ( NULL != ( client_sock = sock.Accept( adr ) ).get() ) ) )
+	{
+		//Здесь обрабатываем входящие соединения
+	}
+	
+3.CClientSocket
+
+	Класс CClientSocket ориентирован на установление соединения со стороны клиента.
+	
+	Краткое описание методов:
+	
+	//Соединение с strAddr:iPort,где sAddr - имя удаленного хоста,либо его IP-адресс
+	//								 iPort - порт, к которому необходимо подключиться
+	void Connect( std::string strAddr, int iPort )throw( SocketDNSErr, CSocket::SocketErr );
+
+	Пример использования:
+	
+	
+	CClientSocket sock();
+	sock.Connect( "127.0.0.1", 3333 );
+	sock.Send( pBuf, iSize );
+	
+	//Получаем ответ на сообщение
+	int iRecvRes = 0;
+	BYTE pbRespBuf[10240];
+	int iRespSize = sizeof( pbRespBuf );
+	iRecvRes = sock.Receive( pbRespBuf, iRespSize );	
+	sock.Close();
+	
