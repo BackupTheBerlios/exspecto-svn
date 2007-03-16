@@ -22,9 +22,16 @@
 #include "CriticalSection.hpp"
 #include "Event.hpp" 
 #include "ServerSocket.h"
+#include "ClientSocket.h"
+#include "CTask.h"
+#include "ServerHandler.h"
+#include "ConnectionHandler.h"
 
 
-class CConnectionHandler;
+//-----------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------CAgent------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
 
 class CAgent
 {
@@ -39,6 +46,8 @@ private:
 
 	
 	CServerSocket m_sock;
+	
+	CClientSocket m_EventSock;
 	
 	//Адрес планировщика
 	std::string m_strSchedulerAddress;
@@ -55,190 +64,4 @@ private:
 	std::vector< SmartPtr< CConnectionHandler > > m_vecConnections;
 };
 
-class CTask
-{
-public:
-	
-	CTask( SmartPtr< CSocket > pSocket ):m_pSocket( pSocket )
-	{};
-	
-	virtual ~CTask()
-	{}
-	
-	virtual bool Immidiate() = 0;
-	
-	virtual void Execute() = 0;
-	
-	void Cancel()
-	{
-		Log::instance().Trace( 80, "CTask::Cancel: Отмена операции" );
-		m_CancelEv.Set();
-	};
-	
-	virtual std::string GetDescription() = 0;
-	
-protected:
-
-	SmartPtr< CSocket > m_pSocket;
-	
-	static enumAgentState m_CurState;
-	
-	static CCriticalSection m_csCurState; 	
-	
-	static std::vector< std::string > m_vecData;
-	
-	static CEvent m_CancelEv;
-	
-};
-
-class CMessageParser
-{
-public:
-
-	CMessageParser( SmartPtr< CSocket > pSocket):m_pSocket( pSocket )
-	{};
-
-	SmartPtr< CTask > TaskFactory( BYTE bCommandId, CPacket& Msg );
-	
-	std::vector< SmartPtr< CTask > > Parse( CPacket& Message );
-	
-private:
-
-	SmartPtr< CSocket > m_pSocket;
-};
-
-class CTaskHandler
-{
-public:
-
-	CTaskHandler();
-	~CTaskHandler();
-	
-	void AddTask( SmartPtr< CTask > pTask );
-
-private:
-
-	static unsigned _stdcall fnProcessThread( void* );
-	
-	HANDLE m_hProcessThread;
-	
-	CEvent m_CloseEv, m_CancelOpEv;
-	
-	std::deque< SmartPtr< CTask > > m_deqTasks;
-	
-	CCriticalSection m_csTasks, m_csCurState;
-};
-
-class CConnectionHandler
-{
-public:
-
-	CConnectionHandler( SmartPtr< CSocket > pSocket );
-	
-	~CConnectionHandler();
-
-private:
-	
-	CEvent m_CloseEv;
-	
-	HANDLE m_hListenThread;
-	
-	static unsigned _stdcall fnListenThread( void* );
-	
-	SmartPtr< CSocket > m_pSocket;
-	
-	CTaskHandler m_TaskHandler;
-	
-	CMessageParser m_MessageParser;
-};
-
-class CGetStatus: public CTask
-{
-public:
-	
-	CGetStatus( SmartPtr< CSocket > pSocket ):CTask( pSocket )
-	{};
-	
-	virtual bool Immidiate();
-	
-	virtual void Execute(){};
-	
-	virtual std::string GetDescription()
-	{
-		return "Получение статуса агента"; 
-	};
-
-};
-
-class CStopScan: public CTask
-{
-public:
-	
-	CStopScan( SmartPtr< CSocket > pSocket ):CTask( pSocket ){};
-	
-	virtual bool Immidiate();
-	
-	virtual void Execute(){};
-
-	virtual std::string GetDescription()
-	{
-		return "Останов сканирования"; 
-	};
-	
-};
-
-class CGetData: public CTask
-{
-public:
-	
-	CGetData( SmartPtr< CSocket > pSocket ):CTask( pSocket ){};
-	
-	virtual bool Immidiate();
-	
-	virtual void Execute(){};
-
-	virtual std::string GetDescription()
-	{
-		return "Получение данных"; 
-	};
-	
-};
-
-class CStartScan: public CTask
-{
-public:
-	
-	CStartScan( SmartPtr< CSocket > pSocket, std::vector< std::string > vecAddresses ):CTask( pSocket )
-																					  ,m_vecAddresses( vecAddresses )
-	{
-		m_strDescription = "Сканирование адресов:";
-		for( std::vector< std::string >::const_iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
-		{
-			m_strDescription += *It;
-			m_strDescription += " ";
-		}
-	};
-	
-	virtual bool Immidiate();
-	
-	virtual void Execute();
-	
-	virtual std::string GetDescription()
-	{
-		return m_strDescription; 
-	};
-	
-private:
-
-	std::string m_strDescription;
-
-	std::vector< std::string > m_vecAddresses;
-	
-	//Контейнер плагинов
-	static Container< CScanner*, PluginLoadStrategy > m_PluginContainer;
-	
-	//Тип итератор для манипуляций с контейнером плагинов
-	typedef Container< CScanner*, PluginLoadStrategy >::iterator PluginIterator;
-	
-};
 #endif
