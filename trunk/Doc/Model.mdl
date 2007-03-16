@@ -1094,6 +1094,17 @@
 			concurrency 	"Sequential"
 			abstract   	TRUE
 			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "Load"
+			quid       	"45FADAA30293"
+			parameters 	(list Parameters
+			    (object Parameter "Packet"
+				quid       	"45FADAAA038D"
+				type       	"CPacket&"
+				quidu      	"44BD29990000"))
+			concurrency 	"Sequential"
+			abstract   	TRUE
+			opExportControl 	"Public"
 			uid        	0))
 		class_attributes 	(list class_attribute_list
 		    (object ClassAttribute "m_pSocket"
@@ -3873,7 +3884,7 @@
 		zoom       	100
 		max_height 	28350
 		max_width  	21600
-		origin_x   	375
+		origin_x   	0
 		origin_y   	1804
 		items      	(list diagram_item_list
 		    (object ClassView "Class" "Logical View::CGetStatus" @95
@@ -3987,7 +3998,7 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@98
-			    location   	(1058, 1533)
+			    location   	(1058, 1508)
 			    fill_color 	13434879
 			    nlines     	1
 			    max_width  	1286
@@ -3999,7 +4010,7 @@
 			quidu      	"45B90ED80138"
 			compartment 	(object Compartment
 			    Parent_View 	@98
-			    location   	(1058, 1603)
+			    location   	(1058, 1578)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -4013,10 +4024,10 @@
 			    icon_style 	"Icon"
 			    fill_color 	13434879
 			    anchor     	2
-			    nlines     	4
-			    max_width  	1103)
+			    nlines     	5
+			    max_width  	1094)
 			width      	1304
-			height     	298
+			height     	348
 			annotation 	8
 			autoResize 	TRUE)
 		    (object InheritView "" @99
@@ -4185,7 +4196,7 @@
 			    fill_color 	13434879
 			    anchor     	2
 			    nlines     	4
-			    max_width  	1157)
+			    max_width  	1165)
 			width      	1378
 			height     	294
 			annotation 	8

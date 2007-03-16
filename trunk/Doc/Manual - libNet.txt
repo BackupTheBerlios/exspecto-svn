@@ -2,7 +2,9 @@
 	libNet предостовляет набор классов для работы с сокетами, практически все функции являются оболочками соответствующих
 функций библиотеки ws2_32.lib, все эти функции описаны в MSDN. Иерархия классов состоит из 3-х классов: CSocket и 2-х его
 потомков - CServerSocket и CClientSocket.
-
+	В библиотеке в качестве механизма обработки ошибок используются исключения.Классы исключений можно найти в h файлах
+соответствующих классов.
+	
 1.CSocket
 
 	Класс CSocket содержит функции для записи,чтения данных, закрытия соединения и несколько дополнительных функций.
@@ -69,16 +71,21 @@
 	//(тип адреса, IP-адрес, порт).
 	SmartPtr< CSocket > Accept( structAddr& addr )throw( SocketErr );
 	
+	
 	Пример использования:
 	
-	CServerSocket serv();
-	serv.Bind();
-	serv.Listen();
-	while( ( NULL != ( client_sock = sock.Accept( adr ) ).get() ) ) )
+	try{
+		CServerSocket serv();
+		serv.Bind();
+		serv.Listen();
+		while( ( NULL != ( client_sock = sock.Accept( adr ) ).get() ) ) )
+		{
+			//Здесь обрабатываем входящие соединения
+		}
+	}catch( SocketErr& e )
 	{
-		//Здесь обрабатываем входящие соединения
-	}
-	
+		Log::Instance().Warning( 123, "Ошибка связи:%s", e.what() );
+	}	
 3.CClientSocket
 
 	Класс CClientSocket ориентирован на установление соединения со стороны клиента.
@@ -91,15 +98,19 @@
 
 	Пример использования:
 	
-	
-	CClientSocket sock();
-	sock.Connect( "127.0.0.1", 3333 );
-	sock.Send( pBuf, iSize );
-	
-	//Получаем ответ на сообщение
-	int iRecvRes = 0;
-	BYTE pbRespBuf[10240];
-	int iRespSize = sizeof( pbRespBuf );
-	iRecvRes = sock.Receive( pbRespBuf, iRespSize );	
-	sock.Close();
+	try{	
+		CClientSocket sock();
+		sock.Connect( "127.0.0.1", 3333 );
+		sock.Send( pBuf, iSize );
+		
+		//Получаем ответ на сообщение
+		int iRecvRes = 0;
+		BYTE pbRespBuf[10240];
+		int iRespSize = sizeof( pbRespBuf );
+		iRecvRes = sock.Receive( pbRespBuf, iRespSize );	
+		sock.Close();
+	}catch( SocketErr& e )
+	{
+		Log::Instance().Warning( 123, "Ошибка связи:%s", e.what() );
+	}	
 	
