@@ -94,9 +94,9 @@ int CSocket::Receive( void* pBuffer, int iBufSize )throw( SocketErr )
 	int res;
 	if( SOCKET_ERROR == ( res = ::recv( m_Socket, (char*)pBuffer, iBufSize, 0 ) ) )
 	{
-		Log::instance().Trace( 10," Reveive " );
+		if( 0 == res )
+			throw SocketConnectionLost();
 		int iLastError = WSAGetLastError();
-		Log::instance().Trace( 10," Reveive %d", iLastError );
 		if( WSAEMSGSIZE == iLastError )
 			throw SocketRespSizeErr();
 		else
@@ -173,3 +173,23 @@ bool CSocket::IsReadyForWrite( int iTimeout )throw( SocketErr )
 	return false;
 }
 
+bool CSocket::IsConnected()
+{
+	bool bWasBlocking = m_bBlocking;
+	bool bRes;
+	if( m_bBlocking )
+		SetBlocking( false );
+	int iCount;
+	if( iCount = recv( m_Socket, NULL, 0, 0 ) )
+	{
+		Log::instance().Trace( 999, "recv: icount = %d", iCount );
+		bRes = true;
+	}else
+	{
+		bRes = false;
+		Log::instance().Trace( 999, "recv: icount = 0" );
+	}
+	if( bWasBlocking )
+		SetBlocking( true );
+	return bRes;
+}

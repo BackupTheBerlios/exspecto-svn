@@ -29,6 +29,11 @@ public:
 			} 
 		};
 		
+		SocketErr( const std::string& Msg )
+		{
+			strcpy( data, Msg.c_str() );
+		};
+		
 		virtual ~SocketErr()throw(){};
 		
 		virtual const char* what() const throw()
@@ -55,6 +60,13 @@ public:
 		virtual ~SocketRespSizeErr()throw(){};
 	};
 	
+	class SocketConnectionLost: public CSocket::SocketErr 
+	{
+		public:
+			SocketConnectionLost():CSocket::SocketErr( "Разрыв связи" ){};
+		virtual ~SocketConnectionLost()throw(){};
+	};
+
 	//структура, описывающая адрес компьютера в сети
 	struct structAddr
 	{
@@ -88,6 +100,8 @@ public:
 
 	//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
 	void SetBlocking( bool bIsBlocking );
+	
+	bool IsConnected();
 
 	//При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
 	//поступили данные и можно производить операцию Receive
