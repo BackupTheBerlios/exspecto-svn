@@ -1,44 +1,23 @@
 #include "MessageParser.h"
+#include "CTask.h"
 
-std::map< int, CMessageParser::CreateTaskCallBack > CMessageParser::m_mapCreators;
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CMessageParser------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 	
-bool CMessageParser::RegisterCreator( int iTaskId, CreateTaskCallBack fnCreator )
+CMessageParser::CreateTaskCallBack CMessageParser::GetRegisterCreator( int iTaskId, CreateTaskCallBack fnCreator )
 {
-	CMessageParser::m_mapCreators[ iTaskId ] = fnCreator;
-	return true;
-}
- 
-SmartPtr< CTask > CMessageParser::TaskFactory( BYTE bCommandId, CPacket& Msg )
-{
-/*	switch( bCommandId )
+	static std::map< int, CreateTaskCallBack > m_mapCreators;
+	if( NULL != fnCreator )
 	{
-		case GET_STATUS:
-			return new CGetStatus( m_ServerHandler );
-		case START_SCAN:
-		{
-			DWORD dwCount;
-			std::string strAddress;
-			std::vector< std::string > vecAddresses;
-			//Получаем кол-во адресов в пакете
-			Msg.GetParam( dwCount );
-			for( unsigned int i = 0; i < dwCount; i++ )
-			{
-				//получаем очередной адрес
-				Msg.GetAddress( strAddress );
-				vecAddresses.push_back( strAddress );
-			}	
-			return new CStartScan( m_ServerHandler, vecAddresses );
-		}
-		case GET_DATA:
-			return new CGetData( m_ServerHandler );
-		case STOP_SCAN:
-			return new CStopScan( m_ServerHandler );
-		default:
-			return NULL;
-	}*/
+		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Зарегистрирован тип сообщений %d", iTaskId );
+		m_mapCreators[ iTaskId ] = fnCreator;
+	}else if( m_mapCreators.find( iTaskId ) != m_mapCreators.end() )
+	{
+		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Запрошен тип сообщений %d", iTaskId );
+		return m_mapCreators[ iTaskId ];
+	}
+	return NULL;
 }
 
 std::vector< SmartPtr< CTask > > CMessageParser::Parse( CPacket& Message )
@@ -56,8 +35,14 @@ std::vector< SmartPtr< CTask > > CMessageParser::Parse( CPacket& Message )
 			Log::instance().Trace( 95, "CMessageParser::Parse: Обработка входящего пакета завершена.Всего команд:%d", vecRes.size() ); 
 			break;
 		}
-		if( NULL != ( pTask = TaskFactory( bCommandId, Message ) ).get() )
+		CreateTaskCallBack fnCreator;
+		if( ( fnCreator = GetRegisterCreator( bCommandId ) ) != NULL )
+		{
+			CTask* pTask = fnCreator( m_ServerHandler );
+			pTask->Load( Message );
 			vecRes.push_back( pTask );
+		}else
+			Log::instance().Trace( 95, "CMessageParser::Parse: Неизвестный тип сообщения: %d", bCommandId );
 	}
 	return vecRes;
 }

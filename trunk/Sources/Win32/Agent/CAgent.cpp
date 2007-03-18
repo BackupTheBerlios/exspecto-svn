@@ -47,7 +47,7 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 	
 		CServerSocket::structAddr adr;
 	
-		Log::instance().Trace( 90, "CAgent:: «апуск потока ожидани€ вход€щих соединений" ); 
+		Log::instance().Trace( 90, "CAgent:: «апуск потока ожидани€ вход€щих соединений" );
 	    //св€зываем серверный сокет с локальным адресом
 		pThis->m_sock.Bind( 5000, "127.0.0.1" );
 		//переводим сокет в режим прослушивани€
@@ -61,7 +61,7 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 			//принимаем соединени€ только от заданного сервера сканировани€
 			if( pThis->m_strSchedulerAddress == adr.strAddr ) 
 			{
-				CServerHandler Handler( SmartPtr< CSocket >( &pThis->m_sock ), SmartPtr< CSocket >( &pThis->m_EventSock ) );
+				CServerHandler Handler( client_sock, SmartPtr< CSocket >( &pThis->m_EventSock ) );
 				pThis->m_vecConnections.push_back( SmartPtr< CConnectionHandler >( new CConnectionHandler( Handler ) ) );
 			}else
 				Log::instance().Trace( 50, "CAgent::ListenThread: ¬ход€щее соединение с адреса: %s. »гнорируем", adr.strAddr.c_str() );

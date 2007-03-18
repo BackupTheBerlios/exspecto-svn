@@ -13,24 +13,21 @@ class CMessageParser
 public:
 
 	CMessageParser( CServerHandler& Handler ):m_ServerHandler( Handler )
-	{};
+	{
+	};
 	
 	virtual ~CMessageParser(){};
 
-	SmartPtr< CTask > TaskFactory( BYTE bCommandId, CPacket& Msg );
-	
 	std::vector< SmartPtr< CTask > > Parse( CPacket& Message );
 	
 	typedef CTask* (*CreateTaskCallBack)( CServerHandler& Handler );
 
-	static bool RegisterCreator( int iTaskId, CreateTaskCallBack fnCreator ); 
+	static CreateTaskCallBack GetRegisterCreator( int iTaskId, CreateTaskCallBack fnCreator = NULL ); 
 	
 private:
 
 	CServerHandler m_ServerHandler;
-	
-	static std::map< int, CreateTaskCallBack > m_mapCreators;
-};
 
+};
 
 #endif /*MESSAGEPARSER_H_*/

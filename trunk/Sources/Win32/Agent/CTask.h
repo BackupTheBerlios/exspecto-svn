@@ -66,14 +66,7 @@ public:
 	};
 
 };
-namespace
-{
-	CTask* GetStatusCreator( CServerHandler& Handler )
-	{
-		return new CGetStatus( Handler );
-	}
-	const bool bGSReged = CMessageParser::RegisterCreator( GET_STATUS, GetStatusCreator );
-};
+
 
 
 class CStopScan: public CTask
@@ -94,14 +87,7 @@ public:
 	};
 	
 };
-namespace
-{
-	CTask* StopScanCreator( CServerHandler& Handler )
-	{
-		return new CStopScan( Handler );
-	}
-	const bool bSSReged = CMessageParser::RegisterCreator( STOP_SCAN, StopScanCreator );
-};
+
 
 
 class CGetData: public CTask
@@ -122,14 +108,7 @@ public:
 	};
 	
 };
-namespace
-{
-	CTask* GetDataCreator( CServerHandler& Handler )
-	{
-		return new CGetData( Handler );
-	}
-	const bool bGDReged = CMessageParser::RegisterCreator( GET_DATA, GetDataCreator );
-};
+
 
 class CStartScan: public CTask
 {
@@ -137,20 +116,19 @@ public:
 	
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
 	{
-/*		m_strDescription = "Сканирование адресов:";
+		m_strDescription = "Сканирование адресов:";
 		for( std::vector< std::string >::const_iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
 		{
 			m_strDescription += *It;
 			m_strDescription += " ";
 		}
-		*/
 	};
 	
 	virtual bool Immidiate();
 	
 	virtual void Execute();
 	
-	virtual void Load( CPacket& Msg ){};
+	virtual void Load( CPacket& Msg );
 	
 	virtual std::string GetDescription()
 	{
@@ -170,13 +148,6 @@ private:
 	typedef Container< CScanner*, PluginLoadStrategy >::iterator PluginIterator;
 	
 };
-namespace
-{
-	CTask* StartScanCreator( CServerHandler& Handler )
-	{
-		return new CStartScan( Handler );
-	}
-	const bool bStScReged = CMessageParser::RegisterCreator( START_SCAN, StartScanCreator );
-};
+
 
 #endif /*CTASK_H_*/

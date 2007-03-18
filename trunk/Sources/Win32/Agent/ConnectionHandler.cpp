@@ -14,9 +14,9 @@ CConnectionHandler::CConnectionHandler( CServerHandler& Handler ):m_ServerHandle
 CConnectionHandler::~CConnectionHandler()
 {
 	try{
-		//Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Закрытие соединения с %s", m_pSocket->GetRemoteHost().strAddr.c_str() );
+		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Закрытие соединения с %s", m_ServerHandler.GetServerAddress().c_str() );
 		m_CloseEv.Set();
-	//	m_pSocket->Close();
+		m_ServerHandler.CloseSession();
 		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Ожидание закрытия потока прослушивания" );
 		WaitForSingleObject( m_hListenThread, 10000 );
 		CloseHandle( m_hListenThread );
@@ -36,11 +36,14 @@ unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
 	CPacket Msg;
 
 	try{
-		//Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск потока ожидания входящих сообщений c адреса %s", pThis->m_pSocket->GetRemoteHost().strAddr.c_str() );
+		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск потока ожидания входящих сообщений c адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
 		while( true )
 		{
 			pThis->m_ServerHandler.Receive( Msg );
-			//Log::instance().Dump( 90, pBuf, iCount, "CConnectionHandler::fnListenThread: Получен пакет: " );
+			BYTE* pbBuf;
+			int iSize = 0;
+			Msg.GetBuffer( pbBuf, iSize );
+			Log::instance().Dump( 90, pbBuf, iSize, "CConnectionHandler::fnListenThread: Получен пакет: " );
 			//Задаем данные для разбора входящего пакета
 			std::vector< SmartPtr< CTask > > vecTasks = pThis->m_MessageParser.Parse( Msg );
 			for( std::vector< SmartPtr< CTask > >::iterator It = vecTasks.begin(); It != vecTasks.end(); It++ )
@@ -53,6 +56,6 @@ unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
 	{
 		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло неизвестное исключение" );
 	}
-//	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", pThis->m_pSocket->GetRemoteHost().strAddr.c_str() );
+	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
 	return 0;	
 }

@@ -15,6 +15,8 @@ CServerHandler::~CServerHandler()
 	
 void CServerHandler::SendEvent( CPacket& Event )
 {
+	
+	//TODO: нужно ли поднимать канал
 	BYTE *pbBuf;
 	int iSize;
 	Event.GetBuffer( pbBuf, iSize );
@@ -36,4 +38,15 @@ void CServerHandler::Receive( CPacket& Msg )
 	iSize = m_pMsgSocket->Receive( pbBuf, sizeof( pbBuf ) );
 	Msg.Clear();
 	Msg.SetBuffer( pbBuf, iSize );
+}
+
+std::string CServerHandler::GetServerAddress()
+{
+	return m_pMsgSocket->GetRemoteHost().strAddr;
+}
+
+void CServerHandler::CloseSession()
+{
+	m_pMsgSocket->Close();
+	m_pEventSocket->Close();
 }
