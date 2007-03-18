@@ -114,7 +114,7 @@ CSocket::structAddr CSocket::GetRemoteHost()
 	hostent* hn;
 	
 	if( SOCKET_ERROR == getpeername( m_Socket, (sockaddr*)&sAddr, &len ) )
-			throw SocketErr( WSAGetLastError() );
+		throw SocketErr( WSAGetLastError() );
 	else
 	{
 		res.iPort = ::ntohs( sAddr.sin_port );
