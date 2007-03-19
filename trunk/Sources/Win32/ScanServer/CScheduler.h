@@ -15,6 +15,8 @@
 #include "AgentsLoadStrategy.h"
 #include "SmartPtr.hpp"
 #include "Event.hpp"
+#include "ServerSocket.h"
+
 
 //Предварительное обьявление класса CStartTrigger
 class CStartTrigger;
@@ -45,9 +47,13 @@ private:
 	//Триггер, срабатывающий при необходимости начать сканирование
 	std::auto_ptr< CStartTrigger > m_pTrigger;
 
-	unsigned _stdcall fnListenThreadProc(  void* pParameter );
+	static unsigned _stdcall fnListenThreadProc(  void* pParameter );
 	
 	CEvent m_CloseEv;
+	
+	HANDLE m_hListenThread;
+	
+	CServerSocket m_EventSock;
 
 };
 

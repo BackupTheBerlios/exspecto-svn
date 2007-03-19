@@ -98,7 +98,7 @@ public:
 		m_hCloseEv = CreateEvent( 0,0,0,0 );
 	};
 	
-	~CConnectionHandler();
+	virtual ~CConnectionHandler();
 	
 	void Listen( SmartPtr<CSocket> pSocket );
 	

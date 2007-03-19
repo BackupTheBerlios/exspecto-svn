@@ -8,13 +8,15 @@
 #include <tchar.h>
 #include "CScheduler.h"
 #include "windows.h"
-#include "ServerSocket.h"
+#include <process.h>
 
 CScheduler::CScheduler(void)
 {
 	//Загружаем контейнер агентов
 	m_mapAgentsContainer[ "127.0.0.1" ] = SmartPtr< CAgentHandler >( new CAgentHandler( "127.0.0.1" ) ); 
 	
+	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
+		
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
 	m_pTrigger->Start();
@@ -22,7 +24,13 @@ CScheduler::CScheduler(void)
 	m_pTrigger->Stop();
 }
 
-CScheduler::~CScheduler(void){}
+CScheduler::~CScheduler(void)
+{
+	m_CloseEv.Set();
+	Log::instance().Trace( 90, "CScheduler::~CScheduler: Ожидание закрытия потока прослушивания" );
+	WaitForSingleObject( m_hListenThread, 10000 );
+	CloseHandle( m_hListenThread );
+}
 
 void CScheduler::OnStartScan()
 {
@@ -30,30 +38,27 @@ void CScheduler::OnStartScan()
 	vecAdr.push_back( "127.0.0.1" );
 	for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++ )
 	{
-		enumAgentState bStatus;
+/*		enumAgentState bStatus;
 		It->second->Open();
 		if( It->second->IsOpened() )
 		{
 			It->second->GetStatus( bStatus );
 			Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
 		}
+*/		
 		It->second->Open();
 		if( It->second->IsOpened() )
 		{
-			Log::instance().Trace( 10, "CScheduler: Агент вернул: %d", It->second->BeginScan( vecAdr ) );
+			It->second->BeginScan( vecAdr );
+			//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
 		}
+		Sleep( 2000 );
 		It->second->Open();
 		if( It->second->IsOpened() )
 		{
-			It->second->GetStatus( bStatus );
-			Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
+			It->second->GetData();
+			//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
 		}
-		It->second->Open();
-		if( It->second->IsOpened() )
-		{
-			Log::instance().Trace( 10, "CScheduler: Агент вернул: %d", It->second->StopScan() );
-		}
-		
 	}
 }
 
@@ -62,23 +67,22 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 {
 	try{
 		CScheduler* pThis = (CScheduler*)pParameter;
-		CServerSocket sock;
 		SmartPtr< CSocket > client_sock;
 	
 		CServerSocket::structAddr adr;
 	
-		Log::instance().Trace( 90, "CScheduler:: Запуск потока ожидания входящих соединений" ); 
+		Log::instance().Trace( 90, "CScheduler::fnListenThreadProc: Запуск потока ожидания входящих соединений" ); 
 	    //связываем серверный сокет с локальным адресом
-		sock.Bind( 3000, "127.0.0.1" );
+		pThis->m_EventSock.Bind( 3000, "127.0.0.1" );
 		//переводим сокет в режим прослушивания
-		sock.Listen();
+		pThis->m_EventSock.Listen();
 		//Ожидаем входящее соединение и обрабатываем его
-		while( ( NULL != ( client_sock = sock.Accept( adr ) ).get() ) && ( WAIT_OBJECT_0 != WaitForSingleObject( pThis->m_CloseEv, 0 ) ) )
+		while( ( NULL != ( client_sock = pThis->m_EventSock.Accept( adr ) ).get() ) && ( WAIT_OBJECT_0 != WaitForSingleObject( pThis->m_CloseEv, 0 ) ) )
 		{
 			Log::instance().Trace( 51, "CScheduler::ListenThread: Входящее соединение с адреса: %s", adr.strAddr.c_str() );
 			try{
 				//принимаем соединения только от заданного сервера сканирования
-				if( m_mapAgentsContainer.find( adr.strAddr ) != m_mapAgentsContainer.end() ) 
+				if( pThis->m_mapAgentsContainer.find( adr.strAddr ) != pThis->m_mapAgentsContainer.end() ) 
 					pThis->m_mapAgentsContainer[ adr.strAddr ]->OnConnection( client_sock );
 				else
 					Log::instance().Trace( 50, "CScheduler::ListenThread: Пришле пакет с адреса: %s. Игнорируем" );

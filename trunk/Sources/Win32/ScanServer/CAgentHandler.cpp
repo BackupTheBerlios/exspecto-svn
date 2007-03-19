@@ -25,7 +25,7 @@ CAgentHandler::~CAgentHandler()
 }
 
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-void CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )throw( HandlerErr, CSocket::SocketErr )
+void CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int& iRespSize )throw( HandlerErr, CSocket::SocketErr )
 {
 	if( !m_bOpened )
 	{
@@ -43,13 +43,10 @@ void CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )t
 
 
 	//Получаем ответ на сообщение
-	int iRecvRes = 0;
-	iRecvRes = m_Sock.Receive( pbRespBuf, iRespSize );
+	iRespSize = m_Sock.Receive( pbRespBuf, iRespSize );
 	Log::instance().Dump( 80, pbRespBuf, iRespSize, "CAgentHandler::SendMessage: Получили ответ:" );
-	if( 0 == iRecvRes )
+	if( 0 == iRespSize )
 		throw HandlerErr( "Connection closed" );
-	if( iRecvRes != iRespSize )
-		throw HandlerErr( "Received response with incorrect size" );						//Ожидаемый размер не совпал с фактическим
 }
 
 void CAgentHandler::Open()
@@ -89,6 +86,7 @@ bool CAgentHandler::IsOpened()const
 
 void CAgentHandler::OnConnection( SmartPtr< CSocket > pSocket )
 {
+	Log::instance().Trace( 90, "CAgentHandler::OnConnection:.." );
 	m_pConnectionHandler->Listen( pSocket );
 }
 
@@ -99,6 +97,7 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 	switch( bCommandId )
 	{
 		case ScanComplete:
+			Log::instance().Trace( 90, "CAgentHandler::OnMessage: Сканирование закончено" );
 			m_bFinished = true;
 			break;
 	};
@@ -141,7 +140,7 @@ enumAgentResponse CAgentHandler::StopScan()throw( HandlerErr, CSocket::SocketErr
 	
 enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( HandlerErr, CSocket::SocketErr )
 {
-	Log::instance().Trace( 90, "CAgentHandler::StopScan: Отправка команды получения статуса" );
+	Log::instance().Trace( 90, "CAgentHandler::GetStatus: Отправка команды получения статуса" );
 	CPacket Msg;
 	BYTE pbRecvBuf[255];
 
@@ -169,13 +168,14 @@ enumAgentResponse CAgentHandler::GetData()throw( HandlerErr, CSocket::SocketErr 
 	Msg.EndCommand();
 
 	//отправляем команду
-	SendMessage( Msg, pbRecvBuf, 1 );
+	int iDataSize = 1;
+	SendMessage( Msg, pbRecvBuf, iDataSize );
+	Log::instance().Dump( 90, pbRecvBuf, iDataSize, "CAgentHandler::GetData: Получены данные:" );
 	if( RESP_OK != pbRecvBuf[0] )
 	{
-		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения статуса не выполнена, код возврата: %d", pbRecvBuf[0] );
+		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", pbRecvBuf[0] );
 		return (enumAgentResponse)pbRecvBuf[0];
 	}
-	//ещё раз,в ответ должен прийти размер данных
 	SendMessage( Msg, pbRecvBuf, 4 );
 	int iDataSize;
 	::memcpy( (BYTE*)&iDataSize + 4, pbRecvBuf, 4 );
@@ -190,21 +190,25 @@ enumAgentResponse CAgentHandler::GetData()throw( HandlerErr, CSocket::SocketErr 
 
 void CConnectionHandler::Listen( SmartPtr<CSocket> pSocket )
 {
-	if( WAIT_OBJECT_0 == WaitForSingleObject( m_hListenThread, 0 ) )
+	m_pSocket = pSocket;
+	if( WAIT_OBJECT_0 != WaitForSingleObject( m_hListenThread, 0 ) )
 		m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThread, this, 0, NULL );
 }
 
 unsigned __stdcall CConnectionHandler::fnListenThread( void* param )
 {
+	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск" );
 	CConnectionHandler* pThis = (CConnectionHandler*)param;
 	CPacket Msg;
 	BYTE pBuf[10240];
 	int iCount;
-	while( iCount = pThis->m_pSocket->Receive( pBuf, 10240 ) )
+	while( iCount = pThis->m_pSocket->Receive( pBuf, sizeof( pBuf ) ) )
 	{
+		Log::instance().Dump( 90, pBuf, iCount, "CConnectionHandler::fnListenThread: Получен пакет:" );
 		Msg.SetBuffer( pBuf, iCount );
 		pThis->m_pAgentHandler->OnMessage( Msg );
 	}
+	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие" );
 	CloseHandle( pThis->m_hListenThread );
 	return 0;
 }
