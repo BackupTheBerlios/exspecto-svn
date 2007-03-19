@@ -11,5 +11,6 @@
 #define TIMER_VALUE	"TimerValue"
 #define LOG_LEVEL	"LogLevel"
 #define SCHEDULER_ADDRESS "SchedulerAddress"
+#define EVENT_PORT "EventPort"
 
 
