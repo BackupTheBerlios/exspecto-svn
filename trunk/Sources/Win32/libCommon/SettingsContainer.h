@@ -17,7 +17,7 @@ public:
 class ParamNotFound: public std::runtime_error
 {
 public:
-	ParamNotFound():std::runtime_error( "Необходимый параметр не найден" ){};
+	ParamNotFound( const std::string strParamName ):std::runtime_error( "Необходимый параметр " + strParamName + " не найден" ){};
 };
 
 class ParamLoadErr: public std::runtime_error
@@ -154,7 +154,7 @@ public:
 				
 			}
 			else
-				throw ParamNotFound(); 
+				throw ParamNotFound( Param_key ); 
 		} // short GetParam
 
 		/*!
@@ -174,7 +174,7 @@ public:
 			if ( it_Param != mParams.end() )
 				mParams.erase( it_Param );			
 			else
-				throw ParamNotFound(); 	
+				throw ParamNotFound( Param_key ); 	
 		} // short DeleteParam
 
 		/*!
