@@ -5,7 +5,8 @@
 //Описание типов параметров
 static char* pAgentParamTypes[] = {
 	SCHEDULER_ADDRESS, "string",
-	LOG_LEVEL,	"int"
+	LOG_LEVEL,	"int",
+	EVENT_PORT, "int"
 };
 
 int main(int argc, _TCHAR* argv[])

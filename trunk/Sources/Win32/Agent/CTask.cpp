@@ -1,5 +1,5 @@
 #include "MessageParser.h"
-
+#include "commands.h"
 #include "CTask.h"
 
 enumAgentState CTask::m_CurState = Idling;
@@ -87,6 +87,11 @@ void CStartScan::Execute()
 			break;
 		}
 	}
+	CPacket Event;
+	BYTE bEvent = ScanComplete;
+	Event.AddParam( &bEvent, 1 );
+	Log::instance().Trace( 99, "CStartScan::Execute: ќтправл€ем событие окончани€ сканировани€" );
+	m_ServerHandler.SendEvent( Event );
 	//TODO:”точнить,возможно следует использовать другой механизм блокировки,либо спин блокировку 
 	m_csCurState.Enter();
 		m_CurState = Idling;		
@@ -146,9 +151,10 @@ bool CGetData::Immidiate()
 	}
 	//4 байта на размер 1 байт - результат обработки команды
 	iSize += 4 + 1; 
+	Log::instance().Trace( 90, "CGetData: –азмер данных: %d", iSize );
 	std::auto_ptr< BYTE > pbBuf = std::auto_ptr< BYTE >( new BYTE[ iSize ] );
 	pbBuf.get()[0] = (BYTE)RESP_OK;
-	::memcpy( pbBuf .get() + 1, (void*)&iSize, 4 );
+	::memcpy( pbBuf.get() + 1, (void*)&iSize, 4 );
 	int iOffset = 5; 
 	for( std::vector< std::string >::iterator It = m_vecData.begin(); It != m_vecData.end(); It++ )
 	{

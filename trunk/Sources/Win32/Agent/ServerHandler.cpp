@@ -4,8 +4,13 @@
 //---------------------------------------------CServerHandler------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CServerHandler::CServerHandler( SmartPtr< CSocket > pMsgSocket, SmartPtr< CSocket > pEventSocket ):m_pMsgSocket( pMsgSocket )
-																								  ,m_pEventSocket( pEventSocket )
+CServerHandler::CServerHandler( SmartPtr< CSocket > pMsgSocket, 
+								SmartPtr< CClientSocket > pEventSocket, 
+								const std::string& strServerAddress, 
+								int iEventPort ):m_pMsgSocket( pMsgSocket )
+												,m_pEventSocket( pEventSocket )
+												,m_strAddress( strServerAddress )
+												,m_iEventPort( iEventPort )
 {
 }
 	
@@ -16,7 +21,11 @@ CServerHandler::~CServerHandler()
 void CServerHandler::SendEvent( CPacket& Event )
 {
 	
-	//TODO: нужно ли поднимать канал
+	if( !m_pEventSocket->IsConnected() )
+	{
+		Log::instance().Trace( 99, "CServerHandler::SendEvent: Поднимаем канал для посылки события" );
+		m_pEventSocket->Connect( m_strAddress, m_iEventPort );
+	}
 	BYTE *pbBuf;
 	int iSize;
 	Event.GetBuffer( pbBuf, iSize );
