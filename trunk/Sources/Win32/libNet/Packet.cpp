@@ -33,11 +33,9 @@ void CPacket::BeginCommand( enumCommands Command )throw( PacketErr )
 void CPacket::Push( BYTE* pbData, int iSize )throw( PacketErr )
 {
 	m_iDataSize += iSize;
-
 	if( m_iDataSize > m_iBufSize )
-		if( NULL == ( m_pbBuf = (BYTE*)realloc( m_pbBuf, m_iBufSize + 1024 ) ) )
+		if( NULL == ( m_pbBuf = (BYTE*)realloc( m_pbBuf, iSize + 1024 ) ) )
 			throw PacketErr( "Not enough memory to form the packet" );
-
 	::memcpy( m_pbBuf + m_iDataSize - iSize, pbData, iSize );
 }
 

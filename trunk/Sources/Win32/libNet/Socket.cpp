@@ -175,21 +175,11 @@ bool CSocket::IsReadyForWrite( int iTimeout )throw( SocketErr )
 
 bool CSocket::IsConnected()
 {
-	bool bWasBlocking = m_bBlocking;
-	bool bRes;
-	if( m_bBlocking )
-		SetBlocking( false );
-	int iCount;
-	if( iCount = recv( m_Socket, NULL, 0, 0 ) )
-	{
-		Log::instance().Trace( 999, "recv: icount = %d", iCount );
-		bRes = true;
-	}else
-	{
-		bRes = false;
-		Log::instance().Trace( 999, "recv: icount = 0" );
-	}
-	if( bWasBlocking )
-		SetBlocking( true );
-	return bRes;
+	structAddr res;
+	sockaddr_in sAddr;
+	int len = sizeof(sAddr);
+	if( SOCKET_ERROR == getpeername( m_Socket, (sockaddr*)&sAddr, &len ) )
+		return false;
+	else
+		return true;	
 }
