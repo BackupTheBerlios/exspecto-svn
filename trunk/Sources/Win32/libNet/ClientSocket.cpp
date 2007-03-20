@@ -53,4 +53,5 @@ void CClientSocket::Connect( std::string strAddr, int iPort )throw( SocketDNSErr
 	//Выполняем соединение
 	if( SOCKET_ERROR == ::connect( m_Socket, (sockaddr*)&sAddr, sizeof( sAddr ) ) )
 		throw SocketErr( WSAGetLastError() );
+	SetConnected( true );
 }

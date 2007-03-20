@@ -82,7 +82,7 @@ public:
 
 	//Конструктор, s - созданный функцией ::socket сокет
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
-	CSocket( SOCKET s, bool bBlocking )throw( SocketErr );
+	CSocket( SOCKET s, bool bBlocking, bool bConnected )throw( SocketErr );
 
 	virtual ~CSocket(void);
 
@@ -101,7 +101,7 @@ public:
 	//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
 	void SetBlocking( bool bIsBlocking );
 	
-	bool IsConnected();
+	bool IsConnected()const;
 
 	//При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
 	//поступили данные и можно производить операцию Receive
@@ -115,14 +115,19 @@ public:
 
 protected:
 
+	void SetConnected( bool bConnected );
+
 	//Дескриптор сокета, используемый практически во всех функциях
 	SOCKET m_Socket;
-
+	
 	//Флаг,указывающий на тип используемых вызовов (блокирующие/неблокирующие)
 	bool m_bBlocking;
 
 	//Тип сокета
 	int m_iType;
+
+private:
+	bool m_bConnected;
 };
 
 #endif

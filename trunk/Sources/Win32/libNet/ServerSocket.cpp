@@ -80,8 +80,10 @@ SmartPtr< CSocket > CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 	int len = sizeof(sAddr);
 	hostent* hn;
 	ZeroMemory (&sAddr, sizeof (sAddr));
+	SetConnected( true );
 	if( INVALID_SOCKET == ( s = ::accept( m_Socket, (sockaddr*)&sAddr, &len ) ) )
 	{
+		SetConnected( false );
 		int iLastErr;
 		//Если ожидание отменено - выходим без ошибки
 		if( WSAEINTR == ( iLastErr = WSAGetLastError() ) )
@@ -95,7 +97,8 @@ SmartPtr< CSocket > CServerSocket::Accept( structAddr& addr )throw( SocketErr )
 		{
 			addr.strName = hn->h_name;
 		}
-		sock = SmartPtr< CSocket >( new CSocket( s, m_bBlocking ) );
+		sock = SmartPtr< CSocket >( new CSocket( s, m_bBlocking, true ) );
 	}
+	SetConnected( false );
 	return sock;
 }

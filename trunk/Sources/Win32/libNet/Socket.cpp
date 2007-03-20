@@ -10,7 +10,8 @@
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
 CSocket::CSocket( int iType, bool bBlocking )throw( SocketErr ):m_Socket( INVALID_SOCKET ),
 											 					m_bBlocking( bBlocking ),
-											 					m_iType( iType )
+											 					m_iType( iType ),
+											 					m_bConnected( false )
 {
 	WSADATA WSAData;
 	 //Инициализация сокетов
@@ -27,7 +28,7 @@ CSocket::CSocket( int iType, bool bBlocking )throw( SocketErr ):m_Socket( INVALI
 
 //Конструктор, s - созданный функцией ::socket сокет
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
-CSocket::CSocket( SOCKET s, bool bBlocking )throw( SocketErr ):m_bBlocking( bBlocking )
+CSocket::CSocket( SOCKET s, bool bBlocking, bool bConnected )throw( SocketErr ):m_bBlocking( bBlocking )
 {
 	WSADATA WSAData;
 	//Инициализация сокетов
@@ -36,6 +37,7 @@ CSocket::CSocket( SOCKET s, bool bBlocking )throw( SocketErr ):m_bBlocking( bBlo
 		throw SocketErr( WSAGetLastError() );
 	}
 
+	SetConnected( bConnected );
 	m_Socket = s;
 	int Size = sizeof(int);
 	::getsockopt( m_Socket, SOL_SOCKET, SO_TYPE, (char*)&m_iType, &Size );
@@ -61,6 +63,7 @@ void CSocket::Close( void )throw( SocketErr )
 		if( SOCKET_ERROR == ::closesocket( m_Socket ) )
 			throw SocketErr( WSAGetLastError() );
 		m_Socket = INVALID_SOCKET;
+		SetConnected( false );
 	}
 }
 
@@ -85,6 +88,7 @@ int CSocket::Send( void* pBuffer, int iSize )throw( SocketErr )
 	int res;
 	if( SOCKET_ERROR == ( res = ::send( m_Socket, (const char*)pBuffer, iSize, 0 ) ) )
 		throw SocketErr( WSAGetLastError() );
+	SetConnected( true );		
 	return res;
 }
 
@@ -95,13 +99,17 @@ int CSocket::Receive( void* pBuffer, int iBufSize )throw( SocketErr )
 	if( SOCKET_ERROR == ( res = ::recv( m_Socket, (char*)pBuffer, iBufSize, 0 ) ) )
 	{
 		if( 0 == res )
+		{
+			SetConnected( false );
 			throw SocketConnectionLost();
+		}
 		int iLastError = WSAGetLastError();
 		if( WSAEMSGSIZE == iLastError )
 			throw SocketRespSizeErr();
 		else
 			throw SocketErr( WSAGetLastError() );
 	}
+	SetConnected( true );
 	return res;
 }
 
@@ -117,6 +125,7 @@ CSocket::structAddr CSocket::GetRemoteHost()
 		throw SocketErr( WSAGetLastError() );
 	else
 	{
+		SetConnected( true );
 		res.iPort = ::ntohs( sAddr.sin_port );
 		res.strAddr = ::inet_ntoa( sAddr.sin_addr );
 		if( NULL != ( hn = ::gethostbyaddr( (const char*)&sAddr.sin_addr.S_un.S_addr, sizeof( sAddr.sin_addr.S_un.S_addr ), m_iType ) ) )
@@ -173,13 +182,14 @@ bool CSocket::IsReadyForWrite( int iTimeout )throw( SocketErr )
 	return false;
 }
 
-bool CSocket::IsConnected()
+bool CSocket::IsConnected()const
 {
-	structAddr res;
-	sockaddr_in sAddr;
-	int len = sizeof(sAddr);
-	if( SOCKET_ERROR == getpeername( m_Socket, (sockaddr*)&sAddr, &len ) )
-		return false;
-	else
-		return true;	
+	Log::instance().Trace( 50, "CSocket::IsConnected %s", m_bConnected?"true":"false" );
+	return m_bConnected;	
+}
+
+void CSocket::SetConnected( bool bConnected )
+{
+	Log::instance().Trace( 50, "CSocket::SetConnected %s", bConnected?"true":"false" );
+	m_bConnected = bConnected;
 }
