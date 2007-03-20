@@ -27,8 +27,17 @@ CScheduler::CScheduler(void)
 CScheduler::~CScheduler(void)
 {
 	m_CloseEv.Set();
+	if( m_EventSock.IsConnected() )
+	{
+		Log::instance().Trace( 90, "CScheduler::~CScheduler: Канал событий поднят" );
+		m_EventSock.Close();
+	}
+	else
+		Log::instance().Trace( 90, "CScheduler::~CScheduler: Канал событий опущен" );
+
 	Log::instance().Trace( 90, "CScheduler::~CScheduler: Ожидание закрытия потока прослушивания" );
 	WaitForSingleObject( m_hListenThread, 10000 );
+	Log::instance().Trace( 90, "CScheduler::~CScheduler: 2" );
 	CloseHandle( m_hListenThread );
 }
 

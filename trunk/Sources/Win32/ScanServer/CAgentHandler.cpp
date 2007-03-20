@@ -9,7 +9,6 @@
 #include <process.h>
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
-														   ,m_bOpened( false )
 														   ,m_bFinished( false )
 {
 	m_pConnectionHandler = SmartPtr< CConnectionHandler >( new CConnectionHandler( this ) );
@@ -25,9 +24,9 @@ CAgentHandler::~CAgentHandler()
 }
 
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-void CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int& iRespSize )throw( HandlerErr, CSocket::SocketErr )
+SmartPtr< BYTE, AllocMalloc<BYTE> > CAgentHandler::SendMessage( CPacket &Msg )throw( HandlerErr, CSocket::SocketErr )
 {
-	if( !m_bOpened )
+	if( !IsOpened() )
 	{
 		Log::instance().Trace( 10, "CAgentHandler::SendMessage: Ошибка!Сессия не открыта!" );
 		throw HandlerErr( "Session has not been opened, but SendMessage called" );
@@ -41,27 +40,36 @@ void CAgentHandler::SendMessage( CPacket &Msg, BYTE* pbRespBuf, int& iRespSize )
 		throw HandlerErr( "Attempt to send message with zero-length was made" );		
 	m_Sock.Send( pBuf, iSize );
 
-
+	BYTE pbBuf[255];
+	int iCount;
+	int iOffset = 0;
+	SmartPtr< BYTE, AllocMalloc<BYTE> > pbData = SmartPtr< BYTE, AllocMalloc<BYTE> >( (BYTE*)malloc( sizeof(pbBuf) ) );
 	//Получаем ответ на сообщение
-	iRespSize = m_Sock.Receive( pbRespBuf, iRespSize );
-	Log::instance().Dump( 80, pbRespBuf, iRespSize, "CAgentHandler::SendMessage: Получили ответ:" );
-	if( 0 == iRespSize )
+	while( ( iCount = m_Sock.Receive( pbBuf, sizeof(pbBuf) ) ) == sizeof(pbBuf) ) 
+	{
+		Log::instance().Trace( 80, "CAgentHandler::SendMessage: iCount = %d", iCount );
+		pbData.Realloc( iOffset + iCount + 10 );
+		memcpy( pbData.get() + iOffset, pbBuf, iCount );
+		iOffset += iCount; 
+	}
+	memcpy( pbData.get() + iOffset, pbBuf, iCount );
+	Log::instance().Dump( 80, pbData.get(), iCount, "CAgentHandler::SendMessage: Получили ответ:" );
+	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
+	return pbData;
 }
 
 void CAgentHandler::Open()
 {
-	if( m_bOpened )
+	if( m_Sock.IsConnected() )
 		return;
 	try
 	{
 		Log::instance().Trace( 90, "CAgentHandler::Open: открытие" );
 		m_Sock.Connect( m_strAddress, PORT );
-		m_bOpened = true;
 	}catch( CSocket::SocketErr& e )
 	{
 		Log::instance().Trace( 50, "CAgentHandler::Open: Ошибка соединения с агентом: %s; Описание ошибки: %s", m_strAddress.c_str(), e.what() );
-		m_bOpened = false;
 	}
 }
 
@@ -70,18 +78,18 @@ void CAgentHandler::Close()
 	try
 	{
 		Log::instance().Trace( 90, "CAgentHandler::Close: закрытие" );
+		if( !m_Sock.IsConnected() )
+			return;
 		m_Sock.Close();
-		m_bOpened = false;
 	}catch( CSocket::SocketErr& e )
 	{
 		Log::instance().Trace( 50, "CAgentHandler::Close: ошибка закрытия соединения %s", e.what() );
-		m_bOpened = false;
 	}
 }
 
 bool CAgentHandler::IsOpened()const
 {
-	return m_bOpened;
+	return m_Sock.IsConnected();
 }
 
 void CAgentHandler::OnConnection( SmartPtr< CSocket > pSocket )
@@ -107,7 +115,6 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 {
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Отправка команды начала сканирования" );
 	CPacket Msg;
-	BYTE pbRecvBuf[255];
 
 	Msg.BeginCommand( START_SCAN );
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Всего адресов: %d", vecAddresses.size() );
@@ -119,41 +126,41 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	}
 	Msg.EndCommand();
 	
-	
 	Log::instance().Trace( 92, "CAgentHandler::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str() );
-	SendMessage( Msg, pbRecvBuf, 1 );
-	return (enumAgentResponse)pbRecvBuf[0]; 
+	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
+	pbRecvBuf = SendMessage( Msg );
+	return (enumAgentResponse)*pbRecvBuf; 
 }
 	
 enumAgentResponse CAgentHandler::StopScan()throw( HandlerErr, CSocket::SocketErr )
 {
 	Log::instance().Trace( 90, "CAgentHandler::StopScan: Отправка команды окончания сканирования" );
 	CPacket Msg;
-	BYTE pbRecvBuf[255];
 
 	Msg.BeginCommand( STOP_SCAN );
 	Msg.EndCommand();
 
-	SendMessage( Msg, pbRecvBuf, 1 );
-	return (enumAgentResponse)pbRecvBuf[0];		
+	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
+	pbRecvBuf = SendMessage( Msg );
+	return (enumAgentResponse)*pbRecvBuf;		
 }
 	
 enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( HandlerErr, CSocket::SocketErr )
 {
 	Log::instance().Trace( 90, "CAgentHandler::GetStatus: Отправка команды получения статуса" );
 	CPacket Msg;
-	BYTE pbRecvBuf[255];
 
 	Msg.BeginCommand( GET_STATUS );
 	Msg.EndCommand();
 
-	SendMessage( Msg, pbRecvBuf, 2 );
-	if( RESP_OK != pbRecvBuf[0] )
+	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
+	pbRecvBuf = SendMessage( Msg );
+	if( RESP_OK != *pbRecvBuf )
 	{
-		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", pbRecvBuf[0] );
-		return (enumAgentResponse)pbRecvBuf[0];
+		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", *pbRecvBuf );
+		return (enumAgentResponse)*pbRecvBuf;
 	}
-	Status = (enumAgentState)pbRecvBuf[1];
+	Status = (enumAgentState)pbRecvBuf.get()[1];
 	Log::instance().Trace( 80, "CAgentHandler::GetStatus: Получен статус: %d", Status );
 	return RESP_OK;
 }
@@ -162,29 +169,22 @@ enumAgentResponse CAgentHandler::GetData()throw( HandlerErr, CSocket::SocketErr 
 {
 	Log::instance().Trace( 90, "CAgentHandler::GetData: Отправка команды получения данных" );	
 	CPacket Msg;
-	BYTE pbRecvBuf[255];
 
 	Msg.BeginCommand( GET_DATA );
 	Msg.EndCommand();
 
 	//отправляем команду
-	int iDataSize = 1;
-	SendMessage( Msg, pbRecvBuf, iDataSize );
-	Log::instance().Dump( 90, pbRecvBuf, iDataSize, "CAgentHandler::GetData: Получены данные:" );
-	if( RESP_OK != pbRecvBuf[0] )
+	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
+	pbRecvBuf = SendMessage( Msg );
+	if( RESP_OK != *pbRecvBuf )
 	{
-		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", pbRecvBuf[0] );
-		return (enumAgentResponse)pbRecvBuf[0];
+		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", *pbRecvBuf );
+		return (enumAgentResponse)*pbRecvBuf;
 	}
-	SendMessage( Msg, pbRecvBuf, 4 );
 	int iDataSize;
-	::memcpy( (BYTE*)&iDataSize + 4, pbRecvBuf, 4 );
+	::memcpy( (BYTE*)&iDataSize, pbRecvBuf.get()+1, 4 );
 	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", iDataSize );
-	BYTE* pbData = new BYTE[ iDataSize ];
-	//последний раз, в ответ приходят данные
-	SendMessage( Msg, pbData, iDataSize );
-	Log::instance().Dump( 90, pbData, iDataSize, "CAgentHandler::GetData: Получены данные:" );
-	delete pbData;
+	Log::instance().Dump( 90, pbRecvBuf.get()+5, iDataSize, "CAgentHandler::GetData: Получены данные:" );
 	return RESP_OK;
 }
 

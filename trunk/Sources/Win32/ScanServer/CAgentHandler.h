@@ -66,7 +66,7 @@ public:
 protected:
 	
 	//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-	void SendMessage( CPacket &Msg, BYTE* pbRespBuf, int iRespSize )throw( HandlerErr, CSocket::SocketErr );
+	SmartPtr< BYTE, AllocMalloc<BYTE> > SendMessage( CPacket &Msg )throw( HandlerErr, CSocket::SocketErr );
 	
 private:
 	
@@ -75,11 +75,6 @@ private:
 	
 	//Сокет для соединения с агентом
 	CClientSocket m_Sock;
-	
-	//Флаг открытия соединения
-	bool m_bOpened;
-	
-	SmartPtr< CSocket > m_pAgentConnection;
 	
 	SmartPtr< CConnectionHandler > m_pConnectionHandler;
 	
