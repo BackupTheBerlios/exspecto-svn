@@ -92,7 +92,6 @@ void CStartScan::Execute()
 	Event.AddParam( &bEvent, 1 );
 	Log::instance().Trace( 99, "CStartScan::Execute: Отправляем событие окончания сканирования" );
 	m_ServerHandler.SendEvent( Event );
-	//TODO:Уточнить,возможно следует использовать другой механизм блокировки,либо спин блокировку 
 	m_csCurState.Enter();
 		m_CurState = Idling;		
 	m_csCurState.Leave();
@@ -149,10 +148,9 @@ bool CGetData::Immidiate()
 		//+1 - на завершающий ноль
 		iSize += It->size() + 1;
 	}
-	//4 байта на размер 1 байт - результат обработки команды
-	iSize += 4 + 1; 
 	Log::instance().Trace( 90, "CGetData: Размер данных: %d", iSize );
-	std::auto_ptr< BYTE > pbBuf = std::auto_ptr< BYTE >( new BYTE[ iSize ] );
+	//4 байта на размер 1 байт - результат обработки команды
+	std::auto_ptr< BYTE > pbBuf = std::auto_ptr< BYTE >( new BYTE[ iSize+4+1 ] );
 	pbBuf.get()[0] = (BYTE)RESP_OK;
 	::memcpy( pbBuf.get() + 1, (void*)&iSize, 4 );
 	int iOffset = 5; 
@@ -162,7 +160,7 @@ bool CGetData::Immidiate()
 		iOffset += It->size() + 1;
 	}
 	CPacket Msg;
-	Msg.AddParam( pbBuf.get(), iSize );
+	Msg.AddParam( pbBuf.get(), iSize+4+1 );
 	m_ServerHandler.SendMsg( Msg );
 	Log::instance().Dump( 90, pbBuf.get(), iSize, "CGetData:Immidiate: Отправлен ответ:" );
 	return true;
