@@ -14,6 +14,7 @@ public:
 	{
 		delete pointer;
 	};
+	
 };
 
 template< class T >
@@ -25,14 +26,28 @@ public:
 	{
 		delete[] pointer;
 	};
+	
+	static void Realloc( T* pointer, int iNewSize )
+	{
+		T* pTmp = pointer;
+		pointer = new T[ iNewSize ];
+		memcpy( (void*)pointer, (void*)pTmp, iNewSize*sizeof( T ) );
+		delete pTmp;
+	};
 };
 
 template< class T >
 class AllocMalloc
 {
+public:	
 	static void Destroy( T* pointer )
 	{
 		free( pointer );
+	};
+	
+	static void Realloc( T* pointer, int iNewSize )
+	{
+		pointer = (T*)realloc( pointer, iNewSize );
 	};
 };
 
@@ -145,6 +160,16 @@ public:
 			}
 			m_csMap.Leave();
 		}		
+	}
+	
+	void Realloc( int iNewSize )
+	{
+		AllocationPolicy::Realloc( m_pPointer, iNewSize );
+	}
+	
+	T& operator*()
+	{
+		return *m_pPointer;
 	}
 	
 private:
