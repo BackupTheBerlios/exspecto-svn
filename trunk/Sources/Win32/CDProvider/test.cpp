@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <dir.h>
+#include <iostream>
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <memory.h>
@@ -9,22 +10,25 @@
 //#include "memleakdetector.h"
 #include "CDBProvider.h"
 
-char* ExtractFilePath(char* Dest, char* Src)
+void ExtractFilePath(string & Dest, string Src)
 {
-    GetFullPathName(Src, 400, Dest, NULL);
-    return Dest;
+	char tmp[400];
+	GetFullPathName(Src.c_str(), 400, tmp, NULL);
+	Dest = tmp;
+	int iEnd = Dest.find_last_of("\\");
+	Dest = Dest.substr(0, iEnd+1);
 }
 
-void FileInfo(char* aPath, filesStr &FL)
+void FileInfo(string aPath, filesStr &FL)
 {
     HANDLE hFindFile;
     WIN32_FIND_DATA hFindData;
     unsigned __int64 FSize = 0;
     bool IsFinished;
-    char cPath[400];
+    string cPath;
 	fileStr Cur;
 
-    hFindFile = FindFirstFile(aPath, &hFindData);
+    hFindFile = FindFirstFile(aPath.c_str(), &hFindData);
     IsFinished = hFindFile == INVALID_HANDLE_VALUE;
     while(!IsFinished)
     {
@@ -33,20 +37,21 @@ void FileInfo(char* aPath, filesStr &FL)
             if(hFindData.cFileName[0]!='.')
             {
                 ExtractFilePath(cPath, aPath);
-                strcat(cPath, hFindData.cFileName);
-                strcat(cPath, "\\*.*");
+                cPath += hFindData.cFileName;
+                cPath += "\\*.*";
                 FileInfo(cPath, FL);
             }
         }
         else
         {
-            FSize = (hFindData.nFileSizeHigh * (MAXDWORD+1)) + hFindData.nFileSizeLow;
-            ExtractFilePath(cPath, aPath);
-            strcat(cPath, hFindData.cFileName);
-			Cur.FileName=cPath;
-			Cur.FileSize = FSize;
-			Cur.FileTime = hFindData.ftCreationTime.dwLowDateTime;
-			FL.push_back(Cur);
+        	FSize = (hFindData.nFileSizeHigh * (MAXDWORD+1)) + hFindData.nFileSizeLow;
+          ExtractFilePath(cPath, aPath);
+          cPath += hFindData.cFileName;
+					Cur.FileName=cPath;
+					Cur.FileSize = FSize;
+					Cur.lFileTime = hFindData.ftCreationTime.dwLowDateTime;
+					Cur.hFileTime = hFindData.ftCreationTime.dwHighDateTime;
+					FL.push_back(Cur);
         }
         IsFinished = !FindNextFile(hFindFile, &hFindData);
     }
@@ -56,8 +61,10 @@ void FileInfo(char* aPath, filesStr &FL)
 
 int main()
 {
-	
-	CDBProvider* db = new CDBProvider("c:\\test.db");
+	Log::instance().SetLoglevel( 200 );
+	list<int> res;
+	map<string,bool> aParams;
+	CDBProvider* db = new CDBSQLitProvider("c:\\test.db");
 	filesStr FL;
 	FileInfo(".\\*.*", FL);
 /*	fileStr Cur;
@@ -76,6 +83,15 @@ int main()
 	}*/
 	
 	db->AddFiles(&FL, "DrAlexandr", "192.168.1.2");
+	char tmp[255];
+	cout << "Input query: ";
+	cin >> tmp;
+	if(db->Search(tmp, aParams, res))
+	{
+		list<int>::iterator idRes;
+	  for (idRes=res.begin(); idRes != res.end(); ++idRes)
+    	cout << (*idRes) << endl;
+	}
 	delete db;
 
 /*    int i = 234;
