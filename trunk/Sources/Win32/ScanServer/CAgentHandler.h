@@ -7,9 +7,9 @@
 #ifndef CAGENTHANDLER_H_
 #define CAGENTHANDLER_H_
 
+#include "ClientSocket.h"
 #include "commands.h"
 #include "packet.h"
-#include "ClientSocket.h"
 #include "SmartPtr.hpp"
 
 #define PORT 4000
@@ -25,7 +25,7 @@ public:
 	{
 	public:
 	
-		HandlerErr( const std::string& strErr )throw():std::runtime_error( strErr ){};
+		HandlerErr( const std::string& strErr ):std::runtime_error( strErr ){};
 		virtual ~HandlerErr()throw(){};	
 	}; 
 	
@@ -43,16 +43,16 @@ public:
 	//Команды, передаваемые агенту:
 	
 	//Начать сканирование
-	enumAgentResponse BeginScan( std::vector< std::string > vecAddresses )throw( HandlerErr, CSocket::SocketErr );
+	enumAgentResponse BeginScan( std::vector< std::string > vecAddresses );
 	
 	//Остановить сканирование
-	enumAgentResponse StopScan()throw( HandlerErr, CSocket::SocketErr );
+	enumAgentResponse StopScan();
 	
 	//Получить статус
-	enumAgentResponse GetStatus( enumAgentState& Status )throw( HandlerErr, CSocket::SocketErr );
+	enumAgentResponse GetStatus( enumAgentState& Status );
 	
 	//Получить данные последнего сканирования
-	enumAgentResponse GetData()throw( HandlerErr, CSocket::SocketErr );
+	enumAgentResponse GetData();
 	
 	//Открыто ли соединение с агентом
 	bool IsOpened()const;
@@ -66,7 +66,7 @@ public:
 protected:
 	
 	//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-	SmartPtr< BYTE, AllocMalloc<BYTE> > SendMessage( CPacket &Msg )throw( HandlerErr, CSocket::SocketErr );
+	SmartPtr< BYTE, AllocMalloc<BYTE> > SendMessage( CPacket &Msg );
 	
 private:
 	
@@ -80,6 +80,10 @@ private:
 	
 	bool m_bFinished;
 	
+	//Приемный буфер
+	SmartPtr< BYTE, AllocMalloc<BYTE> > m_pRecvBuf;
+	
+	int m_iRecvBufSize;
 };
 
 class CConnectionHandler

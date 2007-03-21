@@ -4,14 +4,17 @@
 //Author: Parshin Dmitry
 //Description: Класс, инкапсулирующий взаимодействие с агентом
 //-------------------------------------------------------------------------------------//
-#include "precomp.h"
+
 #include "CAgentHandler.h"
+#include "precomp.h"
 #include <process.h>
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
 														   ,m_bFinished( false )
 {
 	m_pConnectionHandler = SmartPtr< CConnectionHandler >( new CConnectionHandler( this ) );
+	m_iRecvBufSize = 255;
+	m_pRecvBuf = SmartPtr< BYTE, AllocMalloc<BYTE> >( (BYTE*)malloc( m_iRecvBufSize ) );
 }
 
 CAgentHandler::~CAgentHandler()
@@ -24,7 +27,7 @@ CAgentHandler::~CAgentHandler()
 }
 
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-SmartPtr< BYTE, AllocMalloc<BYTE> > CAgentHandler::SendMessage( CPacket &Msg )throw( HandlerErr, CSocket::SocketErr )
+SmartPtr< BYTE, AllocMalloc<BYTE> > CAgentHandler::SendMessage( CPacket &Msg )
 {
 	if( !IsOpened() )
 	{
@@ -40,19 +43,23 @@ SmartPtr< BYTE, AllocMalloc<BYTE> > CAgentHandler::SendMessage( CPacket &Msg )th
 		throw HandlerErr( "Attempt to send message with zero-length was made" );		
 	m_Sock.Send( pBuf, iSize );
 
-	BYTE pbBuf[255];
 	int iCount;
 	int iOffset = 0;
-	SmartPtr< BYTE, AllocMalloc<BYTE> > pbData = SmartPtr< BYTE, AllocMalloc<BYTE> >( (BYTE*)malloc( sizeof(pbBuf) ) );
+	SmartPtr< BYTE, AllocMalloc<BYTE> > pbData = SmartPtr< BYTE, AllocMalloc<BYTE> >( (BYTE*)malloc( m_iRecvBufSize ) );
 	//Получаем ответ на сообщение
-	while( ( iCount = m_Sock.Receive( pbBuf, sizeof(pbBuf) ) ) == sizeof(pbBuf) ) 
+	while( ( iCount = m_Sock.Receive( m_pRecvBuf.get(), m_iRecvBufSize ) ) == m_iRecvBufSize )
 	{
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: iCount = %d", iCount );
 		pbData.Realloc( iOffset + iCount + 10 );
-		memcpy( pbData.get() + iOffset, pbBuf, iCount );
-		iOffset += iCount; 
+		memcpy( pbData.get() + iOffset, m_pRecvBuf.get(), iCount );
+		iOffset += iCount;
+		m_iRecvBufSize <<= 1;
+		m_pRecvBuf.Realloc( m_iRecvBufSize );
+		Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер приемного буфера: %d", m_iRecvBufSize );
 	}
-	memcpy( pbData.get() + iOffset, pbBuf, iCount );
+	Log::instance().Trace( 80, "CAgentHandler::SendMessage: iCount = %d", iCount );
+	Log::instance().Dump( 80, m_pRecvBuf.get(), iCount, "CAgentHandler::SendMessage: 1 Получили ответ:" );
+	memcpy( pbData.get() + iOffset, m_pRecvBuf.get(), iCount );
 	Log::instance().Dump( 80, pbData.get(), iCount, "CAgentHandler::SendMessage: Получили ответ:" );
 	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
@@ -111,7 +118,7 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 	};
 }
 
-enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )throw( HandlerErr, CSocket::SocketErr )
+enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )
 {
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Отправка команды начала сканирования" );
 	CPacket Msg;
@@ -132,7 +139,7 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	return (enumAgentResponse)*pbRecvBuf; 
 }
 	
-enumAgentResponse CAgentHandler::StopScan()throw( HandlerErr, CSocket::SocketErr )
+enumAgentResponse CAgentHandler::StopScan()
 {
 	Log::instance().Trace( 90, "CAgentHandler::StopScan: Отправка команды окончания сканирования" );
 	CPacket Msg;
@@ -145,7 +152,7 @@ enumAgentResponse CAgentHandler::StopScan()throw( HandlerErr, CSocket::SocketErr
 	return (enumAgentResponse)*pbRecvBuf;		
 }
 	
-enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( HandlerErr, CSocket::SocketErr )
+enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )
 {
 	Log::instance().Trace( 90, "CAgentHandler::GetStatus: Отправка команды получения статуса" );
 	CPacket Msg;
@@ -165,7 +172,7 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )throw( Handl
 	return RESP_OK;
 }
 	
-enumAgentResponse CAgentHandler::GetData()throw( HandlerErr, CSocket::SocketErr )
+enumAgentResponse CAgentHandler::GetData()
 {
 	Log::instance().Trace( 90, "CAgentHandler::GetData: Отправка команды получения данных" );	
 	CPacket Msg;
@@ -199,14 +206,22 @@ unsigned __stdcall CConnectionHandler::fnListenThread( void* param )
 {
 	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск" );
 	CConnectionHandler* pThis = (CConnectionHandler*)param;
-	CPacket Msg;
-	BYTE pBuf[10240];
-	int iCount;
-	while( iCount = pThis->m_pSocket->Receive( pBuf, sizeof( pBuf ) ) )
+	try{
+		CPacket Msg;
+		BYTE pBuf[10240];
+		int iCount;
+		while( iCount = pThis->m_pSocket->Receive( pBuf, sizeof( pBuf ) ) )
+		{
+			Log::instance().Dump( 90, pBuf, iCount, "CConnectionHandler::fnListenThread: Получен пакет:" );
+			Msg.SetBuffer( pBuf, iCount );
+			pThis->m_pAgentHandler->OnMessage( Msg );
+		}
+	}catch( std::exception& e )
 	{
-		Log::instance().Dump( 90, pBuf, iCount, "CConnectionHandler::fnListenThread: Получен пакет:" );
-		Msg.SetBuffer( pBuf, iCount );
-		pThis->m_pAgentHandler->OnMessage( Msg );
+		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло исключение: %s", e.what() );
+	}catch( ... )
+	{
+		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло неизвестное исключение" );
 	}
 	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие" );
 	CloseHandle( pThis->m_hListenThread );

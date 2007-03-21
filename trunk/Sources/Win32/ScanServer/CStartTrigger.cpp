@@ -4,8 +4,8 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции триггера для планировщика CScheduler
 //-------------------------------------------------------------------------------------//
-#include "precomp.h"
 #include "CStartTrigger.h"
+#include "precomp.h"
 #include "process.h"
 
 //------------------------------------------------------------------------------------------------------
@@ -70,8 +70,9 @@ void CTimer::Stop()
 //Поток таймера
 unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 {
+	CTimer* pThis = static_cast<CTimer*>( pParam );
+	//TODO: Этот try catch ничего не ловит
 	try{
-		CTimer* pThis = static_cast<CTimer*>( pParam );
 		for(;;)
 		{
 			//Ожидаем либо отмены(останов таймера) либо выхода таймаута, который задает период таймера
@@ -80,12 +81,17 @@ unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 			Log::instance().Trace( 95, "CTimer: событие таймера" );
 			//Вызываем обработчик в планировщике и ждем его отработки
 			pThis->m_pCallBack->OnStartScan();
+			Log::instance().Trace( 10,"2" );
 		}
 	}catch( std::exception& e )
 	{
 		//TODO:
-		Log::instance().Trace( 0, "Возникло исключение: %s" , e.what() );
-	};
+		Log::instance().Trace( 0, "CTimer::fnTimerProc: Возникло исключение: %s" , e.what() );
+	}catch( ... )
+	{
+		Log::instance().Trace( 10,"CTimer::fnTimerProc: Возникло неизвестное исключение" );
+	}
+	Log::instance().Trace( 10,"CTimer::fnTimerProc: Закрытие" );
 	return 0;
 }
 

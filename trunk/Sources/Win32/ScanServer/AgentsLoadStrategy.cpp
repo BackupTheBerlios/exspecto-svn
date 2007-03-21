@@ -4,8 +4,8 @@
 //Author: Parshin Dmitry
 //Description: Класс, описывающий стратегию загрузки Агентов в класс Container
 //-------------------------------------------------------------------------------------//
-#include "precomp.h"
 #include "AgentsLoadStrategy.h"
+#include "precomp.h"
 
 AgentsLoadStrategy::AgentsLoadStrategy( std::vector< CAgentHandler* >& vecStorage )
 {

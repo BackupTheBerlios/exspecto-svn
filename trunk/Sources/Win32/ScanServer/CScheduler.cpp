@@ -7,11 +7,21 @@
 #include <iostream>
 #include <tchar.h>
 #include "CScheduler.h"
-#include "windows.h"
 #include <process.h>
+
+//Описание типов параметров
+static char* pServerParamTypes[] = {
+	TIMER_VALUE, "int",
+	LOG_LEVEL,	"int"
+};
 
 CScheduler::CScheduler(void)
 {
+	int iLogLevel;
+	Settings::SetModule( "ScanServer", pServerParamTypes, sizeof( pServerParamTypes )/sizeof( pServerParamTypes[0] ) );
+	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
+	Log::instance().SetLoglevel( iLogLevel );
+	
 	//Загружаем контейнер агентов
 	m_mapAgentsContainer[ "127.0.0.1" ] = SmartPtr< CAgentHandler >( new CAgentHandler( "127.0.0.1" ) ); 
 	
@@ -43,32 +53,44 @@ CScheduler::~CScheduler(void)
 
 void CScheduler::OnStartScan()
 {
-	std::vector< std::string > vecAdr;
-	vecAdr.push_back( "127.0.0.1" );
-	for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++ )
+	throw int(4);
+//	try{
+		std::vector< std::string > vecAdr;
+		vecAdr.push_back( "127.0.0.1" );
+		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++ )
+		{
+	/*		enumAgentState bStatus;
+			It->second->Open();
+			if( It->second->IsOpened() )
+			{
+				It->second->GetStatus( bStatus );
+				Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
+			}
+	*/		
+			It->second->Open();
+			if( It->second->IsOpened() )
+			{
+				It->second->BeginScan( vecAdr );
+				//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
+			}
+			Sleep( 2000 );
+			It->second->Open();
+			if( It->second->IsOpened() )
+			{
+				It->second->GetData();
+				//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
+			}
+		}
+/*	}catch( std::exception& e )
 	{
-/*		enumAgentState bStatus;
-		It->second->Open();
-		if( It->second->IsOpened() )
-		{
-			It->second->GetStatus( bStatus );
-			Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
-		}
-*/		
-		It->second->Open();
-		if( It->second->IsOpened() )
-		{
-			It->second->BeginScan( vecAdr );
-			//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
-		}
-		Sleep( 2000 );
-		It->second->Open();
-		if( It->second->IsOpened() )
-		{
-			It->second->GetData();
-			//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
-		}
+		Log::instance().Trace( 10, "CScheduler::OnStartScan: e= %s", e.what() );
 	}
+	*/
+/*	catch( ... )
+	{
+		Log::instance().Trace( 10," CScheduler::OnStartScan: Возникло неизвестное исключение" );
+	}
+	*/
 }
 
 //Поток ожидания входящих соединений
@@ -105,6 +127,9 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10," CScheduler::ListenThread: Возникло исключение: %s", e.what() );
+	}catch( ... )
+	{
+		Log::instance().Trace( 10," CScheduler::ListenThread: Возникло неизвестное исключение" );
 	}
 	Log::instance().Trace( 50, "CScheduler::ListenThread: Завершение потока ожидания входящих сообщений" );
 	return 0;
