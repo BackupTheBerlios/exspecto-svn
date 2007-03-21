@@ -7,8 +7,8 @@
 #ifndef PACKET_H_
 #define PACKET_H_
 
-#include "precomp.h"
 #include "Socket.h"
+#include "precomp.h"
 #include "../CommonFiles/commands.h"
 
 class CPacket
@@ -18,41 +18,41 @@ public:
 	class PacketErr: public std::runtime_error
 	{
 	public:
-		PacketErr( const std::string& strErr )throw():std::runtime_error( strErr ){};
+		PacketErr( const std::string& strErr ):std::runtime_error( strErr ){};
 		virtual ~PacketErr()throw(){};
 	};
 
 	class PacketFormatErr: public PacketErr
 	{
 	public:
-		PacketFormatErr( const std::string& strErr )throw():PacketErr( strErr ){};
+		PacketFormatErr( const std::string& strErr ):PacketErr( strErr ){};
 		virtual ~PacketFormatErr()throw(){};
 	};
 
-	CPacket(void)throw( PacketErr );
+	CPacket(void);
 	~CPacket(void);
 
 	//Добавить в пакет идентификатор команды
-	void BeginCommand( enumCommands Command )throw( PacketErr );
+	void BeginCommand( enumCommands Command );
 
 	//Добавить параметр
 	//	pbParam - буфер с данными
 	//	iSize - размер данных
-	void AddParam( BYTE* pbParam, int iSize )throw( PacketErr );
+	void AddParam( BYTE* pbParam, int iSize );
 
 	//Добавить параметр
 	//	dwParam - параметр типа DWORD
-	void AddParam( DWORD dwParam )throw( PacketErr );
+	void AddParam( DWORD dwParam );
 
 	//Добавить параметр
 	//	strParam - строковый параметр
-	void AddParam( std::string strParam )throw( PacketErr );
+	void AddParam( std::string strParam );
 
 	//Добавить IP - адрес в пакет
-	void AddAddress( std::string strAddress )throw( PacketErr, PacketFormatErr );
+	void AddAddress( std::string strAddress );
 
 	//Добавить метку конца пакета
-	void EndCommand()throw( PacketErr );
+	void EndCommand();
 
 	//Очистить пакет
 	void Clear();
@@ -61,22 +61,22 @@ public:
 	void GetBuffer( OUT BYTE* &pbBuffer, OUT int &iSize );
 
 	//Установить данные для разбора
-	void SetBuffer( IN BYTE* pbBuffer, IN int iSize )throw( PacketErr );
+	void SetBuffer( IN BYTE* pbBuffer, IN int iSize );
 
 	//Получить идентификатор команды по текущему смещению в пакете
-	void GetCommandId( BYTE& pByte )throw( PacketFormatErr );
+	void GetCommandId( BYTE& pByte );
 
 	//Получить массив байт из пакета по текущему смещению
-	void GetParam( BYTE* pbValue, int iSize )throw( PacketFormatErr );
+	void GetParam( BYTE* pbValue, int iSize );
 
 	//Получить параметр типа DWORD по текущему смещению
-	void GetParam( DWORD& dwValue )throw( PacketFormatErr );
+	void GetParam( DWORD& dwValue );
 
 	//Получить строку длиной iSize из пакета по текущему смещению
-	void GetParam( std::string&	strValue, int iSize )throw( PacketFormatErr );
+	void GetParam( std::string&	strValue, int iSize );
 
 	//Получить IP-адрес из пакета по текущему смещению
-	void GetAddress( std::string& strAddress )throw( PacketFormatErr );
+	void GetAddress( std::string& strAddress );
 	
 	//Выяснить закончена обработка пакета или нет
 	bool IsDone();
@@ -88,7 +88,7 @@ public:
 protected:
 	
 	//Добавить массив байт к пакету
-	void Push( BYTE *pbData, int iSize )throw( PacketErr );
+	void Push( BYTE *pbData, int iSize );
 
 	//Получить массив байт из пакета
 	void Pop( BYTE *pbBuf, int iCount );

@@ -7,8 +7,8 @@
 #ifndef SERVERSOCKET_H_
 #define SERVERSOCKET_H_
 
-#include "precomp.h"
 #include "Socket.h"
+#include "precomp.h"
 #include "SmartPtr.hpp"
 
 class CServerSocket: public CSocket
@@ -26,11 +26,11 @@ public:
 	~CServerSocket(void);
 
 	//Функция "прикрепления" сокета к адресу, по умолчанию ОС сама выбирает адрес и порт
-	void Bind( int iPort = 0, std::string strAddr = "Any" )throw( SocketDNSErr, SocketErr );
+	void Bind( int iPort = 0, std::string strAddr = "Any" );
 
 	//Функция начала "прослушивания", iMaxConn - максимальное кол-во соединения,
 	//SOMAXCONN - максимальное значение
-	void Listen( int iMaxConn = SOMAXCONN )throw( SocketErr );
+	void Listen( int iMaxConn = SOMAXCONN );
 
 	//При вызове accept, сокет блокируется вплоть до появления сигнала о входящем 
 	//соединении (по аналогии к функциям из предыдущей статьи). Функция возвращает 
@@ -38,7 +38,7 @@ public:
 	//(система создаёт его сама, при успешном соединении). Более подробные данные 
 	//о присоединившейся машине accept возвращает в параметре addr 
 	//(тип адреса, IP-адрес, порт).
-	SmartPtr< CSocket > Accept( structAddr& addr )throw( SocketErr );
+	SmartPtr< CSocket > Accept( structAddr& addr );
 protected:
 };
 

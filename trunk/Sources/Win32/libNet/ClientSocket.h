@@ -7,8 +7,8 @@
 #ifndef CCLIENTSOCKET_H_
 #define CCLIENTSOCKET_H_
 
-#include "precomp.h"
 #include "Socket.h"
+#include "precomp.h"
 
 class CClientSocket: public CSocket
 {
@@ -17,14 +17,14 @@ public:
 	// онструктор
 	//iType - тип сокета, возможные значени€ - SOCK_STREAM и SOCK_DGRAM
 	//bBlocking - блокирующий либо не блокирующий сокет
-	CClientSocket( int iType = SOCK_STREAM, bool bBlocking = true )throw( SocketErr );
+	CClientSocket( int iType = SOCK_STREAM, bool bBlocking = true );
 
-	~CClientSocket( void )throw( SocketErr );
+	~CClientSocket( void );
 
 
 	//—оединение с strAddr:iPort,где sAddr - им€ удаленного хоста,либо его IP-адресс
 	//								 iPort - порт, к которому необходимо подключитьс€
-	void Connect( std::string strAddr, int iPort )throw( SocketDNSErr, CSocket::SocketErr );
+	void Connect( std::string strAddr, int iPort );
 };
 
 #endif

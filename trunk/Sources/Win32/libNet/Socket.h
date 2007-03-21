@@ -7,6 +7,7 @@
 
 #ifndef CSOCKET_H_
 #define CSOCKET_H_
+#include "winsock2.h"
 
 #include "precomp.h"
 #include <string>
@@ -20,13 +21,13 @@ public:
 	class SocketErr: public std::exception
 	{
 	public:
-		SocketErr( int iLastError )throw()
+		SocketErr( int iLastError )
 		{
 			if( 0 == FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, iLastError, 0, data, sizeof(data), NULL ) )
 			{
 				strcpy( data, "Error during formating error message" );
 				Log::instance().Trace( 0, "SocketErr: ошибка: %d", GetLastError() );
-			} 
+			}
 		};
 		
 		SocketErr( const std::string& Msg )
@@ -78,22 +79,22 @@ public:
 	
 	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
-	CSocket( int iType = SOCK_STREAM, bool bBlocking = true )throw( SocketErr );
+	CSocket( int iType = SOCK_STREAM, bool bBlocking = true );
 
 	//Конструктор, s - созданный функцией ::socket сокет
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
-	CSocket( SOCKET s, bool bBlocking, bool bConnected )throw( SocketErr );
+	CSocket( SOCKET s, bool bBlocking, bool bConnected );
 
 	virtual ~CSocket(void);
 
 	//Метод закрытия сокета
-    void Close( void )throw( SocketErr );
+    void Close( void );
 
 	//Метод посылки данных,возвращает кол-во отправленных байт
-	int Send( void* pBuffer, int iSize )throw( SocketErr );
+	int Send( void* pBuffer, int iSize );
 
 	//Метод приёма данных,возвращает кол-во принятых байт
-	int Receive( void* pBuffer, int iBufSize )throw( SocketErr );
+	int Receive( void* pBuffer, int iBufSize );
 	
 	//Метод возврщает адрес удаленного хоста
 	structAddr GetRemoteHost(); 
@@ -106,12 +107,12 @@ public:
 	//При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
 	//поступили данные и можно производить операцию Receive
 	//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
-	bool IsReadyForRead( int iTimeout = -1 )throw( SocketErr );
+	bool IsReadyForRead( int iTimeout = -1 );
 
 	//При использовании неблокирующих вызовов, метод возвращает true,если сокет готов к
 	//записи
 	//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
-	bool IsReadyForWrite( int iTimeout = -1 )throw( SocketErr );
+	bool IsReadyForWrite( int iTimeout = -1 );
 
 protected:
 

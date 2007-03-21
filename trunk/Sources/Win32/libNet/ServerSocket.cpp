@@ -4,8 +4,8 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий серверную часть сокетов
 //-------------------------------------------------------------------------------------//
-#include "precomp.h"
 #include ".\serversocket.h"
+#include "precomp.h"
 #include <string>
 
 //Конструктор
@@ -27,7 +27,7 @@ CServerSocket::~CServerSocket(void)
 }
 
 //Функция "прикрепления" сокета к адресу, по умолчанию ОС сама выбирает адрес и порт
-void CServerSocket::Bind( int iPort, std::string strAddr )throw( SocketDNSErr, SocketErr )
+void CServerSocket::Bind( int iPort, std::string strAddr )
 {
 	sockaddr_in sAddr;
 	hostent* hn;
@@ -60,7 +60,7 @@ void CServerSocket::Bind( int iPort, std::string strAddr )throw( SocketDNSErr, S
 
 //Функция начала "прослушивания", iMaxConn - максимальное кол-во соединения,
 //SOMAXCONN - максимальное значение
-void CServerSocket::Listen( int iMaxConn )throw( SocketErr )
+void CServerSocket::Listen( int iMaxConn )
 {
 	if( (int)INVALID_SOCKET == ::listen( m_Socket, iMaxConn ) )
 		throw SocketErr( WSAGetLastError() );
@@ -72,7 +72,7 @@ void CServerSocket::Listen( int iMaxConn )throw( SocketErr )
 //(система создаёт его сама, при успешном соединении). Более подробные данные 
 //о присоединившейся машине accept возвращает в параметре addr 
 //(тип адреса, IP-адрес, порт).
-SmartPtr< CSocket > CServerSocket::Accept( structAddr& addr )throw( SocketErr )
+SmartPtr< CSocket > CServerSocket::Accept( structAddr& addr )
 {
 	SOCKET s;
 	SmartPtr< CSocket > sock;

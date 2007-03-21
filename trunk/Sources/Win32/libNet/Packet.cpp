@@ -4,11 +4,11 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции для работы с пакетами (парсинг и подготовка)
 //-------------------------------------------------------------------------------------
-#include "precomp.h"
 #include "packet.h"
+#include "precomp.h"
 
 
-CPacket::CPacket(void)throw( PacketErr ):m_iDataSize( 0 )
+CPacket::CPacket(void):m_iDataSize( 0 )
 					  ,m_iBufSize( 1024 )
 					  ,m_iOffset( 0 )
 {
@@ -24,13 +24,13 @@ CPacket::~CPacket(void)
 }
 
 //Добавить в пакет идентификатор команды
-void CPacket::BeginCommand( enumCommands Command )throw( PacketErr )
+void CPacket::BeginCommand( enumCommands Command )
 {
 	Push( (BYTE*)&Command, 1 );
 }
 
 //Добавить массив байт к пакету
-void CPacket::Push( BYTE* pbData, int iSize )throw( PacketErr )
+void CPacket::Push( BYTE* pbData, int iSize )
 {
 	m_iDataSize += iSize;
 	if( m_iDataSize > m_iBufSize )
@@ -42,27 +42,27 @@ void CPacket::Push( BYTE* pbData, int iSize )throw( PacketErr )
 //Добавить параметр
 //	pbParam - буфер с данными
 //	iSize - размер данных
-void CPacket::AddParam( BYTE* pbParam, int iSize )throw( PacketErr )
+void CPacket::AddParam( BYTE* pbParam, int iSize )
 {
 	Push( pbParam, iSize );
 }
 
 //Добавить параметр
 //	dwParam - параметр типа DWORD
-void CPacket::AddParam( DWORD dwParam )throw( PacketErr )
+void CPacket::AddParam( DWORD dwParam )
 {
 	Push( (BYTE*)&dwParam, sizeof(DWORD) );
 }
 
 //Добавить параметр
 //	strParam - строковый параметр
-void CPacket::AddParam( std::string strParam )throw( PacketErr )
+void CPacket::AddParam( std::string strParam )
 {
 	Push( (BYTE*)strParam.c_str(), (int)strParam.size() );
 }
 
 //Добавить IP - адрес в пакет
-void CPacket::AddAddress( std::string strAddress )throw( PacketErr, PacketFormatErr )
+void CPacket::AddAddress( std::string strAddress )
 {
 	u_long lAdr;
 	//Передаем адрес в сетевом формате - 4 байта
@@ -72,7 +72,7 @@ void CPacket::AddAddress( std::string strAddress )throw( PacketErr, PacketFormat
 }
 
 //Получить массив байт из пакета по текущему смещению
-void CPacket::GetParam( BYTE* pbValue, int iSize )throw( PacketFormatErr )
+void CPacket::GetParam( BYTE* pbValue, int iSize )
 {
 	if( iSize > m_iDataSize - m_iOffset )
 		throw PacketFormatErr( "Incorrect param size" );
@@ -80,7 +80,7 @@ void CPacket::GetParam( BYTE* pbValue, int iSize )throw( PacketFormatErr )
 }
 
 //Получить параметр типа DWORD по текущему смещению
-void CPacket::GetParam( DWORD& dwValue )throw( PacketFormatErr )
+void CPacket::GetParam( DWORD& dwValue )
 {
 	if( sizeof(DWORD) > ( unsigned int )( m_iDataSize - m_iOffset ) )
 		throw PacketFormatErr( "Incorrect param size" );
@@ -89,7 +89,7 @@ void CPacket::GetParam( DWORD& dwValue )throw( PacketFormatErr )
 }
 
 //Получить строку длиной iSize из пакета по текущему смещению
-void CPacket::GetParam( std::string& strValue, int iSize )throw( PacketFormatErr )
+void CPacket::GetParam( std::string& strValue, int iSize )
 {
 	BYTE* strTmp = new BYTE[ iSize + 1 ];
 	strTmp[ iSize ] = 0; //string zero
@@ -102,7 +102,7 @@ void CPacket::GetParam( std::string& strValue, int iSize )throw( PacketFormatErr
 }
 
 //Получить IP-адрес из пакета по текущему смещению
-void CPacket::GetAddress( std::string& strAddress )throw( PacketFormatErr )
+void CPacket::GetAddress( std::string& strAddress )
 {
 	in_addr ulAdr;
 	char* strAdr;
@@ -119,7 +119,7 @@ void CPacket::GetAddress( std::string& strAddress )throw( PacketFormatErr )
 }
 
 //Добавить метку конца пакета
-void CPacket::EndCommand()throw( PacketErr )
+void CPacket::EndCommand()
 {
 	Push( (BYTE*)"END", 3 );
 }
@@ -139,7 +139,7 @@ void CPacket::GetBuffer( OUT BYTE* &pbBuffer, OUT int &iSize )
 }
 
 //Установить данные для разбора
-void CPacket::SetBuffer( IN BYTE* pbBuffer, IN int iSize )throw( PacketErr )
+void CPacket::SetBuffer( IN BYTE* pbBuffer, IN int iSize )
 {
 	if( m_iBufSize < iSize )
 		if( NULL == ( m_pbBuf = (BYTE*)realloc( m_pbBuf, iSize ) ) )
@@ -150,7 +150,7 @@ void CPacket::SetBuffer( IN BYTE* pbBuffer, IN int iSize )throw( PacketErr )
 }
 
 //Получить идентификатор команды по текущему смещению в пакете
-void CPacket::GetCommandId( BYTE& pByte )throw( PacketFormatErr )
+void CPacket::GetCommandId( BYTE& pByte )
 {
 	if( m_iOffset >= m_iDataSize )
 		throw PacketFormatErr( "Incorrect packet format" );

@@ -9,18 +9,18 @@
 // онструктор
 //iType - тип сокета, возможные значени€ - SOCK_STREAM и SOCK_DGRAM
 //bBlocking - блокирующий либо не блокирующий сокет
-CClientSocket::CClientSocket( int iType, bool bBlocking )throw( SocketErr ):CSocket( iType, bBlocking )
+CClientSocket::CClientSocket( int iType, bool bBlocking ):CSocket( iType, bBlocking )
 {
 }
 
-CClientSocket::~CClientSocket(void)throw( SocketErr )
+CClientSocket::~CClientSocket(void)
 {
 }
 
 
 //—оединение с strAddr:iPort,где sAddr - им€ удаленного хоста,либо его IP-адресс
 //								 iPort - порт, к которому необходимо подключитьс€
-void CClientSocket::Connect( std::string strAddr, int iPort )throw( SocketDNSErr, CSocket::SocketErr )
+void CClientSocket::Connect( std::string strAddr, int iPort )
 {
 	//≈сли соединение закрывали - восстанавливаем сокет
 	if( INVALID_SOCKET == ( m_Socket = ::socket( AF_INET, m_iType, 0 ) ) )
