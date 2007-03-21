@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <iostream>
-#include <windows.h>
 #include "SettingsContainer.h"
 #include "CLog.h"
+#include <windows.h>
 
 //Инициализация статической переменной
 Log* Log::m_pInstance = NULL;
@@ -19,8 +19,8 @@ Log::Log( const char* strModuleName ):m_iLogLevel(100)
 	
 		m_strFileName = str;
 		
-		int iPointPos = m_strFileName.find_first_of( '.' );
-		int iSlashPos = m_strFileName.find_last_of( '\\' ) + 1;
+		int iPointPos = (int)m_strFileName.find_first_of( '.' );
+		int iSlashPos = (int)m_strFileName.find_last_of( '\\' ) + 1;
 		m_strFileName = m_strFileName.substr( iSlashPos, iPointPos - iSlashPos );
 	}else
 		m_strFileName = strModuleName;	

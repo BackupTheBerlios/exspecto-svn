@@ -6,7 +6,7 @@
 //-------------------------------------------------------------------------------------//
 #ifndef MEMLEAKDETECTOR_H_
 #define MEMLEAKDETECTOR_H_
-
+/*
 //Модуль будет использован только в отладочной версии программы
 #ifndef NDEBUG
 
@@ -33,12 +33,14 @@ void operator delete( void *address , size_t bytes );
 void operator delete[]( void* address )throw();
 void operator delete[]( void *address , size_t bytes );
 
-//Этой функцией выводим все не удаленные участки памяти на момент вызова
-void DumpMemLeaks();
 
 //обьявляем макрос new с дополнительными параметрами, чтобы пользовательский код не изменялся
 #define new new(__FILE__, __LINE__, __FUNCTION__ )
 
       
 #endif
+*/
+//Этой функцией выводим все не удаленные участки памяти на момент вызова
+void DumpMemLeaks();
+
 #endif /*MEMLEAKDETECTOR_H_*/

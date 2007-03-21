@@ -7,7 +7,7 @@
 //	   переменные-массивы большого размера.Необходимо переделать.
 //-------------------------------------------------------------------------------------//
 #ifndef NDEBUG
-
+/*
 #include "MemLeakDetector.h"
 #include "windows.h"
 
@@ -94,5 +94,6 @@ void DumpMemLeaks()
 		Log::instance().Trace( 0, "MemLeakDetector:Выделен в %s:%d:%s()", It->second.strFileName.c_str(), It->second.iLine, It->second.strFuncName.c_str() );
 	}		
 }
-
+*/
+void DumpMemLeaks(){};
 #endif

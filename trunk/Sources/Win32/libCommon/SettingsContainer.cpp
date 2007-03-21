@@ -1,5 +1,5 @@
 #include "SettingsContainer.h"
-
+#include <algorithm>
 
 //Инициализация статических переменных
 Settings* Settings::m_pInstance = NULL;
@@ -50,7 +50,7 @@ Settings::Settings()
 				std::string::iterator itNewEnd = std::remove( strTmp.begin(), strTmp.end() - 1, ' ' );
 				strTmp.resize( itNewEnd - strTmp.begin() );
 				//Сохраняем параметр до знака = и после 
-				if( ( iTmp = strTmp.find( '=' ) ) != std::string::npos )
+				if( ( iTmp = (int)strTmp.find( '=' ) ) != std::string::npos )
 				{
 					strArg1 = strTmp.substr( 0, iTmp );
 					strArg2 = strTmp.substr( iTmp + 1 );

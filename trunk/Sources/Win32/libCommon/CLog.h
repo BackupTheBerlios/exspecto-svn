@@ -6,9 +6,9 @@
 //-------------------------------------------------------------------------------------//
 #ifndef _CLOG_H
 #define _CLOG_H
-#include "windows.h"
 #include <string>
 #include "CriticalSection.hpp"
+#include "windows.h"
 
 
 /*

@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include "constants.h"
 #include "CLog.h"
+#include <assert.h>
 
 
 class ParamTypeErr: public std::logic_error
