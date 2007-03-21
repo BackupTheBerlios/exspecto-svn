@@ -7,6 +7,8 @@
 #ifndef AGENT_H_
 #define AGENT_H_
 
+#include "ServerSocket.h"
+#include "ClientSocket.h"
 #include "precomp.h"
 #include "packet.h"
 #include "Container.hpp"
@@ -21,8 +23,6 @@
 #include "SmartPtr.hpp"
 #include "CriticalSection.hpp"
 #include "Event.hpp" 
-#include "ServerSocket.h"
-#include "ClientSocket.h"
 #include "CTask.h"
 #include "ServerHandler.h"
 #include "ConnectionHandler.h"

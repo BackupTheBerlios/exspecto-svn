@@ -25,6 +25,7 @@
 <listOptionValue value="&quot;${workspace_loc:/libNet/Debug}&quot;" builtIn="false"/>
 <listOptionValue value="&quot;${workspace_loc:/libCommon/Debug}&quot;" builtIn="false"/>
 </option>
+<option superClass="gnu.cpp.link.option.flags" id="gnu.cpp.link.option.flags.129094389" value="-mwindows" valueType="string"/>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.677091194" name="GCC Assembler"/>
 <macros/>

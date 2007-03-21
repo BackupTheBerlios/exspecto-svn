@@ -1,33 +1,155 @@
-#include "precomp.h"
 #include "CAgent.h"
-#include "conio.h"
+#include "windows.h"
+#include "TrayManagement.h"
 
-//Описание типов параметров
-static char* pAgentParamTypes[] = {
-	SCHEDULER_ADDRESS, "string",
-	LOG_LEVEL,	"int",
-	EVENT_PORT, "int"
-};
+#define MAX_LOADSTRING 100
 
-int main(int argc, _TCHAR* argv[])
+// Global Variables:
+HINSTANCE hInst;								// current instance
+TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
+TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+TCHAR szMenuName[MAX_LOADSTRING];			// the main window class name
+//Сообщение поступающее от иконки в трее
+#define TRAY_ICON_MSG	WM_USER+1
+//Идентификатор команды нажатия на пункт Exit в меню иконки
+#define IDM_EXIT	1
+
+// Forward declarations of functions included in this code module:
+ATOM				MyRegisterClass(HINSTANCE hInstance);
+BOOL				InitInstance(HINSTANCE, int);
+LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+
+CAgent* pAgent;
+
+//Обработчик сообщений от иконки в трее
+void OnTrayIcon( HWND hWnd, WPARAM wParam, LPARAM lParam )
 {
-	try
+	// Идентификатор иконки
+		switch( wParam ) {
+			case 0:
+			{
+				// Тип нотификации
+				switch( lParam ) {
+					
+					// Поднимаем popup-меню, при помощи которого можно управлять работой сервиса
+					case WM_RBUTTONDOWN:
+					{
+						HMENU hMenu = CreatePopupMenu();
+						if( hMenu )
+						{
+							AppendMenu( hMenu, MF_STRING | MF_ENABLED, IDM_EXIT, "Exit" );
+
+							POINT pt;
+							::GetCursorPos( &pt );
+							if( IDM_EXIT == TrackPopupMenu( hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RETURNCMD, pt.x, pt.y, 0, hWnd, NULL ) )
+								DestroyWindow(hWnd);							
+						}
+						DestroyMenu( hMenu );
+					} break;
+				}
+			} break;
+			default:
+			{
+			} break;
+		}
+}
+
+int APIENTRY WinMain(HINSTANCE hInstance,
+                     HINSTANCE hPrevInstance,
+                     LPTSTR    lpCmdLine,
+                     int       nCmdShow)
+{
+ 	// TODO: Place code here.
+	MSG msg;
+
+	// Initialize global strings
+	strcpy( szTitle, "Exspecto Agent" );
+	strcpy( szWindowClass, "ExspectoAgentWindowsClass" );
+	MyRegisterClass(hInstance);
+
+	// Perform application initialization:
+	if (!InitInstance (hInstance, nCmdShow)) 
 	{
-		int iLogLevel;
-		Settings::SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
-		Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
-		Log::instance().SetLoglevel( iLogLevel );
-		CAgent* ag = new CAgent();
-		getch();
-		delete ag;
+		return FALSE;
+	}
+
+	// Main message loop:
+	while (GetMessage(&msg, NULL, 0, 0)) 
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	return (int) msg.wParam;
+}
+
+ATOM MyRegisterClass(HINSTANCE hInstance)
+{
+	WNDCLASSEX wcex;
+
+	wcex.cbSize = sizeof(WNDCLASSEX); 
+
+	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc	= (WNDPROC)WndProc;
+	wcex.cbClsExtra		= 0;
+	wcex.cbWndExtra		= 0;
+	wcex.hInstance		= hInstance;
+	wcex.hIcon		= LoadIcon(NULL, IDI_APPLICATION);
+	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
+	wcex.lpszMenuName	= NULL;;
+	wcex.lpszClassName	= szWindowClass;
+	wcex.hIconSm		= wcex.hIcon;
+
+	return RegisterClassEx(&wcex);
+}
+
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+{
+	HWND hWnd;
+
+	hInst = hInstance; // Store instance handle in our global variable
+
+	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+
+	if (!hWnd)
+	{
+		return FALSE;
+	}
+  // Если окно создано успешно - поднимаем иконку в область системного трэя
+   // и регистрируем callback-сообщения на себя
+	TaskBarAddIcon(
+		   hWnd,
+		   0,
+		   LoadIcon(NULL, IDI_APPLICATION),
+		   szTitle,
+		   TRAY_ICON_MSG
+		   );
+		   
+	pAgent = new CAgent();
+		   
+   	return TRUE;
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message) 
+	{
+	case TRAY_ICON_MSG:
+			OnTrayIcon( hWnd, wParam, lParam );
+			break;
+	case WM_DESTROY:
+		delete pAgent;
 		DumpMemLeaks();
-	}catch( std::exception& e)
-	{
-		Log::instance().Trace( 5, "Возникло исключение: %s", e.what() );
-	}catch( ... )
-	{
-		Log::instance().Trace( 5, "Возникло исключение !!!" );
+		// Разрушаем иконку, помещённую в системный трэй
+		TaskBarDeleteIcon( hWnd, 0 );
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
-	
 }
+

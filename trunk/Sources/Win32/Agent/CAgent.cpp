@@ -8,12 +8,24 @@
 #include <process.h>
 #include "ServerHandler.h"
 
+//Описание типов параметров
+static char* pAgentParamTypes[] = {
+	SCHEDULER_ADDRESS, "string",
+	LOG_LEVEL,	"int",
+	EVENT_PORT, "int"
+};
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------CAgent------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
 CAgent::CAgent()
 {
+	//Инициализация логера
+	int iLogLevel;
+	Settings::SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
+	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
+	Log::instance().SetLoglevel( iLogLevel );	
+
 	Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress );
 	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
 }

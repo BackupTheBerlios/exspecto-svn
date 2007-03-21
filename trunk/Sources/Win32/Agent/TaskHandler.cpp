@@ -1,5 +1,6 @@
-#include "TaskHandler.h"
+#include "Socket.h"
 #include <process.h>
+#include "TaskHandler.h"
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CTaskHandler--------------------------------------------------------
@@ -7,7 +8,7 @@
 
 CTaskHandler::CTaskHandler()
 {
-	m_hProcessThread = (HANDLE)::_beginthreadex( 0, 0, fnProcessThread, this, 0, NULL );
+	m_hProcessThread = (HANDLE)::_beginthreadex( NULL, 0, fnProcessThread, this, 0, NULL );
 }
 
 CTaskHandler::~CTaskHandler()
