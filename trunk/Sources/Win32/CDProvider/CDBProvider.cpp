@@ -43,7 +43,7 @@ CDBSQLitProvider::CDBSQLitProvider(const char* szFile): CDBProvider()
 	if(!db.tableExists("TableHostes"))
 		db.execDML("create table TableHostes(IDhost AUTO_INCREMENT INT NOT NULL, IPNum char(15) NOT NULL, HostName tinytext, DateRef datetime, PRIMARY KEY (IPNum));");
 	
-	Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableFiles" );
+	Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableFileaaaaaaaaaaaaaaaaaaaaaaaaaas" );
 	if(!db.tableExists("TableFiles"))
 		db.execDML("create table TableFiles(IDfile AUTO_INCREMENT INT NOT NULL, IDhost int NOT NULL, FileName tinytext NOT NULL, FileSize int, FileTimeCr datetime, PRIMARY KEY (IDfile));");
 	
@@ -53,7 +53,10 @@ CDBSQLitProvider::CDBSQLitProvider(const char* szFile): CDBProvider()
 	
 	Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableWordInFiles" );
 	if(!db.tableExists("TableWordInFiles"))
-		db.execDML("create table TableWordInFiles(IDword INT NOT NULL, IDfile INT NOT NULL, IsPath BOOL NOT NULL DEFAULT false, PRIMARY KEY (IDword, IDfile));");
+	{
+		db.execDML("create table TableWordInFiles(IDword INT NOT NULL, IDfile INT NOT NULL, IsPath BOOL NOT NULL DEFAULT false);");
+		db.execDML("create index IDword ON TableWordInFiles (IDword);");
+	}
 }
 
 CDBProvider::~CDBProvider()
@@ -440,7 +443,12 @@ bool CDBSQLitProvider::Find(string aText, map<string,bool> & aParams, list<int> 
   }
   string tmpS;
   idFiles->GetAsString(tmpS);
-  bufSQL.format("select IDfile from TableFiles where IDfile IN (%s) AND FileName LIKE \%%s\%;", tmpS.c_str(), temp.c_str());
+  if(idFiles->IsEmpty())
+  {
+  	bufSQL.format("select IDfile from TableFiles where FileName LIKE %%%s%%;", temp.c_str());
+  }else{
+  	bufSQL.format("select IDfile from TableFiles where IDfile IN (%s) AND FileName LIKE \%%s\%;", tmpS.c_str(), temp.c_str());
+  }
   q = db.execQuery(bufSQL); // запрос
   while(!q.eof())
   {
@@ -559,4 +567,9 @@ void CExcerpts::GetAsString(string & Res)
 		if( i != 0) Res += ", ";
 		Res += tmp;
 	}
+}
+
+bool CExcerpts::IsEmpty()
+{
+	return (Length <= 0);
 }

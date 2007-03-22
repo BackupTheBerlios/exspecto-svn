@@ -87,6 +87,7 @@ class CExcerpts
 		void TransactEnd();
 		void GetAsList(list<int> & Res);
 		void GetAsString(string & Res);
+		bool IsEmpty();
 	private:
 		int Allocation;
 		int Curr;
