@@ -445,9 +445,9 @@ bool CDBSQLitProvider::Find(string aText, map<string,bool> & aParams, list<int> 
   idFiles->GetAsString(tmpS);
   if(idFiles->IsEmpty())
   {
-  	bufSQL.format("select IDfile from TableFiles where FileName LIKE %%%s%%;", temp.c_str());
+  	bufSQL.format("select IDfile from TableFiles where FileName LIKE '%%%Q%%';", temp.c_str());
   }else{
-  	bufSQL.format("select IDfile from TableFiles where IDfile IN (%s) AND FileName LIKE \%%s\%;", tmpS.c_str(), temp.c_str());
+  	bufSQL.format("select IDfile from TableFiles where IDfile IN (%s) AND FileName LIKE '%%%Q%%';", tmpS.c_str(), temp.c_str());
   }
   q = db.execQuery(bufSQL); // запрос
   while(!q.eof())
