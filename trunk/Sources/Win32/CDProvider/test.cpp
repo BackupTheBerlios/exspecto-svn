@@ -1,7 +1,7 @@
 #include <string>
 #include <windows.h>
 #include <stdio.h>
-#include <dir.h>
+//#include <dir.h>
 #include <iostream>
 //#include <stdio.h>
 //#include <stdlib.h>
