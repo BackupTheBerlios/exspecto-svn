@@ -164,6 +164,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 				RelativePath="..\..\ScanServer\precomp.h">
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\..\ScanServer\res.rc">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
