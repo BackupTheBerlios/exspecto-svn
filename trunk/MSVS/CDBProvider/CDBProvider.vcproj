@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="Agent"
-	ProjectGUID="{49114914-3B4E-42EB-A39D-C6ADB0EFD4C1}"
+	Name="CDBProvider"
+	ProjectGUID="{BE771369-D8B0-462A-8994-9963B81D3AA4}"
+	RootNamespace="CDBProvider"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -20,13 +21,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\libCommon;..\..\CommonFiles;..\..\libNet"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="3"
-				PrecompiledHeaderThrough="precomp.h"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
@@ -34,12 +34,13 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
-				OutputFile="$(OutDir)/Agent.exe"
+				AdditionalDependencies="sqlite3.lib"
+				OutputFile="$(OutDir)/CDBProvider.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\CDBProvider"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/Agent.pdb"
-				SubSystem="2"
+				ProgramDatabaseFile="$(OutDir)/CDBProvider.pdb"
+				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -47,6 +48,7 @@
 				Name="VCPostBuildEventTool"
 				CommandLine="if not exist ..\..\..\..\bin mkdir ..\..\..\..\bin;
 copy $(TargetPath) ..\..\..\..\bin;
+copy ..\..\CDBProvider\sqlite3.dll ..\..\..\..\bin;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -73,7 +75,7 @@ copy $(TargetPath) ..\..\..\..\bin;
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -83,10 +85,10 @@ copy $(TargetPath) ..\..\..\..\bin;
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/Agent.exe"
+				OutputFile="$(OutDir)/CDBProvider.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"/>
@@ -116,9 +118,6 @@ copy $(TargetPath) ..\..\..\..\bin;
 		<ProjectReference
 			ReferencedProjectIdentifier="{0F80FD05-FA09-4DF7-BD3A-20B341AE5C8D}"
 			Name="libCommon"/>
-		<ProjectReference
-			ReferencedProjectIdentifier="{76918729-7A0F-4529-8BA8-737E750291FA}"
-			Name="libNet"/>
 	</References>
 	<Files>
 		<Filter
@@ -126,31 +125,13 @@ copy $(TargetPath) ..\..\..\..\bin;
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\..\Agent\Agent.cpp">
+				RelativePath="..\..\CDBProvider\CDBProvider.cpp">
 			</File>
 			<File
-				RelativePath="..\..\Agent\CAgent.cpp">
+				RelativePath="..\..\CDBProvider\CppSQLite3.cpp">
 			</File>
 			<File
-				RelativePath="..\..\Agent\ConnectionHandler.cpp">
-			</File>
-			<File
-				RelativePath="..\..\Agent\CTask.cpp">
-			</File>
-			<File
-				RelativePath="..\..\Agent\MessageParser.cpp">
-			</File>
-			<File
-				RelativePath="..\..\Agent\PluginLoadStrategy.cpp">
-			</File>
-			<File
-				RelativePath="..\..\Agent\precomp.cpp">
-			</File>
-			<File
-				RelativePath="..\..\Agent\ServerHandler.cpp">
-			</File>
-			<File
-				RelativePath="..\..\Agent\TaskHandler.cpp">
+				RelativePath="..\..\CDBProvider\test.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -158,42 +139,17 @@ copy $(TargetPath) ..\..\..\..\bin;
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="..\..\Agent\CAgent.h">
+				RelativePath="..\..\CDBProvider\CDBProvider.h">
 			</File>
 			<File
-				RelativePath="..\..\Agent\ConnectionHandler.h">
-			</File>
-			<File
-				RelativePath="..\..\Agent\CTask.h">
-			</File>
-			<File
-				RelativePath="..\..\Agent\MessageParser.h">
-			</File>
-			<File
-				RelativePath="..\..\Agent\PluginLoadStrategy.h">
-			</File>
-			<File
-				RelativePath="..\..\Agent\precomp.h">
-			</File>
-			<File
-				RelativePath=".\resource.h">
-			</File>
-			<File
-				RelativePath=".\resrc1.h">
-			</File>
-			<File
-				RelativePath="..\..\Agent\ServerHandler.h">
-			</File>
-			<File
-				RelativePath="..\..\Agent\TaskHandler.h">
+				RelativePath="..\..\CDBProvider\CppSQLite3.h">
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\agent.ico">
-		</File>
-		<File
-			RelativePath=".\Agent.rc">
-		</File>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

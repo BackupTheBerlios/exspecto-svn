@@ -19,6 +19,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanServer", "ScanServer\Sc
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CDBProvider", "CDBProvider\CDBProvider.vcproj", "{BE771369-D8B0-462A-8994-9963B81D3AA4}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -45,6 +49,10 @@ Global
 		{72FC56FA-ECE1-4A8B-8EE6-F0328A5A29E2}.Debug.Build.0 = Debug|Win32
 		{72FC56FA-ECE1-4A8B-8EE6-F0328A5A29E2}.Release.ActiveCfg = Release|Win32
 		{72FC56FA-ECE1-4A8B-8EE6-F0328A5A29E2}.Release.Build.0 = Release|Win32
+		{BE771369-D8B0-462A-8994-9963B81D3AA4}.Debug.ActiveCfg = Debug|Win32
+		{BE771369-D8B0-462A-8994-9963B81D3AA4}.Debug.Build.0 = Debug|Win32
+		{BE771369-D8B0-462A-8994-9963B81D3AA4}.Release.ActiveCfg = Release|Win32
+		{BE771369-D8B0-462A-8994-9963B81D3AA4}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
