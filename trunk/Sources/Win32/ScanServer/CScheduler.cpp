@@ -4,6 +4,7 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции планировщика
 //-------------------------------------------------------------------------------------//
+#include "precomp.h"
 #include <iostream>
 #include <tchar.h>
 #include "CScheduler.h"
@@ -30,7 +31,7 @@ CScheduler::CScheduler(void)
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
 	m_pTrigger->Start();
-	Sleep(8000);
+	Sleep(10000);
 	m_pTrigger->Stop();
 }
 
@@ -53,8 +54,7 @@ CScheduler::~CScheduler(void)
 
 void CScheduler::OnStartScan()
 {
-	throw int(4);
-//	try{
+	try{
 		std::vector< std::string > vecAdr;
 		vecAdr.push_back( "127.0.0.1" );
 		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++ )
@@ -81,16 +81,14 @@ void CScheduler::OnStartScan()
 				//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
 			}
 		}
-/*	}catch( std::exception& e )
+	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10, "CScheduler::OnStartScan: e= %s", e.what() );
 	}
-	*/
-/*	catch( ... )
+	catch( ... )
 	{
 		Log::instance().Trace( 10," CScheduler::OnStartScan: Возникло неизвестное исключение" );
 	}
-	*/
 }
 
 //Поток ожидания входящих соединений

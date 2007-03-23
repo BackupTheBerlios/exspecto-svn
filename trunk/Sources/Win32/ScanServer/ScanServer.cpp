@@ -1,4 +1,4 @@
-
+#include "precomp.h"
 #include "CScheduler.h"
 #include "TrayManagement.h"
 

@@ -66,7 +66,7 @@ public:
 protected:
 	
 	//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-	SmartPtr< BYTE, AllocMalloc<BYTE> > SendMessage( CPacket &Msg );
+	void SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf );
 	
 private:
 	
@@ -79,11 +79,10 @@ private:
 	SmartPtr< CConnectionHandler > m_pConnectionHandler;
 	
 	bool m_bFinished;
-	
+
 	//Приемный буфер
-	SmartPtr< BYTE, AllocMalloc<BYTE> > m_pRecvBuf;
-	
-	int m_iRecvBufSize;
+	std::vector<BYTE> m_vecRecvBuf;
+
 };
 
 class CConnectionHandler

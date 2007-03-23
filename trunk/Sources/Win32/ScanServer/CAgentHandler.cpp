@@ -4,17 +4,18 @@
 //Author: Parshin Dmitry
 //Description: Класс, инкапсулирующий взаимодействие с агентом
 //-------------------------------------------------------------------------------------//
-
-#include "CAgentHandler.h"
 #include "precomp.h"
+#include "CAgentHandler.h"
 #include <process.h>
+
+#define RECEIVE_BUF_SIZE 255
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
 														   ,m_bFinished( false )
 {
 	m_pConnectionHandler = SmartPtr< CConnectionHandler >( new CConnectionHandler( this ) );
-	m_iRecvBufSize = 255;
-	m_pRecvBuf = SmartPtr< BYTE, AllocMalloc<BYTE> >( (BYTE*)malloc( m_iRecvBufSize ) );
+	//подготавливаем приемный буфер
+	m_vecRecvBuf.resize( RECEIVE_BUF_SIZE );
 }
 
 CAgentHandler::~CAgentHandler()
@@ -27,7 +28,7 @@ CAgentHandler::~CAgentHandler()
 }
 
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-SmartPtr< BYTE, AllocMalloc<BYTE> > CAgentHandler::SendMessage( CPacket &Msg )
+void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 {
 	if( !IsOpened() )
 	{
@@ -45,25 +46,18 @@ SmartPtr< BYTE, AllocMalloc<BYTE> > CAgentHandler::SendMessage( CPacket &Msg )
 
 	int iCount;
 	int iOffset = 0;
-	SmartPtr< BYTE, AllocMalloc<BYTE> > pbData = SmartPtr< BYTE, AllocMalloc<BYTE> >( (BYTE*)malloc( m_iRecvBufSize ) );
 	//Получаем ответ на сообщение
-	while( ( iCount = m_Sock.Receive( m_pRecvBuf.get(), m_iRecvBufSize ) ) == m_iRecvBufSize )
+	while( ( iCount = m_Sock.Receive( &m_vecRecvBuf[0], (int)m_vecRecvBuf.size() ) ) == (int)m_vecRecvBuf.size() )
 	{
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: iCount = %d", iCount );
-		pbData.Realloc( iOffset + iCount + 10 );
-		memcpy( pbData.get() + iOffset, m_pRecvBuf.get(), iCount );
-		iOffset += iCount;
-		m_iRecvBufSize <<= 1;
-		m_pRecvBuf.Realloc( m_iRecvBufSize );
-		Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер приемного буфера: %d", m_iRecvBufSize );
+		vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
+		m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
+		Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер приемного буфера: %d", m_vecRecvBuf.size() );
 	}
-	Log::instance().Trace( 80, "CAgentHandler::SendMessage: iCount = %d", iCount );
-	Log::instance().Dump( 80, m_pRecvBuf.get(), iCount, "CAgentHandler::SendMessage: 1 Получили ответ:" );
-	memcpy( pbData.get() + iOffset, m_pRecvBuf.get(), iCount );
-	Log::instance().Dump( 80, pbData.get(), iCount, "CAgentHandler::SendMessage: Получили ответ:" );
+	vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
+	Log::instance().Dump( 80, &vecBuf[0], (int)vecBuf.size(), "CAgentHandler::SendMessage: Получили ответ:" );
 	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
-	return pbData;
 }
 
 void CAgentHandler::Open()
@@ -134,9 +128,9 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	Msg.EndCommand();
 	
 	Log::instance().Trace( 92, "CAgentHandler::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str() );
-	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
-	pbRecvBuf = SendMessage( Msg );
-	return (enumAgentResponse)*pbRecvBuf; 
+	std::vector<BYTE> vecRes;
+	SendMessage( Msg, vecRes );
+	return (enumAgentResponse)vecRes[0]; 
 }
 	
 enumAgentResponse CAgentHandler::StopScan()
@@ -148,8 +142,9 @@ enumAgentResponse CAgentHandler::StopScan()
 	Msg.EndCommand();
 
 	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
-	pbRecvBuf = SendMessage( Msg );
-	return (enumAgentResponse)*pbRecvBuf;		
+	std::vector<BYTE> vecRes;
+	SendMessage( Msg, vecRes );
+	return (enumAgentResponse)vecRes[0]; 
 }
 	
 enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )
@@ -160,14 +155,14 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )
 	Msg.BeginCommand( GET_STATUS );
 	Msg.EndCommand();
 
-	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
-	pbRecvBuf = SendMessage( Msg );
-	if( RESP_OK != *pbRecvBuf )
+	std::vector<BYTE> vecRes;
+	SendMessage( Msg, vecRes );
+	if( RESP_OK != vecRes[0] )
 	{
-		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", *pbRecvBuf );
-		return (enumAgentResponse)*pbRecvBuf;
+//		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", *pbRecvBuf );
+		return (enumAgentResponse)vecRes[0];
 	}
-	Status = (enumAgentState)pbRecvBuf.get()[1];
+	Status = (enumAgentState)vecRes[1];
 	Log::instance().Trace( 80, "CAgentHandler::GetStatus: Получен статус: %d", Status );
 	return RESP_OK;
 }
@@ -181,17 +176,18 @@ enumAgentResponse CAgentHandler::GetData()
 	Msg.EndCommand();
 
 	//отправляем команду
-	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
-	pbRecvBuf = SendMessage( Msg );
-	if( RESP_OK != *pbRecvBuf )
+
+	std::vector<BYTE> vecRes;
+	SendMessage( Msg, vecRes );
+	if( RESP_OK != vecRes[0] )
 	{
-		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", *pbRecvBuf );
-		return (enumAgentResponse)*pbRecvBuf;
+//		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", *pbRecvBuf );
+		return (enumAgentResponse)vecRes[0];
 	}
 	int iDataSize;
-	::memcpy( (BYTE*)&iDataSize, pbRecvBuf.get()+1, 4 );
+	::memcpy( (BYTE*)&iDataSize, &vecRes[1], 4 );
 	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", iDataSize );
-	Log::instance().Dump( 90, pbRecvBuf.get()+5, iDataSize, "CAgentHandler::GetData: Получены данные:" );
+	//Log::instance().Dump( 90, pbRecvBuf.get()+5, iDataSize, "CAgentHandler::GetData: Получены данные:" );
 	return RESP_OK;
 }
 
