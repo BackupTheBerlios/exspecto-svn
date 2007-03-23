@@ -3,6 +3,8 @@
 #include "windows.h"
 #include "TrayManagement.h"
 
+
+#define IDI_AGENT 200
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -124,7 +126,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	TaskBarAddIcon(
 		   hWnd,
 		   0,
-		   LoadIcon(hInst, MAKEINTRESOURCE( IDI_ICON1 )),
+		   LoadIcon(hInst, MAKEINTRESOURCE( IDI_AGENT )),
 		   szTitle,
 		   TRAY_ICON_MSG
 		   );
