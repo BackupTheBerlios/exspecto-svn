@@ -3,7 +3,7 @@
 
 <ManagedProjectBuildInfo>
 <project id="ScanServer.cdt.managedbuild.target.gnu.cygwin.exe.490128651" name="Executable (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.exe">
-<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1990899398" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug" artifactName="${workspace_loc:/Bin}\ScanServer" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1990899398" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug" artifactName="${workspace_loc:/Bin}\ScanServer" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf" prebuildStep="windres -I&quot;${ProjDirPath}&quot; -o &quot;${ProjDirPath}\res.o&quot; &quot;${ProjDirPath}\res.rc&quot;" preannouncebuildStep="Compiling resources...">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug.1301553627" name="GCC Tool Chain">
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.exe.debug.1935340995" name="GCC C Compiler">
 <option superClass="gnu.c.compiler.option.preprocessor.preprocess" id="gnu.c.compiler.option.preprocessor.preprocess.1534405413" value="false" valueType="boolean"/>
@@ -29,6 +29,9 @@
 <listOptionValue value="&quot;${workspace_loc:/libCommon/Debug}&quot;" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.link.option.flags" id="gnu.cpp.link.option.flags.1975280217" value="-mwindows" valueType="string"/>
+<option superClass="gnu.cpp.link.option.userobjs" id="gnu.cpp.link.option.userobjs.75082891" valueType="userObjs">
+<listOptionValue value="&quot;../res.o&quot;" builtIn="false"/>
+</option>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.1842326114" name="GCC Assembler"/>
 <macros/>

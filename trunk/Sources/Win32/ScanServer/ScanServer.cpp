@@ -2,7 +2,7 @@
 #include "CScheduler.h"
 #include "TrayManagement.h"
 
-
+#define IDI_SCHEDULER 200
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -91,17 +91,17 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 	wcex.cbSize = sizeof(WNDCLASSEX); 
 
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.style			= 0;
 	wcex.lpfnWndProc	= (WNDPROC)WndProc;
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
-	wcex.hIcon		= LoadIcon(NULL, IDI_APPLICATION);
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= NULL;;
+	wcex.hIcon			= NULL;
+	wcex.hCursor		= NULL;
+	wcex.hbrBackground	= NULL;
+	wcex.lpszMenuName	= NULL;
 	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= wcex.hIcon;
+	wcex.hIconSm		= NULL;
 
 	return RegisterClassEx(&wcex);
 }
@@ -124,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	TaskBarAddIcon(
 		   hWnd,
 		   0,
-		   LoadIcon(NULL, IDI_APPLICATION),
+		   LoadIcon(hInst, MAKEINTRESOURCE( IDI_SCHEDULER )),
 		   szTitle,
 		   TRAY_ICON_MSG
 		   );

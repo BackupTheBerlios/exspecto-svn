@@ -1,0 +1,3 @@
+#define   IDI_SCHEDULER          200
+IDI_SCHEDULER            ICON    DISCARDABLE    "scheduler.ico"
+
