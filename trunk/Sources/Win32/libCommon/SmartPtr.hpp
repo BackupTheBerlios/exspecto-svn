@@ -26,14 +26,6 @@ public:
 	{
 		delete[] pointer;
 	};
-	
-	static void Realloc( T* pointer, int iNewSize )
-	{
-		T* pTmp = pointer;
-		pointer = new T[ iNewSize ];
-		memcpy( (void*)pointer, (void*)pTmp, iNewSize*sizeof( T ) );
-		delete pTmp;
-	};
 };
 
 template< class T >
@@ -43,11 +35,6 @@ public:
 	static void Destroy( T* pointer )
 	{
 		free( pointer );
-	};
-	
-	static void Realloc( T* pointer, int iNewSize )
-	{
-		pointer = (T*)realloc( pointer, iNewSize );
 	};
 };
 
@@ -164,7 +151,15 @@ public:
 	
 	void Realloc( int iNewSize )
 	{
+
+		T* pTmp = m_pPointer;
 		AllocationPolicy::Realloc( m_pPointer, iNewSize );
+		if( pTmp != m_pPointer )
+		{
+			m_mapRefs[ m_pPointer ] = m_mapRefs[ pTmp ];
+			m_mapRefs[ pTmp ] = 0;
+		}
+
 	}
 	
 	T& operator*()
