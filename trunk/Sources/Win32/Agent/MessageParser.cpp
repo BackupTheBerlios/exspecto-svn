@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "MessageParser.h"
 #include "CTask.h"
 

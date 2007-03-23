@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "CAgent.h"
 #include "windows.h"
 #include "TrayManagement.h"
@@ -90,17 +91,17 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 	wcex.cbSize = sizeof(WNDCLASSEX); 
 
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.style			= 0;
 	wcex.lpfnWndProc	= (WNDPROC)WndProc;
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
-	wcex.hIcon		= LoadIcon(NULL, IDI_APPLICATION);
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= NULL;;
+	wcex.hIcon			= NULL;
+	wcex.hCursor		= NULL;
+	wcex.hbrBackground	= NULL;
+	wcex.lpszMenuName	= NULL;
 	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= wcex.hIcon;
+	wcex.hIconSm		= NULL;
 
 	return RegisterClassEx(&wcex);
 }
@@ -111,7 +112,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	hInst = hInstance; // Store instance handle in our global variable
 
-	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+	hWnd = CreateWindow(szWindowClass, szTitle, 0,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
 
 	if (!hWnd)
@@ -123,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	TaskBarAddIcon(
 		   hWnd,
 		   0,
-		   LoadIcon(NULL, IDI_APPLICATION),
+		   LoadIcon(hInst, MAKEINTRESOURCE( IDI_ICON1 )),
 		   szTitle,
 		   TRAY_ICON_MSG
 		   );

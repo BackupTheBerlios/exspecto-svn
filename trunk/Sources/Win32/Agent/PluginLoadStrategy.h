@@ -21,7 +21,7 @@ public:
 		virtual ~PluginLoadErr()throw(){};
 	};
 	
-	PluginLoadStrategy( std::vector< CScanner* >& vecStorage )throw( PluginLoadErr );
+	PluginLoadStrategy( std::vector< CScanner* >& vecStorage );
 	virtual ~PluginLoadStrategy();
 	
 private:	

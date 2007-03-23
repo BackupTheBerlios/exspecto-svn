@@ -44,10 +44,11 @@ public:
 
 private:
 
+	std::vector< SmartPtr< CConnectionHandler > > m_vecConnections;
 	
-	CServerSocket m_sock;
+	SmartPtr< CServerSocket > m_pMsgSock;
 	
-	CClientSocket m_EventSock;
+	SmartPtr< CClientSocket > m_pEventSock;
 	
 	//Адрес планировщика
 	std::string m_strSchedulerAddress;
@@ -60,8 +61,7 @@ private:
 		
 	//Поток ожидания входящих соединений
 	static unsigned _stdcall fnListenThreadProc(  void* pParameter );
-	
-	std::vector< SmartPtr< CConnectionHandler > > m_vecConnections;
+
 };
 
 #endif

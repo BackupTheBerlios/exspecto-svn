@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "ConnectionHandler.h"
 #include <process.h>
 
@@ -49,6 +50,7 @@ unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
 			for( std::vector< SmartPtr< CTask > >::iterator It = vecTasks.begin(); It != vecTasks.end(); It++ )
 				pThis->m_TaskHandler.AddTask( *It );
 		}
+		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло исключение: %s", e.what() );
@@ -56,6 +58,6 @@ unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
 	{
 		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло неизвестное исключение" );
 	}
-	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
+	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие" );
 	return 0;	
 }

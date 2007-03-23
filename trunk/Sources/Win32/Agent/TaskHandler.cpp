@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "Socket.h"
 #include <process.h>
 #include "TaskHandler.h"

@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "ServerHandler.h"
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -51,7 +52,10 @@ void CServerHandler::Receive( CPacket& Msg )
 
 std::string CServerHandler::GetServerAddress()
 {
-	return m_pMsgSocket->GetRemoteHost().strAddr;
+	if( m_pMsgSocket->IsConnected() )
+		return m_pMsgSocket->GetRemoteHost().strAddr;
+	else
+		return "Соединение разорвано";
 }
 
 void CServerHandler::CloseSession()

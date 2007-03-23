@@ -4,6 +4,7 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции Агента
 //-------------------------------------------------------------------------------------//
+#include "precomp.h"
 #include "CAgent.h"
 #include <process.h>
 #include "ServerHandler.h"
@@ -27,6 +28,8 @@ CAgent::CAgent()
 	Log::instance().SetLoglevel( iLogLevel );	
 
 	Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress );
+	m_pMsgSock = SmartPtr< CServerSocket >( new CServerSocket() );
+	m_pEventSock = SmartPtr< CClientSocket >( new CClientSocket() );
 	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
 }
 
@@ -35,7 +38,7 @@ CAgent::~CAgent(void)
 	try{
 		m_CloseEvent.Set();
 	
-		m_sock.Close();
+		m_pMsgSock->Close();
 		Log::instance().Trace( 90, "CAgent::~CAgent: Ожидание закрытия потока прослушивания" );
 		WaitForSingleObject( m_hListenThread, 10000 );
 	
@@ -64,11 +67,11 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 		Settings::instance().GetParam( EVENT_PORT, iEventPort );	
 		Log::instance().Trace( 90, "CAgent:: Запуск потока ожидания входящих соединений" );
 	    //связываем серверный сокет с локальным адресом
-		pThis->m_sock.Bind( 5000, "127.0.0.1" );
+		pThis->m_pMsgSock->Bind( 5000, "127.0.0.1" );
 		//переводим сокет в режим прослушивания
-		pThis->m_sock.Listen();
+		pThis->m_pMsgSock->Listen();
 		//Ожидаем входящее соединение и обрабатываем его
-		while( NULL != ( client_sock = pThis->m_sock.Accept( adr ) ).get() )
+		while( NULL != ( client_sock = pThis->m_pMsgSock->Accept( adr ) ).get() )
 		{
 			if( WAIT_OBJECT_0 == WaitForSingleObject( pThis->m_CloseEvent, 0 ) )
 				break;
@@ -76,7 +79,7 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 			//принимаем соединения только от заданного сервера сканирования
 			if( pThis->m_strSchedulerAddress == adr.strAddr ) 
 			{
-				CServerHandler Handler( client_sock, SmartPtr< CClientSocket >( &pThis->m_EventSock ), pThis->m_strSchedulerAddress, iEventPort );
+				CServerHandler Handler( client_sock, pThis->m_pEventSock, pThis->m_strSchedulerAddress, iEventPort );
 				pThis->m_vecConnections.push_back( SmartPtr< CConnectionHandler >( new CConnectionHandler( Handler ) ) );
 			}else
 				Log::instance().Trace( 50, "CAgent::ListenThread: Входящее соединение с адреса: %s. Игнорируем", adr.strAddr.c_str() );

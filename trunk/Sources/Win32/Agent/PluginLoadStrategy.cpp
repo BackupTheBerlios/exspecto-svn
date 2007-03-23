@@ -4,9 +4,10 @@
 //Author: Parshin Dmitry
 //Description:  ласс, описывающий стратегию загрузки плагинов в класс Container
 //-------------------------------------------------------------------------------------//
+#include "precomp.h"
 #include "PluginLoadStrategy.h"
 
-PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )throw( PluginLoadErr )
+PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )
 {
 	WIN32_FIND_DATA FindData;
 	HANDLE hFindFile;
@@ -60,6 +61,8 @@ PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )th
 		Log::instance().Trace( 90, "PluginLoadStrategy: «агружаем библиотеку %s с плагином %s", FindData.cFileName, pScanner->GetProtocolName() );
 		iScannersCount++;
 	}while( ::FindNextFile( hFindFile, &FindData ) );
+	if( 0 == iScannersCount )
+		throw PluginLoadErr( "Ќе найдено ни одного плагина" );
 	Log::instance().Trace( 90, "PluginLoadStrategy: всего загружено плагинов: %d", iScannersCount );
 }
 

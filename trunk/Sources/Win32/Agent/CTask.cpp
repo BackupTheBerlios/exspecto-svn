@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "MessageParser.h"
 #include "commands.h"
 #include "CTask.h"
@@ -146,7 +147,7 @@ bool CGetData::Immidiate()
 	for( std::vector< std::string >::iterator It = m_vecData.begin(); It != m_vecData.end(); It++ )
 	{
 		//+1 - на завершающий ноль
-		iSize += It->size() + 1;
+		iSize += (int)It->size() + 1;
 	}
 	Log::instance().Trace( 90, "CGetData: Размер данных: %d", iSize );
 	//4 байта на размер 1 байт - результат обработки команды
@@ -157,10 +158,11 @@ bool CGetData::Immidiate()
 	for( std::vector< std::string >::iterator It = m_vecData.begin(); It != m_vecData.end(); It++ )
 	{
 		strcpy( (char*)pbBuf.get() + iOffset, It->c_str() );
-		iOffset += It->size() + 1;
+		iOffset += (int)It->size() + 1;
 	}
 	CPacket Msg;
 	Msg.AddParam( pbBuf.get(), iSize+4+1 );
+	Msg.EndCommand();
 	m_ServerHandler.SendMsg( Msg );
 	Log::instance().Dump( 90, pbBuf.get(), iSize, "CGetData:Immidiate: Отправлен ответ:" );
 	return true;
