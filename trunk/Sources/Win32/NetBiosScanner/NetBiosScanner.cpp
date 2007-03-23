@@ -10,13 +10,16 @@ static char* pNetBiosParamTypes[] = {
 
 CScanner* m_pScanner;
 
+#define DllExport   __declspec( dllexport )
+
+
 extern "C" 
 {
-	CScanner* GetScanner();
-	void ReleaseScanner();
+	DllExport CScanner* GetScanner();
+	DllExport void ReleaseScanner();
 }
 
-CScanner* GetScanner()
+DllExport CScanner* GetScanner()
 {
 	//Инициализируем вспомогательные службы
 	int iLogLevel;	
@@ -33,7 +36,7 @@ CScanner* GetScanner()
 	return m_pScanner;
 }
 
-void ReleaseScanner()
+DllExport void ReleaseScanner()
 {
 	if( NULL == m_pScanner )
 		return;
