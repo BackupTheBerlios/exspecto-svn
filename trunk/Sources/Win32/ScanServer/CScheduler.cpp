@@ -30,6 +30,7 @@ CScheduler::CScheduler(void)
 		
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
+	//TODO:Убрать из конструктора длительные действия
 	m_pTrigger->Start();
 	Sleep(10000);
 	m_pTrigger->Stop();
