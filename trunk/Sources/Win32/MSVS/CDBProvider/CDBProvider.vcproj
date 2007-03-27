@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\libCommon;..\..\CommonFiles;..\..\libNet"
+				AdditionalIncludeDirectories="..\..\libCommon;..\..\CDBProvider\DB;..\..\libNet"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -35,9 +35,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="sqlite3.lib"
-				OutputFile="$(OutDir)/CDBProvider.exe"
+				OutputFile="$(SolutionDir)..\..\..\Bin\CDBProvider.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\CDBProvider"
+				AdditionalLibraryDirectories="..\..\CDBProvider\DB;..\..\CDBProvider"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/CDBProvider.pdb"
 				SubSystem="1"
