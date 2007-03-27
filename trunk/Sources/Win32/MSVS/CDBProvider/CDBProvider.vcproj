@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\libCommon;..\..\CDBProvider\DB;..\..\libNet"
+				AdditionalIncludeDirectories="..\..\CommonFiles;..\..\libCommon;..\..\CDBProvider\DB;..\..\libNet"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -48,7 +48,7 @@
 				Name="VCPostBuildEventTool"
 				CommandLine="if not exist ..\..\..\..\bin mkdir ..\..\..\..\bin;
 copy $(TargetPath) ..\..\..\..\bin;
-copy ..\..\CDBProvider\sqlite3.dll ..\..\..\..\bin;
+copy ..\..\CDBProvider\DB\sqlite3.dll ..\..\..\..\bin;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
