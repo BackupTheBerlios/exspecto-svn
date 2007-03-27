@@ -101,7 +101,8 @@ class CExcerpts
 	public:
 		CExcerpts(int aCount);
 		CExcerpts();
-		~CExcerpts();
+		void Init(int aCount);
+		virtual ~CExcerpts();
 		void Transact(int aVal, bool aisFirst);
 		void TransactEnd();
 		void GetAsList(list<int> &Res);
@@ -122,7 +123,7 @@ class CPrvException
 		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL);
 		CPrvException(CppSQLite3Exception&  e, int aLine=0, const char* aFunct=NULL);
 		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL);
-		~CPrvException();
+		virtual ~CPrvException();
 		const char* Message();
 };
 #endif /*CDBPROVIDER_H_*/

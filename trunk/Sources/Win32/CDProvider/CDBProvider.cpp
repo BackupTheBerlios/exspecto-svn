@@ -612,6 +612,7 @@ try
   delete idFiles;
 
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [return <%d>]", __FUNCTION__, Result.size()>0 );
+	throw "Проверка на вшивость";
   return (Result.size()>0);
 }catch( CPrvException& e )
 {
@@ -640,6 +641,7 @@ try
 // выполняется последовательно. (приоретет операторов И и ИЛИ один)
 bool CDBSQLitProvider::Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 try
 {
 	list<int> res;
@@ -801,6 +803,19 @@ try
 
 CExcerpts::CExcerpts(int aCount)
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
+	Init(aCount);
+}
+
+CExcerpts::CExcerpts()
+{
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
+	Init(1000);
+}
+
+void CExcerpts::Init(int aCount)
+{
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	Allocation = aCount;
 	Memory = NULL;
 	try
@@ -815,19 +830,15 @@ CExcerpts::CExcerpts(int aCount)
 		throw;
 	} 
 }
-
-CExcerpts::CExcerpts()
-{
-	CExcerpts(1000);
-}
-
 CExcerpts::~CExcerpts()
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	free(Memory);
 }
 
 int CExcerpts::Find(int aVal)
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	for(int i = 0; i < Length; i++)
 		if(Memory[Length]==aVal)return i;
 	return -1;
@@ -835,6 +846,7 @@ int CExcerpts::Find(int aVal)
 
 void CExcerpts::Transact(int aVal, bool aisFirst)
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	int el = Find(aVal);
 	int tmp;
 	if(aisFirst)
@@ -870,18 +882,21 @@ void CExcerpts::Transact(int aVal, bool aisFirst)
 
 void CExcerpts::TransactEnd()
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	Length = Curr;
 	Curr = 0;
 }
 
 void CExcerpts::GetAsList(list<int> & Res)
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	for(int i = 0; i < Length; ++i)
 		Res.push_back(Memory[i]);
 }
 
 void CExcerpts::GetAsString(string & Res)
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	char tmp[12];
 	for(int i = 0; i < Length; ++i)
 	{
@@ -893,6 +908,7 @@ void CExcerpts::GetAsString(string & Res)
 
 bool CExcerpts::IsEmpty()
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	return (Length <= 0);
 }
 //-----------------------------------------------------------------------------
@@ -901,10 +917,10 @@ bool CExcerpts::IsEmpty()
 //-----------------------------------------------------------------------------
 CPrvException::CPrvException(const char* aText, int aLine, const char* aFunct)
 {
-	int iSize = sizeof(aText)+1;
+	int iSize = strlen(aText)+1;
 	int i=0;
 	if( aLine != 0 ) iSize += 13;
-	if( aFunct != NULL ) iSize += sizeof(aFunct)+2;
+	if( aFunct != NULL ) iSize += strlen(aFunct)+2;
 	strError = new char[iSize];
 	if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
 	if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
@@ -914,10 +930,10 @@ CPrvException::CPrvException(const char* aText, int aLine, const char* aFunct)
 CPrvException::CPrvException(CppSQLite3Exception&  e, int aLine, const char* aFunct)
 {
 	const char* tmp = e.errorMessage(); 
-	int iSize = sizeof(tmp)+1;
+	int iSize = strlen(tmp)+1;
 	int i=0;
 	if( aLine != 0 ) iSize += 13;
-	if( aFunct != NULL ) iSize += sizeof(aFunct)+2;
+	if( aFunct != NULL ) iSize += strlen(aFunct)+2;
 	strError = new char[iSize];
 	if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
 	if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
@@ -927,10 +943,10 @@ CPrvException::CPrvException(CppSQLite3Exception&  e, int aLine, const char* aFu
 CPrvException::CPrvException(std::exception& e, int aLine, const char* aFunct)
 {
 	const char* tmp = e.what(); 
-	int iSize = sizeof(tmp)+1;
+	int iSize = strlen(tmp)+1;
 	int i=0;
 	if( aLine != 0 ) iSize += 13;
-	if( aFunct != NULL ) iSize += sizeof(aFunct)+2;
+	if( aFunct != NULL ) iSize += strlen(aFunct)+2;
 	strError = new char[iSize];
 	if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
 	if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
@@ -939,7 +955,11 @@ CPrvException::CPrvException(std::exception& e, int aLine, const char* aFunct)
 }
 CPrvException::~CPrvException()
 {
-	delete[] strError;
+	if( strError )
+	{
+		delete[] strError;
+		strError = NULL;
+	}
 }
 const char* CPrvException::Message()
 {
