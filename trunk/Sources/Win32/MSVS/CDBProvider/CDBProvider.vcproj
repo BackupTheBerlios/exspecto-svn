@@ -128,7 +128,19 @@ copy ..\..\CDBProvider\sqlite3.dll ..\..\..\..\bin;
 				RelativePath="..\..\CDBProvider\CDBProvider.cpp">
 			</File>
 			<File
-				RelativePath="..\..\CDBProvider\CppSQLite3.cpp">
+				RelativePath="..\..\CDBProvider\Db\CppSQLite3.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\CDBProvider\test.cpp">
@@ -142,7 +154,7 @@ copy ..\..\CDBProvider\sqlite3.dll ..\..\..\..\bin;
 				RelativePath="..\..\CDBProvider\CDBProvider.h">
 			</File>
 			<File
-				RelativePath="..\..\CDBProvider\CppSQLite3.h">
+				RelativePath="..\..\CDBProvider\Db\CppSQLite3.h">
 			</File>
 		</Filter>
 		<Filter
