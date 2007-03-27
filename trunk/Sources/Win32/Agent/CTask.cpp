@@ -9,7 +9,6 @@ CEvent CTask::m_CancelEv(false);
 std::vector< std::string > CTask::m_vecData;
 Container< CScanner*, PluginLoadStrategy > CStartScan::m_PluginContainer;
 
-
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CGetStatus----------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
@@ -31,7 +30,7 @@ namespace
 	{
 		return new CGetStatus( Handler );
 	}
-	CMessageParser::CreateTaskCallBack GSReged = CMessageParser::GetRegisterCreator( GET_STATUS, GetStatusCreator );
+	CMessageParser::CreateTaskCallBack GsScReged = CMessageParser::GetRegisterCreator( GET_STATUS, GetStatusCreator );
 };
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -151,7 +150,8 @@ bool CGetData::Immidiate()
 	}
 	Log::instance().Trace( 90, "CGetData: Размер данных: %d", iSize );
 	//4 байта на размер 1 байт - результат обработки команды
-	std::auto_ptr< BYTE > pbBuf = std::auto_ptr< BYTE >( new BYTE[ iSize+4+1 ] );
+	iSize += 5;
+	std::auto_ptr< BYTE > pbBuf = std::auto_ptr< BYTE >( new BYTE[ iSize ] );
 	pbBuf.get()[0] = (BYTE)RESP_OK;
 	::memcpy( pbBuf.get() + 1, (void*)&iSize, 4 );
 	int iOffset = 5; 
@@ -161,7 +161,7 @@ bool CGetData::Immidiate()
 		iOffset += (int)It->size() + 1;
 	}
 	CPacket Msg;
-	Msg.AddParam( pbBuf.get(), iSize+4+1 );
+	Msg.AddParam( pbBuf.get(), iSize );
 	Msg.EndCommand();
 	m_ServerHandler.SendMsg( Msg );
 	Log::instance().Dump( 90, pbBuf.get(), iSize, "CGetData:Immidiate: Отправлен ответ:" );
