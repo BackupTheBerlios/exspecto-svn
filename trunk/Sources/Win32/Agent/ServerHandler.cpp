@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "ServerHandler.h"
 
+const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 };
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CServerHandler------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
@@ -29,6 +30,7 @@ void CServerHandler::SendEvent( CPacket& Event )
 	}
 	BYTE *pbBuf;
 	int iSize;
+	Event.AddParam( EndStamp, sizeof( EndStamp ) );
 	Event.GetBuffer( pbBuf, iSize );
 	m_pEventSocket->Send( pbBuf, iSize );
 }
@@ -37,6 +39,7 @@ void CServerHandler::SendMsg( CPacket& Msg )
 {
 	BYTE *pbBuf;
 	int iSize;
+	Msg.AddParam( EndStamp, sizeof( EndStamp ) );
 	Msg.GetBuffer( pbBuf, iSize );
 	m_pMsgSocket->Send( pbBuf, iSize );
 }
