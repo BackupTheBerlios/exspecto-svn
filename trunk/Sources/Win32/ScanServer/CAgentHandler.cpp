@@ -30,6 +30,7 @@ CAgentHandler::~CAgentHandler()
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
 void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 {
+	const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 };
 	if( !IsOpened() )
 	{
 		Log::instance().Trace( 10, "CAgentHandler::SendMessage: Ошибка!Сессия не открыта!" );
@@ -46,15 +47,21 @@ void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 
 	int iCount;
 	int iOffset = 0;
+	bool bEnd = false;
 	//Получаем ответ на сообщение
-	while( ( iCount = m_Sock.Receive( &m_vecRecvBuf[0], (int)m_vecRecvBuf.size() ) ) == (int)m_vecRecvBuf.size() )
+	while( !bEnd && ( iCount = m_Sock.Receive( &m_vecRecvBuf[0], (int)m_vecRecvBuf.size() ) ) > 0 )
 	{
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: iCount = %d", iCount );
+		if( ( iCount > 4 ) && ( 0 == memcmp( EndStamp, &m_vecRecvBuf[ iCount - 4 ], 4 ) ) )
+		{
+			iCount -= 4;
+			bEnd = true;
+		}
 		vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
 		m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер приемного буфера: %d", m_vecRecvBuf.size() );
 	}
-	vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
+	//vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
 	Log::instance().Dump( 80, &vecBuf[0], (int)vecBuf.size(), "CAgentHandler::SendMessage: Получили ответ:" );
 	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
