@@ -65,8 +65,12 @@ int main()
 	Log::instance().SetLoglevel( 200 );
 	hostRecords res;
 	map<string,bool> aParams;
-	CDBProvider* db = new CDBSQLitProvider("c:\\test.db");
+	CDBProvider* db = NULL;
 	filesStr FL;
+	int resVal = 0;
+try
+{
+	db = new CDBSQLitProvider("c:\\test.db");
 	FileInfo(".\\*.*", FL);
 /*	fileStr Cur;
 	while(true)
@@ -101,10 +105,14 @@ int main()
 	  for (idRes=res.begin(); idRes != res.end(); ++idRes)
     	cout << (*idRes).HostName.c_str() << endl;
 	}
+}catch(...)
+{
+	resVal = -1;
+}
 	delete db;
 
 /*    int i = 234;
     printf("%d, %0.6d, %.6d", i, i, i);*/
 	
-	return 0;
+	return resVal;
 }
