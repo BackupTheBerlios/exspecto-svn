@@ -10,6 +10,7 @@
 //#include "memleakdetector.h"
 #include "CDBProvider.h"
 
+
 void ExtractFilePath(string & Dest, string Src)
 {
 	char tmp[400];
@@ -44,13 +45,13 @@ void FileInfo(string aPath, filesStr &FL)
         }
         else
         {
-        	FSize = (hFindData.nFileSizeHigh * (MAXDWORD+1)) + hFindData.nFileSizeLow;
+        	FSize = (((__int64)hFindData.nFileSizeHigh) * (MAXDWORD+1)) + ((__int64)hFindData.nFileSizeLow);
           ExtractFilePath(cPath, aPath);
           cPath += hFindData.cFileName;
 					Cur.FileName=cPath;
 					Cur.FileSize = FSize;
-					Cur.lFileTime = hFindData.ftCreationTime.dwLowDateTime;
-					Cur.hFileTime = hFindData.ftCreationTime.dwHighDateTime;
+					Cur.FDate.lFileTime = hFindData.ftCreationTime.dwLowDateTime;
+					Cur.FDate.hFileTime = hFindData.ftCreationTime.dwHighDateTime;
 					FL.push_back(Cur);
         }
         IsFinished = !FindNextFile(hFindFile, &hFindData);
@@ -62,7 +63,7 @@ void FileInfo(string aPath, filesStr &FL)
 int main()
 {
 	Log::instance().SetLoglevel( 200 );
-	list<int> res;
+	hostRecords res;
 	map<string,bool> aParams;
 	CDBProvider* db = new CDBSQLitProvider("c:\\test.db");
 	filesStr FL;
@@ -81,16 +82,24 @@ int main()
 		FL.push_back(Cur);
 		if (FL.size() >= 10) break;
 	}*/
+//	cout << typeid(CppSQLite3Exception);
+//	CppSQLite3Exception* sqle = new CppSQLite3Exception(0, "Text");
+//	std::exception e;
+//	cout << typeid(sqle).name() << endl;
+//	cout << typeid(e).name() << endl;
+//	cout << typeid(res).name() << endl;
+//	delete sqle;
 	
+	db->EraseHost("DrAlexandr", "192.168.1.2", 0); 
 	db->AddFiles(&FL, "DrAlexandr", "192.168.1.2");
 	char tmp[255];
 	cout << "Input query: ";
 	cin >> tmp;
 	if(db->Search(tmp, aParams, res))
 	{
-		list<int>::iterator idRes;
+		list<hostRec>::iterator idRes;
 	  for (idRes=res.begin(); idRes != res.end(); ++idRes)
-    	cout << (*idRes) << endl;
+    	cout << (*idRes).HostName.c_str() << endl;
 	}
 	delete db;
 
