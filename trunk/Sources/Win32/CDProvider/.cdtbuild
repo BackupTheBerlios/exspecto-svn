@@ -3,7 +3,7 @@
 
 <ManagedProjectBuildInfo>
 <project id="CDBProvider.cdt.managedbuild.target.gnu.cygwin.exe.664951122" name="Executable (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.exe">
-<configuration artifactExtension="exe" artifactName="CDBProvider" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1392846494" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug">
+<configuration artifactExtension="exe" artifactName="${workspace_loc:}\..\..\Bin\CDBProvider" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1392846494" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug.577420390" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug">
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug.504221561" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug">
 <option id="gnu.cpp.compiler.option.include.paths.1443953487" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -35,6 +35,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.release.1013444732" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.release"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.release.915616816" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.exe.release"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release.107710905" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.release"/>
+<macros/>
 </toolChain>
 </configuration>
 <macros/>

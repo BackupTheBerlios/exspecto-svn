@@ -14,19 +14,37 @@
 //#include <stdio.h>
 #include <malloc.h>
 #include <stdlib.h>
-
+ 
 
 using namespace std;
+
+// функции преобразуют значения полей lFileTime и hFileTime в UTS или возвращают UTS, если он не равен 0
+typedef struct FileDateTag 
+{
+	DWORD lFileTime;
+	DWORD hFileTime;
+	time_t UTS;
+} fileDate;
 
 typedef struct FileStrTag
 {
 	string FileName;
-	int FileSize;
-	DWORD lFileTime;
-	DWORD hFileTime;
+	__int64 FileSize;
+	fileDate FDate;
+//	DWORD lFileTime;
+//	DWORD hFileTime;
 } fileStr;
 
 typedef list<fileStr> filesStr;
+typedef filesStr* pFilesStr;
+
+typedef struct RecordTag
+{
+	string HostName;
+	char IPName[16];
+	filesStr Files;
+} hostRec;
+typedef list<hostRec> hostRecords;
 
 /*typedef struct FilesStrTag
 {
@@ -34,27 +52,29 @@ typedef list<fileStr> filesStr;
 	struct FilesStrTag *pNext;
 }filesStr;*/
 
-typedef filesStr* pFilesStr;
 
 class CDBProvider
 {
 public:
 //	CDBProvider(const char* szFile);
-	CDBProvider();
-	virtual ~CDBProvider();
+//	CDBProvider();
+	virtual ~CDBProvider(){};
 //	virtual void AddFile(fileStr* fs, string aHostName, string aIPnum){}
-	virtual void AddFiles(pFilesStr aFileList, string aHostName, string aIPnum){}
-	virtual bool Find(string aText, map<string,bool> & aParams, list<int> & Result){return false;}
-	virtual bool Search(string aText, map<string,bool> & aParams, list<int> & Result){return false;}
-	virtual void AddWord(int aID, string aPath){}
-	virtual void AddWordInTable(int aID, list<string> & words, bool IsPath){}
+	virtual void AddFiles(pFilesStr aFileList, const string& aHostName, const string& aIPnum)=0;
+	virtual bool Find(const string& aText, map<string,bool> &aParams, list<int> &Result)=0;
+	virtual bool Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
+	virtual void AddWord(int aID, const string& aPath)=0;
+	virtual void AddWordInTable(int aID, list<string> &words, bool IsPath)=0;
+	virtual void EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aDate, bool aOnlyFiles=false)=0;
+	virtual void EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0; 
 
-	void Split(string & text, string separators, list<string> & words);
-	char* GetTimeStr(time_t iTime, char* strRes);
-	void FormatSQLQuery(string aText, string & aResult);
+	void Split(string &text, string separators, list<string> &words);
+//	char* GetTimeStr(time_t iTime, char* strRes);
+	void FormatSQLQuery(const string& aText, string& aResult);
 	time_t ConvertFileTimeToUTC(DWORD lFTime, DWORD hFTime); 
+	time_t ConvertFileTimeToUTC(const fileDate& aDate); 
 private:
-	CppSQLite3DB db;
+//	CppSQLite3DB db;
 //	char* aFileName;
 };
 
@@ -64,15 +84,14 @@ public:
 	CDBSQLitProvider(const char* szFile);
 	virtual ~CDBSQLitProvider();
 //	void AddFile(fileStr* fs, string aHostName, string aIPnum);
-	void AddFiles(pFilesStr aFileList, string aHostName, string aIPnum);
-	bool Find(string aText, map<string,bool> & aParams, list<int> & Result);
-	bool Search(string aText, map<string,bool> & aParams, list<int> & Result);
-	void AddWord(int aID, string aPath);
-	void AddWordInTable(int aID, list<string> & words, bool IsPath);
+	void AddFiles(pFilesStr aFileList, const string& aHostName, const string& aIPnum);
+	bool Find(const string& aText, map<string,bool> &aParams, list<int> &Result);
+	bool Search(const string& aText, map<string,bool> &aParams, hostRecords &Result);
+	void AddWord(int aID, const string& aPath);
+	void AddWordInTable(int aID, list<string> &words, bool IsPath);
+	void EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aDate, bool aOnlyFiles=false);
+	void EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false);
 	
-//	void Split(string & text, string separators, list<string> & words);
-//	char* GetTimeStr(time_t iTime, char* strRes);
-//	void FormatSQLQuery(string aText, string & aResult);
 private:
 	CppSQLite3DB db;
 };
@@ -85,8 +104,8 @@ class CExcerpts
 		~CExcerpts();
 		void Transact(int aVal, bool aisFirst);
 		void TransactEnd();
-		void GetAsList(list<int> & Res);
-		void GetAsString(string & Res);
+		void GetAsList(list<int> &Res);
+		void GetAsString(string &Res);
 		bool IsEmpty();
 	private:
 		int Allocation;
@@ -94,5 +113,16 @@ class CExcerpts
 		int Length;
 		int* Memory;
 		int Find(int aVal);
+};
+
+class CPrvException
+{
+	char *strError;
+	public:
+		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL);
+		CPrvException(CppSQLite3Exception&  e, int aLine=0, const char* aFunct=NULL);
+		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL);
+		~CPrvException();
+		const char* Message();
 };
 #endif /*CDBPROVIDER_H_*/
