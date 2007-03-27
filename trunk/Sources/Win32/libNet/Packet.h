@@ -38,7 +38,7 @@ public:
 	//Добавить параметр
 	//	pbParam - буфер с данными
 	//	iSize - размер данных
-	void AddParam( BYTE* pbParam, int iSize );
+	void AddParam( const BYTE* pbParam, int iSize );
 
 	//Добавить параметр
 	//	dwParam - параметр типа DWORD
@@ -88,7 +88,7 @@ public:
 protected:
 	
 	//Добавить массив байт к пакету
-	void Push( BYTE *pbData, int iSize );
+	void Push( const BYTE *pbData, int iSize );
 
 	//Получить массив байт из пакета
 	void Pop( BYTE *pbBuf, int iCount );

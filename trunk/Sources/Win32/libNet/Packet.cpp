@@ -30,7 +30,7 @@ void CPacket::BeginCommand( enumCommands Command )
 }
 
 //Добавить массив байт к пакету
-void CPacket::Push( BYTE* pbData, int iSize )
+void CPacket::Push( const BYTE* pbData, int iSize )
 {
 	m_iDataSize += iSize;
 	if( m_iDataSize > m_iBufSize )
@@ -42,7 +42,7 @@ void CPacket::Push( BYTE* pbData, int iSize )
 //Добавить параметр
 //	pbParam - буфер с данными
 //	iSize - размер данных
-void CPacket::AddParam( BYTE* pbParam, int iSize )
+void CPacket::AddParam( const BYTE* pbParam, int iSize )
 {
 	Push( pbParam, iSize );
 }
