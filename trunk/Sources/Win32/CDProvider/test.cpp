@@ -1,4 +1,4 @@
-#include <string>
+/*#include <string>
 #include <windows.h>
 #include <stdio.h>
 //#include <dir.h>
@@ -8,8 +8,9 @@
 //#include <memory.h>
 //#include <string.h>
 //#include "memleakdetector.h"
-#include "CDBProvider.h"
+#include "CSQLite3.h"
 
+typedef bool (__fastcall *TTimeCheck)(CDBProvider& db, filesStr& aFL, map<string,int>& aTM,...);
 
 void ExtractFilePath(string & Dest, string Src)
 {
@@ -27,7 +28,7 @@ void FileInfo(string aPath, filesStr &FL)
     unsigned __int64 FSize = 0;
     bool IsFinished;
     string cPath;
-	fileStr Cur;
+		fileStr Cur;
 
     hFindFile = FindFirstFile(aPath.c_str(), &hFindData);
     IsFinished = hFindFile == INVALID_HANDLE_VALUE;
@@ -52,6 +53,7 @@ void FileInfo(string aPath, filesStr &FL)
 					Cur.FileSize = FSize;
 					Cur.FDate.lFileTime = hFindData.ftCreationTime.dwLowDateTime;
 					Cur.FDate.hFileTime = hFindData.ftCreationTime.dwHighDateTime;
+					Cur.FDate.UTS = 0;
 					FL.push_back(Cur);
         }
         IsFinished = !FindNextFile(hFindFile, &hFindData);
@@ -60,59 +62,110 @@ void FileInfo(string aPath, filesStr &FL)
         FindClose(hFindFile);
 }
 
-int main()
+void GenList(int aCount, filesStr &FL)
 {
+	char str[255];
+	fileStr Cur;
+	for( int i = 0; i < aCount; ++i)
+	{
+		sprintf(str, "D:\\Exspecto\\Test%d\\TestFile%d.tmp%d", i/10, i, i/100);
+		Cur.FileName=str;
+		Cur.FileSize = i*100;
+		Cur.FDate.lFileTime = 0;
+		Cur.FDate.hFileTime = 0;
+		Cur.FDate.UTS = 1800000000+1000000/(i+1);
+		FL.push_back(Cur);
+	}
+}
+bool Time_Search(CDBProvider& db, filesStr& aFL, map<string,int>& aTM,...)
+{
+	return false;
+}
+bool Time_Add(CDBProvider& db, filesStr& aFL, map<string,int>& aTM,...)
+{
+	return false;
+}
+bool Time_Erase(CDBProvider& db, filesStr& aFL, map<string,int>& aTM,...)
+{
+	db.EraseHost("DrAlexandr", "192.168.1.2", 0);
+	return true;
+}
+bool TimeProc(TTimeCheck fn, CDBProvider& db, filesStr& aFL, map<string,int>& aTM, ...)
+{
+	DWORD dwStart;
+	DWORD dwDur;
+	string fNm;
+//	if(fn == Time_Search)
+//		fNm = "Search";
+//	else fNm = "Unknow";
+
+	dwStart = GetTickCount();
+//
+	dwDur = GetTickCount() - dwStart;
+	aTM[fNm]=dwDur;
+}
+int main_T()
+{
+	bool bTimeDbg = false;
+	bool bResult;
 	Log::instance().SetLoglevel( 200 );
 	hostRecords res;
 	map<string,bool> aParams;
 	CDBProvider* db = NULL;
 	filesStr FL;
 	int resVal = 0;
+	char tmp[255];
 try
 {
 	db = new CDBSQLitProvider("c:\\test.db");
 	FileInfo(".\\*.*", FL);
-/*	fileStr Cur;
-	while(true)
-	{
-		//Cur.FileName = ;
-		Cur.FileName="Test";
-		Cur.FileName+=(FL.size()+48);
-		Cur.FileName+=".tmp";
-		Cur.FileSize = GetTickCount();
-		Cur.FileTime = GetTickCount()*10;
-//		i++;
-//		if (i >= 10) break;
-		FL.push_back(Cur);
-		if (FL.size() >= 10) break;
-	}*/
-//	cout << typeid(CppSQLite3Exception);
-//	CppSQLite3Exception* sqle = new CppSQLite3Exception(0, "Text");
-//	std::exception e;
-//	cout << typeid(sqle).name() << endl;
-//	cout << typeid(e).name() << endl;
-//	cout << typeid(res).name() << endl;
-//	delete sqle;
-	
-	db->EraseHost("DrAlexandr", "192.168.1.2", 0); 
-	db->AddFiles(&FL, "DrAlexandr", "192.168.1.2");
-	char tmp[255];
+//	GenList(1000, FL);
+	map<string, int> timeCode;
+
+	if( bTimeDbg ){	
+//	TimeProc(Time_Erase, *db, FL, timeCode);
+	}else db->EraseHost("DrAlexandr", "192.168.1.2", 0);
+
+	if( bTimeDbg ){
+//	TimeProc(Time_Add, *db, FL, timeCode);
+	}else db->AddFiles(&FL, "DrAlexandr", "192.168.1.2");
+
 	cout << "Input query: ";
 	cin >> tmp;
-	if(db->Search(tmp, aParams, res))
+	
+	if( bTimeDbg ){	
+//	bResult = TimeProc(Time_Search, *db, FL, timeCode);
+	}else bResult = db->Search(tmp, aParams, res); 
+	
+	if( bResult )
 	{
 		list<hostRec>::iterator idRes;
+		list<fileStr>::iterator idF;
 	  for (idRes=res.begin(); idRes != res.end(); ++idRes)
-    	cout << (*idRes).HostName.c_str() << endl;
+		{
+			cout << (*idRes).HostName.c_str() << " | " << (*idRes).IPName << endl;
+			for (idF = (*idRes).Files.begin(); idF != (*idRes).Files.end(); ++idF)
+			{
+				cout << (*idF).FileName << " \t" << (*idF).FileSize << " \t" << (*idF).FDate.UTS <<endl;
+			}
+		}
 	}
+}catch(CPrvException& e)
+{
+	resVal = -1;
+	cout << e.Message();
+}catch( std::exception& e )
+{
+	resVal = -1;
+	cout << e.what();
 }catch(...)
 {
 	resVal = -1;
+	cout << "Unknown exeption!";
 }
 	delete db;
 
-/*    int i = 234;
-    printf("%d, %0.6d, %.6d", i, i, i);*/
 	
 	return resVal;
 }
+*/
