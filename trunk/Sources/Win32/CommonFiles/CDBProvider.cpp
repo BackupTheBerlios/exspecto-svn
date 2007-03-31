@@ -254,24 +254,6 @@ CPrvException::CPrvException(const char* aText, int aLine, const char* aFunct)
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-CPrvException::CPrvException(CppSQLite3Exception&  e, int aLine, const char* aFunct)
-{
-	const char* tmp = e.errorMessage(); 
-	int iSize = strlen(tmp)+1;
-	int i=0;
-	if( aLine != 0 ) iSize += 15;
-	if( aFunct != NULL ) iSize += strlen(aFunct)+3;
-	iSize += 5; // на всякий случай :)
-	strError = new char[iSize];
-	if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
-	if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
-	i += sprintf(strError + i, "%s ", tmp);
-	Log::instance().Trace( 5,"%s", strError );
-}
-//-----------------------------------------------------------------------------
-
-///////////////////////////////////////////////////////////////////////////////
-//
 CPrvException::CPrvException(std::exception& e, int aLine, const char* aFunct)
 {
 	const char* tmp = e.what(); 

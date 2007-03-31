@@ -1,6 +1,5 @@
 #ifndef CDBPROVIDER_H_
 #define CDBPROVIDER_H_
-#include "CppSQLite3.h"
 #include "constants.h"
 #include "CLog.h"
 #include <string>
@@ -67,7 +66,6 @@ class CPrvException
 	char *strError;
 	public:
 		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL);
-		CPrvException(CppSQLite3Exception&  e, int aLine=0, const char* aFunct=NULL);
 		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL);
 		virtual ~CPrvException();
 		const char* Message();
