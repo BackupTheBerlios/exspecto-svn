@@ -7,6 +7,10 @@
 #include <vector>
 #include <stdexcept>
 #include <map>
+#include <list>
+#include <iostream>
+#include <tchar.h>
+#include <process.h>
 
 #include "MemLeakDetector.h"
 #include "CLog.h"

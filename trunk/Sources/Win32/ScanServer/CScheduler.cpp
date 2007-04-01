@@ -5,39 +5,39 @@
 //Description: Класс, реализующий функции планировщика
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
-#include <iostream>
-#include <tchar.h>
 #include "CScheduler.h"
-#include <process.h>
+#include "constants.h"
 
 //Описание типов параметров
 static char* pServerParamTypes[] = {
 	TIMER_VALUE, "int",
-	LOG_LEVEL,	"int"
+	LOG_LEVEL,	"int",
+	AGENT_LIST, "string-list",
+	SCAN_AREA, "ip-list"
 };
 
 CScheduler::CScheduler(void)
 {
 	int iLogLevel;
-	Settings::SetModule( "ScanServer", pServerParamTypes, sizeof( pServerParamTypes )/sizeof( pServerParamTypes[0] ) );
+	Settings::instance().SetModule( "ScanServer", pServerParamTypes, sizeof( pServerParamTypes )/sizeof( pServerParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
 	Log::instance().SetLoglevel( iLogLevel );
 	
+	std::list< std::string > listAgents;
+	Settings::instance().GetParam( "AgentList", listAgents );
 	//Загружаем контейнер агентов
-	m_mapAgentsContainer[ "127.0.0.1" ] = SmartPtr< CAgentHandler >( new CAgentHandler( "127.0.0.1" ) ); 
-	
+	for( std::list< std::string >::iterator It = listAgents.begin(); It != listAgents.end(); It++ )
+		m_mapAgentsContainer[ *It ] = SmartPtr< CAgentHandler >( new CAgentHandler( *It ) ); 
 	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
 		
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
-	//TODO:Убрать из конструктора длительные действия
 	m_pTrigger->Start();
-	Sleep(10000);
-	m_pTrigger->Stop();
 }
 
 CScheduler::~CScheduler(void)
 {
+	m_pTrigger->Stop();
 	m_CloseEv.Set();
 	if( m_EventSock.IsConnected() )
 	{
@@ -56,31 +56,19 @@ CScheduler::~CScheduler(void)
 void CScheduler::OnStartScan()
 {
 	try{
-		std::vector< std::string > vecAdr;
-		vecAdr.push_back( "127.0.0.1" );
-		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++ )
+		std::vector< std::string > listAdr;
+		Settings::instance().GetParam( SCAN_AREA, listAdr );
+		int i = 1, iStartPos = 0, iEndPos = 0;
+		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++, i++ )
 		{
-	/*		enumAgentState bStatus;
+			std::list< std::string > IpList;
+			iStartPos = iEndPos;
+			int iEndPos = i*(int)listAdr.size()/(int)m_mapAgentsContainer.size();
+			
+			IpList.insert( IpList.begin(), listAdr.begin() + iStartPos, listAdr.begin() + iEndPos );
 			It->second->Open();
 			if( It->second->IsOpened() )
-			{
-				It->second->GetStatus( bStatus );
-				Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
-			}
-	*/		
-			It->second->Open();
-			if( It->second->IsOpened() )
-			{
-				It->second->BeginScan( vecAdr );
-				//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
-			}
-			Sleep( 2000 );
-			It->second->Open();
-			if( It->second->IsOpened() )
-			{
-				It->second->GetData();
-				//Log::instance().Trace( 10, "CScheduler: Статус агента: %d", bStatus );
-			}
+				It->second->BeginScan( IpList );
 		}
 	}catch( std::exception& e )
 	{

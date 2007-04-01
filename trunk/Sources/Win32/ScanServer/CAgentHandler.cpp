@@ -119,7 +119,7 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 	};
 }
 
-enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )
+enumAgentResponse CAgentHandler::BeginScan( std::list< std::string > vecAddresses )
 {
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Отправка команды начала сканирования" );
 	CPacket Msg;
@@ -127,7 +127,7 @@ enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddres
 	Msg.BeginCommand( START_SCAN );
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Всего адресов: %d", vecAddresses.size() );
 	Msg.AddParam( (DWORD)vecAddresses.size() );
-	for( std::vector< std::string >::iterator It = vecAddresses.begin(); It != vecAddresses.end(); It++ )
+	for( std::list< std::string >::iterator It = vecAddresses.begin(); It != vecAddresses.end(); It++ )
 	{
 		Log::instance().Trace( 92, "CAgentHandler::BeginScan: Добавляем адрес %s", It->c_str() );
 		Msg.AddAddress( *It );
@@ -188,7 +188,7 @@ enumAgentResponse CAgentHandler::GetData()
 	SendMessage( Msg, vecRes );
 	if( RESP_OK != vecRes[0] )
 	{
-//		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", *pbRecvBuf );
+		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", vecRes[0] );
 		return (enumAgentResponse)vecRes[0];
 	}
 	int iDataSize;

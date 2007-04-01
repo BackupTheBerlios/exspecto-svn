@@ -48,6 +48,7 @@ void CTimer::Start()
 	//Останавливаем таймер
 	Stop();
 	Log::instance().Trace( 90, "CTimer: старт" );
+	m_pCallBack->OnStartScan();
 	//Запускаем служебный поток таймера
 	m_hThread = (HANDLE)_beginthreadex( NULL, 0, &fnTimerProc, this, 0, NULL );
 }

@@ -8,7 +8,6 @@
 #ifndef CSCHEDULER_H_
 #define CSCHEDULER_H_
 #include "ServerSocket.h"
-#include "precomp.h"
 #include "CAgentHandler.h"
 #include "CStartTrigger.h"
 #include "Container.hpp"

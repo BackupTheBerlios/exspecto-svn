@@ -43,7 +43,7 @@ public:
 	//Команды, передаваемые агенту:
 	
 	//Начать сканирование
-	enumAgentResponse BeginScan( std::vector< std::string > vecAddresses );
+	enumAgentResponse BeginScan( std::list< std::string > vecAddresses );
 	
 	//Остановить сканирование
 	enumAgentResponse StopScan();
