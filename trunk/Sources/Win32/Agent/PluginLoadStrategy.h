@@ -7,7 +7,6 @@
 #ifndef PLUGINLOADSTRATEGY_H_
 #define PLUGINLOADSTRATEGY_H_
 
-#include "precomp.h"
 #include "CScanner.h"
 
 class PluginLoadStrategy

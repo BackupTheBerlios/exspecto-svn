@@ -23,7 +23,7 @@ CAgent::CAgent()
 {
 	//Инициализация логера
 	int iLogLevel;
-	Settings::SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
+	Settings::instance().SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
 	Log::instance().SetLoglevel( iLogLevel );	
 

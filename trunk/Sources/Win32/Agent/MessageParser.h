@@ -1,6 +1,7 @@
 #ifndef MESSAGEPARSER_H_
 #define MESSAGEPARSER_H_
 
+#include <vector>
 #include "ServerHandler.h"
 
 //-----------------------------------------------------------------------------------------------------------------
