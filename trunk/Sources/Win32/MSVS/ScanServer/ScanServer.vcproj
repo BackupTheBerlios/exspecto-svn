@@ -25,7 +25,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="precomp.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -153,6 +153,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 			</File>
 			<File
 				RelativePath="..\..\ScanServer\CAgentHandler.h">
+			</File>
+			<File
+				RelativePath="..\..\CommonFiles\constants.h">
 			</File>
 			<File
 				RelativePath="..\..\ScanServer\CScheduler.h">

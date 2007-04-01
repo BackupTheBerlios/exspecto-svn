@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\CommonFiles;..\..\libCommon;..\..\CDBProvider\DB;..\..\libNet"
+				AdditionalIncludeDirectories=".\DB;..\..\libCommon;..\..\CommonFiles;..\..\libNet"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -35,9 +35,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="sqlite3.lib"
-				OutputFile="$(SolutionDir)..\..\..\Bin\CDBProvider.exe"
+				OutputFile="$(OutDir)/CDBProvider.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\CDBProvider\DB;..\..\CDBProvider"
+				AdditionalLibraryDirectories="..\..\CDBProvider"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/CDBProvider.pdb"
 				SubSystem="1"
@@ -48,7 +48,7 @@
 				Name="VCPostBuildEventTool"
 				CommandLine="if not exist ..\..\..\..\bin mkdir ..\..\..\..\bin;
 copy $(TargetPath) ..\..\..\..\bin;
-copy ..\..\CDBProvider\DB\sqlite3.dll ..\..\..\..\bin;
+copy ..\..\CDBProvider\sqlite3.dll ..\..\..\..\bin;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -128,19 +128,7 @@ copy ..\..\CDBProvider\DB\sqlite3.dll ..\..\..\..\bin;
 				RelativePath="..\..\CDBProvider\CDBProvider.cpp">
 			</File>
 			<File
-				RelativePath="..\..\CDBProvider\Db\CppSQLite3.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
+				RelativePath="..\..\CDBProvider\CppSQLite3.cpp">
 			</File>
 			<File
 				RelativePath="..\..\CDBProvider\test.cpp">
@@ -154,7 +142,7 @@ copy ..\..\CDBProvider\DB\sqlite3.dll ..\..\..\..\bin;
 				RelativePath="..\..\CDBProvider\CDBProvider.h">
 			</File>
 			<File
-				RelativePath="..\..\CDBProvider\Db\CppSQLite3.h">
+				RelativePath="..\..\CDBProvider\CppSQLite3.h">
 			</File>
 		</Filter>
 		<Filter
