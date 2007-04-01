@@ -24,7 +24,7 @@ DllExport CScanner* GetScanner()
 	//Инициализируем вспомогательные службы
 	int iLogLevel;	
 	Log::instance(MOD_NAME);
-	Settings::SetModule( "NetBiosPlugin", pNetBiosParamTypes, sizeof( pNetBiosParamTypes )/sizeof( pNetBiosParamTypes[0] ) );
+	Settings::instance().SetModule( "NetBiosPlugin", pNetBiosParamTypes, sizeof( pNetBiosParamTypes )/sizeof( pNetBiosParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
 	Log::instance().SetLoglevel( iLogLevel );
 		
