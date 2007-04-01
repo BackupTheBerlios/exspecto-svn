@@ -1,26 +1,45 @@
 #include "SettingsContainer.h"
 #include <algorithm>
+#include <list>
+#include <vector>
 
-//Инициализация статических переменных
-Settings* Settings::m_pInstance = NULL;
-std::string Settings::m_strModuleName = "";
-char** Settings::m_pParamTypes = NULL;
-int Settings::m_iParamCount = 0;
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CSettings-----------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
-Settings::Settings()
+CSettings::CSettings()
 {
-	Log::instance().Trace( 100, "Settings::Settings: Загрузка параметров из settings.ini" );
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniSettings--------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+std::map< std::string, CIniTypeSerializer* > CIniSettings::m_mapSerializers;
+
+CIniSettings::CIniSettings()
+{
+}
+
+CIniSettings::~CIniSettings()
+{
+	for( std::map< std::string, CIniTypeSerializer* >::iterator It = m_mapSerializers.begin(); It != m_mapSerializers.end(); It++ )
+		delete It->second;
+}
+
+void CIniSettings::SetModule( const std::string& strModuleName, char** pModuleParams, int iParamCount )
+{
+	Log::instance().Trace( 100, "CSettings::CSettings: Загрузка параметров из CSettings.ini" );
 	std::map< std::string, std::string > mapParamTypes;
-	int iParam;
 	unsigned int iTmp;
 	char strBuffer[1024], strModName[1024];
 	std::string strArg1, strArg2, strTmp;
 	char *pFirstPos, *pSecondPos;
 
-	for( int i = 0; i < m_iParamCount; i+=2 )
-		mapParamTypes.insert( std::make_pair( m_pParamTypes[ i ], m_pParamTypes[ i + 1 ] ) );
+	for( int i = 0; i < iParamCount; i+=2 )
+		mapParamTypes.insert( std::make_pair( pModuleParams[ i ], pModuleParams[ i + 1 ] ) );
 
-	FILE* f = fopen( "settings.ini", "r" );
+	FILE* f = fopen( "Settings.ini", "r" );
 	if( NULL == f )
 		throw ParamLoadErr( "Не удалось найти файл Settings.ini" );
 
@@ -30,56 +49,217 @@ Settings::Settings()
 		{
 			if( feof(f) )
 				break;
-			
-			throw ParamLoadErr( "Не удалось произвести чтение из файла Settings.ini" );
+
+			throw ParamLoadErr( "Не удалось произвести чтение из файла CSettings.ini" );
 		}
-			
+
 		//Нашли новый раздел в файле параметров...
 		if( ( pFirstPos = strstr( strBuffer, "[" ) ) && ( pSecondPos = strstr( strBuffer, "]" ) ) )
 		{
 			//Все следующие параметры будут считаться принадлежащими этому модулю
 			memcpy( strModName, strBuffer + 1, pSecondPos - pFirstPos - 1 );
 			strModName[ pSecondPos - pFirstPos - 1 ] = 0;
-		}else
-		{
 			//Если параметры в файле принадлежат нашему модулю
-			if( m_strModuleName == strModName )
+		}else if( strModuleName == strModName )
+		{
+			strTmp = strBuffer;
+			//Удаляем пробелы
+			std::string::iterator itNewEnd = std::remove( strTmp.begin(), strTmp.end() - 1, ' ' );
+			strTmp.resize( itNewEnd - strTmp.begin() );
+			//Сохраняем параметр до знака = и после 
+			if( ( iTmp = (int)strTmp.find( '=' ) ) != std::string::npos )
 			{
-				strTmp = strBuffer;
-				//Удаляем пробелы
-				std::string::iterator itNewEnd = std::remove( strTmp.begin(), strTmp.end() - 1, ' ' );
-				strTmp.resize( itNewEnd - strTmp.begin() );
-				//Сохраняем параметр до знака = и после 
-				if( ( iTmp = (int)strTmp.find( '=' ) ) != std::string::npos )
-				{
-					strArg1 = strTmp.substr( 0, iTmp );
-					strArg2 = strTmp.substr( iTmp + 1 );
-				}else
-					continue;
-				//Если это параметр есть в списке параметров
-				if( mapParamTypes.find( strArg1 ) != mapParamTypes.end() )
-				{
-					//Выясняем тип параметра и записываем его в контейнер
-					if( mapParamTypes[ strArg1 ] == "int" )
-					{
-						if( ( 0 == ( iParam = atoi( strArg2.c_str() ) ) && !strcmp( strArg2.c_str(), "0" ) ) )
-						{
-							strTmp += "Ошибка!Параметр ";
-							strTmp += strArg1;
-							strTmp += " должен быть целым числом";
-							throw ParamLoadErr( strTmp );
-						}
-						PutParam( strArg1, iParam );
-						Log::instance().Trace( 100, "Settings::Settings: Загружаем параметр %s = %d", strArg1.c_str(), iParam );
-					}else if( mapParamTypes[ strArg1 ] == "string" )
-					{
-						Log::instance().Trace( 100, "Settings::Settings: Загружаем параметр %s = %s", strArg1.c_str(), strArg2.c_str() );
-						PutParam( strArg1, strArg2 );
-					}
-				}
-			}
+				strArg1 = strTmp.substr( 0, iTmp );
+				strArg2 = strTmp.substr( iTmp + 1 );
+			}else
+				continue;
+			//Если это параметр есть в списке параметров
+			if( mapParamTypes.find( strArg1 ) != mapParamTypes.end() )
+			{
+                //Выясняем тип параметра и записываем его в контейнер
+				if( m_mapSerializers.find( mapParamTypes[ strArg1 ] ) != m_mapSerializers.end() )
+					m_mapSerializers[ mapParamTypes[ strArg1 ] ]->Load( strArg1, strArg2, this );
+				else
+					Log::instance().Trace( 10, "CIniSettings::SetModule: Неизвестный тип параметра %s: %s", strArg1.c_str(), mapParamTypes[ strArg1 ].c_str() );
+			}else
+				Log::instance().Trace( 10, "CIniSettings::SetModule: Неизвестный параметр %s", strArg1.c_str() );
 		}
 	}
 	fclose(f);
 	//Проверяем корректность заданных параметров
+}
+
+bool CIniSettings::RegisterTypeSerializer( const std::string& strType, CIniTypeSerializer* TypeSer )
+{
+	CIniSettings::m_mapSerializers[ strType ] = TypeSer;
+	return true;
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniIntSerializer---------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+void CIniIntSerializer::Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer )
+{
+	int iParam=0;
+	std::string strTmp;
+	if( ( 0 == ( iParam = atoi( strParamValue.c_str() ) ) && !strcmp( strParamValue.c_str(), "0" ) ) )
+	{
+		Log::instance().Trace( 10, " CIniIntSerializer::Load: Параметр %s должен быть целым числом %s", strParamName.c_str() );
+	}else
+	{
+		pParamContainer->PutParam( strParamName, iParam );
+		Log::instance().Trace( 100, "CIniIntSerializer::Load: Загружаем параметр %s = %d", strParamName.c_str(), iParam );
+	}
+}
+
+namespace{
+	bool bIntReged = CIniSettings::RegisterTypeSerializer( "int", new CIniIntSerializer );
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniStringSerializer------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+void CIniStringSerializer::Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer )
+{
+	pParamContainer->PutParam( strParamName, strParamValue );
+	Log::instance().Trace( 10, "CSettings::CSettings: Загружаем параметр %s = %s", strParamName.c_str(), strParamValue.c_str() );
+}
+
+namespace{
+	bool bStringReged = CIniSettings::RegisterTypeSerializer( "string", new CIniStringSerializer );
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniStringListSerializer--------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+void CIniStringListSerializer::Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer )
+{
+	//составляем список строк
+	std::list< std::string > listStr;
+	if( !Tools::GetStringList( strParamValue, listStr ) )
+		Log::instance().Trace( 10, "CIniStringListSerializer::Load: Параметр %s должен быть целым списком строк", strParamName.c_str() );
+	pParamContainer->PutParam( strParamName, listStr );
+	Log::instance().Trace( 100, "CSettings::CSettings: Загружаем параметр %s = %s", strParamName.c_str(), strParamValue.c_str() );
+}
+
+namespace{
+	bool bStringListReged = CIniSettings::RegisterTypeSerializer( "string-list", new CIniStringListSerializer );
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniIpListSerializer------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+void CIniIpListSerializer::Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer )
+{
+	//	если нет "-" - добавляем адрес,продолжить
+	//	иначе разбираем на компоненты два адреса
+	//	для каждой компоненты A(пока a1<a2)
+	//		для каждой компоненты B(пока b1<b2 )
+	//			для каждой компоненты C(пока с1<c2)
+	//				для каждой компоненты D(пока d1<d2)
+	//					заносим адрес
+
+	Log::instance().Trace( 100, "CSettings::CSettings: Загружаем параметр %s = %s", strParamName.c_str(), strParamValue.c_str() );
+	std::vector< std::string > listIp;
+	//Считываем список диапазонов
+	std::list< std::string > listStr;
+	if( !Tools::GetStringList( strParamValue, listStr ) )
+		Log::instance().Trace( 10, "CIniIpListSerializer::Load: Параметр %s должен быть целым списком IP-адресов", strParamName.c_str() );		
+	//для каждого диапазона
+	for( std::list< std::string >::iterator It = listStr.begin(); It != listStr.end(); It++ )
+	{
+		int iDelimPos = 0;
+		
+		if( std::string::npos == ( iDelimPos = (int)It->find( "-" ) ) )
+		{
+			listIp.push_back( *It );
+		}else
+		{
+			std::string strIp1, strIp2;
+			Tools::structIp Ip1, Ip2;
+			if( !Tools::ParseIp( It->substr( 0, iDelimPos ), Ip1 )
+			  ||!Tools::ParseIp( It->substr( iDelimPos+1, It->size() - iDelimPos ), Ip2 ) )
+			{
+				Log::instance().Trace( 10, "CIniIpListSerializer::Load: Ошибка при разборе параметра %s: %s.Продолжаем разбор ", strParamName.c_str(), It->c_str() );		
+				continue;
+			}
+			char strA[255], strB[255], strC[255], strD[255];
+			std::string strTmpIp;
+            for( int iAInd = Ip1.A; iAInd <= Ip2.A; iAInd++ )
+			{
+				itoa( iAInd, strA, 10 );
+				for( int iBInd = Ip1.B; iBInd <= Ip2.B; iBInd++ )
+				{
+					itoa( iBInd, strB, 10 );
+					for( int iCInd = Ip1.C; iCInd <= Ip2.C; iCInd++ )
+					{
+						itoa( iCInd, strC, 10 );
+						for( int iDInd = Ip1.D; iDInd <= Ip2.D; iDInd++ )
+						{
+                            itoa( iDInd, strD, 10 );
+							strTmpIp.clear();
+							strTmpIp += strA;
+							strTmpIp += ".";
+							strTmpIp += strB;
+							strTmpIp += ".";
+							strTmpIp += strC;
+							strTmpIp += ".";
+							strTmpIp += strD;
+							listIp.push_back( strTmpIp );
+						}
+					}
+				}
+			}
+
+			
+		}
+	}
+	pParamContainer->PutParam( strParamName, listIp );
+}
+
+namespace{
+	bool bIpListReged = CIniSettings::RegisterTypeSerializer( "ip-list", new CIniIpListSerializer );
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------Tools---------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+bool Tools::GetStringList( const std::string& strSource, std::list< std::string >& listDest )
+{
+	std::string strTmp;
+	int iStartPos = 0, iEndPos = 0;
+	while( ( iEndPos = (int)strSource.find( ',', iStartPos  ) ) != std::string::npos )
+	{
+		strTmp = strSource.substr( iStartPos, iEndPos );
+		iStartPos = iEndPos + 1;
+		//Удаляем пробелы
+		std::string::iterator itNewEnd = std::remove( strTmp.begin(), strTmp.end() - 1, ' ' );
+		strTmp.resize( itNewEnd - strTmp.begin() );
+		listDest.push_back( strTmp );
+	}
+	//дочитываем до конца
+	strTmp = strSource.substr( iStartPos, strSource.size() );
+	listDest.push_back( strTmp );
+	return true;
+}
+
+bool Tools::ParseIp( const std::string& strSource, Tools::structIp& resIp )
+{
+	if( 3 != std::count( strSource.begin(), strSource.end(), '.' ) )
+		return false;
+	int iStartPos = 0, iEndPos = (int)strSource.find( '.' );
+	resIp.A = atoi( strSource.substr( iStartPos, iEndPos - iStartPos ).c_str() );
+	iStartPos = iEndPos;
+	iEndPos = (int)strSource.find( '.', iEndPos + 1 );
+	resIp.B = atoi( strSource.substr( iStartPos+1, iEndPos - iStartPos ).c_str() );
+	iStartPos = iEndPos;
+	iEndPos = (int)strSource.find( '.', iEndPos + 1 );
+    resIp.C = atoi( strSource.substr( iStartPos+1, iEndPos - iStartPos ).c_str() );
+	resIp.D = atoi( strSource.substr( iEndPos+1, strSource.size() - iEndPos ).c_str() );
+	return true;
 }

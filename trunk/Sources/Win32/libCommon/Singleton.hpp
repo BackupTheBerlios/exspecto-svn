@@ -6,7 +6,7 @@ class CSingleton
 {
 public:
 	
-	static T& Instance()
+	static T& instance()
 	{
 		static T instance;
 		return instance;

@@ -2,11 +2,13 @@
 #define SETTINGSCONTAINER_H_
 
 #include <map>
+#include <list>
 #include <string>
 #include <stdexcept>
 #include "constants.h"
 #include "CLog.h"
 #include <assert.h>
+#include "Singleton.hpp"
 
 
 class ParamTypeErr: public std::logic_error
@@ -30,7 +32,7 @@ public:
 
 /*!
 	Ѕазовый абстрактный класс параметров дл€ хранени€ параметров 
-	в ассоциативном массиве в  классе Settings. 
+	в ассоциативном массиве в  классе CSettings. 
     ¬иртуальный деструктор необходим дл€ корректного очищени€ пам€ти.
 */
 class BaseParam
@@ -44,7 +46,7 @@ class BaseParam
 /*!
 	Ўаблонный класс дл€ хранени€ произвольных параметров.
 	явл€етс€ потомком BaseParam, следовательно может хранитьс€ 
-	в ассоциативном массиве в классе Settings.
+	в ассоциативном массиве в классе CSettings.
 */
 
 
@@ -65,24 +67,21 @@ public:
 	явл€етс€ синглтоном
 */
 //-------------------------------------------------------------------------
-class Settings 
+class CSettings 
 {	
 public:
+
+	CSettings();
 	
-	//ћетод доступа к экземпл€ру класса Settings
-	static Settings& instance()
+/*
+	void SetModule( const char* strModuleName, char** pModuleParams, int iParamCount )
 	{
-		static Settings settings;
-		return settings;
-	}
-	
-	static void SetModule( const char* strModuleName, char** pModuleParams, int iParamCount )
-	{
+		LoadStrategy.Load( strModuleName, pModuleParams, iParamCount );
 		m_strModuleName = strModuleName;
 		m_pParamTypes = pModuleParams;
 		m_iParamCount = iParamCount;
 	}
-	
+*/	
 	/*!
 		Ўаблонна€ функци€ помещени€ параметров в ассоциативный массив параметров.
 		(Ўаблонной сделана дл€ того, чтобы передавать константную ссылку)
@@ -152,7 +151,6 @@ public:
 				}
                 else				
 					throw ParamTypeErr( Param_key );    									
-				
 			}
 			else
 				throw ParamNotFound( Param_key ); 
@@ -192,24 +190,12 @@ public:
 			ƒеструктор.
 			ќчищает пам€ть, выделенную под каждый параметр.
 		*/
-		~Settings()
+		~CSettings()
       {		 
 		  ClearParams();
       }
 
 private:		
-	
-	Settings();	
-
-	static Settings* m_pInstance;
-	
-	static char** m_pParamTypes;
-	
-	static int m_iParamCount;
-
-	
-	//»м€ модул€
-	static std::string m_strModuleName;
 	
 	/*!
 		јссоциативный массив параметров, в котором
@@ -234,6 +220,84 @@ private:
 		“ип итератора массива
 	*/
 	typedef ParamType::iterator IterParamType; 				
-}; // class Settings
+}; // class CSettings
+
+//–еализаци€ загрузки параметров из файла Settings.ini
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniSettings----------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+class CIniTypeSerializer;
+
+class CIniSettings: public CSettings
+{
+public:
+	CIniSettings();
+
+	virtual ~CIniSettings();
+
+	void SetModule( const std::string& strModuleName, char** pModuleParams, int iParamCount );
+
+	static bool RegisterTypeSerializer( const std::string& strType, CIniTypeSerializer* TypeSer );
+
+private:
+
+	static std::map< std::string, CIniTypeSerializer* > m_mapSerializers;
+};
+
+// лассы, реализующие сериализацию типов
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniTypeSerializer----------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+class CIniTypeSerializer
+{
+public:
+
+	virtual void Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer ) = 0;
+};
+
+class CIniIntSerializer: public CIniTypeSerializer
+{
+public:
+
+	virtual void Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer );
+};
+
+class CIniStringSerializer: public CIniTypeSerializer
+{
+public:
+
+	virtual void Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer );
+};
+
+class CIniStringListSerializer: public CIniTypeSerializer
+{
+public:
+
+	virtual void Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer );
+};
+
+class CIniIpListSerializer: public CIniTypeSerializer
+{
+public:
+
+	virtual void Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer );
+};
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------Tools---------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+namespace Tools
+{
+	bool GetStringList( const std::string& strSource, std::list< std::string >& listDest );
+
+	struct structIp
+	{
+		int A,B,C,D;
+	};
+	
+	bool ParseIp( const std::string& strSource, structIp& resIp );
+}
+typedef CSingleton< CIniSettings > Settings;
 
 #endif 
