@@ -12,5 +12,7 @@
 #define LOG_LEVEL	"LogLevel"
 #define SCHEDULER_ADDRESS "SchedulerAddress"
 #define EVENT_PORT "EventPort"
+#define AGENT_LIST "AgentList"
+#define SCAN_AREA "ScanArea"
 
 
