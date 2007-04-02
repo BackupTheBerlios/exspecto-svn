@@ -44,14 +44,15 @@ class CDBProvider
 public:
 	virtual ~CDBProvider(){};
 //	virtual bool Initial(
-	virtual void AddFiles(pFilesStr aFileList, const string& aHostName, const string& aIPnum)=0;
+	virtual void __stdcall AddFiles(pFilesStr aFileList, const string& aHostName, const string& aIPnum)=0;
 //	virtual void AddFiles(hostRecords &Result)=0;
-	virtual bool Find(const string& aText, map<string,bool> &aParams, list<int> &Result)=0;
-	virtual bool Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
-	virtual void AddWord(int aID, const string& aPath)=0;
-	virtual void AddWordInTable(int aID, list<string> &words, bool IsPath)=0;
-	virtual void EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aDate, bool aOnlyFiles=false)=0;
-	virtual void EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0; 
+	virtual bool __stdcall Find(const string& aText, map<string,bool> &aParams, list<int> &Result)=0;
+	virtual bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
+	virtual void __stdcall AddWord(int aID, const string& aPath)=0;
+	virtual void __stdcall AddWordInTable(int aID, list<string> &words, bool IsPath)=0;
+	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aDate, bool aOnlyFiles=false)=0;
+	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0;
+  virtual char* __stdcall GetNamePlugin()=0;
 
 	void Split(string &text, string separators, list<string> &words);
 //	char* GetTimeStr(time_t iTime, char* strRes);

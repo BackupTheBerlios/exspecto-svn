@@ -28,12 +28,18 @@
  
 #include "CDBProvider.h"
 //-----------------------------------------------------------------------------
+#ifdef __BCPLUSPLUS__
+  #define __FUNCTION__ __FUNC__
+  #define _itoa itoa
+
+  #include <stdio.h>
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 //
 /*char* CDBProvider::GetTimeStr(time_t iTime, char* strRes)
 {
-	Log::instance().Trace( 120, "CDBProvider::GetTimeStr [enter]" );
+	//Log::instance().Trace( 120, "CDBProvider::GetTimeStr [enter]" );
 	try
 	{
 		struct tm *nt;
@@ -42,14 +48,14 @@
 			time( &iTm );}
 		else{ iTm = iTime;}
 		nt = gmtime( &iTm );
-		Log::instance().Trace( 180, "%d :: помещение штампа даты [%li] в буфер.", __LINE__, iTm );
+		//Log::instance().Trace( 180, "%d :: помещение штампа даты [%li] в буфер.", __LINE__, iTm );
 		if(NULL==nt)
 		{
-			Log::instance().Trace( 10,"[ERROR] CDBProvider::GetTimeStr: Некорректное значение аргумента: %li", iTm );
+			//Log::instance().Trace( 10,"[ERROR] CDBProvider::GetTimeStr: Некорректное значение аргумента: %li", iTm );
 			iTm=0;
 			if( (nt = gmtime( &iTm )) == NULL )
 			{
-				Log::instance().Trace( 5,"%d [ERROR] CDBProvider::GetTimeStr: Ошибка вызова стандартной функции", __LINE__ );
+				//Log::instance().Trace( 5,"%d [ERROR] CDBProvider::GetTimeStr: Ошибка вызова стандартной функции", __LINE__ );
 				throw;
 			}
 		}
@@ -57,11 +63,11 @@
 						nt->tm_hour, nt->tm_min, nt->tm_sec);
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 5,"CDBProvider::GetTimeStr: Возникло исключение: %s", e.what() );
+		//Log::instance().Trace( 5,"CDBProvider::GetTimeStr: Возникло исключение: %s", e.what() );
 		throw;
 	}catch(...)
 	{
-		Log::instance().Trace( 5,"CDBProvider::GetTimeStr: Возникло неизвестное исключение" );
+		//Log::instance().Trace( 5,"CDBProvider::GetTimeStr: Возникло неизвестное исключение" );
 		throw;
 	}
 	return strRes;
@@ -84,7 +90,7 @@ try
 	
 	if(!FileTimeToSystemTime(&ftWin, &stWin))
 	{
-		Log::instance().Trace( 10,"[ERROR] CDBProvider::ConvertFileTimeToUTC: Некорректное значение аргументов: %i, %i", lFTime, hFTime );
+		//Log::instance().Trace( 10,"[ERROR] CDBProvider::ConvertFileTimeToUTC: Некорректное значение аргументов: %i, %i", lFTime, hFTime );
 		return 0;			
 	}
 	nt.tm_hour = stWin.wHour;
@@ -98,7 +104,7 @@ try
 	nt.tm_isdst = 0;
 	if( (iTm = mktime(&nt)) <= 0 )
 	{
-		Log::instance().Trace( 10,"[ERROR] CDBProvider::ConvertFileTimeToUTC: Некорректное значение аргументов: %i, %i", lFTime, hFTime );
+		//Log::instance().Trace( 10,"[ERROR] CDBProvider::ConvertFileTimeToUTC: Некорректное значение аргументов: %i, %i", lFTime, hFTime );
 		time( &iTm );
 		pnt = gmtime( &iTm );
 		iTm = mktime(pnt);
@@ -109,9 +115,6 @@ try
 {
 	throw CPrvException(e.Message(), 0, __FUNCTION__);
 }catch( std::exception& e )
-{
-	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
 {
 	throw CPrvException(e, 0, __FUNCTION__);
 }catch(...)
@@ -142,7 +145,7 @@ time_t CDBProvider::ConvertFileTimeToUTC(const fileDate& aDate)
 // varsep      список символов состоящая из последовательно входящих разделитетей
 void CDBProvider::Split(string &text, string separators, list<string> &words)
 {
-	Log::instance().Trace( 120, "CDBProvider::%s [enter]", __FUNCTION__ );
+	//Log::instance().Trace( 120, "CDBProvider::%s [enter]", __FUNCTION__ );
 try
 {
 	int n = text.length();
@@ -174,14 +177,11 @@ try
 }catch( std::exception& e )
 {
 	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
-{
-	throw CPrvException(e, 0, __FUNCTION__);
 }catch(...)
 {
 	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
 }
-	Log::instance().Trace( 120, "CDBProvider::%s [exit]", __FUNCTION__ );
+	//Log::instance().Trace( 120, "CDBProvider::%s [exit]", __FUNCTION__ );
 }
 //-----------------------------------------------------------------------------
 
@@ -223,9 +223,6 @@ try
 }catch( std::exception& e )
 {
 	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
-{
-	throw CPrvException(e, 0, __FUNCTION__);
 }catch(...)
 {
 	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
@@ -248,7 +245,7 @@ CPrvException::CPrvException(const char* aText, int aLine, const char* aFunct)
 	if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
 	if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
 	i += sprintf(strError + i, "%s ", aText);
-	Log::instance().Trace( 5,"%s", strError );
+	//Log::instance().Trace( 5,"%s", strError );
 }
 //-----------------------------------------------------------------------------
 
@@ -266,7 +263,7 @@ CPrvException::CPrvException(std::exception& e, int aLine, const char* aFunct)
 	if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
 	if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
 	i += sprintf(strError + i, "%s ", tmp);
-	Log::instance().Trace( 5,"%s", strError );
+	//Log::instance().Trace( 5,"%s", strError );
 }
 //-----------------------------------------------------------------------------
 
@@ -290,3 +287,4 @@ const char* CPrvException::Message()
 }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+
