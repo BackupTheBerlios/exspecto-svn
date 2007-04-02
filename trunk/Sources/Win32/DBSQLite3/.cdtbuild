@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 3.1.0?>
+
+<ManagedProjectBuildInfo>
+<project id="DBSQLite3.cdt.managedbuild.target.gnu.cygwin.so.877732560" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
+<configuration artifactExtension="dll" artifactName="DBSQLite3" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" postbuildStep="copy dbsqlite3.dll &quot;..\..\..\Bin\dbsqlite3.dll&quot;">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.508662628" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug">
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1509271261" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug">
+<option id="gnu.cpp.compiler.option.include.paths.1342886315" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CommonFiles}&quot;"/>
+</option>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.1364690662" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug"/>
+<tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.536541255" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.148415485" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug">
+<option id="gnu.cpp.link.option.libs.1068444666" superClass="gnu.cpp.link.option.libs" valueType="libs">
+<listOptionValue builtIn="false" value="sqlite3"/>
+<listOptionValue builtIn="false" value="Common"/>
+</option>
+<option id="gnu.cpp.link.option.paths.1652366734" superClass="gnu.cpp.link.option.paths" valueType="stringList">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DBSQLite3}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CommonFiles}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon/Debug}&quot;"/>
+</option>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.1841657269" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug"/>
+<macros>
+<stringMacro name="buildPath" type="VALUE_TEXT" value="..\..\..\Bin\"/>
+</macros>
+</toolChain>
+</configuration>
+<configuration artifactExtension="dll" artifactName="DBSQLite3" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.release.774908514" name="Release" parent="cdt.managedbuild.config.gnu.cygwin.so.release">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.release.265740915" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.release">
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release.1704842089" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release"/>
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release.1030380845" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release"/>
+<tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release.1420771519" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release.1406732564" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release"/>
+<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release.1156814459" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release"/>
+</toolChain>
+</configuration>
+<macros/>
+</project>
+</ManagedProjectBuildInfo>
