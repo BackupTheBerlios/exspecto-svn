@@ -118,7 +118,8 @@ int main()
 	char tmp[255];
 try
 {
-	db = (CDBProvider*)RegisterPlugin();
+//	db = (CDBProvider*)RegisterPlugin();
+	db = new CDBSQLitProvider("C:\\test.db");
 	FileInfo(".\\*.*", FL);
 //	GenList(1000, FL);
 	map<string, int> timeCode;
