@@ -4,12 +4,12 @@
 class CEvent
 {
 public:
-	CEvent( bool bAutoReset = true )
+	CEvent( bool bAutoReset = true, BOOL bInitialState = 0 ):m_bAutoReset( bAutoReset )
 	{
-		if( bAutoReset )
+		if( m_bAutoReset )
 			m_hEv = CreateEvent( 0,0,0,0 );
 		else
-			m_hEv = CreateEvent( 0,1,0,0 );
+			m_hEv = CreateEvent( 0,1,bInitialState,0 );
 	};
 	
 	~CEvent()
@@ -31,8 +31,16 @@ public:
 	{
 		return m_hEv;
 	}
+
 	
 private:
+
+	//CEvent( CEvent& ev );
+	CEvent( const CEvent& ev );
+	//CEvent& operator=( CEvent& ev );
+	CEvent& operator=( const CEvent& ev );
+
+	bool m_bAutoReset;
 
 	HANDLE m_hEv;
 };

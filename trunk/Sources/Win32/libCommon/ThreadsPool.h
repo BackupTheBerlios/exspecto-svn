@@ -28,11 +28,11 @@ public:
 
 	bool WaitAllComplete( int iTimeout = -1 );
 
-	void WaitAllComplete( CEvent& CancelEv );
+//	void WaitAllComplete( CEvent& CancelEv );
 
 private:
 
-	void SetCompleted( int iThreadId, BOOL bCompleted );
+	void SetCompleted( int iThreadId, bool bCompleted );
 
 	SmartPtr< CThreadTask > GetTask();
 
@@ -43,9 +43,11 @@ private:
 
 	static unsigned __stdcall ThreadFunc( void* );
 
-	std::vector< BOOL > m_vecThreadsState;
+	std::vector< SmartPtr< CEvent > > m_vecThreadsStates;
 
 	CCriticalSection m_csThreadsStates;
+
+	std::vector< HANDLE > m_vecStateHandles;
 
 	std::vector< SmartPtr< CThreadTask > > m_vecTasks;
 

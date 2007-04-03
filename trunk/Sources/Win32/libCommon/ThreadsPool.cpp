@@ -12,7 +12,8 @@ CThreadsPool::CThreadsPool( int iThreadsCount ):m_Cancel( false )
 		pParams->pThis = this;
 		pParams->iId = i;
 		CloseHandle( (HANDLE)_beginthreadex( NULL, 0, ThreadFunc, (void*)pParams, 0, NULL ) );
-		m_vecThreadsState.push_back( TRUE );
+		m_vecThreadsStates.push_back( SmartPtr<CEvent>( new CEvent(false,1) ) );
+		m_vecStateHandles.push_back( *m_vecThreadsStates.back() );
 	}
 }
 
@@ -20,7 +21,7 @@ CThreadsPool::~CThreadsPool(void)
 {
 	CancelAllTasks();
 	m_Exit.Set();
-	WaitForMultipleObjects( (DWORD)m_vecThreadsState.size(), (HANDLE*)&m_vecThreadsState[0], TRUE, 10000 );
+	WaitForMultipleObjects( (DWORD)m_vecStateHandles.size(), (HANDLE*)&m_vecStateHandles[0], TRUE, 10000 );
 	//TODO: Ќужно ли ждать завершени€ всех потоков?
 }
 
@@ -39,28 +40,25 @@ void CThreadsPool::CancelAllTasks()
 bool CThreadsPool::WaitAllComplete( int iTimeout )
 {
 	DWORD dwRes = 0;
-	if( ( WAIT_TIMEOUT == ( dwRes = WaitForMultipleObjects( (DWORD)m_vecThreadsState.size(), (HANDLE*)&m_vecThreadsState[0], TRUE, iTimeout ) )
+	if( ( WAIT_TIMEOUT == ( dwRes = WaitForMultipleObjects( (DWORD)m_vecStateHandles.size(), (HANDLE*)&m_vecStateHandles[0], TRUE, iTimeout ) )
 		|| ( WAIT_FAILED == dwRes ) ) )
 		return false;
 	return true;
 }
-
+/*
 void CThreadsPool::WaitAllComplete( CEvent& CancelEv )
 {
-	m_csThreadsStates.Enter();
-	m_vecThreadsState.push_back( (BOOL)( (HANDLE)CancelEv ) );
-	m_csThreadsStates.Leave();
-	WaitForMultipleObjects( (DWORD)m_vecThreadsState.size(), (HANDLE*)&m_vecThreadsState[0], TRUE, INFINITE );
-	m_csThreadsStates.Enter();
-	m_vecThreadsState.pop_back();
-	m_csThreadsStates.Leave();
-}
+	//m_vecStateHandles.push_back( CancelEv );
+	WaitForMultipleObjects( (DWORD)m_vecStateHandles.size(), (HANDLE*)&m_vecStateHandles[0], TRUE, INFINITE );
+	//m_vecStateHandles.pop_back();
 
-void CThreadsPool::SetCompleted( int iThreadId, BOOL bCompleted )
+}
+*/
+void CThreadsPool::SetCompleted( int iThreadId, bool bCompleted )
 {
 	CLock lock( m_csThreadsStates );
-	if( ( iThreadId >= 0 ) && ( iThreadId < (int)m_vecThreadsState.size() ) )
-		m_vecThreadsState[ iThreadId ] = bCompleted;
+	if( ( iThreadId >= 0 ) && ( iThreadId < (int)m_vecThreadsStates.size() ) )
+		bCompleted?m_vecThreadsStates[ iThreadId ]->Set():m_vecThreadsStates[ iThreadId ]->Reset();
 }
 
 SmartPtr< CThreadTask > CThreadsPool::GetTask()
@@ -76,7 +74,7 @@ unsigned __stdcall CThreadsPool::ThreadFunc( void* param )
 	structParam* params = (structParam*)param;
 	CThreadsPool* pThis = params->pThis;
 	int iId = params->iId;
-	delete param;
+	delete params;
 	DWORD dwRes;
 
 	for(;;)
