@@ -47,7 +47,7 @@ CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner
 {
 }
 
-void CScanThreadTask::AddResData( std::vector< std::string >& vecResult )
+void CScanThreadTask::GetResData( std::vector< std::string >& vecResult )
 {
 	vecResult.insert( vecResult.end(), m_vecData.begin(), m_vecData.end() );
 }
@@ -65,6 +65,8 @@ void CStartScan::Load( CPacket& Msg )
 		//получаем очередной адрес
 		Msg.GetAddress( strAddress );
 		m_vecAddresses.push_back( strAddress );
+		m_strDescription += strAddress;
+		m_strDescription += " ";
 	}	
 }	
 	
@@ -110,7 +112,10 @@ void CStartScan::Execute()
 			break;
 		}
 	}
-	pool.WaitAllComplete( m_CancelEv );
+	pool.WaitAllComplete();
+	m_vecData.clear();
+	for( std::vector< SmartPtr< CScanThreadTask > >::iterator It = vecThreadTasks.begin(); It != vecThreadTasks.end(); It++ )
+		(*It)->GetResData( m_vecData );
 	CPacket Event;
 	BYTE bEvent = ScanComplete;
 	Event.AddParam( &bEvent, 1 );

@@ -119,7 +119,7 @@ public:
 
 		virtual void Execute( const CEvent& CancelEvent );
 
-		void AddResData( std::vector< std::string >& vecResult );
+		void GetResData( std::vector< std::string >& vecResult );
 
 	private:
 
@@ -138,11 +138,6 @@ public:
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
 	{
 		m_strDescription = "Сканирование адресов:";
-		for( std::vector< std::string >::const_iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
-		{
-			m_strDescription += *It;
-			m_strDescription += " ";
-		}
 	};
 	
 	virtual bool Immidiate();

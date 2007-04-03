@@ -63,10 +63,10 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло исключение: %s", e.what() );
-	}catch( ... )
+	}/*catch( ... )
 	{
 		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло неизвестное исключение" );
-	}	
+	}*/	
 	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Завершение потока обработчика команд" );
 	return 0;
 }
