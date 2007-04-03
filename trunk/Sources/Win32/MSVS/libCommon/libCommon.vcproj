@@ -109,6 +109,9 @@
 				RelativePath="..\..\libCommon\SettingsContainer.cpp">
 			</File>
 			<File
+				RelativePath="..\..\libCommon\ThreadsPool.cpp">
+			</File>
+			<File
 				RelativePath="..\..\libCommon\TrayManagement.cpp">
 			</File>
 		</Filter>
@@ -139,6 +142,9 @@
 			</File>
 			<File
 				RelativePath="..\..\libCommon\SmartPtr.hpp">
+			</File>
+			<File
+				RelativePath="..\..\libCommon\ThreadsPool.h">
 			</File>
 			<File
 				RelativePath="..\..\libCommon\TrayManagement.h">

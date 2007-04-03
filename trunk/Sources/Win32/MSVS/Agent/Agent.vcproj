@@ -179,9 +179,6 @@ copy $(TargetPath) ..\..\..\..\bin;
 				RelativePath=".\resource.h">
 			</File>
 			<File
-				RelativePath=".\resrc1.h">
-			</File>
-			<File
 				RelativePath="..\..\Agent\ServerHandler.h">
 			</File>
 			<File
