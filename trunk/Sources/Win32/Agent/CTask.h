@@ -8,6 +8,7 @@
 #include "Container.hpp"
 #include "PluginLoadStrategy.h"
 #include "CScanner.h"
+#include "ThreadsPool.h"
 
 class CTask
 {
@@ -109,11 +110,31 @@ public:
 	
 };
 
+	class CScanThreadTask: public CThreadTask
+	{
+	public:
 
+		CScanThreadTask( const std::string& strAddr, CScanner* pScanner );
+		virtual ~CScanThreadTask(){};
+
+		virtual void Execute( const CEvent& CancelEvent );
+
+		void AddResData( std::vector< std::string >& vecResult );
+
+	private:
+
+		std::string m_strAddr;
+
+		std::vector< std::string > m_vecData;
+
+		CScanner* m_pScanner;
+	};
 class CStartScan: public CTask
 {
 public:
 	
+
+
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
 	{
 		m_strDescription = "Сканирование адресов:";
