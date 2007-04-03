@@ -64,8 +64,7 @@ void CIniSettings::SetModule( const std::string& strModuleName, char** pModulePa
 		{
 			strTmp = strBuffer;
 			//Удаляем пробелы
-			std::string::iterator itNewEnd = std::remove( strTmp.begin(), strTmp.end() - 1, ' ' );
-			strTmp.resize( itNewEnd - strTmp.begin() );
+			strTmp.erase( std::remove( strTmp.begin(), strTmp.end() - 1, ' ' ), strTmp.end() );
 			//Сохраняем параметр до знака = и после 
 			if( ( iTmp = (int)strTmp.find( '=' ) ) != std::string::npos )
 			{
@@ -192,13 +191,13 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
             for( int iAInd = Ip1.A; iAInd <= Ip2.A; iAInd++ )
 			{
 				itoa( iAInd, strA, 10 );
-				for( int iBInd = Ip1.B; iBInd <= Ip2.B; iBInd++ )
+				for( int iBInd = Ip1.B; ( (iAInd < Ip2.A) && (iBInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd <= Ip2.B) ); iBInd++ )
 				{
 					itoa( iBInd, strB, 10 );
-					for( int iCInd = Ip1.C; iCInd <= Ip2.C; iCInd++ )
+					for( int iCInd = Ip1.C; ( (iBInd < Ip2.B) && (iCInd < 255) ) || ( (iBInd == Ip2.B) && (iCInd <= Ip2.C) ); iCInd++ )
 					{
 						itoa( iCInd, strC, 10 );
-						for( int iDInd = Ip1.D; iDInd <= Ip2.D; iDInd++ )
+						for( int iDInd = Ip1.D; ( (iCInd < Ip2.C) && (iDInd < 255) ) || ( (iCInd == Ip2.C) && (iDInd <= Ip2.D) ); iDInd++ )
 						{
                             itoa( iDInd, strD, 10 );
 							strTmpIp.clear();
@@ -238,8 +237,7 @@ bool Tools::GetStringList( const std::string& strSource, std::list< std::string 
 		strTmp = strSource.substr( iStartPos, iEndPos );
 		iStartPos = iEndPos + 1;
 		//Удаляем пробелы
-		std::string::iterator itNewEnd = std::remove( strTmp.begin(), strTmp.end() - 1, ' ' );
-		strTmp.resize( itNewEnd - strTmp.begin() );
+		strTmp.erase( std::remove( strTmp.begin(), strTmp.end() - 1, ' ' ), strTmp.end() );
 		listDest.push_back( strTmp );
 	}
 	//дочитываем до конца

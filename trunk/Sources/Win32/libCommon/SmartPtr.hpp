@@ -51,15 +51,25 @@ public:
 		m_csMap.Leave();
 	}
 	
-	SmartPtr( const SmartPtr< T, AllocationPolicy >& SmartPointer )
+	template< class T1 >
+	SmartPtr( const SmartPtr< T1 >& SmartPointer )
 	{
-		m_pPointer = SmartPointer.m_pPointer;
+		m_pPointer = SmartPointer.get();
 		m_csMap.Enter();
 		m_mapRefs[ m_pPointer ]++;
 		m_csMap.Leave();
 	}
 	
-	bool operator==( const SmartPtr< T, AllocationPolicy >& SmartPointer )
+	SmartPtr( const SmartPtr< T >& SmartPointer )
+	{
+		m_pPointer = SmartPointer.get();
+		m_csMap.Enter();
+		m_mapRefs[ m_pPointer ]++;
+		m_csMap.Leave();
+	}
+
+	template< class T1 >
+	bool operator==( const SmartPtr< T1 >& SmartPointer )
 	{
 		return m_pPointer==SmartPointer.m_pPointer;
 	}
@@ -80,9 +90,10 @@ public:
 		m_pPointer = pPointer;
 	}
 	
-	SmartPtr& operator=( const SmartPtr< T, AllocationPolicy >& SmartPointer )
+	template< class T1 >
+	SmartPtr& operator=( const SmartPtr< T1 >& SmartPointer )
 	{
-		if( this != &SmartPointer && m_pPointer != SmartPointer.m_pPointer )
+		if( this != &SmartPointer && m_pPointer != SmartPointer.get() )
 		{
 			if( NULL != m_pPointer )
 			{
@@ -96,7 +107,31 @@ public:
 					AllocationPolicy::Destroy( m_pPointer );
 				m_csMap.Leave();
 			}
-			m_pPointer = SmartPointer.m_pPointer;
+			m_pPointer = SmartPointer.get();
+			m_csMap.Enter();
+			m_mapRefs[ m_pPointer ]++;
+			m_csMap.Leave();
+		}
+		return *this;
+	}
+
+	SmartPtr& operator=( const SmartPtr< T >& SmartPointer )
+	{
+		if( this != &SmartPointer && m_pPointer != SmartPointer.get() )
+		{
+			if( NULL != m_pPointer )
+			{
+				m_csMap.Enter();
+				m_mapRefs[ m_pPointer ]--;
+				//TODO:
+				if( m_mapRefs[ m_pPointer ] < 0 )
+					Log::instance().Trace( 0, "SmartPtr: MEMORY LEAK" );
+
+				if( 0 == m_mapRefs[ m_pPointer ] )
+					AllocationPolicy::Destroy( m_pPointer );
+				m_csMap.Leave();
+			}
+			m_pPointer = SmartPointer.get();
 			m_csMap.Enter();
 			m_mapRefs[ m_pPointer ]++;
 			m_csMap.Leave();
@@ -125,7 +160,7 @@ public:
 		}
 	}
 	
-	T* get()
+	T* get()const
 	{
 		return m_pPointer;
 	}
@@ -166,6 +201,7 @@ public:
 	{
 		return *m_pPointer;
 	}
+
 	
 private:
 	
