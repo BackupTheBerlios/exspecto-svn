@@ -1,5 +1,41 @@
 #ifndef CDBPROVIDER_H_
 #define CDBPROVIDER_H_
+/////////////////////////////////////////////////////////////////////////////
+// Схема базы данных                                                       //
+//                                                                         //
+// TableHostes  таблица описывает найденые в сети компьютеры               //
+//   IDhost        INTEGER PRIMARY KEY Индекс компьютера                   //
+//   IPNum         CHAR(15)       IP компьютера                            //
+//   HostName      TINYTEXT       Имя компьютера                           //
+//   DateRef       DATETIME       Время последненго обновления информации  //
+// ----------------------------------------------------------------------- //
+// TableFiles   описание файлов и привязка их к компьютеру                 //
+//   IDfile        INTEGER PRIMARY KEY Индекс файла                        //
+//   IDhost        INT            Индекс компьютера                        //
+//   FileName      TINYTEXT       Имя файла                                //
+//   FileSize      INT            Размер файла                             //
+//   FileTimeCr    DATETIME       Время создания файла                     //
+// ----------------------------------------------------------------------- //
+// TableWords   таблица всех найденых слов                                 //
+// { Пути к файлам разбиваются на слова (идиомы) и заносятся в таблицу.  } //
+// { Это сделано для ускорения поиска выражений.                         } //
+//   IDword        INTEGER PRIMARY KEY Индекс слова                        //
+//   Word          TINYTEXT       "Идиома" (слово)                         //
+// ----------------------------------------------------------------------- //
+// TableWordInFiles   соответствие слов файлам и флаг принадлежности слова //
+//   IDword        INT            Индекс слова                             //
+//   IDfile        INT            Индекс файла                             //
+//   IsPath        BOOL           "Идиома" - часть пути?                   //
+/////////////////////////////////////////////////////////////////////////////
+ 
+//-----------------------------------------------------------------------------
+#ifdef __BCPLUSPLUS__
+  #define __FUNCTION__ __FUNC__
+  #define _itoa itoa
+
+  #include <stdio.h>
+#endif
+
 #include "constants.h"
 #include "CLog.h"
 #include <string>
@@ -43,9 +79,7 @@ class CDBProvider
 {
 public:
 	virtual ~CDBProvider(){};
-//	virtual bool Initial(
 	virtual void __stdcall AddFiles(pFilesStr aFileList, const string& aHostName, const string& aIPnum)=0;
-//	virtual void AddFiles(hostRecords &Result)=0;
 	virtual bool __stdcall Find(const string& aText, map<string,bool> &aParams, list<int> &Result)=0;
 	virtual bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
 	virtual void __stdcall AddWord(int aID, const string& aPath)=0;
@@ -53,22 +87,55 @@ public:
 	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aDate, bool aOnlyFiles=false)=0;
 	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0;
   virtual char* __stdcall GetNamePlugin()=0;
-
-	void Split(string &text, string separators, list<string> &words);
-//	char* GetTimeStr(time_t iTime, char* strRes);
-	void FormatSQLQuery(const string& aText, string& aResult);
-	time_t ConvertFileTimeToUTC(DWORD lFTime, DWORD hFTime); 
-	time_t ConvertFileTimeToUTC(const fileDate& aDate); 
-private:
 };
 
 class CPrvException
 {
 	char *strError;
 	public:
-		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL);
-		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL);
-		virtual ~CPrvException();
-		const char* Message();
+		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL)
+		{
+			int iSize = strlen(aText)+1;
+			int i=0;
+			if( aLine != 0 ) iSize += 15;
+			if( aFunct != NULL ) iSize += strlen(aFunct)+3;
+			iSize += 5; // на всякий случай :)
+			strError = new char[iSize];
+			if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
+			if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
+			i += sprintf(strError + i, "%s ", aText);
+	//Log::instance().Trace( 5,"%s", strError );
+		}
+		//-------------------------------------------------------------------------
+		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL)
+		{
+			const char* tmp = e.what(); 
+			int iSize = strlen(tmp)+1;
+			int i=0;
+			if( aLine != 0 ) iSize += 15;
+			if( aFunct != NULL ) iSize += strlen(aFunct)+3;
+			iSize += 5; // на всякий случай :)
+			strError = new char[iSize];
+			if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
+			if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
+			i += sprintf(strError + i, "%s ", tmp);
+	//Log::instance().Trace( 5,"%s", strError );
+		}
+		//-------------------------------------------------------------------------
+		virtual ~CPrvException()
+		{
+			if( strError )
+			{
+				delete[] strError;
+				strError = NULL;
+			}
+		}
+		//-------------------------------------------------------------------------
+		const char* Message()
+		{
+			return strError;
+		}
+		//-------------------------------------------------------------------------
 };
+
 #endif /*CDBPROVIDER_H_*/
