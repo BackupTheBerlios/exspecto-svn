@@ -94,16 +94,17 @@ protected:
 	void Pop( BYTE *pbBuf, int iCount );
 
 	//Внутренний буфер,содержащий пакет
-	BYTE* m_pbBuf;
+	//BYTE* m_pbBuf;
+	std::vector< BYTE > m_vecBuf;
 
 	//Размер данных,содержащихся в буфере
-	int	m_iDataSize;
+	//int	m_iDataSize;
 
 	//Кол-во памяти,отведенной под буфер
-	int m_iBufSize;
+	//int m_iBufSize;
 	
 	//Текущее смещение от начала пакета
-	int m_iOffset;
+	//int m_iOffset;
 };
 
 //Отправить пакет в сокет
