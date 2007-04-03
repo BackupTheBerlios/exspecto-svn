@@ -1,4 +1,4 @@
-/*#include <string>
+#include <string>
 #include <windows.h>
 #include <stdio.h>
 //#include <dir.h>
@@ -8,7 +8,7 @@
 //#include <memory.h>
 //#include <string.h>
 //#include "memleakdetector.h"
-#include "CSQLite3.h"
+#include "CDBSQLite3.h"
 
 typedef bool (__fastcall *TTimeCheck)(CDBProvider& db, filesStr& aFL, map<string,int>& aTM,...);
 
@@ -104,7 +104,8 @@ bool TimeProc(TTimeCheck fn, CDBProvider& db, filesStr& aFL, map<string,int>& aT
 	dwDur = GetTickCount() - dwStart;
 	aTM[fNm]=dwDur;
 }
-int main_T()
+
+int main()
 {
 	bool bTimeDbg = false;
 	bool bResult;
@@ -117,7 +118,7 @@ int main_T()
 	char tmp[255];
 try
 {
-	db = new CDBSQLitProvider("c:\\test.db");
+	db = (CDBProvider*)RegisterPlugin();
 	FileInfo(".\\*.*", FL);
 //	GenList(1000, FL);
 	map<string, int> timeCode;
@@ -168,4 +169,3 @@ try
 	
 	return resVal;
 }
-*/
