@@ -5,6 +5,7 @@
 //---------------------------------------------------------------------------
 #include "CDBProvider.h"
 #include "CppSQLite3.h"
+#include "tools.h"
 
 using namespace std;
 

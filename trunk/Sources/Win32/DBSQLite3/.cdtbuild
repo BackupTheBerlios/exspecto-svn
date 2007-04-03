@@ -3,7 +3,7 @@
 
 <ManagedProjectBuildInfo>
 <project id="DBSQLite3.cdt.managedbuild.target.gnu.cygwin.so.877732560" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
-<configuration artifactExtension="dll" artifactName="DBSQLite3" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" postbuildStep="copy dbsqlite3.dll &quot;..\..\..\Bin\dbsqlite3.dll&quot;">
+<configuration artifactExtension="dll" artifactName="DBSQLite3" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" postbuildStep="cp dbsqlite3.dll &quot;../../../../Bin/dbsqlite3.dll&quot;">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.508662628" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug">
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1509271261" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug">
 <option id="gnu.cpp.compiler.option.include.paths.1342886315" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -24,6 +24,8 @@
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon/Debug}&quot;"/>
 </option>
+<option id="gnu.cpp.link.option.implname.223877116" superClass="gnu.cpp.link.option.implname" value="dbsqlite3.lib" valueType="string"/>
+<option id="gnu.cpp.link.option.defname.702585667" superClass="gnu.cpp.link.option.defname" value="dbsqlite3.def" valueType="string"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.1841657269" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug"/>
 <macros>

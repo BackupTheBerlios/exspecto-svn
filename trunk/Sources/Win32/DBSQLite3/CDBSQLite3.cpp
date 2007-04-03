@@ -150,7 +150,7 @@ try
  	for ( Cur = (*aFileList).begin(); Cur != (*aFileList).end(); Cur++ )
 	{
 		//Log::instance().Trace( 185, "%d :: Добавляем новую запись [%s]", __LINE__,  (*Cur).FileName.c_str());
-		ftm = ConvertFileTimeToUTC((*Cur).FDate); 
+		ftm = Tools::ConvertFileTimeToUTC((*Cur).FDate); 
 		bufSQL.format("insert into TableFiles values(NULL, %d, %Q, %d, %d);", i, (*Cur).FileName.c_str(), (*Cur).FileSize, ftm);
 		//Log::instance().Trace( 190, "%d :: Обращение к БД", __LINE__);
 		db.execDML(bufSQL);
@@ -210,7 +210,7 @@ try
 	if( n>=0 ) // если слешь найден то фраза слева от слеша это путь
 	{
 		tmp = aPath.substr(0,n);
-		Split(tmp, sepFile, wrd); 
+		Tools::Split(tmp, sepFile, wrd); 
 		AddWordInTable(aID, wrd, true);
 	}
 	wrd.clear();
@@ -218,7 +218,7 @@ try
 	if( (n+1)<(int)aPath.size() ) //если после слеша есть символы то это имя файла
 	{
 		tmp = aPath.substr(n+1,aPath.size()-(n+1));
-		Split(tmp, sepFile, wrd); 
+		Tools::Split(tmp, sepFile, wrd); 
 		AddWordInTable(aID, wrd, false);
 	}
 }catch( CPrvException& e )
@@ -321,8 +321,8 @@ try
 	list<int>::iterator idwPtr, idfPtr;
 	string temp="";
 	int idT;
-	FormatSQLQuery(aText, temp);
-/*	Split(temp, sepFile, wrd);
+	Tools::FormatSQLQuery(aText, temp);
+/*	Tools::Split(temp, sepFile, wrd);
 
   for (wptr=wrd.begin(); wptr != wrd.end(); ++wptr)
   {
@@ -489,7 +489,7 @@ try
 // дата в формате принятом для файлов
 void __stdcall CDBSQLitProvider::EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aFileDate, bool aOnlyFiles)
 {
-		EraseHost(aHostName, aIPnum, ConvertFileTimeToUTC(aFileDate), aOnlyFiles);
+		EraseHost(aHostName, aIPnum, Tools::ConvertFileTimeToUTC(aFileDate), aOnlyFiles);
 }
 //-----------------------------------------------------------------------------
 
@@ -513,7 +513,7 @@ try
   		temp = " WHERE ";
   	else temp += " AND ";
   	temp += "HostName = '"; 
-  	FormatSQLQuery(aHostName, temp);
+  	Tools::FormatSQLQuery(aHostName, temp);
   	temp += "'";
   }
 
