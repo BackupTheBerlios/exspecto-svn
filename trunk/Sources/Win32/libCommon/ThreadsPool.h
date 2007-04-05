@@ -5,6 +5,7 @@
 #include "CriticalSection.hpp"
 #include "Event.hpp"
 #include <vector>
+#include "Semaphore.hpp"
 
 class CThreadTask
 {
@@ -26,11 +27,13 @@ public:
 
 	void CancelAllTasks();
 
-	bool WaitAllComplete( int iTimeout = -1 );
+//	bool WaitAllComplete( int iTimeout = -1 );
 
-//	void WaitAllComplete( CEvent& CancelEv );
+	bool WaitAllComplete( CEvent& CancelEv );
 
 private:
+
+	void LogStates();
 
 	void SetCompleted( int iThreadId, bool bCompleted );
 
@@ -47,17 +50,17 @@ private:
 
 	CCriticalSection m_csThreadsStates;
 
-	std::vector< HANDLE > m_vecStateHandles;
-
 	std::vector< SmartPtr< CThreadTask > > m_vecTasks;
 
 	CCriticalSection m_csTasks;
 
-	CEvent m_TaskAdded;
+	CSemaphore m_TasksSem;
 
 	CEvent m_Cancel;
 
 	CEvent m_Exit;
+
+	CEvent m_TasksEmpty;
 };
 
 #endif

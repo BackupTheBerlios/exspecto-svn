@@ -11,9 +11,10 @@ class AllocNew
 {
 public:
 	
-	static void Destroy( T* pointer )
+	static void Destroy( T*& pointer )
 	{
 		delete pointer;
+		pointer = NULL;
 	};
 	
 };
@@ -23,9 +24,10 @@ class AllocNewArray
 {
 public:
 	
-	static void Destroy( T* pointer )
+	static void Destroy( T*& pointer )
 	{
 		delete[] pointer;
+		pointer = NULL;
 	};
 };
 
@@ -33,9 +35,10 @@ template< class T >
 class AllocMalloc
 {
 public:	
-	static void Destroy( T* pointer )
+	static void Destroy( T*& pointer )
 	{
 		free( pointer );
+		pointer = NULL;
 	};
 };
 
@@ -48,43 +51,27 @@ public:
 	
 	SmartPtr( T* pPointer ):m_pPointerImpl( NULL )
 	{
-		/*
-		m_csMap.Enter();
-		m_mapRefs[ pPointer ]++;
-		m_csMap.Leave();
-		*/
 		m_pPointerImpl = new Ref;
 		m_pPointerImpl->pPointer = pPointer;
 		m_pPointerImpl->iRefCount = 1;
 		
 	}
 	
-	template< class T1 >
-	SmartPtr( SmartPtr< T1 >& SmartPointer ):m_pPointerImpl( NULL )
+	template< class T1, class T2 >
+	SmartPtr( SmartPtr< T1, T2 >& SmartPointer ):m_pPointerImpl( NULL )
 	{
-		/*
-		m_pPointer = SmartPointer.get();
-		m_csMap.Enter();
-		m_mapRefs[ m_pPointer ]++;
-		m_csMap.Leave();
-		*/
 		if( SmartPointer.m_pPointerImpl != NULL )
 		{
 			m_pPointerImpl = reinterpret_cast<SmartPtr<T>::Ref*>( SmartPointer.m_pPointerImpl );
 			m_pPointerImpl->cs.Enter();
-			m_pPointerImpl->iRefCount = 1;
+			++m_pPointerImpl->iRefCount;
 			m_pPointerImpl->cs.Leave();
 		}
 	}
 	
-	SmartPtr( const SmartPtr< T >& SmartPointer ):m_pPointerImpl( NULL )
+
+	SmartPtr( const SmartPtr< T, AllocationPolicy >& SmartPointer ):m_pPointerImpl( NULL )
 	{
-		/*
-		m_pPointer = SmartPointer.get();
-		m_csMap.Enter();
-		m_mapRefs[ m_pPointer ]++;
-		m_csMap.Leave();
-		*/
 		if( SmartPointer.m_pPointerImpl != NULL )
 		{
 			m_pPointerImpl = SmartPointer.m_pPointerImpl;
@@ -95,34 +82,20 @@ public:
 
 	}
 
-	template< class T1 >
-	bool operator==( const SmartPtr< T1 >& SmartPointer )
+
+	template< class T1, class T2 >
+	bool operator==( const SmartPtr< T1, AllocationPolicy >& SmartPointer )
 	{
 		return m_pPointerImpl->pPointer == SmartPointer.m_pPointerImpl->pPointer;
 	}
 
 	SmartPtr& operator=( T* pPointer )
 	{
-/*
-		if( NULL != m_pPointer )
-		{
-			m_csMap.Enter();
-			m_mapRefs[ m_pPointer ]--;
-			//TODO:
-			if( m_mapRefs[ m_pPointer ] < 0 )
-				Log::instance().Trace( 0, "SmartPtr: MEMORY LEAK" );
-			if( 0 == m_mapRefs[ m_pPointer ] )
-				AllocationPolicy::Destroy( m_pPointer );
-			m_csMap.Leave();
-		}
-		m_pPointer = pPointer;
-*/
 		if( NULL != m_pPointerImpl )
 		{
 			m_pPointerImpl->cs.Enter();
 			--m_pPointerImpl->iRefCount;
-			if( m_pPointerImpl->iRefCount < 0 )
-				Log::instance().Trace( 0, "SmartPtr: MEMORY LEAK" );
+			assert( m_pPointerImpl->iRefCount >= 0 && "SmartPtr: MEMORY LEAK"  );
 			
 			if( 0 == m_pPointerImpl->iRefCount  )
 			{
@@ -139,31 +112,10 @@ public:
 
 	}
 	
-	template< class T1 >
-	SmartPtr& operator=( const SmartPtr< T1 >& SmartPointer )
+	template< class T1, class T2 >
+	SmartPtr& operator=( const SmartPtr< T1, T2 >& SmartPointer )
 	{
-		/*
-		if( this != &SmartPointer && m_pPointer != SmartPointer.get() )
-		{
-			if( NULL != m_pPointer )
-			{
-				m_csMap.Enter();
-				m_mapRefs[ m_pPointer ]--;
-				//TODO:
-				if( m_mapRefs[ m_pPointer ] < 0 )
-					Log::instance().Trace( 0, "SmartPtr: MEMORY LEAK" );
-
-				if( 0 == m_mapRefs[ m_pPointer ] )
-					AllocationPolicy::Destroy( m_pPointer );
-				m_csMap.Leave();
-			}
-			m_pPointer = SmartPointer.get();
-			m_csMap.Enter();
-			m_mapRefs[ m_pPointer ]++;
-			m_csMap.Leave();
-		}
-		*/
-		if( this != &SmartPointer && m_pPointerImpl != SmartPointer.m_pPointerImpl )
+		if( ( this != &SmartPointer ) && ( m_pPointerImpl != SmartPointer.m_pPointerImpl ) )
 		{
 			if( NULL != m_pPointerImpl )
 			{
@@ -175,6 +127,7 @@ public:
 					m_pPointerImpl->cs.Leave();
 					AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
 					delete m_pPointerImpl;
+					m_pPointerImpl = NULL;
 				}else
 					m_pPointerImpl->cs.Leave();
 			}
@@ -186,30 +139,9 @@ public:
 		return *this;
 	}
 
-	SmartPtr& operator=( const SmartPtr< T >& SmartPointer )
+	SmartPtr& operator=( const SmartPtr< T, AllocationPolicy >& SmartPointer )
 	{
-		/*
-		if( this != &SmartPointer && m_pPointer != SmartPointer.get() )
-		{
-			if( NULL != m_pPointer )
-			{
-				m_csMap.Enter();
-				m_mapRefs[ m_pPointer ]--;
-				//TODO:
-				if( m_mapRefs[ m_pPointer ] < 0 )
-					Log::instance().Trace( 0, "SmartPtr: MEMORY LEAK" );
-
-				if( 0 == m_mapRefs[ m_pPointer ] )
-					AllocationPolicy::Destroy( m_pPointer );
-				m_csMap.Leave();
-			}
-			m_pPointer = SmartPointer.get();
-			m_csMap.Enter();
-			m_mapRefs[ m_pPointer ]++;
-			m_csMap.Leave();
-		}
-		*/
-		if( this != &SmartPointer && m_pPointerImpl != SmartPointer.m_pPointerImpl )
+		if( ( this != &SmartPointer ) && ( m_pPointerImpl != SmartPointer.m_pPointerImpl ) )
 		{
 			if( NULL != m_pPointerImpl )
 			{
@@ -221,6 +153,7 @@ public:
 					m_pPointerImpl->cs.Leave();
 					AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
 					delete m_pPointerImpl;
+					m_pPointerImpl = NULL;
 				}else
 					m_pPointerImpl->cs.Leave();
 			}
@@ -239,20 +172,6 @@ public:
 	 
 	virtual ~SmartPtr()
 	{
-		/*
-		if( NULL != m_pPointer )
-		{
-			m_csMap.Enter();
-			m_mapRefs[ m_pPointer ]--;
-			//TODO:
-			if( m_mapRefs[ m_pPointer ] < 0 )
-				Log::instance().Trace( 0, "SmartPtr: MEMORY LEAK" );
-
-			if( 0 == m_mapRefs[ m_pPointer ] )
-				AllocationPolicy::Destroy( m_pPointer );
-			m_csMap.Leave();
-		}
-		*/
 		if( NULL != m_pPointerImpl )
 		{
 			m_pPointerImpl->cs.Enter();
@@ -263,6 +182,7 @@ public:
 				m_pPointerImpl->cs.Leave();
 				AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
 				delete m_pPointerImpl;
+				m_pPointerImpl = NULL;
 			}else
 				m_pPointerImpl->cs.Leave();
 		}
@@ -278,23 +198,6 @@ public:
 
 	void Release()
 	{
-		/*
-		if( NULL != m_pPointer )
-		{
-			m_csMap.Enter();
-			m_mapRefs[ m_pPointer ]--;
-			//TODO:
-			if( m_mapRefs[ m_pPointer ] < 0 )
-				Log::instance().Trace( 0, "SmartPtr: MEMORY LEAK" );
-
-			if( 0 == m_mapRefs[ m_pPointer ] )
-			{
-				AllocationPolicy::Destroy( m_pPointer );
-				m_pPointer = NULL;
-			}
-			m_csMap.Leave();
-		}
-		*/
 		if( NULL != m_pPointerImpl )
 		{
 			m_pPointerImpl->cs.Enter();
@@ -337,18 +240,9 @@ private:
 		int iRefCount;
 		T* pPointer;
 	};
-/*	T* m_pPointer;
-	
-	static std::map< T*, int > m_mapRefs;
-
-	static CCriticalSection m_csMap;
-*/
 
 	Ref* m_pPointerImpl;
 };
 
-//template< class T, class AllocationPolicy > std::map< T*, int > SmartPtr< T, AllocationPolicy >::m_mapRefs;
-
-//template< class T, class AllocationPolicy > CCriticalSection SmartPtr< T, AllocationPolicy >::m_csMap;
 
 #endif /*CSMARTPTR_H_*/

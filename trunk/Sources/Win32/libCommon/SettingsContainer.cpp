@@ -178,7 +178,6 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 			listIp.push_back( *It );
 		}else
 		{
-			std::string strIp1, strIp2;
 			Tools::structIp Ip1, Ip2;
 			if( !Tools::ParseIp( It->substr( 0, iDelimPos ), Ip1 )
 			  ||!Tools::ParseIp( It->substr( iDelimPos+1, It->size() - iDelimPos ), Ip2 ) )
