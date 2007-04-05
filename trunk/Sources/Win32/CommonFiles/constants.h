@@ -14,5 +14,8 @@
 #define EVENT_PORT "EventPort"
 #define AGENT_LIST "AgentList"
 #define SCAN_AREA "ScanArea"
-
-
+#define DB_FILE "DBFileName"
+#define DB_HOST "DBHost"
+#define DB_NAME "DBDataBaseName"
+#define DB_USER "DBUserName"
+#define DB_PASSWORD "DBPassword"
