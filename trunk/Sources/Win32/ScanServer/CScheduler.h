@@ -46,10 +46,12 @@ private:
 	std::auto_ptr< CStartTrigger > m_pTrigger;
 
 	static unsigned _stdcall fnListenThreadProc(  void* pParameter );
+
+//	static unsigned _stdcall fnMainThreadProc(  void* pParameter );
 	
 	CEvent m_CloseEv;
 	
-	HANDLE m_hListenThread;
+	HANDLE m_hListenThread, m_hMainThread;
 	
 	CServerSocket m_EventSock;
 

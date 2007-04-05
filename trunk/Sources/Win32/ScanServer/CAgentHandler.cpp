@@ -11,7 +11,7 @@
 #define RECEIVE_BUF_SIZE 255
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
-														   ,m_bFinished( false )
+														   ,m_ScanFinished( false )
 {
 	m_pConnectionHandler = SmartPtr< CConnectionHandler >( new CConnectionHandler( this ) );
 	//подготавливаем приемный буфер
@@ -46,7 +46,6 @@ void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 	m_Sock.Send( pBuf, iSize );
 
 	int iCount;
-	int iOffset = 0;
 	bool bEnd = false;
 	//Получаем ответ на сообщение
 	while( !bEnd && ( iCount = m_Sock.Receive( &m_vecRecvBuf[0], (int)m_vecRecvBuf.size() ) ) > 0 )
@@ -108,18 +107,24 @@ void CAgentHandler::OnConnection( SmartPtr< CSocket > pSocket )
 
 void CAgentHandler::OnMessage( CPacket& Msg )
 {
-	BYTE bCommandId;
-	Msg.GetCommandId( bCommandId );
-	switch( bCommandId )
+	try{
+		BYTE bCommandId;
+		Msg.GetCommandId( bCommandId );
+		switch( bCommandId )
+		{
+			case ScanComplete:
+				Log::instance().Trace( 90, "CAgentHandler::OnMessage: Сканирование закончено" );
+				GetData();
+				m_ScanFinished.Set();
+				break;
+		};
+	}catch(...)
 	{
-		case ScanComplete:
-			Log::instance().Trace( 90, "CAgentHandler::OnMessage: Сканирование закончено" );
-			m_bFinished = true;
-			break;
-	};
+		//TODO:
+	}
 }
 
-enumAgentResponse CAgentHandler::BeginScan( std::list< std::string > vecAddresses )
+enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )
 {
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Отправка команды начала сканирования" );
 	CPacket Msg;
@@ -127,7 +132,7 @@ enumAgentResponse CAgentHandler::BeginScan( std::list< std::string > vecAddresse
 	Msg.BeginCommand( START_SCAN );
 	Log::instance().Trace( 90, "CAgentHandler::BeginScan: Всего адресов: %d", vecAddresses.size() );
 	Msg.AddParam( (DWORD)vecAddresses.size() );
-	for( std::list< std::string >::iterator It = vecAddresses.begin(); It != vecAddresses.end(); It++ )
+	for( std::vector< std::string >::iterator It = vecAddresses.begin(); It != vecAddresses.end(); It++ )
 	{
 		Log::instance().Trace( 92, "CAgentHandler::BeginScan: Добавляем адрес %s", It->c_str() );
 		Msg.AddAddress( *It );
@@ -137,6 +142,7 @@ enumAgentResponse CAgentHandler::BeginScan( std::list< std::string > vecAddresse
 	Log::instance().Trace( 92, "CAgentHandler::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str() );
 	std::vector<BYTE> vecRes;
 	SendMessage( Msg, vecRes );
+	m_ScanFinished.Reset();
 	return (enumAgentResponse)vecRes[0]; 
 }
 	
@@ -166,7 +172,7 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )
 	SendMessage( Msg, vecRes );
 	if( RESP_OK != vecRes[0] )
 	{
-//		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", *pbRecvBuf );
+		Log::instance().Trace( 50, "CAgentHandler::GetStatus: Команда получения статуса не выполнена, код возврата: %d", vecRes[0] );
 		return (enumAgentResponse)vecRes[0];
 	}
 	Status = (enumAgentState)vecRes[1];
@@ -194,7 +200,7 @@ enumAgentResponse CAgentHandler::GetData()
 	int iDataSize;
 	::memcpy( (BYTE*)&iDataSize, &vecRes[1], 4 );
 	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", iDataSize );
-	//Log::instance().Dump( 90, pbRecvBuf.get()+5, iDataSize, "CAgentHandler::GetData: Получены данные:" );
+	Log::instance().Dump( 90, &vecRes[1], iDataSize, "CAgentHandler::GetData: Получены данные:" );
 	return RESP_OK;
 }
 

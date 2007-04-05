@@ -48,7 +48,6 @@ void CTimer::Start()
 	//Останавливаем таймер
 	Stop();
 	Log::instance().Trace( 90, "CTimer: старт" );
-	m_pCallBack->OnStartScan();
 	//Запускаем служебный поток таймера
 	m_hThread = (HANDLE)_beginthreadex( NULL, 0, &fnTimerProc, this, 0, NULL );
 }
@@ -74,6 +73,7 @@ unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 	CTimer* pThis = static_cast<CTimer*>( pParam );
 	//TODO: Этот try catch ничего не ловит
 	try{
+		pThis->m_pCallBack->OnStartScan();
 		for(;;)
 		{
 			//Ожидаем либо отмены(останов таймера) либо выхода таймаута, который задает период таймера

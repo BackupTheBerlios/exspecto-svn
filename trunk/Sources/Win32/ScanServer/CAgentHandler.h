@@ -11,6 +11,7 @@
 #include "commands.h"
 #include "packet.h"
 #include "SmartPtr.hpp"
+#include "Event.hpp"
 
 #define PORT 4000
 
@@ -43,7 +44,7 @@ public:
 	//Команды, передаваемые агенту:
 	
 	//Начать сканирование
-	enumAgentResponse BeginScan( std::list< std::string > vecAddresses );
+	enumAgentResponse BeginScan( std::vector< std::string > vecAddresses );
 	
 	//Остановить сканирование
 	enumAgentResponse StopScan();
@@ -61,7 +62,7 @@ public:
 	
 	void OnMessage( CPacket& Msg );
 	
-	bool IsScanFinished(){ return m_bFinished; };
+	CEvent& GetScanFinishedEvent(){ return m_ScanFinished; };
 		
 protected:
 	
@@ -78,7 +79,7 @@ private:
 	
 	SmartPtr< CConnectionHandler > m_pConnectionHandler;
 	
-	bool m_bFinished;
+	CEvent m_ScanFinished;
 
 	//Приемный буфер
 	std::vector<BYTE> m_vecRecvBuf;
