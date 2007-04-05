@@ -71,7 +71,7 @@ void CPacket::GetParam( BYTE* pbValue, int iSize )
 //ѕолучить параметр типа DWORD по текущему смещению
 void CPacket::GetParam( DWORD& dwValue )
 {
-	if( sizeof(DWORD) > (int)m_vecBuf.size() - 3 )
+	if( sizeof(DWORD) > m_vecBuf.size() - 3 )
 		throw PacketFormatErr( "Incorrect param size" );
 
 	Pop( (BYTE*)&dwValue, sizeof(DWORD) );
