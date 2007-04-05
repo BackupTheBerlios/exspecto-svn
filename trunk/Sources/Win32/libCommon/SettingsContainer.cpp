@@ -173,7 +173,7 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 	{
 		int iDelimPos = 0;
 		
-		if( std::string::npos == ( iDelimPos = (int)It->find( "-" ) ) )
+		if( std::string::npos == (size_t)( iDelimPos = (int)It->find( "-" ) ) )
 		{
 			listIp.push_back( *It );
 		}else
@@ -227,16 +227,16 @@ namespace{
 //---------------------------------------------Tools---------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-bool Tools::GetStringList( const std::string& strSource, std::list< std::string >& listDest )
+bool Tools::GetStringList( std::string strSource, std::list< std::string >& listDest )
 {
+	//Удаляем пробелы
+	strSource.erase( std::remove( strSource.begin(), strSource.end(), ' ' ), strSource.end() );
 	std::string strTmp;
 	int iStartPos = 0, iEndPos = 0;
-	while( ( iEndPos = (int)strSource.find( ',', iStartPos  ) ) != std::string::npos )
+	while( (size_t)( iEndPos = (int)strSource.find( ',', iStartPos  ) ) != std::string::npos )
 	{
 		strTmp = strSource.substr( iStartPos, iEndPos );
 		iStartPos = iEndPos + 1;
-		//Удаляем пробелы
-		strTmp.erase( std::remove( strTmp.begin(), strTmp.end() - 1, ' ' ), strTmp.end() );
 		listDest.push_back( strTmp );
 	}
 	//дочитываем до конца

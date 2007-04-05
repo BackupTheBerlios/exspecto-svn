@@ -45,7 +45,7 @@ public:
 template< class T, class AllocationPolicy = AllocNew< T > >
 class SmartPtr
 {
-	friend class SmartPtr;
+	template<class,class> friend class SmartPtr;
 public:
 	SmartPtr():m_pPointerImpl( NULL ){};
 	
@@ -62,7 +62,7 @@ public:
 	{
 		if( SmartPointer.m_pPointerImpl != NULL )
 		{
-			m_pPointerImpl = reinterpret_cast<SmartPtr<T>::Ref*>( SmartPointer.m_pPointerImpl );
+			m_pPointerImpl = reinterpret_cast<Ref*>( SmartPointer.m_pPointerImpl );
 			m_pPointerImpl->cs.Enter();
 			++m_pPointerImpl->iRefCount;
 			m_pPointerImpl->cs.Leave();
@@ -235,6 +235,8 @@ public:
 	
 private:
 
+	//TODO:
+	//Можно избавиться от cs, используя Interlocked-функции
 	struct Ref{
 		CCriticalSection cs;
 		int iRefCount;

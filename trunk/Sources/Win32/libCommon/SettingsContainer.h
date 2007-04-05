@@ -289,7 +289,7 @@ public:
 
 namespace Tools
 {
-	bool GetStringList( const std::string& strSource, std::list< std::string >& listDest );
+	bool GetStringList( std::string strSource, std::list< std::string >& listDest );
 
 	struct structIp
 	{

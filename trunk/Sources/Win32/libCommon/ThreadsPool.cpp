@@ -70,14 +70,14 @@ void CThreadsPool::LogStates()
 /*
 bool CThreadsPool::WaitAllComplete( int iTimeout )
 {
-	/*Непонятно почему не работает
-	DWORD dwRes = 0;
-	LogStates();
-	if( ( WAIT_TIMEOUT == ( dwRes = WaitForMultipleObjects( (DWORD)m_vecStateHandles.size(), (HANDLE*)&m_vecStateHandles[0], TRUE, iTimeout ) )
-		|| ( WAIT_FAILED == dwRes ) ) )
-		return false;
-	LogStates();
-	return true;
+	//Непонятно почему не работает
+	//DWORD dwRes = 0;
+	//LogStates();
+	//if( ( WAIT_TIMEOUT == ( dwRes = WaitForMultipleObjects( (DWORD)m_vecStateHandles.size(), (HANDLE*)&m_vecStateHandles[0], TRUE, iTimeout ) )
+	//	|| ( WAIT_FAILED == dwRes ) ) )
+	//	return false;
+	//LogStates();
+	//return true;
 	*/
 /*	LogStates();
 	if( !m_vecTasks.empty() )
