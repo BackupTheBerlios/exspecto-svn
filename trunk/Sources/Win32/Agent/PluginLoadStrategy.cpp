@@ -61,6 +61,7 @@ PluginLoadStrategy::PluginLoadStrategy( std::vector< CScanner* >& vecStorage )
 		Log::instance().Trace( 90, "PluginLoadStrategy: «агружаем библиотеку %s с плагином %s", FindData.cFileName, pScanner->GetProtocolName() );
 		iScannersCount++;
 	}while( ::FindNextFile( hFindFile, &FindData ) );
+	FindClose( hFindFile );
 	if( 0 == iScannersCount )
 		throw PluginLoadErr( "Ќе найдено ни одного плагина" );
 	Log::instance().Trace( 90, "PluginLoadStrategy: всего загружено плагинов: %d", iScannersCount );

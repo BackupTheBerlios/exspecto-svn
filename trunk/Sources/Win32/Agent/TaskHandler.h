@@ -23,9 +23,9 @@ private:
 
 	static unsigned _stdcall fnProcessThread( void* );
 	
-	HANDLE m_hProcessThread;
+    HANDLE m_hProcessThread;
 	
-	CEvent m_CloseEv, m_CancelOpEv;
+	CEvent m_CloseEv, m_CancelOpEv, m_TaskAddedEv;
 	
 	std::deque< SmartPtr< CTask > > m_deqTasks;
 	

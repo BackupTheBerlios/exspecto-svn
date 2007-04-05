@@ -30,6 +30,7 @@ void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
 		{
 			Log::instance().Trace( 95, "CTaskHandler::AddTask: Задание поставленно в очередь выполнения" );
 			m_deqTasks.push_back( pTask );
+			m_TaskAddedEv.Set();
 		}
 	m_csTasks.Leave();
 }
@@ -39,11 +40,23 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Запуск потока обработчика команд" );
 	CTaskHandler* pThis = (CTaskHandler*)param;
 	SmartPtr< CTask > pTask;
+	DWORD dwRes;
 	try{
 		for(;;)
 		{
+			HANDLE hEvents[] = { pThis->m_CloseEv, pThis->m_TaskAddedEv };
+			
+			if( WAIT_OBJECT_0 == ( dwRes = WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, FALSE, INFINITE ) ) )
+				break;
+			else if( dwRes != ( WAIT_OBJECT_0 + 1 ) )
+				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: Внутрення ошибка!" );
+/*
+			else if( dwRes == ( WAIT_OBJECT_0+1 ) );
+			else
+				break;
 			if( WAIT_OBJECT_0 == WaitForSingleObject( pThis->m_CloseEv, 0 ) )
 				break;
+*/
 			
 			pThis->m_csTasks.Enter();
 				if( pThis->m_deqTasks.size() != 0 )

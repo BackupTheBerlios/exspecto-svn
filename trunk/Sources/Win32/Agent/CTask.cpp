@@ -43,7 +43,7 @@ void CScanThreadTask::Execute( const CEvent& CancelEvent )
 }
 
 CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner ):m_strAddr( strAddr )
-																								   ,m_pScanner( pScanner )	
+																				  ,m_pScanner( pScanner )	
 {
 }
 
@@ -88,9 +88,7 @@ void CStartScan::Execute()
 		m_CurState = Scanning;	
 	m_csCurState.Leave();
 	
-	Log::instance().Trace( 90, "CStartScan: Инициализируем пул потоков" );
-	CThreadsPool pool( 50 );
-	Log::instance().Trace( 90, "CStartScan: Конец инициализации пула потоков" );
+	CThreadsPool pool( 300 );
 	std::vector< SmartPtr< CScanThreadTask > > vecThreadTasks;
 
 	for( std::vector< std::string >::iterator AddrIt = m_vecAddresses.begin(); AddrIt != m_vecAddresses.end(); AddrIt++ )
@@ -99,7 +97,7 @@ void CStartScan::Execute()
 		{
 			if( WAIT_OBJECT_0 == WaitForSingleObject( m_CancelEv, 0 ) )
 				break;
-			Log::instance().Trace( 80, "CStartScan: Сканируем адрес %s с помощью плагина %s", AddrIt->c_str(), (*PlugIt)->GetProtocolName() );
+			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), (*PlugIt)->GetProtocolName() );
             vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, *PlugIt ) );
 			pool.AddTask( vecThreadTasks.back() );
 		}
@@ -112,7 +110,8 @@ void CStartScan::Execute()
 			break;
 		}
 	}
-	pool.WaitAllComplete();
+	pool.WaitAllComplete( m_CancelEv );
+	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
 	m_vecData.clear();
 	for( std::vector< SmartPtr< CScanThreadTask > >::iterator It = vecThreadTasks.begin(); It != vecThreadTasks.end(); It++ )
 		(*It)->GetResData( m_vecData );

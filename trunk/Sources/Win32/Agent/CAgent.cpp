@@ -41,7 +41,7 @@ CAgent::~CAgent(void)
 		m_pMsgSock->Close();
 		Log::instance().Trace( 90, "CAgent::~CAgent: ќжидание закрыти€ потока прослушивани€" );
 		WaitForSingleObject( m_hListenThread, 10000 );
-	
+			
 		CloseHandle( m_hListenThread );
 	}catch( std::exception& e )
 	{
