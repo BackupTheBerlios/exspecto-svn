@@ -135,6 +135,9 @@
 				RelativePath="..\..\libCommon\MemLeakDetector.h">
 			</File>
 			<File
+				RelativePath="..\..\libCommon\Semaphore.hpp">
+			</File>
+			<File
 				RelativePath="..\..\libCommon\SettingsContainer.h">
 			</File>
 			<File
