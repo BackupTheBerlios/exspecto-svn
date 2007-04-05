@@ -51,6 +51,7 @@
 using namespace std;
 
 // функции преобразуют значения полей lFileTime и hFileTime в UTS или возвращают UTS, если он не равен 0
+// ВНИМАНИЕ!!! если поле UTS не равно 0!!! то в базу будет внесено значение этого поля
 typedef struct FileDateTag 
 {
 	DWORD lFileTime;
@@ -65,12 +66,11 @@ typedef struct FileStrTag
 	fileDate FDate;
 } fileStr;
 typedef list<fileStr> filesStr;
-typedef filesStr* pFilesStr;
 
 typedef struct RecordTag
 {
 	string HostName;
-	char IPName[16];
+	char IPNum[16];
 	filesStr Files;
 } hostRec;
 typedef list<hostRec> hostRecords;
@@ -79,14 +79,13 @@ class CDBProvider
 {
 public:
 	virtual ~CDBProvider(){};
-	virtual void __stdcall AddFiles(pFilesStr aFileList, const string& aHostName, const string& aIPnum)=0;
-	virtual bool __stdcall Find(const string& aText, map<string,bool> &aParams, list<int> &Result)=0;
+	virtual void __stdcall AddFiles(hostRecords &aRec)=0;
 	virtual bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
-	virtual void __stdcall AddWord(int aID, const string& aPath)=0;
-	virtual void __stdcall AddWordInTable(int aID, list<string> &words, bool IsPath)=0;
-	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aDate, bool aOnlyFiles=false)=0;
 	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0;
+	virtual time_t __stdcall GetRefDateHost(const string& aHostName, const string& aIPnum)=0;
   virtual char* __stdcall GetNamePlugin()=0;
+  virtual void __stdcall SetAutoIndex(bool aVal)=0;
+  virtual bool __stdcall IsAutoIndex()=0;
 };
 
 class CPrvException
@@ -104,7 +103,7 @@ class CPrvException
 			if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
 			if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
 			i += sprintf(strError + i, "%s ", aText);
-	//Log::instance().Trace( 5,"%s", strError );
+			Log::instance().Trace( 5,"%s", strError );
 		}
 		//-------------------------------------------------------------------------
 		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL)
@@ -119,7 +118,7 @@ class CPrvException
 			if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
 			if( aLine != 0 ) i += sprintf(strError + i, "[%d] ", aLine);
 			i += sprintf(strError + i, "%s ", tmp);
-	//Log::instance().Trace( 5,"%s", strError );
+			Log::instance().Trace( 5,"%s", strError );
 		}
 		//-------------------------------------------------------------------------
 		virtual ~CPrvException()
