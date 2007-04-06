@@ -33,6 +33,9 @@ public:
 
 private:
 
+	CThreadsPool( const CThreadsPool& );
+	CThreadsPool& operator=( const CThreadsPool& );
+
 	void LogStates();
 
 	void SetCompleted( int iThreadId, bool bCompleted );

@@ -53,7 +53,9 @@ public:
 	}
 	
 private:
-	
+	Container( const Container& );
+	Container& operator=( const Container& );
+
 	std::auto_ptr< LoadStrategy > m_pLoader;
 		
 	std::vector< T > m_vecStorage;

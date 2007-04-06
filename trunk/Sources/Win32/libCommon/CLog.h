@@ -57,6 +57,8 @@ public:
 	void SetLoglevel( int iLoglevel );
 	
 private:
+	Log( const Log& );
+	Log& operator=( const Log& );
 	Log( const char* strModuleName = NULL );
 	~Log();
 	

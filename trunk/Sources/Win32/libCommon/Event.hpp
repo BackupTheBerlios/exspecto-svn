@@ -34,11 +34,8 @@ public:
 
 	
 private:
-
-	//CEvent( CEvent& ev );
-	CEvent( const CEvent& ev );
-	//CEvent& operator=( CEvent& ev );
-	CEvent& operator=( const CEvent& ev );
+	CEvent( const CEvent& );
+	CEvent& operator=( const CEvent& );
 
 	bool m_bAutoReset;
 

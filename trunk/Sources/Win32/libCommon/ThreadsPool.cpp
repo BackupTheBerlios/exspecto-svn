@@ -15,7 +15,6 @@ CThreadsPool::CThreadsPool( int iThreadsCount ):m_Cancel( false )
 		pParams->iId = i;
 		CloseHandle( (HANDLE)_beginthreadex( NULL, 0, ThreadFunc, (void*)pParams, 0, NULL ) );
 		m_vecThreadsStates.push_back( SmartPtr<CEvent>( new CEvent(false,1) ) );
-		//m_vecStateHandles.push_back( *m_vecThreadsStates.back() );
 	}
 }
 
@@ -37,15 +36,20 @@ void CThreadsPool::AddTask( SmartPtr< CThreadTask > pTask )
 SmartPtr< CThreadTask > CThreadsPool::GetTask()
 {
 	CLock lock( m_csTasks );
+	Log::instance().Trace( 0, "CThreadsPool::GetTask: %d", m_vecTasks.size() );
 	SmartPtr< CThreadTask > pTask;
 	if( !m_vecTasks.empty() )
 	{
 		pTask = m_vecTasks.back();
 		m_vecTasks.pop_back();
+		if( m_vecTasks.empty() )
+		{
+			Log::instance().Trace( 0, "CThreadsPool::GetTask: TaskEmpty" );
+			m_TasksEmpty.Set();
+		}
 	}else
 	{
         pTask = SmartPtr<CThreadTask>( NULL );
-		m_TasksEmpty.Set();
 	}
 	return pTask;
 }
@@ -101,14 +105,22 @@ bool CThreadsPool::WaitAllComplete( CEvent& CancelEv )
 	if( !m_vecTasks.empty() )
 	{
         m_TasksEmpty.Reset();
+		Log::instance().Trace( 0, "CThreadsPool::WaitAllComplete: Wait for empty" );
 		if( (WAIT_OBJECT_0+1) != WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, FALSE, INFINITE ) )
+		{
+			Log::instance().Trace( 0, "CThreadsPool::WaitAllComplete: canceled" );
 			return false;
+		}
 	}
+	Log::instance().Trace( 0, "CThreadsPool::WaitAllComplete: Wait for complete" );
 	for( std::vector< SmartPtr<CEvent> >::iterator It = m_vecThreadsStates.begin(); It != m_vecThreadsStates.end(); It++ )
 	{
 		hEvents[1] = *(*It);
 		if( (WAIT_OBJECT_0+1) != WaitForMultipleObjects( 2, hEvents, FALSE, INFINITE ) )
+		{
+			Log::instance().Trace( 0, "CThreadsPool::WaitAllComplete: canceled2" );
 			return false;
+		}
 	}
 	LogStates();
 	return true;

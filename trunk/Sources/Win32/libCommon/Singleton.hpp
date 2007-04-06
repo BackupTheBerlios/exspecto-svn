@@ -11,7 +11,9 @@ public:
 		static T instance;
 		return instance;
 	}
+private:
 
+	CSingleton();
 };
 
 #endif

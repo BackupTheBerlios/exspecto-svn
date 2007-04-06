@@ -71,8 +71,6 @@ class CSettings
 {	
 public:
 
-	CSettings();
-	
 /*
 	void SetModule( const char* strModuleName, char** pModuleParams, int iParamCount )
 	{
@@ -195,8 +193,14 @@ public:
 		  ClearParams();
       }
 
+protected:
+
+	CSettings();
+
 private:		
-	
+
+	CSettings( const CSettings& s );
+	CSettings& operator=( const CSettings& s );
 	/*!
 		Ассоциативный массив параметров, в котором
 			ключ - имя параметра
@@ -230,8 +234,8 @@ class CIniTypeSerializer;
 
 class CIniSettings: public CSettings
 {
+	friend class CSingleton< CIniSettings >;
 public:
-	CIniSettings();
 
 	virtual ~CIniSettings();
 
@@ -240,6 +244,10 @@ public:
 	static bool RegisterTypeSerializer( const std::string& strType, CIniTypeSerializer* TypeSer );
 
 private:
+
+	CIniSettings();
+	CIniSettings( const CIniSettings& c );
+	CIniSettings& operator=( const CIniSettings& c );
 
 	static std::map< std::string, CIniTypeSerializer* > m_mapSerializers;
 };

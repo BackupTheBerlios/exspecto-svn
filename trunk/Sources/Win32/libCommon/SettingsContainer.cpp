@@ -235,12 +235,12 @@ bool Tools::GetStringList( std::string strSource, std::list< std::string >& list
 	int iStartPos = 0, iEndPos = 0;
 	while( (size_t)( iEndPos = (int)strSource.find( ',', iStartPos  ) ) != std::string::npos )
 	{
-		strTmp = strSource.substr( iStartPos, iEndPos );
+		strTmp = strSource.substr( iStartPos, iEndPos - iStartPos );
 		iStartPos = iEndPos + 1;
 		listDest.push_back( strTmp );
 	}
 	//дочитываем до конца
-	strTmp = strSource.substr( iStartPos, strSource.size() );
+	strTmp = strSource.substr( iStartPos );
 	listDest.push_back( strTmp );
 	return true;
 }

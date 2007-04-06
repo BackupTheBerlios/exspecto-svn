@@ -26,6 +26,9 @@ public:
 		LeaveCriticalSection( &m_cs );
 	};
 private:
+	CCriticalSection( const CCriticalSection& );
+	CCriticalSection& operator=( const CCriticalSection& );
+
 	CRITICAL_SECTION m_cs;
 };
 
