@@ -8,14 +8,15 @@
 #include "CAgentHandler.h"
 #include <process.h>
 
-#define RECEIVE_BUF_SIZE 255
+#define RECEIVE_BUF_START_SIZE 255
+#define RECEIVE_BUF_MAX_SIZE 50000000
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
 														   ,m_ScanFinished( false )
 {
 	m_pConnectionHandler = SmartPtr< CConnectionHandler >( new CConnectionHandler( this ) );
 	//подготавливаем приемный буфер
-	m_vecRecvBuf.resize( RECEIVE_BUF_SIZE );
+	m_vecRecvBuf.resize( RECEIVE_BUF_START_SIZE );
 }
 
 CAgentHandler::~CAgentHandler()
@@ -57,7 +58,8 @@ void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 			bEnd = true;
 		}
 		vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
-		m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
+		if( (iCount < (int)m_vecRecvBuf.size() ) && (m_vecRecvBuf.size()<<1) < RECEIVE_BUF_MAX_SIZE )
+			m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер приемного буфера: %d", m_vecRecvBuf.size() );
 	}
 	//vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
@@ -74,7 +76,7 @@ void CAgentHandler::Open()
 	{
 		Log::instance().Trace( 90, "CAgentHandler::Open: открытие" );
 		m_Sock.Connect( m_strAddress, PORT );
-	}catch( CSocket::SocketErr& e )
+	}catch( SocketErr& e )
 	{
 		Log::instance().Trace( 50, "CAgentHandler::Open: Ошибка соединения с агентом: %s; Описание ошибки: %s", m_strAddress.c_str(), e.what() );
 	}
@@ -88,7 +90,7 @@ void CAgentHandler::Close()
 		if( !m_Sock.IsConnected() )
 			return;
 		m_Sock.Close();
-	}catch( CSocket::SocketErr& e )
+	}catch( SocketErr& e )
 	{
 		Log::instance().Trace( 50, "CAgentHandler::Close: ошибка закрытия соединения %s", e.what() );
 	}
@@ -189,7 +191,6 @@ enumAgentResponse CAgentHandler::GetData()
 	Msg.EndCommand();
 
 	//отправляем команду
-
 	std::vector<BYTE> vecRes;
 	SendMessage( Msg, vecRes );
 	if( RESP_OK != vecRes[0] )
@@ -197,7 +198,7 @@ enumAgentResponse CAgentHandler::GetData()
 		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", vecRes[0] );
 		return (enumAgentResponse)vecRes[0];
 	}
-	int iDataSize;
+	unsigned int iDataSize;
 	::memcpy( (BYTE*)&iDataSize, &vecRes[1], 4 );
 	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", iDataSize );
 	Log::instance().Dump( 90, &vecRes[1], iDataSize, "CAgentHandler::GetData: Получены данные:" );

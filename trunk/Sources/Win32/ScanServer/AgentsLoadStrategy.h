@@ -16,6 +16,8 @@ public:
 	AgentsLoadStrategy( std::vector< CAgentHandler* >& vecStorage );
 	virtual ~AgentsLoadStrategy();
 private:
+	AgentsLoadStrategy( const AgentsLoadStrategy& );
+	AgentsLoadStrategy& operator=( const AgentsLoadStrategy& );
 
 	//Вектор указателей на созданные в процессе загрузки классы для дальнейшего их удаления
 	std::vector< CAgentHandler* > m_ReleseCont;

@@ -29,7 +29,6 @@ CScheduler::CScheduler(void)
 	for( std::list< std::string >::iterator It = listAgents.begin(); It != listAgents.end(); It++ )
 		m_mapAgentsContainer[ *It ] = SmartPtr< CAgentHandler >( new CAgentHandler( *It ) ); 
 	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
-//	m_hMainThread = (HANDLE)_beginthreadex( 0, 0, fnMainThreadProc, this, 0, NULL );
 		
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
@@ -38,8 +37,8 @@ CScheduler::CScheduler(void)
 
 CScheduler::~CScheduler(void)
 {
-	m_pTrigger->Stop();
 	m_CloseEv.Set();
+	m_pTrigger->Stop();
 	if( m_EventSock.IsConnected() )
 	{
 		Log::instance().Trace( 90, "CScheduler::~CScheduler: Канал событий поднят" );
@@ -60,15 +59,12 @@ void CScheduler::OnStartScan()
 	try{
 		std::vector< std::string > listAdr;
 		Settings::instance().GetParam( SCAN_AREA, listAdr );
-
 		std::map< std::string, SmartPtr< CAgentHandler > > mapAgents = m_mapAgentsContainer;
-		std::vector< HANDLE > vecFinishEvents;
 		std::vector< std::vector< std::string >::iterator > vecRanges;
         int i = 1, iEndPos = 0;
 		bool bFail = true;
 		while( bFail )
 		{
-			vecFinishEvents.clear();
 			vecRanges.clear();
 			vecRanges.push_back( listAdr.begin() );
 			for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = mapAgents.begin(); It != mapAgents.end(); It++, i++ )
@@ -85,7 +81,6 @@ void CScheduler::OnStartScan()
 					break;
 				}
 				bFail = false;
-				vecFinishEvents.push_back( It->second->GetScanFinishedEvent() );
 			}
 			if( mapAgents.empty() )
 			{
@@ -100,15 +95,21 @@ void CScheduler::OnStartScan()
 			It->second->BeginScan( vec );
 		}
 		DWORD dwWaitRes;
-		if( WAIT_TIMEOUT == ( dwWaitRes = WaitForMultipleObjects( (DWORD)vecFinishEvents.size(), (HANDLE*)&vecFinishEvents[0], TRUE, 10*60*1000 ) ) )
+		HANDLE hEvents[2];
+		hEvents[0] = m_CloseEv;
+		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = mapAgents.begin(); It != mapAgents.end(); It++ )
 		{
-			//TODO:
-		}else if( WAIT_FAILED == dwWaitRes );
-			//TODO:
-		else
-		{
-			Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование закончено успешно" );
+			hEvents[1] = It->second->GetScanFinishedEvent();
+			if( (WAIT_OBJECT_0) == ( dwWaitRes = WaitForMultipleObjects( 2, hEvents, FALSE, 10*60*1000 ) ) )
+			{
+				Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование отменено!" );
+				return;
+			}else if( WAIT_TIMEOUT == dwWaitRes )
+			{
+				//TODO:
+			}
 		}
+		Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование закончено успешно" );
 
 	}catch( std::exception& e )
 	{
@@ -119,15 +120,6 @@ void CScheduler::OnStartScan()
 		Log::instance().Trace( 10," CScheduler::OnStartScan: Возникло неизвестное исключение" );
 	}
 }
-/*
-//Основной поток планировщика
-unsigned _stdcall CScheduler::fnMainThreadProc(  void* pParameter )
-{
-	CScheduler* pThis = (CScheduler*)pParameter;
-
-	return 0;
-}
-*/
 //Поток ожидания входящих соединений
 unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 {
@@ -152,7 +144,7 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 					pThis->m_mapAgentsContainer[ adr.strAddr ]->OnConnection( client_sock );
 				else
 					Log::instance().Trace( 50, "CScheduler::ListenThread: Пришле пакет с адреса: %s. Игнорируем" );
-			}catch( CSocket::SocketErr& e )
+			}catch( SocketErr& e )
 			{
 				Log::instance().Trace( 50, "CScheduler::ListenThread: Исключение socket: %s", e.what() );
 				//Если прислали пакет больше 10кб
@@ -169,3 +161,4 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 	Log::instance().Trace( 50, "CScheduler::ListenThread: Завершение потока ожидания входящих сообщений" );
 	return 0;
 }
+

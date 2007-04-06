@@ -70,7 +70,10 @@ protected:
 	void SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf );
 	
 private:
-	
+	CAgentHandler( const CAgentHandler& );
+	CAgentHandler& operator=( const CAgentHandler& );
+
+
 	//Адрес агента
 	std::string m_strAddress;
 	

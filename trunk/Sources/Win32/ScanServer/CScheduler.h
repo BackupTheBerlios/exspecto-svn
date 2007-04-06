@@ -14,6 +14,8 @@
 #include "AgentsLoadStrategy.h"
 #include "SmartPtr.hpp"
 #include "Event.hpp"
+#include "ThreadsPool.h"
+
 
 
 //Предварительное обьявление класса CStartTrigger
@@ -38,6 +40,8 @@ public:
 	virtual void OnStartScan();
 
 private:
+	CScheduler( const CScheduler& );
+	CScheduler& operator=( const CScheduler& );
 
 	//Контейнер, содержащий обьекты управления агентами, загружаемые стратегией AgentsLoadStrategy
 	std::map< std::string, SmartPtr< CAgentHandler > > m_mapAgentsContainer;
@@ -47,8 +51,6 @@ private:
 
 	static unsigned _stdcall fnListenThreadProc(  void* pParameter );
 
-//	static unsigned _stdcall fnMainThreadProc(  void* pParameter );
-	
 	CEvent m_CloseEv;
 	
 	HANDLE m_hListenThread, m_hMainThread;

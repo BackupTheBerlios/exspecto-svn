@@ -50,6 +50,8 @@ public:
 	void Stop();
 
 private:
+	CTimer( const CTimer& );
+	CTimer& operator=( const CTimer& );
 	
 	//Дескриптор потока таймера
 	HANDLE m_hThread;
@@ -76,6 +78,9 @@ public:
 	void Start();
 	
 	void Stop();
+private:
+	CCron( const CCron& );
+	CCron& operator=( const CCron& );
 };
 
 //Класс,реализуюший триггер, срабатывающий по расписанию
@@ -89,6 +94,9 @@ public:
 	void Start();
 	
 	void Stop();
+private:
+	CCalendar( const CCalendar& );
+	CCalendar& operator=( const CCalendar& );
 };
 
 #endif /*CSTARTTRIGGER_H_*/

@@ -62,7 +62,7 @@ void CTimer::Stop()
 		//то останавливаем его
 		SetEvent( m_hCancelEvent );
 		//ждем корректного завершения потока
-		::WaitForSingleObject( m_hThread, INFINITE );
+		::WaitForSingleObject( m_hThread, 30000 );
 		m_hThread = INVALID_HANDLE_VALUE;
 	}
 }
