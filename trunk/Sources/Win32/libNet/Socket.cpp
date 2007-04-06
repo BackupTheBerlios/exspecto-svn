@@ -5,6 +5,7 @@
 //Description:  ласс, реализующий взаимодействие с сокетами (обща€ дл€ клиента и сервера часть)
 //-------------------------------------------------------------------------------------
 #include "Socket.h"
+#include "SmartPtr.hpp"
 
 // онструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
@@ -196,4 +197,80 @@ bool CSocket::IsConnected()const
 void CSocket::SetConnected( bool bConnected )
 {
 	m_bConnected = bConnected;
+}
+
+namespace Tools{
+
+	bool Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount )
+	{
+		typedef struct {
+			unsigned char Ttl;                                 // Time To Live
+			unsigned char Tos;                                 // Type Of Service
+			unsigned char Flags;                               // IP header flags
+			unsigned char OptionsSize;                         // Size in bytes of options data
+			unsigned char *OptionsData;                        // Pointer to options data
+		} IP_OPTION_INFORMATION, * PIP_OPTION_INFORMATION;
+
+		typedef struct {
+			unsigned int Address;                    // Replying address
+			unsigned long  Status;                   // Reply status
+			unsigned long  RoundTripTime;            // RTT in milliseconds
+			unsigned short DataSize;                 // Echo data size
+			unsigned short Reserved;                 // Reserved for system use
+			void *Data;                              // Pointer to the echo data
+			IP_OPTION_INFORMATION Options;           // Reply options
+		} IP_ECHO_REPLY, * PIP_ECHO_REPLY;
+
+		char acPingBuffer[32]={0};  // буфер дл€ передачи
+		struct in_addr DestAddress;
+		struct hostent* pHostEnt;
+		// ¬ыдел€ем пам€ть под пакет
+		PIP_ECHO_REPLY pIpe = (PIP_ECHO_REPLY)new BYTE[ sizeof(IP_ECHO_REPLY) + sizeof(acPingBuffer)];
+		if (pIpe == 0) {
+			throw SocketErr( GetLastError() );
+		}
+
+
+		// получаем адрес хоста, который надо пингануть
+		DestAddress.s_addr = inet_addr(strHost.c_str());
+		if (DestAddress.s_addr == INADDR_NONE)
+			pHostEnt = gethostbyname(strHost.c_str());
+		else
+			pHostEnt = gethostbyaddr((const char *)&DestAddress, sizeof(struct in_addr), AF_INET);
+
+		if (pHostEnt == NULL) {
+			return false;
+		}
+
+		HANDLE hIP;
+		// ѕытаемс€ создать файл сервиса
+		hIP = IcmpCreateFile();
+
+		if (hIP == INVALID_HANDLE_VALUE) {
+			delete[] pIpe;
+			throw SocketErr( GetLastError() );
+		}
+
+
+
+		pIpe->Data = acPingBuffer;
+		pIpe->DataSize = sizeof(acPingBuffer);
+
+		int LostPacketsCount = 0; // кол-во потер€ных пакетов
+		unsigned int MaxMS = 0;      // максимальное врем€ ответа (мс)
+		int MinMS = -1;           // минимальное врем€ ответа (мс)
+
+		bool bRes = true;
+		DWORD dwStatus;
+		for(unsigned int c=0;c<iRequestCount;c++) {
+			dwStatus = IcmpSendEcho( hIP, *((unsigned int*)pHostEnt->h_addr_list[0]),
+				acPingBuffer, sizeof(acPingBuffer), NULL, pIpe,
+				sizeof(IP_ECHO_REPLY) + sizeof(acPingBuffer), iTimeout );
+			bRes &= (dwStatus == 0)?false:true;
+		}
+		IcmpCloseHandle(hIP);
+		delete[] pIpe;
+		return bRes;
+	}
+
 }

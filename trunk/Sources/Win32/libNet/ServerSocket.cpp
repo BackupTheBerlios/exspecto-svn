@@ -16,10 +16,19 @@ CServerSocket::CServerSocket( int iType, bool bBlocking ):CSocket( iType, bBlock
 }
 
 //Копирующий конструктор
-CServerSocket::CServerSocket( CServerSocket& S ):CSocket( S.m_iType, S.m_bBlocking )
+CServerSocket::CServerSocket( const CServerSocket& S ):CSocket( S.m_iType, S.m_bBlocking )
 {
-	m_Socket = S.m_Socket;
-	m_iType = S.m_iType;
+	*this = S;
+}
+
+CServerSocket& CServerSocket::operator=( const CServerSocket& s )
+{
+	if( this != &s )
+	{
+		m_Socket = s.m_Socket;
+		m_iType = s.m_iType;
+	}
+	return *this;
 }
 
 CServerSocket::~CServerSocket(void)

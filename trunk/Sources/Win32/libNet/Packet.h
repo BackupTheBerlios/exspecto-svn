@@ -93,6 +93,11 @@ protected:
 	//Получить массив байт из пакета
 	void Pop( BYTE *pbBuf, int iCount );
 
+private:
+
+	CPacket( const CPacket& );
+	CPacket& operator=( const CPacket& );
+
 	//Внутренний буфер,содержащий пакет
 	//BYTE* m_pbBuf;
 	std::vector< BYTE > m_vecBuf;

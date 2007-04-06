@@ -25,6 +25,10 @@ public:
 	//Соединение с strAddr:iPort,где sAddr - имя удаленного хоста,либо его IP-адресс
 	//								 iPort - порт, к которому необходимо подключиться
 	void Connect( std::string strAddr, int iPort );
+
+private:
+	CClientSocket( const CClientSocket& );
+	CClientSocket& operator=( const CClientSocket& );
 };
 
 #endif

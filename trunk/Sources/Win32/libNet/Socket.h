@@ -8,63 +8,64 @@
 #ifndef CSOCKET_H_
 #define CSOCKET_H_
 #include "winsock2.h"
+#include "icmpapi.h"
 
 #include "precomp.h"
-#include <string>
-#include <stdexcept>
+
+//Исключения, генерируемые CSocket и классами, наследующими от него, и функциями из Tools
+class SocketErr: public std::exception
+{
+public:
+	SocketErr( int iLastError )
+	{
+		if( 0 == FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, iLastError, 0, data, sizeof(data), NULL ) )
+		{
+			strcpy( data, "Error during formating error message" );
+			Log::instance().Trace( 0, "SocketErr: ошибка: %d", GetLastError() );
+		}
+	};
+
+	SocketErr( const std::string& Msg )
+	{
+		strcpy( data, Msg.c_str() );
+	};
+
+	virtual ~SocketErr()throw(){};
+
+	virtual const char* what() const throw()
+	{
+		return data;	 
+	};
+
+private:
+
+	char data[1024];
+};
+
 
 class CSocket 
 {
 public:
 
-	//Исключения, генерируемые CSocket и классами, наследующими от него
-	class SocketErr: public std::exception
-	{
-	public:
-		SocketErr( int iLastError )
-		{
-			if( 0 == FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, iLastError, 0, data, sizeof(data), NULL ) )
-			{
-				strcpy( data, "Error during formating error message" );
-				Log::instance().Trace( 0, "SocketErr: ошибка: %d", GetLastError() );
-			}
-		};
-		
-		SocketErr( const std::string& Msg )
-		{
-			strcpy( data, Msg.c_str() );
-		};
-		
-		virtual ~SocketErr()throw(){};
-		
-		virtual const char* what() const throw()
-		{
-		 	return data;	 
-		};
-		
-	private:
-	
-		char data[1024];
-	};
 
-	class SocketDNSErr: public CSocket::SocketErr 
+	class SocketDNSErr: public SocketErr 
 	{
 		public:
-			SocketDNSErr():CSocket::SocketErr( WSAHOST_NOT_FOUND ){};
+			SocketDNSErr():SocketErr( WSAHOST_NOT_FOUND ){};
 		virtual ~SocketDNSErr()throw(){};
 	};
 	
-	class SocketRespSizeErr: public CSocket::SocketErr 
+	class SocketRespSizeErr: public SocketErr 
 	{
 		public:
-			SocketRespSizeErr():CSocket::SocketErr( WSAEMSGSIZE ){};
+			SocketRespSizeErr():SocketErr( WSAEMSGSIZE ){};
 		virtual ~SocketRespSizeErr()throw(){};
 	};
 	
-	class SocketConnectionLost: public CSocket::SocketErr 
+	class SocketConnectionLost: public SocketErr 
 	{
 		public:
-			SocketConnectionLost():CSocket::SocketErr( "Разрыв связи" ){};
+			SocketConnectionLost():SocketErr( "Разрыв связи" ){};
 		virtual ~SocketConnectionLost()throw(){};
 	};
 
@@ -128,7 +129,21 @@ protected:
 	int m_iType;
 
 private:
+
+	CSocket( const CSocket& );
+	CSocket& operator=( const CSocket& );
+
 	bool m_bConnected;
 };
+//-----------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------Tools-------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+namespace Tools{
+
+	//реализована через вызовы icmp.dll, если использовать RAW сокеты  - понадобятся админские права
+	//а пока работает и без них
+	bool Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount );
+}
 
 #endif

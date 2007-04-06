@@ -20,8 +20,10 @@ public:
 	//bBlocking - блокирующий либо не блокирующий сокет
 	CServerSocket( int iType = SOCK_STREAM, bool bBlocking = true );
 
-	//Копирующий конструктор
-	CServerSocket( CServerSocket& S );
+	CServerSocket( const CServerSocket& S );
+
+	CServerSocket& operator=( const CServerSocket& );
+
 
 	~CServerSocket(void);
 
@@ -39,7 +41,8 @@ public:
 	//о присоединившейся машине accept возвращает в параметре addr 
 	//(тип адреса, IP-адрес, порт).
 	SmartPtr< CSocket > Accept( structAddr& addr );
-protected:
+private:
+
 };
 
 #endif
