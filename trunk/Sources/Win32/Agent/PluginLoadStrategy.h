@@ -24,6 +24,9 @@ public:
 	virtual ~PluginLoadStrategy();
 	
 private:	
+	PluginLoadStrategy( const PluginLoadStrategy& );
+	PluginLoadStrategy& operator=( const PluginLoadStrategy& );
+
 	//Типы функций, содержащихся в dll с plugin-ом
 	typedef CScanner* (*fnGetScannerFunc)();
 	typedef void (*fnReleaseScannerFunc)();

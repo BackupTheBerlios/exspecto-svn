@@ -19,6 +19,10 @@ public:
 
 private:
 	
+	CConnectionHandler( const CConnectionHandler& );
+	CConnectionHandler& operator=( const CConnectionHandler& );
+
+
 	CEvent m_CloseEv;
 	
 	HANDLE m_hListenThread;

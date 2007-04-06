@@ -33,16 +33,19 @@ public:
 	
 	CServerHandler& operator=( const CServerHandler& Handler )
 	{
-		m_pMsgSocket = Handler.m_pMsgSocket;
-		m_pEventSocket = Handler.m_pEventSocket;
-		m_strAddress = Handler.m_strAddress;
-		m_iEventPort = Handler.m_iEventPort;
+		if( this != &Handler )
+		{
+			m_pMsgSocket = Handler.m_pMsgSocket;
+			m_pEventSocket = Handler.m_pEventSocket;
+			m_strAddress = Handler.m_strAddress;
+			m_iEventPort = Handler.m_iEventPort;
+		}
 		return *this;
 	};
 
 	
 private:
-	
+
 	SmartPtr< CSocket > m_pMsgSocket;
 	
 	SmartPtr< CClientSocket > m_pEventSocket;

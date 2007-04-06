@@ -27,6 +27,9 @@ public:
 	
 private:
 
+	CMessageParser( const CMessageParser& );
+	CMessageParser& operator=( const CMessageParser& );
+
 	CServerHandler m_ServerHandler;
 
 };

@@ -36,18 +36,25 @@ namespace
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CStartScan----------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-	
-void CScanThreadTask::Execute( const CEvent& CancelEvent )
+void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
+{
+	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
+	m_bResult = Tools::Ping( m_strAddr, 3000, 1 );
+	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s END", m_strAddr.c_str() );
+}
+
+
+void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 {
 	m_pScanner->Scan( m_strAddr, m_vecData, CancelEvent );
 }
 
-CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner ):m_strAddr( strAddr )
+CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner ):m_strAddr( strAddr )
 																				  ,m_pScanner( pScanner )	
 {
 }
 
-void CScanThreadTask::GetResData( std::vector< std::string >& vecResult )
+void CStartScan::CScanThreadTask::GetResData( std::vector< std::string >& vecResult )
 {
 	vecResult.insert( vecResult.end(), m_vecData.begin(), m_vecData.end() );
 }
@@ -88,7 +95,27 @@ void CStartScan::Execute()
 		m_CurState = Scanning;	
 	m_csCurState.Leave();
 	
-	CThreadsPool pool( 300 );
+	CThreadsPool pool( 50 );
+	//Проверяем доступность хостов
+	Log::instance().Trace( 10, "CStartScan::Execute: Проверяем доступность хостов" );
+	std::vector< SmartPtr< CAvailabilityScanTask > > vecAvailTasks;
+	for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
+	{
+		vecAvailTasks.push_back( SmartPtr<CAvailabilityScanTask>( new CAvailabilityScanTask( *It ) ) );
+		pool.AddTask( vecAvailTasks.back() );
+	}
+	Log::instance().Trace( 10, "CStartScan::Execute: WAITING" );
+	if( !pool.WaitAllComplete( m_CancelEv ) )
+		return;
+	m_vecAddresses.clear();
+	for( std::vector< SmartPtr< CAvailabilityScanTask > >::iterator It = vecAvailTasks.begin(); It != vecAvailTasks.end(); It++ )
+	{
+		if( (*It)->IsAvailable() )
+			m_vecAddresses.push_back( (*It)->GetAddress() );
+		else
+			Log::instance().Trace( 10, "CScheduler::OnStartScan: Хост %s не доступен. Исключаем из списка текущего сканирования", (*It)->GetAddress().c_str() );
+	}
+	Log::instance().Trace( 10, "CStartScan::Execute: Проверка доступности закончена" );
 	std::vector< SmartPtr< CScanThreadTask > > vecThreadTasks;
 
 	for( std::vector< std::string >::iterator AddrIt = m_vecAddresses.begin(); AddrIt != m_vecAddresses.end(); AddrIt++ )
@@ -170,7 +197,7 @@ bool CGetData::Immidiate()
 {
 	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
 	//Подсчитываем размер данных для отправки
-	int iSize = 0;
+	unsigned int iSize = 0;
 	for( std::vector< std::string >::iterator It = m_vecData.begin(); It != m_vecData.end(); It++ )
 	{
 		//+1 - на завершающий ноль
@@ -192,7 +219,7 @@ bool CGetData::Immidiate()
 	Msg.AddParam( pbBuf.get(), iSize );
 	Msg.EndCommand();
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Dump( 90, pbBuf.get(), iSize, "CGetData:Immidiate: Отправлен ответ:" );
+	//Log::instance().Dump( 90, pbBuf.get(), iSize, "CGetData:Immidiate: Отправлен ответ:" );
 	return true;
 }
 namespace

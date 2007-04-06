@@ -20,6 +20,8 @@ public:
 	void AddTask( SmartPtr< CTask > pTask );
 
 private:
+	CTaskHandler( const CTaskHandler& );
+	CTaskHandler& operator=( const CTaskHandler& );
 
 	static unsigned _stdcall fnProcessThread( void* );
 	

@@ -36,12 +36,14 @@ class CAgent
 {
 public:
 	
-	//Конструктор
 	CAgent();
 	
 	~CAgent(void);
 
 private:
+
+	CAgent( const CAgent& );
+	CAgent& operator=( const CAgent& );
 
 	std::vector< SmartPtr< CConnectionHandler > > m_vecConnections;
 	

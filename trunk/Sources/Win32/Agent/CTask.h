@@ -36,6 +36,9 @@ public:
 	
 protected:
 
+	CTask( const CTask& );
+	CTask& operator=( const CTask& );
+
 	CServerHandler m_ServerHandler;
 	
 	static enumAgentState m_CurState;
@@ -110,6 +113,9 @@ public:
 	
 };
 
+class CStartScan: public CTask
+{
+public:
 	class CScanThreadTask: public CThreadTask
 	{
 	public:
@@ -129,9 +135,27 @@ public:
 
 		CScanner* m_pScanner;
 	};
-class CStartScan: public CTask
-{
-public:
+
+	class CAvailabilityScanTask: public CThreadTask
+	{
+	public:
+		CAvailabilityScanTask( const std::string& strAddress ):m_strAddr( strAddress )
+		{};
+
+		virtual ~CAvailabilityScanTask(){};
+
+		virtual void Execute( const CEvent& CancelEvent );
+
+		bool IsAvailable(){ return m_bResult; }
+
+		std::string GetAddress(){ return m_strAddr; }
+
+	private:
+
+		std::string m_strAddr;
+
+		bool m_bResult;
+	};
 	
 
 
