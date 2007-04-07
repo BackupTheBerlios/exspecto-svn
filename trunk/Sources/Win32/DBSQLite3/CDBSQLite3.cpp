@@ -55,7 +55,7 @@ CDBSQLitProvider::CDBSQLitProvider()//: CDBProvider()
 try
 {
 	//Инициализация логера
-	Settings::SetModule( "SQLite", pParamTypes, sizeof( pParamTypes )/sizeof( pParamTypes[0] ) );
+	Settings::instance().SetModule( "SQLite", pParamTypes, sizeof( pParamTypes )/sizeof( pParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
 	Log::instance().SetLoglevel( iLogLevel );	
 	Settings::instance().GetParam( DB_FILE, dbFile );
