@@ -6,25 +6,29 @@
 #include "CDBProvider.h"
 #include "CppSQLite3.h"
 #include "tools.h"
+#include "SettingsContainer.h"
 
 using namespace std;
 
 __declspec(dllexport) class CDBSQLitProvider: public CDBProvider
 {
 public:
-	CDBSQLitProvider(const char* szFile);
+	CDBSQLitProvider();
 	virtual ~CDBSQLitProvider();
-	void __stdcall AddFiles(pFilesStr aFileList, const string& aHostName, const string& aIPnum);
-	bool __stdcall Find(const string& aText, map<string,bool> &aParams, list<int> &Result);
+	void __stdcall AddFiles(hostRecords &aRec);
 	bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result);
-	void __stdcall AddWord(int aID, const string& aPath);
-	void __stdcall AddWordInTable(int aID, list<string> &words, bool IsPath);
-	void __stdcall EraseHost(const string& aHostName, const string& aIPnum, const fileDate& aDate, bool aOnlyFiles=false);
 	void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false);
+	time_t __stdcall GetRefDateHost(const string& aHostName, const string& aIPnum);
   char* __stdcall GetNamePlugin();
+  void __stdcall SetAutoIndex(bool aVal);
+  bool __stdcall IsAutoIndex();
 
 private:
 	CppSQLite3DB db;
+	bool FAutoIndex;
+	bool __fastcall Find(const string& aText, map<string,bool> &aParams, list<int> &Result);
+	void __fastcall AddWord(int aID, const string& aPath);
+	void __fastcall AddWordInTable(int aID, list<string> &words, bool IsPath);
 }; 
 
 class CExcerpts
