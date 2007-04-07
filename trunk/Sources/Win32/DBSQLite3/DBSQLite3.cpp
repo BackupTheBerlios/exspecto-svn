@@ -33,8 +33,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fwdreason, LPVOID lpvReserved)
   return 1;
 }
 //---------------------------------------------------------------------------
-//extern "C" __declspec(dllexport)void* __stdcall RegisterPlugin()
-extern "C" DllExport void* __stdcall RegisterPlugin()
+extern "C" __declspec(dllexport)void* __stdcall RegisterPlugin()
+//extern "C" DllExport void* __stdcall RegisterPlugin()
 {
   thisPlugin = new CDBSQLitProvider();
   return thisPlugin;
