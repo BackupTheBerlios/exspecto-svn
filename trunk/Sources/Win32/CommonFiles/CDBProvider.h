@@ -7,14 +7,14 @@
 //   IDhost        INTEGER PRIMARY KEY Индекс компьютера                   //
 //   IPNum         CHAR(15)       IP компьютера                            //
 //   HostName      TINYTEXT       Имя компьютера                           //
-//   DateRef       DATETIME       Время последненго обновления информации  //
+//   DateRef       INT            Время последненго обновления информации  //
 // ----------------------------------------------------------------------- //
 // TableFiles   описание файлов и привязка их к компьютеру                 //
 //   IDfile        INTEGER PRIMARY KEY Индекс файла                        //
 //   IDhost        INT            Индекс компьютера                        //
 //   FileName      TINYTEXT       Имя файла                                //
 //   FileSize      INT            Размер файла                             //
-//   FileTimeCr    DATETIME       Время создания файла                     //
+//   FileTimeCr    INT            Время создания файла                     //
 // ----------------------------------------------------------------------- //
 // TableWords   таблица всех найденых слов                                 //
 // { Пути к файлам разбиваются на слова (идиомы) и заносятся в таблицу.  } //
@@ -79,13 +79,69 @@ class CDBProvider
 {
 public:
 	virtual ~CDBProvider(){};
+
+///////////////////////////////////////////////////////////////////////////////
+// AddFiles(hostRecords &aRec)
+// Добавляет список файлов в БД
+// aRec  список содержит имена хостов и список файлов для каждого хоста
+// при добавлении файлов по умолчанию индексация по словам не производится
+// IsAutoIndex = false;	
 	virtual void __stdcall AddFiles(hostRecords &aRec)=0;
+
+///////////////////////////////////////////////////////////////////////////////
+// Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)
+// Поиск фразы в БД
+// aText   текст для поиска
+// aParams список параметров поиска
+// Result  список результатов
+// если значение параметра IndexFind = false то поиск производит без поиска по
+// словам. При этом введенная фраза ищется в строчке телеком.
+// Если значение IsAutoIndex = false то производить поиск с учетом слов, нельзя. 	
 	virtual bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
+
+///////////////////////////////////////////////////////////////////////////////
+// EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)
+// Удаление записей из БД
+// aHostName  Имя хоста
+// aIPnum     IP номер
+// aDate      удаляет записи старше указаной даты (дата обновления хоста меньше указаной)
+// aOnlyFiles удаляет только файлы, записи из таблицы хостов не удаляются
+// Можно передавать только по одному из параемтров, остальные поля занулять
 	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0;
+
+///////////////////////////////////////////////////////////////////////////////
+// GetRefDateHost(const string& aHostName, const string& aIPnum)
+// Возвращает дату последненго обновления в формате time_t
+// aHostName  Имя хоста
+// aIPnum     IP номер
+// Можно передавать один из параметров, но запись должна быть определена однозначно
+// Если по заданным значениям найдено более одной записи, то возвращается время
+// только первой записи
 	virtual time_t __stdcall GetRefDateHost(const string& aHostName, const string& aIPnum)=0;
+
+///////////////////////////////////////////////////////////////////////////////
+// GetNamePlugin()
+// Возвращает имя класса
   virtual char* __stdcall GetNamePlugin()=0;
+
+///////////////////////////////////////////////////////////////////////////////
+// SetAutoIndex(bool aVal)
+// aVal установить значения автоиндексирования
+// Автоиндексирование указывает добавляются ли слова автоматически в таблицу слов
+// при добавлении записи файла
   virtual void __stdcall SetAutoIndex(bool aVal)=0;
+
+///////////////////////////////////////////////////////////////////////////////
+// IsAutoIndex()
+// Возвращет значение автоиндексирования
   virtual bool __stdcall IsAutoIndex()=0;
+  
+///////////////////////////////////////////////////////////////////////////////
+// StartIndexing(map<string,bool> &aParams)
+// aParams зарезервировано для передачи параметров
+// Производит индексирования записей из таблицы файлов
+// ВРЕМЕНО НЕ РАБОТАЕТ!!!!!!!!!
+  virtual void __stdcall StartIndexing(map<string,bool> &aParams)=0;
 };
 
 class CPrvException
