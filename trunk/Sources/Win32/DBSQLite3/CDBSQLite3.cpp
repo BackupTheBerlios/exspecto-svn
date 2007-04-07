@@ -5,14 +5,14 @@
 //   IDhost        INTEGER PRIMARY KEY Индекс компьютера                   //
 //   IPNum         CHAR(15)       IP компьютера                            //
 //   HostName      TINYTEXT       Имя компьютера                           //
-//   DateRef       DATETIME       Время последненго обновления информации  //
+//   DateRef       INT            Время последненго обновления информации  //
 // ----------------------------------------------------------------------- //
 // TableFiles   описание файлов и привязка их к компьютеру                 //
 //   IDfile        INTEGER PRIMARY KEY Индекс файла                        //
 //   IDhost        INT            Индекс компьютера                        //
 //   FileName      TINYTEXT       Имя файла                                //
 //   FileSize      INT            Размер файла                             //
-//   FileTimeCr    DATETIME       Время создания файла                     //
+//   FileTimeCr    INT            Время создания файла                     //
 // ----------------------------------------------------------------------- //
 // TableWords   таблица всех найденых слов                                 //
 // { Пути к файлам разбиваются на слова (идиомы) и заносятся в таблицу.  } //
@@ -493,7 +493,7 @@ try
 			temp += _itoa((*id), ctmp, 10);
 	  }
 //  	bufSQL.format("select th.IDHost as IDn, HostName, IPNum, FileName, FileSize, strftime('%%s',FileTimeCr) as FTUTS FROM TableFiles AS tf, TableHostes AS th WHERE tf.IDfile IN (%s) AND th.IDhost=tf.IDhost ORDER BY th.IDhost;", temp.c_str());
-  	bufSQL.format("select th.IDHost as IDn, HostName, IPNum, FileName, FileSize, strftime('%%s',FileTimeCr) as FTUTS FROM TableFiles AS tf, TableHostes AS th WHERE tf.IDfile IN (%s) AND th.IDhost=tf.IDhost ORDER BY th.IDhost;", temp.c_str());
+  	bufSQL.format("select th.IDHost as IDn, HostName, IPNum, FileName, FileSize, FileTimeCr as FTUTS FROM TableFiles AS tf, TableHostes AS th WHERE tf.IDfile IN (%s) AND th.IDhost=tf.IDhost ORDER BY th.IDhost;", temp.c_str());
     q = db.execQuery(bufSQL); // запрос
 	  int curH = -1;
 	  int iTmp;
@@ -510,6 +510,8 @@ try
   		}
   		fRec.FileName = q.getStringField("FileName", "");
   		fRec.FileSize =	q.getIntField("FileSize", 0);
+  		fRec.FDate.hFileTime = 0;
+  		fRec.FDate.lFileTime = 0;
 			fRec.FDate.UTS = q.getIntField("FTUTS", 0);
 			hRec.Files.push_back(fRec);
 	  	q.nextRow();
@@ -672,7 +674,7 @@ try
 
 	Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
   if(!q.eof())
-  	i = q.getIntField("IDhost", 0);
+  	i = q.getIntField("DateRef", 0);
   q.finalize();
 
 	Log::instance().Trace( 100, "%s [return %d]", __FUNCTION__, i );
@@ -704,6 +706,10 @@ void __stdcall CDBSQLitProvider::SetAutoIndex(bool aVal)
 bool __stdcall CDBSQLitProvider::IsAutoIndex()
 {
 	return FAutoIndex;
+}
+//-----------------------------------------------------------------------------
+void __stdcall CDBSQLitProvider::StartIndexing(map<string,bool> &aParams)
+{
 }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

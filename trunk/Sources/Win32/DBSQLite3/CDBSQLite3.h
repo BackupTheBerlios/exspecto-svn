@@ -22,6 +22,7 @@ public:
   char* __stdcall GetNamePlugin();
   void __stdcall SetAutoIndex(bool aVal);
   bool __stdcall IsAutoIndex();
+  void __stdcall StartIndexing(map<string,bool> &aParams);
 
 private:
 	CppSQLite3DB db;
