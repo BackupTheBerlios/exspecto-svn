@@ -164,6 +164,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 				RelativePath="..\..\Agent\ConnectionHandler.h">
 			</File>
 			<File
+				RelativePath="..\..\CommonFiles\constants.h">
+			</File>
+			<File
 				RelativePath="..\..\Agent\CTask.h">
 			</File>
 			<File
