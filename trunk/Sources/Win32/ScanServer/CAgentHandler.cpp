@@ -58,11 +58,14 @@ void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 			bEnd = true;
 		}
 		vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
-		if( (iCount < (int)m_vecRecvBuf.size() ) && (m_vecRecvBuf.size()<<1) < RECEIVE_BUF_MAX_SIZE )
-			m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
+		if( (iCount == (int)m_vecRecvBuf.size() ) )
+			if( (m_vecRecvBuf.size()<<1) <= RECEIVE_BUF_MAX_SIZE )
+				m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
+			else if( m_vecRecvBuf.size() < RECEIVE_BUF_MAX_SIZE )
+				m_vecRecvBuf.resize( RECEIVE_BUF_MAX_SIZE );
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер приемного буфера: %d", m_vecRecvBuf.size() );
 	}
-	//vecBuf.insert( vecBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
+	Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер данных %d:", vecBuf.size() );
 	Log::instance().Dump( 80, &vecBuf[0], (int)vecBuf.size(), "CAgentHandler::SendMessage: Получили ответ:" );
 	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
