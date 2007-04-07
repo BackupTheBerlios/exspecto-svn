@@ -39,7 +39,7 @@ namespace
 void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 {
 	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
-	m_bResult = Tools::Ping( m_strAddr, 3000, 1 );
+	m_bResult = Tools::PingHelper::instance().Ping( m_strAddr, 3000, 1 );
 	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s END", m_strAddr.c_str() );
 }
 
@@ -94,8 +94,11 @@ void CStartScan::Execute()
 	m_csCurState.Enter();
 		m_CurState = Scanning;	
 	m_csCurState.Leave();
-	
-	CThreadsPool pool( 50 );
+
+	int iThreadsCount;
+	Settings::instance().GetParam( SCAN_THREADS_COUNT, iThreadsCount );
+	Log::instance().Trace( 10, "CStartScan::Execute: Инициализируем пул потоков, кол-во потоков: %d", iThreadsCount );
+	CThreadsPool pool( iThreadsCount );
 	//Проверяем доступность хостов
 	Log::instance().Trace( 10, "CStartScan::Execute: Проверяем доступность хостов" );
 	std::vector< SmartPtr< CAvailabilityScanTask > > vecAvailTasks;
