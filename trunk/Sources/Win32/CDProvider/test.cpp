@@ -85,7 +85,7 @@ void GenList(int aCount, filesStr &FL)
 		Cur.FileSize = i*100;
 		Cur.FDate.lFileTime = 0;
 		Cur.FDate.hFileTime = 0;
-		Cur.FDate.UTS = 1800000000+1000000/(i+1);
+		Cur.FDate.UTS = 31536000+1000000/(i+1);
 		FL.push_back(Cur);
 	}
 }
@@ -334,9 +334,9 @@ int main()
 	int resVal = 0;
 	char tmp[255];
 	HINSTANCE hLib = NULL;
-//	typedef void* __declspec(dllimport) ProvType();
-	typedef void* (*ProvType)();
-	ProvType ProvFn;
+	typedef void* __declspec(dllimport) ProvType();
+//	typedef void* (*ProvType)();
+	ProvType *ProvFn;
 try
 {
 		if( NULL == ( hLib = ::LoadLibraryA( "DBSQLite3" ) ) )
@@ -344,7 +344,7 @@ try
 			Log::instance().Trace( 10, "%d", GetLastError() );
 			return -1;
 		}
-		if( NULL == ( ProvFn = (ProvType)::GetProcAddress( hLib, "RegisterPlugin" ) ) )
+		if( NULL == ( ProvFn = (ProvType *)::GetProcAddress( hLib, "RegisterPlugin" ) ) )
 		{
 			Log::instance().Trace( 10, "не удалось получить адрес функции RegisterPlugin из библиотеки DBSQLite" ); 
 			::FreeLibrary( hLib );
@@ -366,7 +366,7 @@ try
 		TimeProc("Erase", *db, rec, timeCode);
 	}else db->EraseHost("DrAlexandr", "192.168.1.2", 0);
 
-	cout << "Press Enter to cintinue...";
+	cout << "Pause...";
 	cin >> tmp;
 
 	if( bTimeDbg ){
@@ -390,7 +390,7 @@ try
 			cout << (*idRec).HostName.c_str() << " | " << (*idRec).IPNum << endl;
 			for (idF = (*idRec).Files.begin(); idF != (*idRec).Files.end(); ++idF)
 			{
-				cout << (*idF).FileName << " \t" << (*idF).FileSize << " \t" << (*idF).FDate.UTS <<endl;
+				cout << (*idF).FileName << " \t" << (*idF).FileSize << " \t" << (int)(*idF).FDate.UTS <<endl;
 			}
 		}
 	}
@@ -401,6 +401,8 @@ try
 			cout << p->first << ": " << p->second << "ms" << endl;
 		}	
 	}
+	
+	cout << db->GetRefDateHost("", "192.168.1.2") << endl;
 }catch(CPrvException& e)
 {
 	resVal = -1;
