@@ -201,25 +201,42 @@ void CSocket::SetConnected( bool bConnected )
 
 namespace Tools{
 
-	bool Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount )
+	CPingHelper::CPingHelper()
 	{
-		typedef struct {
-			unsigned char Ttl;                                 // Time To Live
-			unsigned char Tos;                                 // Type Of Service
-			unsigned char Flags;                               // IP header flags
-			unsigned char OptionsSize;                         // Size in bytes of options data
-			unsigned char *OptionsData;                        // Pointer to options data
-		} IP_OPTION_INFORMATION, * PIP_OPTION_INFORMATION;
+		m_hLib = LoadLibrary("ICMP.DLL");
+		if( NULL == m_hLib )
+			throw SocketErr( GetLastError() );
 
-		typedef struct {
-			unsigned int Address;                    // Replying address
-			unsigned long  Status;                   // Reply status
-			unsigned long  RoundTripTime;            // RTT in milliseconds
-			unsigned short DataSize;                 // Echo data size
-			unsigned short Reserved;                 // Reserved for system use
-			void *Data;                              // Pointer to the echo data
-			IP_OPTION_INFORMATION Options;           // Reply options
-		} IP_ECHO_REPLY, * PIP_ECHO_REPLY;
+		m_pIcmpCreateFile = (pfnHV)GetProcAddress( m_hLib, "IcmpCreateFile" );
+		if( NULL == m_pIcmpCreateFile )
+		{
+			FreeLibrary( m_hLib );
+            throw SocketErr( GetLastError() );
+		}
+		m_pIcmpCloseHandle = (pfnBH)GetProcAddress( m_hLib, "IcmpCloseHandle" );
+		if( NULL == m_pIcmpCloseHandle )
+		{
+			FreeLibrary( m_hLib );
+            throw SocketErr( GetLastError() );
+		}
+
+		m_pIcmpSendEcho = (pfnDHDPWPipPDD)GetProcAddress( m_hLib, "IcmpSendEcho" );
+		if( NULL == m_pIcmpSendEcho )
+		{
+			FreeLibrary( m_hLib );
+            throw SocketErr( GetLastError() );
+		}
+
+	}
+
+	CPingHelper::~CPingHelper()
+	{
+		FreeLibrary( m_hLib );
+	}
+
+	bool CPingHelper::Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount )
+	{
+
 
 		char acPingBuffer[32]={0};  // буфер дл€ передачи
 		struct in_addr DestAddress;
@@ -244,7 +261,7 @@ namespace Tools{
 
 		HANDLE hIP;
 		// ѕытаемс€ создать файл сервиса
-		hIP = IcmpCreateFile();
+		hIP = m_pIcmpCreateFile();
 
 		if (hIP == INVALID_HANDLE_VALUE) {
 			delete[] pIpe;
@@ -256,19 +273,15 @@ namespace Tools{
 		pIpe->Data = acPingBuffer;
 		pIpe->DataSize = sizeof(acPingBuffer);
 
-		int LostPacketsCount = 0; // кол-во потер€ных пакетов
-		unsigned int MaxMS = 0;      // максимальное врем€ ответа (мс)
-		int MinMS = -1;           // минимальное врем€ ответа (мс)
-
 		bool bRes = true;
 		DWORD dwStatus;
 		for(unsigned int c=0;c<iRequestCount;c++) {
-			dwStatus = IcmpSendEcho( hIP, *((unsigned int*)pHostEnt->h_addr_list[0]),
+			dwStatus = m_pIcmpSendEcho( hIP, *((unsigned int*)pHostEnt->h_addr_list[0]),
 				acPingBuffer, sizeof(acPingBuffer), NULL, pIpe,
 				sizeof(IP_ECHO_REPLY) + sizeof(acPingBuffer), iTimeout );
 			bRes &= (dwStatus == 0)?false:true;
 		}
-		IcmpCloseHandle(hIP);
+		m_pIcmpCloseHandle(hIP);
 		delete[] pIpe;
 		return bRes;
 	}
