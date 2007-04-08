@@ -8,6 +8,8 @@
 #define PLUGINLOADSTRATEGY_H_
 
 #include "CScanner.h"
+#include <string>
+#include <vector>
 
 class PluginLoadStrategy
 {

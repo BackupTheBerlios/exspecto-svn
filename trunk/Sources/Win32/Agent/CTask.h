@@ -9,6 +9,7 @@
 #include "PluginLoadStrategy.h"
 #include "CScanner.h"
 #include "ThreadsPool.h"
+#include "CDBProvider.h"
 
 class CTask
 {
@@ -45,7 +46,7 @@ protected:
 	
 	static CCriticalSection m_csCurState; 	
 	
-	static std::vector< std::string > m_vecData;
+	static std::map< std::string, filesStr > m_Data;
 	
 	static CEvent m_CancelEv;
 	
@@ -125,13 +126,13 @@ public:
 
 		virtual void Execute( const CEvent& CancelEvent );
 
-		void GetResData( std::vector< std::string >& vecResult );
+		void GetResData( std::map< std::string, filesStr >& vecResult );
 
 	private:
 
 		std::string m_strAddr;
 
-		std::vector< std::string > m_vecData;
+		filesStr m_TaskData;
 
 		CScanner* m_pScanner;
 	};

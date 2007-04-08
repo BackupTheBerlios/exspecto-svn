@@ -6,7 +6,7 @@
 enumAgentState CTask::m_CurState = Idling;
 CCriticalSection CTask::m_csCurState;
 CEvent CTask::m_CancelEv(false);
-std::vector< std::string > CTask::m_vecData;
+std::map< std::string, filesStr > CTask::m_Data;
 Container< CScanner*, PluginLoadStrategy > CStartScan::m_PluginContainer;
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 
 void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 {
-	m_pScanner->Scan( m_strAddr, m_vecData, CancelEvent );
+	m_pScanner->Scan( m_strAddr, m_TaskData, CancelEvent );
 }
 
 CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner ):m_strAddr( strAddr )
@@ -54,9 +54,10 @@ CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScann
 {
 }
 
-void CStartScan::CScanThreadTask::GetResData( std::vector< std::string >& vecResult )
+void CStartScan::CScanThreadTask::GetResData( std::map< std::string, filesStr >& Result )
 {
-	vecResult.insert( vecResult.end(), m_vecData.begin(), m_vecData.end() );
+	if( !m_TaskData.empty() )
+		Result[ m_strAddr ].insert( Result[ m_strAddr ].end(), m_TaskData.begin(), m_TaskData.end() );
 }
 
 
@@ -89,7 +90,7 @@ bool CStartScan::Immidiate()
 
 void CStartScan::Execute()
 {
-	m_vecData.clear();
+	m_Data.clear();
 	Log::instance().Trace( 90, "CStartScan: ѕоступил запрос на начало сканировани€" );
 	m_csCurState.Enter();
 		m_CurState = Scanning;	
@@ -142,9 +143,9 @@ void CStartScan::Execute()
 	}
 	pool.WaitAllComplete( m_CancelEv );
 	Log::instance().Trace( 99, "CStartScan::Execute: —канирование закончено" );
-	m_vecData.clear();
+	m_Data.clear();
 	for( std::vector< SmartPtr< CScanThreadTask > >::iterator It = vecThreadTasks.begin(); It != vecThreadTasks.end(); It++ )
-		(*It)->GetResData( m_vecData );
+		(*It)->GetResData( m_Data );
 	CPacket Event;
 	BYTE bEvent = ScanComplete;
 	Event.AddParam( &bEvent, 1 );
@@ -201,10 +202,17 @@ bool CGetData::Immidiate()
 	Log::instance().Trace( 90, "CGetData: ѕоступил запрос на получение данных" );
 	//ѕодсчитываем размер данных дл€ отправки
 	unsigned int iSize = 0;
-	for( std::vector< std::string >::iterator It = m_vecData.begin(); It != m_vecData.end(); It++ )
+	static const BYTE pbEnd[] = { 0,0,0,0 };
+	for( std::map< std::string, filesStr >::iterator ItData = m_Data.begin(); ItData != m_Data.end(); ItData++ )
 	{
-		//+1 - на завершающий ноль
-		iSize += (int)It->size() + 1;
+		iSize += (int)ItData->first.size() + 1;
+		for( std::list< fileStr >::iterator It = ItData->second.begin(); It != ItData->second.end(); It++ )
+		{
+			//+1 - на завершающий ноль
+			iSize += (int)It->FileName.size() + 1;
+			iSize += sizeof( __int64 ) + sizeof( fileDate );
+		}
+		iSize += sizeof( pbEnd );
 	}
 	Log::instance().Trace( 90, "CGetData: –азмер данных: %d", iSize );
 	//4 байта на размер 1 байт - результат обработки команды
@@ -213,10 +221,21 @@ bool CGetData::Immidiate()
 	pbBuf.get()[0] = (BYTE)RESP_OK;
 	::memcpy( pbBuf.get() + 1, (void*)&iSize, 4 );
 	int iOffset = 5; 
-	for( std::vector< std::string >::iterator It = m_vecData.begin(); It != m_vecData.end(); It++ )
+	for( std::map< std::string, filesStr >::iterator ItData = m_Data.begin(); ItData != m_Data.end(); ItData++ )
 	{
-		strcpy( (char*)pbBuf.get() + iOffset, It->c_str() );
-		iOffset += (int)It->size() + 1;
+		strcpy( (char*)pbBuf.get() + iOffset, ItData->first.c_str() );
+		iOffset += (int)ItData->first.size()+1;
+		for( std::list< fileStr >::iterator It = ItData->second.begin(); It != ItData->second.end(); It++ )
+		{
+			strcpy( (char*)pbBuf.get() + iOffset, It->FileName.c_str() );
+			iOffset += (int)It->FileName.size()+1;
+			memcpy( (char*)pbBuf.get() + iOffset, (void*)&It->FileSize, sizeof( __int64 ) );
+			iOffset += sizeof( __int64 );
+			memcpy( (char*)pbBuf.get() + iOffset, (void*)&It->FDate, sizeof( fileDate ) );
+			iOffset += sizeof( fileDate );
+		}
+		memcpy( (char*)pbBuf.get() + iOffset, pbEnd, sizeof( pbEnd ) );
+		iOffset += sizeof( pbEnd );
 	}
 	CPacket Msg;
 	Msg.AddParam( pbBuf.get(), iSize );
