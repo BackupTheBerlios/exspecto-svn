@@ -138,6 +138,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 				RelativePath="..\..\ScanServer\CStartTrigger.cpp">
 			</File>
 			<File
+				RelativePath="..\..\ScanServer\DbProviderFactory.cpp">
+			</File>
+			<File
 				RelativePath="..\..\ScanServer\precomp.cpp">
 			</File>
 			<File
@@ -162,6 +165,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 			</File>
 			<File
 				RelativePath="..\..\ScanServer\CStartTrigger.h">
+			</File>
+			<File
+				RelativePath="..\..\ScanServer\DbProviderFactory.h">
 			</File>
 			<File
 				RelativePath="..\..\ScanServer\precomp.h">

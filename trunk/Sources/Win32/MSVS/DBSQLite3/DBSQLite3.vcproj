@@ -45,7 +45,10 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="if not exist ..\..\..\..\bin mkdir ..\..\..\..\bin;
+copy $(TargetPath) ..\..\..\..\bin;
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
