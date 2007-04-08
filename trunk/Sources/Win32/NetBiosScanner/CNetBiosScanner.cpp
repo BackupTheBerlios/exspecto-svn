@@ -13,7 +13,7 @@ CNetBiosScanner::CNetBiosScanner()
 }
 
 //Рекурсивная функция, перебирающая все вложенные папки/файлы
-void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< std::string >& vcFilesList, HANDLE hCancelEvent )
+void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT filesStr& FilesList, HANDLE hCancelEvent )
 {
 	//Если задание отменили - завершаем выполнение
 	if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
@@ -21,38 +21,43 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT std::vector< s
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFile;
 	//TODO:разобраться с Stack overflow
-	std::string m_strBuf;
+    fileStr TmpStruct;
 	if( INVALID_HANDLE_VALUE != ( hFile = ::FindFirstFile( strSharePath, &FindFileData ) ) )
 	{
 		//не выводим в результат записи вида . и ..
 		if( ( 0 != strcmp( ".", FindFileData.cFileName ) ) )
 		{
-			m_strBuf.append( strSharePath, strSharePath[ strlen( strSharePath ) - 3 ] );
-			m_strBuf += FindFileData.cFileName;
-			vcFilesList.push_back( m_strBuf );
-			m_strBuf.clear();
+			TmpStruct.FileName.append( strSharePath, strSharePath + strlen( strSharePath ) - 3 );
+			TmpStruct.FileName += FindFileData.cFileName;
+			TmpStruct.FileSize = ( FindFileData.nFileSizeHigh * (MAXDWORD+1) ) + FindFileData.nFileSizeLow;
+			TmpStruct.FDate.hFileTime = FindFileData.ftLastWriteTime.dwHighDateTime;
+			TmpStruct.FDate.lFileTime = FindFileData.ftLastWriteTime.dwLowDateTime;
+			FilesList.push_back( TmpStruct );
 		}
 		while( 0 != ::FindNextFile( hFile, &FindFileData ) && WAIT_OBJECT_0 != WaitForSingleObject( hCancelEvent, 0 )) 
 			//не выводим в результат записи вида . и ..
 			if( 0 != strcmp( ".", FindFileData.cFileName ) && 0 != strcmp( "..", FindFileData.cFileName ) )
 			{
-				m_strBuf.append( strSharePath, strSharePath + strlen( strSharePath ) - 3  );
-				m_strBuf += FindFileData.cFileName;
-				Log::instance().Trace( 100, "CNetBiosScanner::EnumFiles: Добавляем ресурс: %s", m_strBuf.c_str() ); 
-				vcFilesList.push_back( m_strBuf );
-				m_strBuf += "\\";
-				m_strBuf += "*.*";
+				TmpStruct.FileName.clear();
+				TmpStruct.FileName.append( strSharePath, strSharePath + strlen( strSharePath ) - 3  );
+				TmpStruct.FileName += FindFileData.cFileName;
+				TmpStruct.FileSize = ( FindFileData.nFileSizeHigh * (MAXDWORD+1) ) + FindFileData.nFileSizeLow;
+				TmpStruct.FDate.hFileTime = FindFileData.ftLastWriteTime.dwHighDateTime;
+				TmpStruct.FDate.lFileTime = FindFileData.ftLastWriteTime.dwLowDateTime;
+				Log::instance().Trace( 100, "CNetBiosScanner::EnumFiles: Добавляем ресурс: %s", TmpStruct.FileName.c_str() ); 
+				FilesList.push_back( TmpStruct );
+				TmpStruct.FileName += "\\";
+				TmpStruct.FileName += "*.*";
 				//Рекурсивно проводим поиск во вложенных папках
-				EnumFiles( m_strBuf.c_str(), vcFilesList, hCancelEvent );
-				m_strBuf.clear();
+				EnumFiles( TmpStruct.FileName.c_str(), FilesList, hCancelEvent );
 			}
 		::FindClose( hFile );
 	}else
 		return;
 }
 
-//Сканировать адрес strAddress, результат сложить в vcResList
-void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::string >& vcResList, HANDLE hCancelEvent )
+//Сканировать адрес strAddress, результат сложить в ResList
+void CNetBiosScanner::Scan( IN std::string strAddress, OUT filesStr& ResList, HANDLE hCancelEvent )
 {
 	BYTE* buf;
 	DWORD p1,p2;
@@ -88,7 +93,7 @@ void CNetBiosScanner::Scan( IN std::string strAddress, OUT std::vector< std::str
 			{
 				sprintf( strTmpSharePath, "\\\\%s\\%s\\*.*", strAddress.c_str(), strTmpShareName );
 				//получаем список файлов
-				EnumFiles( strTmpSharePath, vcResList, hCancelEvent );
+				EnumFiles( strTmpSharePath, ResList, hCancelEvent );
 				if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
 					break; 
 			}
