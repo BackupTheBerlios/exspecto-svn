@@ -228,7 +228,7 @@ void __fastcall CDBSQLitProvider::AddWord(int aID, const string& aPath)
 try
 {
 	list<string> wrd;
-	int n = aPath.rfind("\\"); //ищет первый разделительный слешь справо
+	int n = (int)aPath.rfind("\\"); //ищет первый разделительный слешь справо
 	string tmp;
 	if( n>=0 ) // если слешь найден то фраза слева от слеша это путь
 	{

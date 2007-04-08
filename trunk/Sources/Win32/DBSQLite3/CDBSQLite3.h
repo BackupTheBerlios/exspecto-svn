@@ -10,7 +10,7 @@
 
 using namespace std;
 
-__declspec(dllexport) class CDBSQLitProvider: public CDBProvider
+class CDBSQLitProvider: public CDBProvider
 {
 public:
 	CDBSQLitProvider();
