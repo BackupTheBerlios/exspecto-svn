@@ -150,10 +150,10 @@ class CPrvException
 	public:
 		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL)
 		{
-			int iSize = strlen(aText)+1;
+			int iSize = (int)strlen(aText)+1;
 			int i=0;
 			if( aLine != 0 ) iSize += 15;
-			if( aFunct != NULL ) iSize += strlen(aFunct)+3;
+			if( aFunct != NULL ) iSize += (int)strlen(aFunct)+3;
 			iSize += 5; // на всякий случай :)
 			strError = new char[iSize];
 			if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
@@ -165,10 +165,10 @@ class CPrvException
 		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL)
 		{
 			const char* tmp = e.what(); 
-			int iSize = strlen(tmp)+1;
+			int iSize = (int)strlen(tmp)+1;
 			int i=0;
 			if( aLine != 0 ) iSize += 15;
-			if( aFunct != NULL ) iSize += strlen(aFunct)+3;
+			if( aFunct != NULL ) iSize += (int)strlen(aFunct)+3;
 			iSize += 5; // на всякий случай :)
 			strError = new char[iSize];
 			if( aFunct != NULL ) i += sprintf(strError + i, "%s->", aFunct);
