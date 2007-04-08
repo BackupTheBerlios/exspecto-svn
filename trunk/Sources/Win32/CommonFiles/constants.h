@@ -20,3 +20,4 @@
 #define DB_USER "DBUserName"
 #define DB_PASSWORD "DBPassword"
 #define SCAN_THREADS_COUNT "ScanThreadsCount"
+#define DB_PROV_NAME "DbProviderLib"

@@ -70,6 +70,7 @@ typedef list<fileStr> filesStr;
 typedef struct RecordTag
 {
 	string HostName;
+	//TODO: Опасно!
 	char IPNum[16];
 	filesStr Files;
 } hostRec;

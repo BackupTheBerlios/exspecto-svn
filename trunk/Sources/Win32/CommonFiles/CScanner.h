@@ -1,8 +1,6 @@
 #ifndef CSCANNER_H_
 #define CSCANNER_H_
-
-#include <string>
-#include <vector>
+#include "CDBProvider.h"
 
 class CScanner
 {
@@ -10,7 +8,7 @@ public:
 	CScanner(){};
 	virtual ~CScanner(){};
 		
-	virtual void Scan( IN std::string strAddress, OUT std::vector< std::string >& vecResList, HANDLE hCancelEvent ) = 0;
+	virtual void Scan( IN std::string strAddress, OUT filesStr& ResList, HANDLE hCancelEvent ) = 0;
 	
 	virtual const char* GetProtocolName() = 0;
 
