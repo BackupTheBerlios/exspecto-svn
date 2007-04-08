@@ -113,12 +113,12 @@ void Tools::Split(string &text, string separators, list<string> &words)
 	//Log::instance().Trace( 120, "%s [enter]", __FUNCTION__ );
 try
 {
-	int n = text.length();
+	int n = (int)text.length();
 	int start, stop;
 	string temp;
 //	stop = 0;
 //	start = 0;
-	start = text.find_first_not_of(separators);
+	start = (int)text.find_first_not_of(separators);
 	while ((start >= 0) && (start < n))
 	{
 //		start = stop;
@@ -131,10 +131,10 @@ try
 //    	}
 //		start = stop;
 		if (start >= n)return;
-    	stop = text.find_first_of(separators, start);
+    	stop = (int)text.find_first_of(separators, start);
     	if ((stop < 0) || (stop > n)) stop = n;
     	words.push_back(text.substr(start, stop - start));
-    	start = text.find_first_not_of(separators, stop+1);
+    	start = (int)text.find_first_not_of(separators, stop+1);
     }
 }catch( CPrvException& e )
 {
