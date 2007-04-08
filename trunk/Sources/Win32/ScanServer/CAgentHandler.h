@@ -12,6 +12,7 @@
 #include "packet.h"
 #include "SmartPtr.hpp"
 #include "Event.hpp"
+#include "CDBProvider.h"
 
 #define PORT 4000
 
@@ -53,7 +54,7 @@ public:
 	enumAgentResponse GetStatus( enumAgentState& Status );
 	
 	//ѕолучить данные последнего сканировани€
-	enumAgentResponse GetData();
+	enumAgentResponse GetData( hostRecords& Result );
 	
 	//ќткрыто ли соединение с агентом
 	bool IsOpened()const;

@@ -7,13 +7,15 @@
 #include "precomp.h"
 #include "CScheduler.h"
 #include "constants.h"
+#include "DbProviderFactory.h"
 
 //Описание типов параметров
 static char* pServerParamTypes[] = {
 	TIMER_VALUE, "int",
 	LOG_LEVEL,	"int",
 	AGENT_LIST, "string-list",
-	SCAN_AREA, "ip-list"
+	SCAN_AREA, "ip-list",
+	DB_PROV_NAME, "string"
 };
 
 CScheduler::CScheduler(void)
@@ -22,7 +24,9 @@ CScheduler::CScheduler(void)
 	Settings::instance().SetModule( "ScanServer", pServerParamTypes, sizeof( pServerParamTypes )/sizeof( pServerParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
 	Log::instance().SetLoglevel( iLogLevel );
-	
+	DbProviderFactory::instance();
+
+
 	std::list< std::string > listAgents;
 	Settings::instance().GetParam( "AgentList", listAgents );
 	//Загружаем контейнер агентов

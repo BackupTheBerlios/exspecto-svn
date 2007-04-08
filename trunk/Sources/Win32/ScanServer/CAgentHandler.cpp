@@ -7,6 +7,8 @@
 #include "precomp.h"
 #include "CAgentHandler.h"
 #include <process.h>
+#include "DbProviderFactory.h"
+
 
 #define RECEIVE_BUF_START_SIZE 255
 #define RECEIVE_BUF_MAX_SIZE 50000000
@@ -119,14 +121,27 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 		{
 			case ScanComplete:
 				Log::instance().Trace( 90, "CAgentHandler::OnMessage: Сканирование закончено" );
-				GetData();
+				hostRecords Result;
+				GetData( Result );
+				Log::instance().Trace( 90, "CAgentHandler::OnMessage: Записываем данные в базу" );
+				for( std::list< hostRec >::iterator It = Result.begin(); It != Result.end(); It++ )
+				{
+					DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", It->IPNum, 0 );
+					DbProviderFactory::instance().GetProviderInstance()->AddFiles( Result );
+				}
 				m_ScanFinished.Set();
 				break;
 		};
-	}catch(...)
+	}catch(std::exception& e)
+	{
+		Log::instance().Trace( 10, "CAgentHandler::OnMessage: Ошибка %s", e.what() );
+		//TODO:
+	}
+	catch(...)
 	{
 		//TODO:
 	}
+
 }
 
 enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )
@@ -185,7 +200,7 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )
 	return RESP_OK;
 }
 	
-enumAgentResponse CAgentHandler::GetData()
+enumAgentResponse CAgentHandler::GetData( hostRecords& Result )
 {
 	Log::instance().Trace( 90, "CAgentHandler::GetData: Отправка команды получения данных" );	
 	CPacket Msg;
@@ -205,6 +220,30 @@ enumAgentResponse CAgentHandler::GetData()
 	::memcpy( (BYTE*)&iDataSize, &vecRes[1], 4 );
 	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", iDataSize );
 	Log::instance().Dump( 90, &vecRes[1], iDataSize, "CAgentHandler::GetData: Получены данные:" );
+	//Разбираем данные
+	int iOffset = 5;
+	static const BYTE pbEnd[] = { 0,0,0,0 };
+	while( iOffset < (int)vecRes.size()-3 )
+	{
+		hostRec rec;
+		strcpy( rec.IPNum, (char*)&vecRes[ iOffset ] );
+		iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
+		while( 0 != memcmp( pbEnd, &vecRes[iOffset], sizeof( pbEnd ) ) )
+		{
+			fileStr file;
+			file.FileName += (char*)&vecRes[iOffset];
+			iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
+            memcpy( &file.FileSize, &vecRes[iOffset], sizeof( __int64 ) );
+			iOffset += sizeof( __int64 );
+			memcpy( &file.FDate, &vecRes[iOffset], sizeof( fileDate ) );
+			iOffset += sizeof( fileDate );
+			rec.Files.push_back( file );
+		}
+		iOffset += sizeof( pbEnd );
+		Result.push_back( rec );
+	}
+	if( iOffset != (int)vecRes.size()-3 )
+		Log::instance().Trace( 10, "CAgentHandler::GetData: произошла ошибка во время разбора входных данных" );
 	return RESP_OK;
 }
 
