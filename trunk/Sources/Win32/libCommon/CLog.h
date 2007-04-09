@@ -9,6 +9,7 @@
 #include <string>
 #include "CriticalSection.hpp"
 #include "windows.h"
+#include "Singleton.hpp"
 
 
 /*
@@ -25,21 +26,18 @@
  * Log::instance().Trace( 10, "LALALA" );
  * ...
  */
-class Log
+class CLog
 {
 public:
-	
-	//ћетод доступа к экземпл€ру класса Log
+	CLog();
+	~CLog();
+
 	//позвол€ет изменить им€ модул€, из которого формируетс€ им€ файла
 	//по умолчанию им€ модул€ вы€сн€етс€ с помощью системной функции
-	//GetModuleFileName
-	static Log& instance( const char* strModuleName = NULL )
-	{
-		static Log log( strModuleName );
-		return log;
-	}
-	
-	
+	//GetModuleFileName, имеет смысл вызывать дл€ dll чтобы лог модул€ dll
+	//записывалс€ в отдельный файл
+	void SetModuleName( const std::string& strModuleName );
+
 	//ћетод используетс€ дл€ записи форматированной записи в журнал
 	//	iLevel - приоритет записи, все записи с приоритетом > установленного не записываютс€ в журнал
 	//	trace_text - строка, содержаща€ формат записи (аналогичный printf)
@@ -57,10 +55,8 @@ public:
 	void SetLoglevel( int iLoglevel );
 	
 private:
-	Log( const Log& );
-	Log& operator=( const Log& );
-	Log( const char* strModuleName = NULL );
-	~Log();
+	CLog( const CLog& );
+	CLog& operator=( const CLog& );
 	
 	//им€ файла лога
 	std::string m_strFileName;
@@ -68,11 +64,10 @@ private:
 	//критическа€ секци€ на запись в файл
 	CCriticalSection m_cs;
 	
-	static Log* m_pInstance;
-	
 	int m_iLogLevel;
 };
 
+typedef CSingleton< CLog > Log;
 
 #endif
 

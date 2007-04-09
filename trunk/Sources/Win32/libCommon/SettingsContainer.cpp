@@ -105,6 +105,7 @@ void CIniIntSerializer::Load( const std::string& strParamName, const std::string
 	if( ( 0 == ( iParam = atoi( strParamValue.c_str() ) ) && !strcmp( strParamValue.c_str(), "0" ) ) )
 	{
 		Log::instance().Trace( 10, " CIniIntSerializer::Load: ѕараметр %s должен быть целым числом %s", strParamName.c_str() );
+		throw ParamSerializeErr( strParamName );
 	}else
 	{
 		pParamContainer->PutParam( strParamName, iParam );
@@ -139,13 +140,40 @@ void CIniStringListSerializer::Load( const std::string& strParamName, const std:
 	//составл€ем список строк
 	std::list< std::string > listStr;
 	if( !Tools::GetStringList( strParamValue, listStr ) )
+	{
 		Log::instance().Trace( 10, "CIniStringListSerializer::Load: ѕараметр %s должен быть целым списком строк", strParamName.c_str() );
+		throw ParamSerializeErr( strParamName );
+	}
 	pParamContainer->PutParam( strParamName, listStr );
 	Log::instance().Trace( 100, "CSettings::CSettings: «агружаем параметр %s = %s", strParamName.c_str(), strParamValue.c_str() );
 }
 
 namespace{
 	bool bStringListReged = CIniSettings::RegisterTypeSerializer( "string-list", new CIniStringListSerializer );
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CIniStringListSerializer--------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+void CIniBoolSerializer::Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer )
+{
+	bool bRes;
+	if( "1" == strParamValue )
+		bRes = true;
+	else if( "0" == strParamValue )
+		bRes = false;
+	else
+	{
+		Log::instance().Trace( 10, "CIniBoolSerializer::Load: ѕараметр %s должен иметь значение 0 или 1", strParamName.c_str() );
+		throw ParamSerializeErr( strParamName );
+	}
+	pParamContainer->PutParam( strParamName, bRes );
+	Log::instance().Trace( 100, "CSettings::CSettings: «агружаем параметр %s = %s", strParamName.c_str(), strParamValue.c_str() );
+}
+
+namespace{
+	bool bBoolReged = CIniSettings::RegisterTypeSerializer( "bool", new CIniBoolSerializer );
 }
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -167,7 +195,10 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 	//—читываем список диапазонов
 	std::list< std::string > listStr;
 	if( !Tools::GetStringList( strParamValue, listStr ) )
-		Log::instance().Trace( 10, "CIniIpListSerializer::Load: ѕараметр %s должен быть целым списком IP-адресов", strParamName.c_str() );		
+	{
+		Log::instance().Trace( 0, "CIniIpListSerializer::Load: ѕараметр %s должен быть целым списком IP-адресов", strParamName.c_str() );		
+		throw ParamSerializeErr( strParamName );
+	}
 	//дл€ каждого диапазона
 	for( std::list< std::string >::iterator It = listStr.begin(); It != listStr.end(); It++ )
 	{

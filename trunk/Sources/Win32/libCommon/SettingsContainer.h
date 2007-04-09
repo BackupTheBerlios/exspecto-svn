@@ -11,24 +11,50 @@
 #include "Singleton.hpp"
 
 
-class ParamTypeErr: public std::logic_error
+//Исключения, генерируемые CSocket и классами, наследующими от него, и функциями из Tools
+class ParamErr: public std::exception
 {
 public:
-	ParamTypeErr( const std::string& strParamName ):std::logic_error( "shqParams: Запрошен параметр неверного типа: " + strParamName ){};
+	ParamErr( const std::string& Msg )
+	{
+		strcpy( data, Msg.c_str() );
+	};
+
+	virtual ~ParamErr()throw(){};
+
+	virtual const char* what() const throw()
+	{
+		return data;	 
+	};
+
+private:
+
+	char data[1024];
 };
 
-class ParamNotFound: public std::runtime_error
+class ParamTypeErr: public ParamErr
 {
 public:
-	ParamNotFound( const std::string strParamName ):std::runtime_error( "Необходимый параметр " + strParamName + " не найден" ){};
+	ParamTypeErr( const std::string& strParamName ):ParamErr( "shqParams: Запрошен параметр неверного типа: " + strParamName ){};
 };
 
-class ParamLoadErr: public std::runtime_error
+class ParamNotFound: public ParamErr
 {
 public:
-	ParamLoadErr( const std::string& strMsg ):std::runtime_error( strMsg ){};
+	ParamNotFound( const std::string strParamName ):ParamErr( "Необходимый параметр " + strParamName + " не найден" ){};
 };
 
+class ParamLoadErr: public ParamErr
+{
+public:
+	ParamLoadErr( const std::string& strMsg ):ParamErr( strMsg ){};
+};
+
+class ParamSerializeErr: public ParamErr
+{
+public:
+	ParamSerializeErr( const std::string& strParamName ):ParamErr( "Ошибка загрузки параметра " + strParamName ){};
+};
 
 /*!
 	Базовый абстрактный класс параметров для хранения параметров 
@@ -278,6 +304,13 @@ public:
 };
 
 class CIniStringListSerializer: public CIniTypeSerializer
+{
+public:
+
+	virtual void Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer );
+};
+
+class CIniBoolSerializer: public CIniTypeSerializer
 {
 public:
 
