@@ -14,7 +14,8 @@ static char* pAgentParamTypes[] = {
 	SCHEDULER_ADDRESS, "string",
 	LOG_LEVEL,	"int",
 	EVENT_PORT, "int",
-	SCAN_THREADS_COUNT, "int"
+	SCAN_THREADS_COUNT, "int",
+	PING_ON, "bool"
 };
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------CAgent------------------------------------------------------
@@ -22,7 +23,7 @@ static char* pAgentParamTypes[] = {
 
 CAgent::CAgent()
 {
-	//Инициализация логера
+	//Инициализация вспомогательных компонентов
 	int iLogLevel;
 	Settings::instance().SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );

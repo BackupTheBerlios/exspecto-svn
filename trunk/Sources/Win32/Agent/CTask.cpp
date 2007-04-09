@@ -8,6 +8,7 @@ CCriticalSection CTask::m_csCurState;
 CEvent CTask::m_CancelEv(false);
 std::map< std::string, filesStr > CTask::m_Data;
 Container< CScanner*, PluginLoadStrategy > CStartScan::m_PluginContainer;
+CTempStorage CTask::m_DataStorage( "temp.h" );
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CGetStatus----------------------------------------------------------
@@ -47,10 +48,17 @@ void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 {
 	m_pScanner->Scan( m_strAddr, m_TaskData, CancelEvent );
+	for( std::list<fileStr>::iterator It = m_TaskData.begin(); It != m_TaskData.end(); It++ )
+	{
+		m_DataStorage.GetStream()<<It->FileName;
+		m_DataStorage.GetStream().write( (char*)&It->FileSize, sizeof( __int64 ) );
+		m_DataStorage.GetStream().write( (char*)&It->FDate, sizeof( fileDate ) );
+	}
 }
 
 CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner ):m_strAddr( strAddr )
-																				  ,m_pScanner( pScanner )	
+																				  ,m_pScanner( pScanner )
+																				  ,m_DataStorage( strAddr+pScanner->GetProtocolName() )
 {
 }
 
@@ -58,6 +66,11 @@ void CStartScan::CScanThreadTask::GetResData( std::map< std::string, filesStr >&
 {
 	if( !m_TaskData.empty() )
 		Result[ m_strAddr ].insert( Result[ m_strAddr ].end(), m_TaskData.begin(), m_TaskData.end() );
+}
+
+void CStartScan::CScanThreadTask::GetResData( CTempStorage& ResultStorage )
+{
+	ResultStorage << m_DataStorage;
 }
 
 
@@ -90,6 +103,7 @@ bool CStartScan::Immidiate()
 
 void CStartScan::Execute()
 {
+	//TODO:проверять состояние перед началом сканирования
 	m_Data.clear();
 	Log::instance().Trace( 90, "CStartScan: Поступил запрос на начало сканирования" );
 	m_csCurState.Enter();
@@ -100,26 +114,32 @@ void CStartScan::Execute()
 	Settings::instance().GetParam( SCAN_THREADS_COUNT, iThreadsCount );
 	Log::instance().Trace( 10, "CStartScan::Execute: Инициализируем пул потоков, кол-во потоков: %d", iThreadsCount );
 	CThreadsPool pool( iThreadsCount );
+
 	//Проверяем доступность хостов
-	Log::instance().Trace( 10, "CStartScan::Execute: Проверяем доступность хостов" );
-	std::vector< SmartPtr< CAvailabilityScanTask > > vecAvailTasks;
-	for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
+	bool bPingOn;
+	Settings::instance().GetParam( PING_ON, bPingOn );
+	if( bPingOn )
 	{
-		vecAvailTasks.push_back( SmartPtr<CAvailabilityScanTask>( new CAvailabilityScanTask( *It ) ) );
-		pool.AddTask( vecAvailTasks.back() );
+		Log::instance().Trace( 10, "CStartScan::Execute: Проверяем доступность хостов" );
+		std::vector< SmartPtr< CAvailabilityScanTask > > vecAvailTasks;
+		for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
+		{
+			vecAvailTasks.push_back( SmartPtr<CAvailabilityScanTask>( new CAvailabilityScanTask( *It ) ) );
+			pool.AddTask( vecAvailTasks.back() );
+		}
+		Log::instance().Trace( 10, "CStartScan::Execute: WAITING" );
+		if( !pool.WaitAllComplete( m_CancelEv ) )
+			return;
+		m_vecAddresses.clear();
+		for( std::vector< SmartPtr< CAvailabilityScanTask > >::iterator It = vecAvailTasks.begin(); It != vecAvailTasks.end(); It++ )
+		{
+			if( (*It)->IsAvailable() )
+				m_vecAddresses.push_back( (*It)->GetAddress() );
+			else
+				Log::instance().Trace( 10, "CScheduler::OnStartScan: Хост %s не доступен. Исключаем из списка текущего сканирования", (*It)->GetAddress().c_str() );
+		}
+		Log::instance().Trace( 10, "CStartScan::Execute: Проверка доступности закончена" );
 	}
-	Log::instance().Trace( 10, "CStartScan::Execute: WAITING" );
-	if( !pool.WaitAllComplete( m_CancelEv ) )
-		return;
-	m_vecAddresses.clear();
-	for( std::vector< SmartPtr< CAvailabilityScanTask > >::iterator It = vecAvailTasks.begin(); It != vecAvailTasks.end(); It++ )
-	{
-		if( (*It)->IsAvailable() )
-			m_vecAddresses.push_back( (*It)->GetAddress() );
-		else
-			Log::instance().Trace( 10, "CScheduler::OnStartScan: Хост %s не доступен. Исключаем из списка текущего сканирования", (*It)->GetAddress().c_str() );
-	}
-	Log::instance().Trace( 10, "CStartScan::Execute: Проверка доступности закончена" );
 	std::vector< SmartPtr< CScanThreadTask > > vecThreadTasks;
 
 	for( std::vector< std::string >::iterator AddrIt = m_vecAddresses.begin(); AddrIt != m_vecAddresses.end(); AddrIt++ )
@@ -145,7 +165,7 @@ void CStartScan::Execute()
 	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
 	m_Data.clear();
 	for( std::vector< SmartPtr< CScanThreadTask > >::iterator It = vecThreadTasks.begin(); It != vecThreadTasks.end(); It++ )
-		(*It)->GetResData( m_Data );
+		(*It)->GetResData( m_DataStorage );
 	CPacket Event;
 	BYTE bEvent = ScanComplete;
 	Event.AddParam( &bEvent, 1 );
@@ -221,11 +241,13 @@ bool CGetData::Immidiate()
 	pbBuf.get()[0] = (BYTE)RESP_OK;
 	::memcpy( pbBuf.get() + 1, (void*)&iSize, 4 );
 	int iOffset = 5; 
+	//TODO:
+	//Здесь занимаемая память удваивается
 	for( std::map< std::string, filesStr >::iterator ItData = m_Data.begin(); ItData != m_Data.end(); ItData++ )
 	{
 		strcpy( (char*)pbBuf.get() + iOffset, ItData->first.c_str() );
 		iOffset += (int)ItData->first.size()+1;
-		for( std::list< fileStr >::iterator It = ItData->second.begin(); It != ItData->second.end(); It++ )
+		for( std::list< fileStr >::iterator It = ItData->second.begin(); It != ItData->second.end(); )
 		{
 			strcpy( (char*)pbBuf.get() + iOffset, It->FileName.c_str() );
 			iOffset += (int)It->FileName.size()+1;
@@ -233,10 +255,15 @@ bool CGetData::Immidiate()
 			iOffset += sizeof( __int64 );
 			memcpy( (char*)pbBuf.get() + iOffset, (void*)&It->FDate, sizeof( fileDate ) );
 			iOffset += sizeof( fileDate );
+			std::list< fileStr >::iterator ItTmp = It;
+			It++;
+			//Очищаем память,чтобы не было удваивания занимаемой памяти
+			ItData->second.erase( ItTmp );
 		}
 		memcpy( (char*)pbBuf.get() + iOffset, pbEnd, sizeof( pbEnd ) );
 		iOffset += sizeof( pbEnd );
 	}
+	m_Data.clear();
 	CPacket Msg;
 	Msg.AddParam( pbBuf.get(), iSize );
 	Msg.EndCommand();

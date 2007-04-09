@@ -10,6 +10,7 @@
 #include "CScanner.h"
 #include "ThreadsPool.h"
 #include "CDBProvider.h"
+#include "TempStorage.h"
 
 class CTask
 {
@@ -47,6 +48,8 @@ protected:
 	static CCriticalSection m_csCurState; 	
 	
 	static std::map< std::string, filesStr > m_Data;
+
+	static CTempStorage m_DataStorage;
 	
 	static CEvent m_CancelEv;
 	
@@ -128,11 +131,15 @@ public:
 
 		void GetResData( std::map< std::string, filesStr >& vecResult );
 
+		void GetResData( CTempStorage& ResultStorage );
+
 	private:
 
 		std::string m_strAddr;
 
 		filesStr m_TaskData;
+
+		CTempStorage m_DataStorage;
 
 		CScanner* m_pScanner;
 	};
