@@ -127,7 +127,7 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 				for( std::list< hostRec >::iterator It = Result.begin(); It != Result.end(); It++ )
 				{
 					DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", It->IPNum, 0 );
-					DbProviderFactory::instance().GetProviderInstance()->AddFiles( Result );
+					DbProviderFactory::instance().GetProviderInstance()->AddFiles( *It );
 				}
 				m_ScanFinished.Set();
 				break;
@@ -139,6 +139,7 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 	}
 	catch(...)
 	{
+		Log::instance().Trace( 10, "CAgentHandler::OnMessage: Неизвестная ошибка " );
 		//TODO:
 	}
 
@@ -226,7 +227,7 @@ enumAgentResponse CAgentHandler::GetData( hostRecords& Result )
 	while( iOffset < (int)vecRes.size()-3 )
 	{
 		hostRec rec;
-		strcpy( rec.IPNum, (char*)&vecRes[ iOffset ] );
+		rec.IPNum =  (char*)&vecRes[ iOffset ];
 		iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
 		while( 0 != memcmp( pbEnd, &vecRes[iOffset], sizeof( pbEnd ) ) )
 		{
