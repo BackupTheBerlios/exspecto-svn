@@ -3,7 +3,7 @@
 
 <ManagedProjectBuildInfo>
 <project id="DBSQLite3.cdt.managedbuild.target.gnu.cygwin.so.877732560" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
-<configuration artifactExtension="dll" artifactName="DBSQLite3" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" postbuildStep="cp dbsqlite3.dll &quot;../../../../Bin/dbsqlite3.dll&quot;">
+<configuration artifactExtension="dll" artifactName="DBSQLite3" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" postbuildStep="cp dbsqlite3.dll &quot;../../../../Bin/dbsqlite3.dll&quot;;cp dbsqlite3.dll &quot;d:/Apache/cgi-bin/dbsqlite3.dll&quot;">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.508662628" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug">
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1509271261" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug">
 <option id="gnu.cpp.compiler.option.include.paths.1342886315" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
