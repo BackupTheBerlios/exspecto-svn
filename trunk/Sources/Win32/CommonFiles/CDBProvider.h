@@ -47,6 +47,7 @@
 #include <malloc.h>
 #include <stdlib.h>
  
+#define RESULT_OK 0
 
 using namespace std;
 
@@ -70,8 +71,7 @@ typedef list<fileStr> filesStr;
 typedef struct RecordTag
 {
 	string HostName;
-	//TODO: Опасно!
-	char IPNum[16];
+	string IPNum;
 	filesStr Files;
 } hostRec;
 typedef list<hostRec> hostRecords;
@@ -87,7 +87,7 @@ public:
 // aRec  список содержит имена хостов и список файлов для каждого хоста
 // при добавлении файлов по умолчанию индексация по словам не производится
 // IsAutoIndex = false;	
-	virtual void __stdcall AddFiles(hostRecords &aRec)=0;
+	virtual void __stdcall AddFiles(hostRec &aRec)=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)
@@ -126,31 +126,45 @@ public:
   virtual char* __stdcall GetNamePlugin()=0;
 
 ///////////////////////////////////////////////////////////////////////////////
+// RefreshDB()
+// Оптимизация Базы данных, обновление списка слов и их индексов
+// ПОКА НЕРАБОТАЕТ!!!
+  virtual bool __stdcall RefreshDB()=0;
+
+///////////////////////////////////////////////////////////////////////////////
+// GetProvError(string& mes)
+// mes строковая переменя в которую возвращается текст ошибки
+// функция возвращает код ошибки или RESULT_OK если ошибки нет
+	virtual int __stdcall GetProvError(string& mes)=0;
+
+///////////////////////////////////////////////////////////////////////////////
 // SetAutoIndex(bool aVal)
 // aVal установить значения автоиндексирования
 // Автоиндексирование указывает добавляются ли слова автоматически в таблицу слов
 // при добавлении записи файла
-  virtual void __stdcall SetAutoIndex(bool aVal)=0;
+//  virtual void __stdcall SetAutoIndex(bool aVal)=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // IsAutoIndex()
 // Возвращет значение автоиндексирования
-  virtual bool __stdcall IsAutoIndex()=0;
+//  virtual bool __stdcall IsAutoIndex()=0;
   
 ///////////////////////////////////////////////////////////////////////////////
 // StartIndexing(map<string,bool> &aParams)
 // aParams зарезервировано для передачи параметров
 // Производит индексирования записей из таблицы файлов
 // ВРЕМЕНО НЕ РАБОТАЕТ!!!!!!!!!
-  virtual void __stdcall StartIndexing(map<string,bool> &aParams)=0;
+//  virtual void __stdcall StartIndexing(map<string,bool> &aParams)=0;
 };
 
 class CPrvException
 {
 	char *strError;
+	int codeError;
 	public:
-		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL)
+		CPrvException(const char* aText, int aLine=0, const char* aFunct=NULL, const int aErrCode=-1)
 		{
+			codeError = aErrCode;
 			int iSize = (int)strlen(aText)+1;
 			int i=0;
 			if( aLine != 0 ) iSize += 15;
@@ -163,9 +177,10 @@ class CPrvException
 			Log::instance().Trace( 5,"%s", strError );
 		}
 		//-------------------------------------------------------------------------
-		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL)
+		CPrvException(std::exception& e, int aLine=0, const char* aFunct=NULL, const int aErrCode=-1)
 		{
-			const char* tmp = e.what(); 
+			codeError = aErrCode;
+			const char* tmp = e.what();
 			int iSize = (int)strlen(tmp)+1;
 			int i=0;
 			if( aLine != 0 ) iSize += 15;
@@ -190,6 +205,11 @@ class CPrvException
 		const char* Message()
 		{
 			return strError;
+		}
+		//-------------------------------------------------------------------------
+		int ErrorCode()
+		{
+			return codeError;
 		}
 		//-------------------------------------------------------------------------
 };
