@@ -21,18 +21,23 @@ extern "C"
 
 DllExport CScanner* GetScanner()
 {
-	//Инициализируем вспомогательные службы
-	int iLogLevel;	
-	Log::instance(MOD_NAME);
-	Settings::instance().SetModule( "NetBiosPlugin", pNetBiosParamTypes, sizeof( pNetBiosParamTypes )/sizeof( pNetBiosParamTypes[0] ) );
-	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
-	Log::instance().SetLoglevel( iLogLevel );
-		
-	if( NULL != m_pScanner )
+	try{
+		//Инициализируем вспомогательные службы
+		int iLogLevel;	
+		Log::instance().SetModuleName( MOD_NAME );
+		Settings::instance().SetModule( MOD_NAME, pNetBiosParamTypes, sizeof( pNetBiosParamTypes )/sizeof( pNetBiosParamTypes[0] ) );
+		Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
+		Log::instance().SetLoglevel( iLogLevel );
+
+		if( NULL != m_pScanner )
+			return NULL;
+
+		m_pScanner = new CNetBiosScanner();
+	}catch( std::exception& e)
+	{
+		Log::instance().Trace( 0, "GetScanner: Ошибка: %s", e.what() );
 		return NULL;
-	
-	m_pScanner = new CNetBiosScanner();
-	
+	}
 	return m_pScanner;
 }
 
