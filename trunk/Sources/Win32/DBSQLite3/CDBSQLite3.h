@@ -15,21 +15,26 @@ class CDBSQLitProvider: public CDBProvider
 public:
 	CDBSQLitProvider();
 	virtual ~CDBSQLitProvider();
-	void __stdcall AddFiles(hostRecords &aRec);
+	void __stdcall AddFiles(hostRec &aRec);
 	bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result);
 	void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false);
 	time_t __stdcall GetRefDateHost(const string& aHostName, const string& aIPnum);
   char* __stdcall GetNamePlugin();
-  void __stdcall SetAutoIndex(bool aVal);
-  bool __stdcall IsAutoIndex();
-  void __stdcall StartIndexing(map<string,bool> &aParams);
-
+  bool __stdcall RefreshDB();
+//  void __stdcall StartIndexing(map<string,bool> &aParams);
+	int __stdcall GetProvError(string& mes);
 private:
 	CppSQLite3DB db;
 	bool FAutoIndex;
+	bool FIndexed;
+	string FErrMsg;
+	int FErrCode;
 	bool __fastcall Find(const string& aText, map<string,bool> &aParams, list<int> &Result);
 	void __fastcall AddWord(int aID, const string& aPath);
 	void __fastcall AddWordInTable(int aID, list<string> &words, bool IsPath);
+  void __fastcall SetAutoIndex(bool aVal);
+  bool __fastcall IsAutoIndex();
+	void __fastcall SetLastError(int aCode, const string& aMes);
 }; 
 
 class CExcerpts

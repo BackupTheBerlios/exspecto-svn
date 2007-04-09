@@ -48,55 +48,58 @@ static char* pParamTypes[] = {
 CDBSQLitProvider::CDBSQLitProvider()//: CDBProvider()
 {
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [enter]", __FUNCTION__ );
+	
 	FAutoIndex = false;
 	int iLogLevel;
 	string dbFile;
 
+SetLastError(RESULT_OK, "");
 try
 {
-	//Инициализация логера
-	Settings::instance().SetModule( "SQLite", pParamTypes, sizeof( pParamTypes )/sizeof( pParamTypes[0] ) );
-	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
-	Log::instance().SetLoglevel( iLogLevel );	
-	Settings::instance().GetParam( DB_FILE, dbFile );
-
-	Log::instance().Trace( 100, "CDBSQLitProvider::%s ::: Open BD", __FUNCTION__ );
-	db.open(dbFile.c_str()); // Открываю файл базы данных
-
-	// Создаю таблицы при их отсутствии //INTEGER PRIMARY KEY <-AUTO_INCREMENT
-	Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableHostes" );
-	if(!db.tableExists("TableHostes"))
-		db.execDML("create table TableHostes(IDhost INTEGER PRIMARY KEY, IPNum char(15) NOT NULL, HostName tinytext, DateRef int);");
-
-	Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableFiles" );
-	if(!db.tableExists("TableFiles"))
-		db.execDML("create table TableFiles(IDfile INTEGER PRIMARY KEY, IDhost int NOT NULL, FileName tinytext NOT NULL, FileSize int, FileTimeCr int);");
-
-	Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableWords" );
-	if(!db.tableExists("TableWords"))
+	try
 	{
-		db.execDML("create table TableWords(IDword INTEGER PRIMARY KEY, Word tinytext NOT NULL);");
-		db.execDML("create index Word ON TableWords (Word);");
-	}
+		//Инициализация логера
+		Settings::instance().SetModule( "SQLite", pParamTypes, sizeof( pParamTypes )/sizeof( pParamTypes[0] ) );
+		Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
+		Log::instance().SetLoglevel( iLogLevel );	
+		Settings::instance().GetParam( DB_FILE, dbFile );
 
-	Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableWordInFiles" );
-	if(!db.tableExists("TableWordInFiles"))
-	{
-		db.execDML("create table TableWordInFiles(IDword INT NOT NULL, IDfile INT NOT NULL, IsPath BOOL NOT NULL DEFAULT false);");
-		db.execDML("create index IDword ON TableWordInFiles (IDword);");
+		Log::instance().Trace( 100, "CDBSQLitProvider::%s ::: Open BD", __FUNCTION__ );
+		db.open(dbFile.c_str()); // Открываю файл базы данных
+
+		// Создаю таблицы при их отсутствии //INTEGER PRIMARY KEY <-AUTO_INCREMENT
+		Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableHostes" );
+		if(!db.tableExists("TableHostes"))
+			db.execDML("create table TableHostes(IDhost INTEGER PRIMARY KEY, IPNum char(15) NOT NULL, HostName tinytext, DateRef int);");
+
+		Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableFiles" );
+		if(!db.tableExists("TableFiles"))
+			db.execDML("create table TableFiles(IDfile INTEGER PRIMARY KEY, IDhost int NOT NULL, FileName tinytext NOT NULL, FileSize int, FileTimeCr int);");
+
+		Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableWords" );
+		if(!db.tableExists("TableWords"))
+		{
+			db.execDML("create table TableWords(IDword INTEGER PRIMARY KEY, Word tinytext NOT NULL);");
+			db.execDML("create index Word ON TableWords (Word);");
+		}
+
+		Log::instance().Trace( 110, "CDBSQLitProvider::CDBSQLitProvider ::: If don't exist CREATE TABLE TableWordInFiles" );
+		if(!db.tableExists("TableWordInFiles"))
+		{
+			db.execDML("create table TableWordInFiles(IDword INT NOT NULL, IDfile INT NOT NULL, IsPath BOOL NOT NULL DEFAULT false);");
+			db.execDML("create index IDword ON TableWordInFiles (IDword);");
+		}
+	}catch( CPrvException& e ){
+		throw CPrvException(e.Message(), 0, __FUNCTION__);
+	}catch( std::exception& e ){
+		throw CPrvException(e, 0, __FUNCTION__);
+	}catch(CppSQLite3Exception&  e){
+		throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
+	}catch(...){
+		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
 	}
-}catch( CPrvException& e )
-{
-	throw CPrvException(e.Message(), 0, __FUNCTION__);
-}catch( std::exception& e )
-{
-	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
-{
-	throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
-}catch(...)
-{
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+}catch( CPrvException& e ){
+	SetLastError(e.ErrorCode(), e.Message());
 }
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [exit]", __FUNCTION__ );
 }
@@ -115,102 +118,101 @@ CDBSQLitProvider::~CDBSQLitProvider()
 // aFileList  однонаправленый список на основе структуры с параметрами файла
 // aHostName  имя компьютера на которм находился представленый список
 // aIPnum     IP адресс компьютера
-void __stdcall CDBSQLitProvider::AddFiles(hostRecords &aRec)
+void __stdcall CDBSQLitProvider::AddFiles(hostRec &aRec)
 {
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [enter]", __FUNCTION__ );
+SetLastError(RESULT_OK, "");
 try
 {
-	int i,j; // хранит ID таблицы хостов
+	try
+	{
+		int i,j; // хранит ID таблицы хостов
 //	char strTmp[255]; // вспомогвтельный массив (введен для хранения даты в строковой форме)
-	filesStr::iterator Cur; // указатель на текущий файл списка
-	hostRecords::iterator Rec;
-  CppSQLite3Buffer bufSQL; // буфер для формирования запроса
-	CppSQLite3Query q;
+		filesStr::iterator Cur; // указатель на текущий файл списка
+  	CppSQLite3Buffer bufSQL; // буфер для формирования запроса
+		CppSQLite3Query q;
 	
 // Начало транзакции    
-	db.execDML("begin transaction;");
-
-	for( Rec=aRec.begin(); Rec!=aRec.end(); Rec++ )
-	{
-		Log::instance().Trace( 180, "%d :: Запрос к базе данных", __LINE__ );
-		i = -1;
-  	bufSQL.format("select IDhost from TableHostes where IPNum = %Q;", Rec->IPNum);
-		q = db.execQuery(bufSQL); // запрос
-
-		Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
-  	if(!q.eof())
-  		i = q.getIntField("IDhost", -1); // получаю номер ID указующий на существующую запись
-		q.finalize();
-
-  	if(i >= 0) // если запись существует
-  	{
-			Log::instance().Trace( 180, "%d :: Запись уже существует", __LINE__ );
-   		bufSQL.format("update TableHostes set DateRef = select strftime('%%s','now') where IDhost = %d;",i);
-   		db.execDML(bufSQL); // обнавляю дату/время последнего обнавления
-  	}
-		else // иначе
-		{
-			Log::instance().Trace( 180, "%d :: Добавляем новую запись", __LINE__ );
-   		bufSQL.format("insert into TableHostes values(NULL, %Q, %Q, strftime('%%s','now'));", Rec->IPNum, Rec->HostName.c_str());
-   		db.execDML(bufSQL); // добавляю новую запись в таблицу хостов
+		db.execDML("begin transaction;");
 
 			Log::instance().Trace( 180, "%d :: Запрос к базе данных", __LINE__ );
-	  	bufSQL.format("select IDhost from TableHostes where IPNum = %Q;", Rec->IPNum);
+			i = -1;
+  		bufSQL.format("select IDhost from TableHostes where IPNum = %Q;", aRec.IPNum.c_str());
 			q = db.execQuery(bufSQL); // запрос
 
 			Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
-   		if(!q.eof())
-   			i = q.getIntField("IDhost", -1); // получаю номер ID
-   		q.finalize();
-   		if( i < 0 ) throw CPrvException("Ошибка в структуре БД. (Таблица Хостов)", __LINE__);
-		}
-    
-		Log::instance().Trace( 180, "%d :: Получить ID следующей записи", __LINE__ );
-	  bufSQL.format("select MAX(IDfile) as Cnt from TableFiles;", i);
-		q = db.execQuery(bufSQL); // запрос
-		Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
-		j = -1;
-   	if(!q.eof())
- 			j = q.getIntField("Cnt", -1); // получаю номер ID указующий на существующую запись
-   	q.finalize();
-		
-		CppSQLite3Statement stmt_File = db.compileStatement("insert into TableFiles values (?, ?, ?, ?, ?);");
- 		for ( Cur = Rec->Files.begin(); Cur != Rec->Files.end(); Cur++ )
-		{
-			Log::instance().Trace( 185, "%d :: Добавляем новую запись [%s]", __LINE__,  Cur->FileName.c_str());
-	   	j++;
+	  	if(!q.eof())
+  			i = q.getIntField("IDhost", -1); // получаю номер ID указующий на существующую запись
+			q.finalize();
 
-			stmt_File.bind(1,j);
-    	stmt_File.bind(2, i);
-    	stmt_File.bind(3, Cur->FileName.c_str());
-    	stmt_File.bind(4, Cur->FileSize);
-    	stmt_File.bind(5, (int)Tools::ConvertFileTimeToUTC(Cur->FDate));
-    	stmt_File.execDML();
-    	stmt_File.reset();
-
-			if( IsAutoIndex() )
+	  	if(i >= 0) // если запись существует
+  		{
+				Log::instance().Trace( 180, "%d :: Запись уже существует", __LINE__ );
+   			bufSQL.format("update TableHostes set DateRef = strftime('%%s','now') where IDhost = %d;",i);
+	   		db.execDML(bufSQL); // обнавляю дату/время последнего обнавления
+  		}
+			else // иначе
 			{
-				Log::instance().Trace( 185, "%d :: Добавляем новые слова из строки [%s]", __LINE__,  Cur->FileName.c_str());
-	   		AddWord(j, Cur->FileName);//*/
-			}
-  	}
-  	stmt_File.finalize();
-	}
-// Завершение транзакции
-	db.execDML("commit transaction;");
+				Log::instance().Trace( 180, "%d :: Добавляем новую запись", __LINE__ );
+   			bufSQL.format("insert into TableHostes values(NULL, %Q, %Q, strftime('%%s','now'));", aRec.IPNum.c_str(), aRec.HostName.c_str());
+   			db.execDML(bufSQL); // добавляю новую запись в таблицу хостов
+
+				Log::instance().Trace( 180, "%d :: Запрос к базе данных", __LINE__ );
+		  	bufSQL.format("select IDhost from TableHostes where IPNum = %Q;", aRec.IPNum.c_str());
+				q = db.execQuery(bufSQL); // запрос
 	
-}catch( CPrvException& e )
-{
-	throw CPrvException(e.Message(), 0, __FUNCTION__);
-}catch( std::exception& e )
-{
-	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
-{
-	throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
-}catch(...)
-{
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+				Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
+   			if(!q.eof())
+   				i = q.getIntField("IDhost", -1); // получаю номер ID
+	   		q.finalize();
+  	 		if( i < 0 ) throw CPrvException("Ошибка в структуре БД. (Таблица Хостов)", __LINE__);
+			}
+    
+			Log::instance().Trace( 180, "%d :: Получить ID следующей записи", __LINE__ );
+		  bufSQL.format("select MAX(IDfile) as Cnt from TableFiles;", i);
+			q = db.execQuery(bufSQL); // запрос
+			Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
+			j = -1;
+   		if(!q.eof())
+	 			j = q.getIntField("Cnt", -1); // получаю номер ID указующий на существующую запись
+  	 	q.finalize();
+
+			CppSQLite3Statement stmt_File = db.compileStatement("insert into TableFiles values (?, ?, ?, ?, ?);");
+	 		for ( Cur = aRec.Files.begin(); Cur != aRec.Files.end(); Cur++ )
+			{
+				Log::instance().Trace( 185, "%d :: Добавляем новую запись [%s]", __LINE__,  Cur->FileName.c_str());
+	   		j++;
+
+				stmt_File.bind(1,j);
+  	  	stmt_File.bind(2, i);
+    		stmt_File.bind(3, Cur->FileName.c_str());
+    		stmt_File.bind(4, Cur->FileSize);
+    		stmt_File.bind(5, (int)Tools::ConvertFileTimeToUTC(Cur->FDate));
+	    	stmt_File.execDML();
+  	  	stmt_File.reset();
+
+				if( IsAutoIndex() )
+				{
+					Log::instance().Trace( 185, "%d :: Добавляем новые слова из строки [%s]", __LINE__,  Cur->FileName.c_str());
+		   		AddWord(j, Cur->FileName);//*/
+				}
+  		}
+	  	stmt_File.finalize();
+
+// Завершение транзакции
+		db.execDML("commit transaction;");
+	
+	}catch( CPrvException& e ){
+		throw CPrvException(e.Message(), 0, __FUNCTION__, e.ErrorCode());
+	}catch( std::exception& e ){
+		throw CPrvException(e, 0, __FUNCTION__);
+	}catch(CppSQLite3Exception&  e){
+		throw CPrvException(e.errorMessage(), 0, __FUNCTION__, e.errorCode());
+	}catch(...){
+		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	}
+}catch( CPrvException& e ){
+	SetLastError(e.ErrorCode(), e.Message());
 }
 
 	Log::instance().Trace( 100, "CDBSQLitProvider::AddFiles [exit]" );
@@ -464,76 +466,78 @@ try
 bool __stdcall CDBSQLitProvider::Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)
 {
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
+SetLastError(RESULT_OK, "");
 try
 {
-	list<int> res;
-	list<int>::iterator id;
-	list<hostRec>::iterator ihRec;
-	hostRec hRec;
-	fileStr fRec;
-  CppSQLite3Buffer bufSQL; // буфер для формирования запроса
-  CppSQLite3Query q;
-  string temp = "";
-  string tHName;
-  string tIPName;
-  char ctmp[12];
-  bool bResult;
-  bResult = Find(aText, aParams, res);
-	if( bResult )
+	try
 	{
-	  id=res.begin();
-	  if(id != res.end())
+		list<int> res;
+		list<int>::iterator id;
+		list<hostRec>::iterator ihRec;
+		hostRec hRec;
+		fileStr fRec;
+  	CppSQLite3Buffer bufSQL; // буфер для формирования запроса
+  	CppSQLite3Query q;
+  	string temp = "";
+  	string tHName;
+  	string tIPName;
+  	char ctmp[12];
+  	bool bResult;
+  	bResult = Find(aText, aParams, res);
+		if( bResult )
 		{
-	  	temp = _itoa((*id), ctmp, 10);
-			id++;
-		}
-	  for (; id != res.end(); ++id)
-	  {
-			temp += ", ";
-			temp += _itoa((*id), ctmp, 10);
-	  }
+		  id=res.begin();
+	  	if(id != res.end())
+			{
+		  	temp = _itoa((*id), ctmp, 10);
+				id++;
+			}
+	  	for (; id != res.end(); ++id)
+	  	{
+				temp += ", ";
+				temp += _itoa((*id), ctmp, 10);
+	  	}
 //  	bufSQL.format("select th.IDHost as IDn, HostName, IPNum, FileName, FileSize, strftime('%%s',FileTimeCr) as FTUTS FROM TableFiles AS tf, TableHostes AS th WHERE tf.IDfile IN (%s) AND th.IDhost=tf.IDhost ORDER BY th.IDhost;", temp.c_str());
-  	bufSQL.format("select th.IDHost as IDn, HostName, IPNum, FileName, FileSize, FileTimeCr as FTUTS FROM TableFiles AS tf, TableHostes AS th WHERE tf.IDfile IN (%s) AND th.IDhost=tf.IDhost ORDER BY th.IDhost;", temp.c_str());
-    q = db.execQuery(bufSQL); // запрос
-	  int curH = -1;
-	  int iTmp;
-	  while(!q.eof())
-  	{
-  		iTmp = q.getIntField("IDn", -2);
-  		if ( curH != iTmp && iTmp != -2 )
+	  	bufSQL.format("select th.IDHost as IDn, HostName, IPNum, FileName, FileSize, FileTimeCr as FTUTS FROM TableFiles AS tf, TableHostes AS th WHERE tf.IDfile IN (%s) AND th.IDhost=tf.IDhost ORDER BY th.IDhost;", temp.c_str());
+  	  q = db.execQuery(bufSQL); // запрос
+	  	int curH = -1;
+	  	int iTmp;
+	  	while(!q.eof())
   		{
-  			if ( curH != -1 ) Result.push_back(hRec);
-  			curH = iTmp;
-	  		hRec.HostName = q.getStringField("HostName", "");
-  			strcpy(hRec.IPNum, q.getStringField("IPNum", ""));
-  			hRec.Files.clear();
-  		}
-  		fRec.FileName = q.getStringField("FileName", "");
-  		fRec.FileSize =	q.getIntField("FileSize", 0);
-  		fRec.FDate.hFileTime = 0;
-  		fRec.FDate.lFileTime = 0;
-			fRec.FDate.UTS = q.getIntField("FTUTS", 0);
-			hRec.Files.push_back(fRec);
-	  	q.nextRow();
- 		}
-		if ( curH != -1 ) Result.push_back(hRec);
-  	q.finalize();
-		return true;
-	}else return false;
-}catch( CPrvException& e )
-{
-	throw CPrvException(e.Message(), 0, __FUNCTION__);
-}catch( std::exception& e )
-{
-	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
-{
-	throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
-}catch(...)
-{
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	  		iTmp = q.getIntField("IDn", -2);
+  			if ( curH != iTmp && iTmp != -2 )
+  			{
+	  			if ( curH != -1 ) Result.push_back(hRec);
+  				curH = iTmp;
+	  			hRec.HostName = q.getStringField("HostName", "");
+  				hRec.IPNum = q.getStringField("IPNum", "");
+  				hRec.Files.clear();
+  			}
+  			fRec.FileName = q.getStringField("FileName", "");
+  			fRec.FileSize =	q.getIntField("FileSize", 0);
+  			fRec.FDate.hFileTime = 0;
+  			fRec.FDate.lFileTime = 0;
+				fRec.FDate.UTS = q.getIntField("FTUTS", 0);
+				hRec.Files.push_back(fRec);
+	  		q.nextRow();
+ 			}
+			if ( curH != -1 ) Result.push_back(hRec);
+  		q.finalize();
+			return true;
+		}else return false;
+	}catch( CPrvException& e ){
+		throw CPrvException(e.Message(), 0, __FUNCTION__);
+	}catch( std::exception& e ){
+		throw CPrvException(e, 0, __FUNCTION__);
+	}catch(CppSQLite3Exception&  e){
+		throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
+	}catch(...){
+		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	}
+}catch( CPrvException& e ){
+	SetLastError(e.ErrorCode(), e.Message());
 }
-
+return false;
 }
 //-----------------------------------------------------------------------------
 
@@ -542,83 +546,85 @@ try
 void __stdcall CDBSQLitProvider::EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles)
 { 
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [enter]", __FUNCTION__ );
+SetLastError(RESULT_OK, "");
 try
 {
-	int i=-1; // хранит ID таблицы хостов
-	char strTmp[255]; // вспомогвтельный массив (введен для хранения даты в строковой форме)
-//	filesStr::iterator Cur; // указатель на текущий файл списка
-  CppSQLite3Buffer bufSQL; // буфер для формирования запроса
-  string temp;
-  list<int>liIDhost;
-  list<int>::iterator pIDhost;
-  if( &aHostName != NULL && !aHostName.empty() )
-  {
-  	if( temp.empty() )
-  		temp = " WHERE ";
-  	else temp += " AND ";
-  	temp += "HostName = '"; 
-  	Tools::FormatSQLQuery(aHostName, temp);
-  	temp += "'";
-  }
-
-  if( &aIPnum != NULL && !aIPnum.empty() )
-  {
-  	if( temp.empty() )
-  		temp = " WHERE ";
-  	else temp += " AND ";
-  	temp += "IPnum = '" + aIPnum + "'";
-  }
-  
-  if( aDate != 0)
-  {
-  	if( temp.empty() )
-  		temp = " WHERE ";
-  	else temp += " AND ";
-  	temp += "DateRef < '";
-  	temp += _itoa(aDate,strTmp,10);
-  	temp += "'";
-  }
-
-	bufSQL.format("select * from TableHostes%s;", temp.c_str());
-
-	Log::instance().Trace( 180, "%d :: Запрос к базе данных", __LINE__ );
-	CppSQLite3Query q = db.execQuery(bufSQL); // запрос
-
-	Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
-  while(!q.eof())
-  {
-  	if( (i = q.getIntField("IDhost", -1)) != -1 )
-  		liIDhost.push_back(i);
-	  q.nextRow();
-  }
-  q.finalize();
-  	
-	for( pIDhost = liIDhost.begin(); pIDhost != liIDhost.end(); ++pIDhost )
+	try
 	{
-   	bufSQL.format("delete from TableWordInFiles where IDfile IN(select IDfile from TableFiles where IDhost = %d);", (*pIDhost));
-  	db.execDML(bufSQL); // удаляю все записи соответствующего ID из таблицы (файл-слов)
+		int i=-1; // хранит ID таблицы хостов
+		char strTmp[255]; // вспомогвтельный массив (введен для хранения даты в строковой форме)
+//	filesStr::iterator Cur; // указатель на текущий файл списка
+  	CppSQLite3Buffer bufSQL; // буфер для формирования запроса
+  	string temp;
+  	list<int>liIDhost;
+  	list<int>::iterator pIDhost;
+  	if( &aHostName != NULL && !aHostName.empty() )
+  	{
+	  	if( temp.empty() )
+  			temp = " WHERE ";
+  		else temp += " AND ";
+  		temp += "HostName = '"; 
+  		Tools::FormatSQLQuery(aHostName, temp);
+  		temp += "'";
+  	}
 
-   	bufSQL.format("delete from TableFiles where IDhost = %d;", (*pIDhost));
-   	db.execDML(bufSQL); // удаляю все записи соответствующего ID из таблицы файлов
+	  if( &aIPnum != NULL && !aIPnum.empty() )
+  	{
+	  	if( temp.empty() )
+  			temp = " WHERE ";
+  		else temp += " AND ";
+  		temp += "IPnum = '" + aIPnum + "'";
+  	}
+  
+  	if( aDate != 0)
+  	{
+	  	if( temp.empty() )
+  			temp = " WHERE ";
+  		else temp += " AND ";
+  		temp += "DateRef < '";
+  		temp += _itoa(aDate,strTmp,10);
+  		temp += "'";
+  	}
 
-   	if( !aOnlyFiles )
-   	{
-   		bufSQL.format("delete from TableHostes where IDhost = %d;",(*pIDhost));
-   		db.execDML(bufSQL); // удаляю все записи соответствующего ID из таблицы хостов
-   	}
-  }
-}catch( CPrvException& e )
-{
-	throw CPrvException(e.Message(), 0, __FUNCTION__);
-}catch( std::exception& e )
-{
-	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
-{
-	throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
-}catch(...)
-{
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+		bufSQL.format("select * from TableHostes%s;", temp.c_str());
+
+		Log::instance().Trace( 180, "%d :: Запрос к базе данных", __LINE__ );
+		CppSQLite3Query q = db.execQuery(bufSQL); // запрос
+
+		Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
+  	while(!q.eof())
+  	{
+  		if( (i = q.getIntField("IDhost", -1)) != -1 )
+  			liIDhost.push_back(i);
+	  	q.nextRow();
+  	}
+  	q.finalize();
+  	
+		for( pIDhost = liIDhost.begin(); pIDhost != liIDhost.end(); ++pIDhost )
+		{
+   		bufSQL.format("delete from TableWordInFiles where IDfile IN(select IDfile from TableFiles where IDhost = %d);", (*pIDhost));
+  		db.execDML(bufSQL); // удаляю все записи соответствующего ID из таблицы (файл-слов)
+
+   		bufSQL.format("delete from TableFiles where IDhost = %d;", (*pIDhost));
+   		db.execDML(bufSQL); // удаляю все записи соответствующего ID из таблицы файлов
+
+   		if( !aOnlyFiles )
+   		{
+   			bufSQL.format("delete from TableHostes where IDhost = %d;",(*pIDhost));
+   			db.execDML(bufSQL); // удаляю все записи соответствующего ID из таблицы хостов
+   		}
+  	}
+	}catch( CPrvException& e ){
+		throw CPrvException(e.Message(), 0, __FUNCTION__);
+	}catch( std::exception& e ){
+		throw CPrvException(e, 0, __FUNCTION__);
+	}catch(CppSQLite3Exception&  e){
+		throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
+	}catch(...){
+		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	}
+}catch( CPrvException& e ){
+	SetLastError(e.ErrorCode(), e.Message());
 }
 
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [exit]", __FUNCTION__ );
@@ -638,64 +644,90 @@ char* __stdcall CDBSQLitProvider::GetNamePlugin()
 time_t __stdcall CDBSQLitProvider::GetRefDateHost(const string& aHostName, const string& aIPnum)
 {
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
+
+SetLastError(RESULT_OK, "");
 try
 {
-	time_t i; // хранит ID таблицы хостов
+	try
+	{
+		time_t i; // хранит ID таблицы хостов
 //	char strTmp[255]; // вспомогвтельный массив (введен для хранения даты в строковой форме)
 //	filesStr::iterator Cur; // указатель на текущий файл списка
-  CppSQLite3Buffer bufSQL; // буфер для формирования запроса
-  string temp;
-  list<int>liIDhost;
-  list<int>::iterator pIDhost;
-  if( &aHostName != NULL && !aHostName.empty() )
-  {
-  	if( temp.empty() )
-  		temp = " WHERE ";
-  	else temp += " AND ";
-  	temp += "HostName = '"; 
-  	Tools::FormatSQLQuery(aHostName, temp);
-  	temp += "'";
-  }
+  	CppSQLite3Buffer bufSQL; // буфер для формирования запроса
+  	string temp;
+  	list<int>liIDhost;
+  	list<int>::iterator pIDhost;
+  	if( &aHostName != NULL && !aHostName.empty() )
+  	{
+  		if( temp.empty() )
+  			temp = " WHERE ";
+  		else temp += " AND ";
+  		temp += "HostName = '"; 
+  		Tools::FormatSQLQuery(aHostName, temp);
+  		temp += "'";
+  	}
 
-  if( &aIPnum != NULL && !aIPnum.empty() )
-  {
-  	if( temp.empty() )
-  		temp = " WHERE ";
-  	else temp += " AND ";
-  	temp += "IPnum = '" + aIPnum + "'";
-  }
+  	if( &aIPnum != NULL && !aIPnum.empty() )
+  	{
+  		if( temp.empty() )
+  			temp = " WHERE ";
+  		else temp += " AND ";
+  		temp += "IPnum = '" + aIPnum + "'";
+  	}
 
-	if( temp.empty() )return 0;
+		if( temp.empty() )return 0;
   
-	bufSQL.format("select DateRef from TableHostes%s;", temp.c_str());
+		bufSQL.format("select DateRef from TableHostes%s;", temp.c_str());
 
-	Log::instance().Trace( 180, "%d :: Запрос к базе данных", __LINE__ );
-	CppSQLite3Query q = db.execQuery(bufSQL); // запрос
+		Log::instance().Trace( 180, "%d :: Запрос к базе данных", __LINE__ );
+		CppSQLite3Query q = db.execQuery(bufSQL); // запрос
 
-	Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
-  if(!q.eof())
-  	i = q.getIntField("DateRef", 0);
-  q.finalize();
+		Log::instance().Trace( 180, "%d :: Обработка запроса", __LINE__ );
+  	if(!q.eof())
+  		i = q.getIntField("DateRef", 0);
+  	q.finalize();
 
-	Log::instance().Trace( 100, "%s [return %d]", __FUNCTION__, i );
-  return i;
-}catch( CPrvException& e )
-{
-	throw CPrvException(e.Message(), 0, __FUNCTION__);
-}catch( std::exception& e )
-{
-	throw CPrvException(e, 0, __FUNCTION__);
-}catch(CppSQLite3Exception&  e)
-{
-	throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
-}catch(...)
-{
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+		Log::instance().Trace( 100, "%s [return %d]", __FUNCTION__, i );
+  	return i;
+	}catch( CPrvException& e ){
+		throw CPrvException(e.Message(), 0, __FUNCTION__);
+	}catch( std::exception& e ){
+		throw CPrvException(e, 0, __FUNCTION__);
+	}catch(CppSQLite3Exception&  e){
+		throw CPrvException(e.errorMessage(), 0, __FUNCTION__);
+	}catch(...){
+		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	}
+}catch( CPrvException& e ){
+	SetLastError(e.ErrorCode(), e.Message());
 }
-
+return 0;
 }
 //-----------------------------------------------------------------------------
-void __stdcall CDBSQLitProvider::SetAutoIndex(bool aVal)
+
+bool __stdcall CDBSQLitProvider::RefreshDB()
+{
+	return false;
+}
+//-----------------------------------------------------------------------------
+
+int __stdcall CDBSQLitProvider::GetProvError(string& mes)
+{
+	if(&mes != NULL)
+		mes = FErrMsg;
+	return FErrCode;
+}
+//-----------------------------------------------------------------------------
+
+void __fastcall CDBSQLitProvider::SetLastError(int aCode, const string& aMes)
+{
+	if(&aMes != NULL)
+		FErrMsg = aMes;
+	FErrCode = aCode;
+}
+//-----------------------------------------------------------------------------
+
+void __fastcall CDBSQLitProvider::SetAutoIndex(bool aVal)
 {
 	if( aVal != FAutoIndex )
 	{
@@ -703,14 +735,14 @@ void __stdcall CDBSQLitProvider::SetAutoIndex(bool aVal)
 	}
 }
 //-----------------------------------------------------------------------------
-bool __stdcall CDBSQLitProvider::IsAutoIndex()
+bool __fastcall CDBSQLitProvider::IsAutoIndex()
 {
 	return FAutoIndex;
 }
-//-----------------------------------------------------------------------------
+/*/-----------------------------------------------------------------------------
 void __stdcall CDBSQLitProvider::StartIndexing(map<string,bool> &aParams)
 {
-}
+}*/
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
