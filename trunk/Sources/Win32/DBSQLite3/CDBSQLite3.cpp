@@ -99,7 +99,9 @@ try
 		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
 	}
 }catch( CPrvException& e ){
-	SetLastError(e.ErrorCode(), e.Message());
+	int errc = e.ErrorCode();
+	if( errc == RESULT_OK ) errc = 1;
+	SetLastError(errc, e.Message());
 }
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [exit]", __FUNCTION__ );
 }
@@ -212,7 +214,9 @@ try
 		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
 	}
 }catch( CPrvException& e ){
-	SetLastError(e.ErrorCode(), e.Message());
+	int errc = e.ErrorCode();
+	if( errc == RESULT_OK ) errc = 1;
+	SetLastError(errc, e.Message());
 }
 
 	Log::instance().Trace( 100, "CDBSQLitProvider::AddFiles [exit]" );
@@ -535,7 +539,9 @@ try
 		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
 	}
 }catch( CPrvException& e ){
-	SetLastError(e.ErrorCode(), e.Message());
+	int errc = e.ErrorCode();
+	if( errc == RESULT_OK ) errc = 1;
+	SetLastError(errc, e.Message());
 }
 return false;
 }
@@ -624,7 +630,9 @@ try
 		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
 	}
 }catch( CPrvException& e ){
-	SetLastError(e.ErrorCode(), e.Message());
+	int errc = e.ErrorCode();
+	if( errc == RESULT_OK ) errc = 1;
+	SetLastError(errc, e.Message());
 }
 
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [exit]", __FUNCTION__ );
@@ -699,7 +707,9 @@ try
 		throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
 	}
 }catch( CPrvException& e ){
-	SetLastError(e.ErrorCode(), e.Message());
+	int errc = e.ErrorCode();
+	if( errc == RESULT_OK ) errc = 1;
+	SetLastError(errc, e.Message());
 }
 return 0;
 }
