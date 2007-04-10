@@ -8,7 +8,6 @@
 #define SERVERSOCKET_H_
 
 #include "Socket.h"
-#include "precomp.h"
 #include "SmartPtr.hpp"
 
 class CServerSocket: public CSocket

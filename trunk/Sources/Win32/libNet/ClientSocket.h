@@ -8,7 +8,6 @@
 #define CCLIENTSOCKET_H_
 
 #include "Socket.h"
-#include "precomp.h"
 
 class CClientSocket: public CSocket
 {

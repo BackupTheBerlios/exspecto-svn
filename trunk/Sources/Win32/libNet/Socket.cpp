@@ -93,7 +93,7 @@ int CSocket::Send( void* pBuffer, int iSize )
 	return res;
 }
 
-//Метод приёма,возвращает SOCKET_ERROR либо кол-во отправленных байт
+//Метод приёма,возвращает SOCKET_ERROR либо кол-во полученных байт
 int CSocket::Receive( void* pBuffer, int iBufSize )
 {
 	int res;

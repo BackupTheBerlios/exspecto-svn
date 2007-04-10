@@ -9,8 +9,9 @@
 #define CSOCKET_H_
 #include "winsock2.h"
 #include "Singleton.hpp"
+#include <stdexcept>
+#include "CLog.h"
 
-#include "precomp.h"
 
 //Исключения, генерируемые CSocket и классами, наследующими от него, и функциями из Tools
 class SocketErr: public std::exception

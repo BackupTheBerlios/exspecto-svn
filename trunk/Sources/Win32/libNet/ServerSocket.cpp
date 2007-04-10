@@ -4,9 +4,8 @@
 //Author: Parshin Dmitry
 //Description: Класс, реализующий серверную часть сокетов
 //-------------------------------------------------------------------------------------//
-#include ".\serversocket.h"
 #include "precomp.h"
-#include <string>
+#include "serversocket.h"
 
 //Конструктор
 //iType - тип сокета, возможные значения - SOCK_STREAM и SOCK_DGRAM
