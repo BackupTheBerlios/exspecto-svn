@@ -41,6 +41,7 @@ void OnTrayIcon( HWND hWnd, WPARAM wParam, LPARAM lParam )
 						{
 							AppendMenu( hMenu, MF_STRING | MF_ENABLED, IDM_EXIT, "Exit" );
 
+							SetForegroundWindow( hWnd );
 							POINT pt;
 							::GetCursorPos( &pt );
 							if( IDM_EXIT == TrackPopupMenu( hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RETURNCMD, pt.x, pt.y, 0, hWnd, NULL ) )
