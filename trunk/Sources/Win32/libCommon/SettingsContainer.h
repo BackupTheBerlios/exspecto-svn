@@ -12,24 +12,12 @@
 
 
 //Исключения, генерируемые CSocket и классами, наследующими от него, и функциями из Tools
-class ParamErr: public std::exception
+class ParamErr: public std::runtime_error
 {
 public:
-	ParamErr( const std::string& Msg )
-	{
-		strcpy( data, Msg.c_str() );
-	};
+	ParamErr( const std::string& Msg ):std::runtime_error( Msg ){};
 
 	virtual ~ParamErr()throw(){};
-
-	virtual const char* what() const throw()
-	{
-		return data;	 
-	};
-
-private:
-
-	char data[1024];
 };
 
 class ParamTypeErr: public ParamErr
