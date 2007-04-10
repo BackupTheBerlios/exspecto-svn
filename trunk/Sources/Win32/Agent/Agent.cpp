@@ -42,6 +42,7 @@ void OnTrayIcon( HWND hWnd, WPARAM wParam, LPARAM lParam )
 						if( hMenu )
 						{
 							AppendMenu( hMenu, MF_STRING | MF_ENABLED, IDM_EXIT, "Exit" );
+							SetForegroundWindow( hWnd );
 
 							POINT pt;
 							::GetCursorPos( &pt );
