@@ -15,7 +15,9 @@ static char* pAgentParamTypes[] = {
 	LOG_LEVEL,	"int",
 	EVENT_PORT, "int",
 	SCAN_THREADS_COUNT, "int",
-	PING_ON, "bool"
+	PING_ON, "bool",
+	SCHEDULER_EVENT_PORT, "int",
+	LISTEN_PORT, "int"
 };
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------CAgent------------------------------------------------------
@@ -66,10 +68,12 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 		CServerSocket::structAddr adr;
 
 		int iEventPort;
-		Settings::instance().GetParam( EVENT_PORT, iEventPort );	
+		Settings::instance().GetParam( SCHEDULER_EVENT_PORT, iEventPort );	
 		Log::instance().Trace( 90, "CAgent:: «апуск потока ожидани€ вход€щих соединений" );
 	    //св€зываем серверный сокет с локальным адресом
-		pThis->m_pMsgSock->Bind( 5000, "127.0.0.1" );
+		int iListenPort;
+		Settings::instance().GetParam( LISTEN_PORT, iListenPort );
+		pThis->m_pMsgSock->Bind( iListenPort );
 		//переводим сокет в режим прослушивани€
 		pThis->m_pMsgSock->Listen();
 		//ќжидаем вход€щее соединение и обрабатываем его
