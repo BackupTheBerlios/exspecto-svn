@@ -1,6 +1,6 @@
 
 (object Petal
-    version    	50
+    version    	47
     _written   	"Rose 2006.0.0.060314"
     charSet    	204)
 
@@ -113,7 +113,6 @@
 	    name       	"UserDefineTagApply3"
 	    value      	""))
     quid       	"44B7804502DE"
-    enforceClosureAutoLoad 	FALSE
     defaults   	(object defaults
 	rightMargin 	0.250000
 	leftMargin 	0.250000
@@ -1735,29 +1734,178 @@
 	    states     	(list States
 		(object State "Start"
 		    quid       	"44BE8CEA0386"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44BE8D0000E6"
+			    supplier   	"Idling"
+			    quidu      	"44BE8CF501D1"
+			    sendEvent  	(object sendEvent
+				quid       	"44BE8D0000E9"))
+			(object State_Transition
+			    quid       	"44EA00A60148"
+			    label      	""
+			    supplier   	"Find Agents"
+			    quidu      	"44E9FF670109"
+			    Event      	(object Event "Start Scan Event"
+				quid       	"44EA00A60149")
+			    sendEvent  	(object sendEvent
+				quid       	"44EA00A6014B"))
+			(object State_Transition
+			    quid       	"44EA02F7004E"
+			    label      	""
+			    supplier   	"Devide comps equally"
+			    quidu      	"44E9FF7500DA"
+			    Event      	(object Event "Start scan event"
+				quid       	"44EA02F7004F")
+			    sendEvent  	(object sendEvent
+				quid       	"44EA02F70051")))
 		    type       	"StartState")
 		(object State "Idling"
 		    quid       	"44BE8CF501D1"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44BE8D0F02DA"
+			    label      	""
+			    supplier   	"Scaning"
+			    quidu      	"44BE8D0201B2"
+			    Event      	(object Event "Scan"
+				quid       	"44BE8D0F02DB"
+				parameters 	"Network adresses")
+			    sendEvent  	(object sendEvent
+				quid       	"44BE8D0F02DD"))
+			(object State_Transition
+			    quid       	"44BE8D5903D4"
+			    label      	""
+			    supplier   	"Sending data"
+			    quidu      	"44BE8D3D0135"
+			    Event      	(object Event "GetData"
+				quid       	"44BE8D5903D5")
+			    sendEvent  	(object sendEvent
+				quid       	"44BE8D5903D7"))
+			(object State_Transition
+			    quid       	"44BFC45C0290"
+			    supplier   	"Sending status"
+			    quidu      	"44BFC4580157"
+			    sendEvent  	(object sendEvent
+				quid       	"44BFC45C0293")))
 		    type       	"Normal")
 		(object State "Scaning"
 		    quid       	"44BE8D0201B2"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44BE8D5F028C"
+			    label      	""
+			    supplier   	"Idling"
+			    quidu      	"44BE8CF501D1"
+			    Event      	(object Event "Scan Complete | Stop Scan"
+				quid       	"44BE8D5F028D")
+			    sendEvent  	(object sendEvent
+				quid       	"44BE8D5F028F"))
+			(object State_Transition
+			    quid       	"44BFC4CB02FD"
+			    supplier   	"Sending status"
+			    quidu      	"44BFC4580157"
+			    sendEvent  	(object sendEvent
+				quid       	"44BFC4CB0300")))
 		    type       	"Normal")
 		(object State "Sending data"
 		    quid       	"44BE8D3D0135"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44BE8F1301E0"
+			    label      	""
+			    supplier   	"Idling"
+			    quidu      	"44BE8CF501D1"
+			    Event      	(object Event "Data sended"
+				quid       	"44BE8F1301E1")
+			    sendEvent  	(object sendEvent
+				quid       	"44BE8F1301E3"))
+			(object State_Transition
+			    quid       	"44BFC4C7000F"
+			    supplier   	"Sending status"
+			    quidu      	"44BFC4580157"
+			    sendEvent  	(object sendEvent
+				quid       	"44BFC4C70012")))
 		    type       	"Normal")
 		(object State "Sending status"
 		    quid       	"44BFC4580157"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44BFC45F037A"
+			    label      	""
+			    supplier   	"Idling"
+			    quidu      	"44BE8CF501D1"
+			    Event      	(object Event "GetStatus"
+				quid       	"44BFC45F037B")
+			    sendEvent  	(object sendEvent
+				quid       	"44BFC45F037D"))
+			(object State_Transition
+			    quid       	"44BFC4C90196"
+			    supplier   	"Sending data"
+			    quidu      	"44BE8D3D0135"
+			    sendEvent  	(object sendEvent
+				quid       	"44BFC4C90199"))
+			(object State_Transition
+			    quid       	"44BFC4CE0000"
+			    supplier   	"Scaning"
+			    quidu      	"44BE8D0201B2"
+			    sendEvent  	(object sendEvent
+				quid       	"44BFC4CE0003")))
 		    type       	"Normal")
 		(object ActivityState "Find Agents"
-		    quid       	"44E9FF670109")
+		    quid       	"44E9FF670109"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA00A900EA"
+			    supplier   	"Devide comps equally"
+			    quidu      	"44E9FF7500DA"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA00A900ED"))))
 		(object ActivityState "Devide comps equally"
-		    quid       	"44E9FF7500DA")
+		    quid       	"44E9FF7500DA"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA00AB032C"
+			    supplier   	"Send Scan Command"
+			    quidu      	"44E9FFB20128"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA00AB032F"))))
 		(object ActivityState "Send Scan Command"
-		    quid       	"44E9FFB20128")
+		    quid       	"44E9FFB20128"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA00AE02BF"
+			    supplier   	"10 minutes idling"
+			    quidu      	"44E9FFCA001F"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA00AE02C2"))))
 		(object ActivityState "10 minutes idling"
-		    quid       	"44E9FFCA001F")
+		    quid       	"44E9FFCA001F"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA00B0034B"
+			    supplier   	"Poll agents"
+			    quidu      	"44EA005B0109"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA00B0034E"))
+			(object State_Transition
+			    quid       	"44EA01AA038A"
+			    label      	""
+			    supplier   	"Get data from agent delete from list"
+			    quidu      	"44EA0196005D"
+			    Event      	(object Event "DONE message from agent"
+				quid       	"44EA01AA038B")
+			    sendEvent  	(object sendEvent
+				quid       	"44EA01AA038D"))))
 		(object ActivityState "Poll agents"
 		    quid       	"44EA005B0109"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA00B2036B"
+			    supplier   	"$UNNAMED$64"
+			    quidu      	"44EA007B02CE"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA00B2036E")))
 		    statemachine 	(object State_Machine "State/Activity Model2"
 			quid       	"44EA00F802CE"
 			states     	(list States
@@ -1765,17 +1913,73 @@
 				quid       	"44EA00F802CF"))
 			partitions 	(list Partitions)
 			objects    	(list Objects)
-			transitions 	(list transition_list)
-			objectflows 	(list objectflow_list)
 			statediagrams 	(list StateDiagrams)))
 		(object Decision "$UNNAMED$64"
-		    quid       	"44EA007B02CE")
+		    quid       	"44EA007B02CE"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA009F02BF"
+			    supplier   	"Send Scan Command"
+			    quidu      	"44E9FFB20128"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA009F02C2"))
+			(object State_Transition
+			    quid       	"44EA00C200FA"
+			    label      	""
+			    supplier   	"10 minutes idling"
+			    quidu      	"44E9FFCA001F"
+			    Event      	(object Event "Everything ok"
+				quid       	"44EA00C200FB")
+			    sendEvent  	(object sendEvent
+				quid       	"44EA00C200FD"))
+			(object State_Transition
+			    quid       	"44EA013A031C"
+			    label      	""
+			    supplier   	"Save comps list & give it to another comp when it  is free"
+			    quidu      	"44EA010C02FD"
+			    Event      	(object Event "Error occured"
+				quid       	"44EA013A031D")
+			    sendEvent  	(object sendEvent
+				quid       	"44EA013A031F"))))
 		(object ActivityState "Save comps list & give it to another comp when it  is free"
-		    quid       	"44EA010C02FD")
+		    quid       	"44EA010C02FD"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA018202DE"
+			    supplier   	"10 minutes idling"
+			    quidu      	"44E9FFCA001F"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA018202E1"))))
 		(object ActivityState "Get data from agent delete from list"
-		    quid       	"44EA0196005D")
+		    quid       	"44EA0196005D"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA01AE0186"
+			    supplier   	"$UNNAMED$65"
+			    quidu      	"44EA01A602EE"
+			    sendEvent  	(object sendEvent
+				quid       	"44EA01AE0189"))))
 		(object Decision "$UNNAMED$65"
-		    quid       	"44EA01A602EE")
+		    quid       	"44EA01A602EE"
+		    transitions 	(list transition_list
+			(object State_Transition
+			    quid       	"44EA01B10177"
+			    label      	""
+			    supplier   	"10 minutes idling"
+			    quidu      	"44E9FFCA001F"
+			    Event      	(object Event "list is not empty"
+				quid       	"44EA01B10178")
+			    sendEvent  	(object sendEvent
+				quid       	"44EA01B1017A"))
+			(object State_Transition
+			    quid       	"44EA01CA032C"
+			    label      	""
+			    supplier   	"$UNNAMED$66"
+			    quidu      	"44EA01C701B5"
+			    Event      	(object Event "list is empty"
+				quid       	"44EA01CA032D")
+			    sendEvent  	(object sendEvent
+				quid       	"44EA01CA032F"))))
 		(object State "$UNNAMED$66"
 		    quid       	"44EA01C701B5"
 		    type       	"EndState")
@@ -1783,253 +1987,6 @@
 		    quid       	"45DF3D130196"))
 	    partitions 	(list Partitions)
 	    objects    	(list Objects)
-	    transitions 	(list transition_list
-		(object State_Transition
-		    quid       	"44BE8D0000E6"
-		    supplier   	"Logical View::State/Activity Model::Idling"
-		    supplier_quidu 	"44BE8CF501D1"
-		    client     	"Logical View::State/Activity Model::Start"
-		    client_quidu 	"44BE8CEA0386"
-		    sendEvent  	(object sendEvent
-			quid       	"44BE8D0000E9"))
-		(object State_Transition
-		    quid       	"44EA00A60148"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Find Agents"
-		    supplier_quidu 	"44E9FF670109"
-		    client     	"Logical View::State/Activity Model::Start"
-		    client_quidu 	"44BE8CEA0386"
-		    Event      	(object Event "Start Scan Event"
-			quid       	"44EA00A60149")
-		    sendEvent  	(object sendEvent
-			quid       	"44EA00A6014B"))
-		(object State_Transition
-		    quid       	"44EA02F7004E"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Devide comps equally"
-		    supplier_quidu 	"44E9FF7500DA"
-		    client     	"Logical View::State/Activity Model::Start"
-		    client_quidu 	"44BE8CEA0386"
-		    Event      	(object Event "Start scan event"
-			quid       	"44EA02F7004F")
-		    sendEvent  	(object sendEvent
-			quid       	"44EA02F70051"))
-		(object State_Transition
-		    quid       	"44BE8D0F02DA"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Scaning"
-		    supplier_quidu 	"44BE8D0201B2"
-		    client     	"Logical View::State/Activity Model::Idling"
-		    client_quidu 	"44BE8CF501D1"
-		    Event      	(object Event "Scan"
-			quid       	"44BE8D0F02DB"
-			parameters 	"Network adresses")
-		    sendEvent  	(object sendEvent
-			quid       	"44BE8D0F02DD"))
-		(object State_Transition
-		    quid       	"44BE8D5903D4"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Sending data"
-		    supplier_quidu 	"44BE8D3D0135"
-		    client     	"Logical View::State/Activity Model::Idling"
-		    client_quidu 	"44BE8CF501D1"
-		    Event      	(object Event "GetData"
-			quid       	"44BE8D5903D5")
-		    sendEvent  	(object sendEvent
-			quid       	"44BE8D5903D7"))
-		(object State_Transition
-		    quid       	"44BFC45C0290"
-		    supplier   	"Logical View::State/Activity Model::Sending status"
-		    supplier_quidu 	"44BFC4580157"
-		    client     	"Logical View::State/Activity Model::Idling"
-		    client_quidu 	"44BE8CF501D1"
-		    sendEvent  	(object sendEvent
-			quid       	"44BFC45C0293"))
-		(object State_Transition
-		    quid       	"44BE8D5F028C"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Idling"
-		    supplier_quidu 	"44BE8CF501D1"
-		    client     	"Logical View::State/Activity Model::Scaning"
-		    client_quidu 	"44BE8D0201B2"
-		    Event      	(object Event "Scan Complete | Stop Scan"
-			quid       	"44BE8D5F028D")
-		    sendEvent  	(object sendEvent
-			quid       	"44BE8D5F028F"))
-		(object State_Transition
-		    quid       	"44BFC4CB02FD"
-		    supplier   	"Logical View::State/Activity Model::Sending status"
-		    supplier_quidu 	"44BFC4580157"
-		    client     	"Logical View::State/Activity Model::Scaning"
-		    client_quidu 	"44BE8D0201B2"
-		    sendEvent  	(object sendEvent
-			quid       	"44BFC4CB0300"))
-		(object State_Transition
-		    quid       	"44BE8F1301E0"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Idling"
-		    supplier_quidu 	"44BE8CF501D1"
-		    client     	"Logical View::State/Activity Model::Sending data"
-		    client_quidu 	"44BE8D3D0135"
-		    Event      	(object Event "Data sended"
-			quid       	"44BE8F1301E1")
-		    sendEvent  	(object sendEvent
-			quid       	"44BE8F1301E3"))
-		(object State_Transition
-		    quid       	"44BFC4C7000F"
-		    supplier   	"Logical View::State/Activity Model::Sending status"
-		    supplier_quidu 	"44BFC4580157"
-		    client     	"Logical View::State/Activity Model::Sending data"
-		    client_quidu 	"44BE8D3D0135"
-		    sendEvent  	(object sendEvent
-			quid       	"44BFC4C70012"))
-		(object State_Transition
-		    quid       	"44BFC45F037A"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Idling"
-		    supplier_quidu 	"44BE8CF501D1"
-		    client     	"Logical View::State/Activity Model::Sending status"
-		    client_quidu 	"44BFC4580157"
-		    Event      	(object Event "GetStatus"
-			quid       	"44BFC45F037B")
-		    sendEvent  	(object sendEvent
-			quid       	"44BFC45F037D"))
-		(object State_Transition
-		    quid       	"44BFC4C90196"
-		    supplier   	"Logical View::State/Activity Model::Sending data"
-		    supplier_quidu 	"44BE8D3D0135"
-		    client     	"Logical View::State/Activity Model::Sending status"
-		    client_quidu 	"44BFC4580157"
-		    sendEvent  	(object sendEvent
-			quid       	"44BFC4C90199"))
-		(object State_Transition
-		    quid       	"44BFC4CE0000"
-		    supplier   	"Logical View::State/Activity Model::Scaning"
-		    supplier_quidu 	"44BE8D0201B2"
-		    client     	"Logical View::State/Activity Model::Sending status"
-		    client_quidu 	"44BFC4580157"
-		    sendEvent  	(object sendEvent
-			quid       	"44BFC4CE0003"))
-		(object State_Transition
-		    quid       	"44EA00A900EA"
-		    supplier   	"Logical View::State/Activity Model::Devide comps equally"
-		    supplier_quidu 	"44E9FF7500DA"
-		    client     	"Logical View::State/Activity Model::Find Agents"
-		    client_quidu 	"44E9FF670109"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA00A900ED"))
-		(object State_Transition
-		    quid       	"44EA00AB032C"
-		    supplier   	"Logical View::State/Activity Model::Send Scan Command"
-		    supplier_quidu 	"44E9FFB20128"
-		    client     	"Logical View::State/Activity Model::Devide comps equally"
-		    client_quidu 	"44E9FF7500DA"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA00AB032F"))
-		(object State_Transition
-		    quid       	"44EA00AE02BF"
-		    supplier   	"Logical View::State/Activity Model::10 minutes idling"
-		    supplier_quidu 	"44E9FFCA001F"
-		    client     	"Logical View::State/Activity Model::Send Scan Command"
-		    client_quidu 	"44E9FFB20128"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA00AE02C2"))
-		(object State_Transition
-		    quid       	"44EA00B0034B"
-		    supplier   	"Logical View::State/Activity Model::Poll agents"
-		    supplier_quidu 	"44EA005B0109"
-		    client     	"Logical View::State/Activity Model::10 minutes idling"
-		    client_quidu 	"44E9FFCA001F"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA00B0034E"))
-		(object State_Transition
-		    quid       	"44EA01AA038A"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Get data from agent delete from list"
-		    supplier_quidu 	"44EA0196005D"
-		    client     	"Logical View::State/Activity Model::10 minutes idling"
-		    client_quidu 	"44E9FFCA001F"
-		    Event      	(object Event "DONE message from agent"
-			quid       	"44EA01AA038B")
-		    sendEvent  	(object sendEvent
-			quid       	"44EA01AA038D"))
-		(object State_Transition
-		    quid       	"44EA00B2036B"
-		    supplier   	"$UNNAMED$64"
-		    supplier_quidu 	"44EA007B02CE"
-		    client     	"Logical View::State/Activity Model::Poll agents"
-		    client_quidu 	"44EA005B0109"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA00B2036E"))
-		(object State_Transition
-		    quid       	"44EA009F02BF"
-		    supplier   	"Logical View::State/Activity Model::Send Scan Command"
-		    supplier_quidu 	"44E9FFB20128"
-		    client     	"$UNNAMED$64"
-		    client_quidu 	"44EA007B02CE"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA009F02C2"))
-		(object State_Transition
-		    quid       	"44EA00C200FA"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::10 minutes idling"
-		    supplier_quidu 	"44E9FFCA001F"
-		    client     	"$UNNAMED$64"
-		    client_quidu 	"44EA007B02CE"
-		    Event      	(object Event "Everything ok"
-			quid       	"44EA00C200FB")
-		    sendEvent  	(object sendEvent
-			quid       	"44EA00C200FD"))
-		(object State_Transition
-		    quid       	"44EA013A031C"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::Save comps list & give it to another comp when it  is free"
-		    supplier_quidu 	"44EA010C02FD"
-		    client     	"$UNNAMED$64"
-		    client_quidu 	"44EA007B02CE"
-		    Event      	(object Event "Error occured"
-			quid       	"44EA013A031D")
-		    sendEvent  	(object sendEvent
-			quid       	"44EA013A031F"))
-		(object State_Transition
-		    quid       	"44EA018202DE"
-		    supplier   	"Logical View::State/Activity Model::10 minutes idling"
-		    supplier_quidu 	"44E9FFCA001F"
-		    client     	"Logical View::State/Activity Model::Save comps list & give it to another comp when it  is free"
-		    client_quidu 	"44EA010C02FD"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA018202E1"))
-		(object State_Transition
-		    quid       	"44EA01AE0186"
-		    supplier   	"$UNNAMED$65"
-		    supplier_quidu 	"44EA01A602EE"
-		    client     	"Logical View::State/Activity Model::Get data from agent delete from list"
-		    client_quidu 	"44EA0196005D"
-		    sendEvent  	(object sendEvent
-			quid       	"44EA01AE0189"))
-		(object State_Transition
-		    quid       	"44EA01B10177"
-		    label      	""
-		    supplier   	"Logical View::State/Activity Model::10 minutes idling"
-		    supplier_quidu 	"44E9FFCA001F"
-		    client     	"$UNNAMED$65"
-		    client_quidu 	"44EA01A602EE"
-		    Event      	(object Event "list is not empty"
-			quid       	"44EA01B10178")
-		    sendEvent  	(object sendEvent
-			quid       	"44EA01B1017A"))
-		(object State_Transition
-		    quid       	"44EA01CA032C"
-		    label      	""
-		    supplier   	"$UNNAMED$66"
-		    supplier_quidu 	"44EA01C701B5"
-		    client     	"$UNNAMED$65"
-		    client_quidu 	"44EA01A602EE"
-		    Event      	(object Event "list is empty"
-			quid       	"44EA01CA032D")
-		    sendEvent  	(object sendEvent
-			quid       	"44EA01CA032F")))
-	    objectflows 	(list objectflow_list)
 	    statediagrams 	(list StateDiagrams
 		(object State_Diagram "Agent StateChart"
 		    quid       	"44BE8CDF001B"
@@ -3386,7 +3343,7 @@
 			    fill_color 	13434879
 			    anchor     	2
 			    nlines     	4
-			    max_width  	688
+			    max_width  	709
 			    justify    	1)
 			width      	710
 			height     	300
@@ -3733,7 +3690,7 @@
 				supplier   	@65
 				vertices   	(list Points
 				    (3071, 1448)
-				    (3667, 1010))
+				    (3666, 1010))
 				line_style 	0)
 			    (object RoleView "$UNNAMED$6" @82
 				Parent_View 	@80
@@ -5486,11 +5443,7 @@
 			)))
 		quid       	"4516317E02FA"
 		stereotype 	"EXE"
-		language   	"ANSI C++"
-		class      	"Logical View::CScanner"
-		quidu      	"44B87941032C"
-		class      	"Logical View::CAgent"
-		quidu      	"44B87C380213")
+		language   	"ANSI C++")
 	    (object module "Net.lib" "NotAModuleType" "NotAModulePart"
 		attributes 	(list Attribute_Set
 		    (object Attribute
@@ -5545,35 +5498,15 @@
 			)))
 		quid       	"451635F002CB"
 		stereotype 	"DLL"
-		language   	"ANSI C++"
-		class      	"Logical View::CSocket"
-		quidu      	"44B7805D0230"
-		class      	"Logical View::CClientSocket"
-		quidu      	"44B780680348"
-		class      	"Logical View::CServerSocket"
-		quidu      	"44B780870086"
-		class      	"Logical View::CPacket"
-		quidu      	"44BD29990000")
+		language   	"ANSI C++")
 	    (object module "ScanServer" "NotAModuleType" "NotAModulePart"
 		quid       	"451635F6026D"
 		stereotype 	""
-		language   	""
-		class      	"Logical View::CScheduler"
-		quidu      	"44EC89D80280")
+		language   	"")
 	    (object module "Common.Lib" "NotAModuleType" "NotAModulePart"
 		quid       	"4516369C00F6"
 		stereotype 	""
-		language   	""
-		class      	"Logical View::Log"
-		quidu      	"44B7836601D1"
-		class      	"Logical View::CSettings"
-		quidu      	"44B791D70325"
-		class      	"Logical View::CCalendar"
-		quidu      	"44EC940A00EA"
-		class      	"Logical View::CCron"
-		quidu      	"44EC9456009C"
-		class      	"Logical View::CTimer"
-		quidu      	"44EC945F02DE"))
+		language   	""))
 	physical_presentations 	(list unit_reference_list
 	    (object Module_Diagram "Main"
 		quid       	"44B7804B003E"
@@ -5701,9 +5634,7 @@
 			width      	286
 			autoResize 	TRUE
 			width      	286
-			height     	162))))
-	category   	"Logical View"
-	quidu      	"4614D62E03BA")
+			height     	162)))))
     process_structure 	(object Processes
 	quid       	"44B7804502EE"
 	ProcsNDevs 	(list
