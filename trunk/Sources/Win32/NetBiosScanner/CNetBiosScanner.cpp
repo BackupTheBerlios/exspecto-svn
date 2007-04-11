@@ -29,7 +29,7 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT filesStr& File
 		{
 			TmpStruct.FileName.append( strSharePath, strSharePath + strlen( strSharePath ) - 3 );
 			TmpStruct.FileName += FindFileData.cFileName;
-			TmpStruct.FileSize = ( FindFileData.nFileSizeHigh * (MAXDWORD+1) ) + FindFileData.nFileSizeLow;
+			TmpStruct.FileSize = ( FindFileData.nFileSizeHigh * ((__int64)MAXDWORD+1) ) + FindFileData.nFileSizeLow;
 			TmpStruct.FDate.hFileTime = FindFileData.ftLastWriteTime.dwHighDateTime;
 			TmpStruct.FDate.lFileTime = FindFileData.ftLastWriteTime.dwLowDateTime;
 			FilesList.push_back( TmpStruct );
@@ -41,7 +41,7 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT filesStr& File
 				TmpStruct.FileName.clear();
 				TmpStruct.FileName.append( strSharePath, strSharePath + strlen( strSharePath ) - 3  );
 				TmpStruct.FileName += FindFileData.cFileName;
-				TmpStruct.FileSize = ( FindFileData.nFileSizeHigh * (MAXDWORD+1) ) + FindFileData.nFileSizeLow;
+				TmpStruct.FileSize = ( FindFileData.nFileSizeHigh * ((__int64)MAXDWORD+1) ) + FindFileData.nFileSizeLow;
 				TmpStruct.FDate.hFileTime = FindFileData.ftLastWriteTime.dwHighDateTime;
 				TmpStruct.FDate.lFileTime = FindFileData.ftLastWriteTime.dwLowDateTime;
 				Log::instance().Trace( 100, "CNetBiosScanner::EnumFiles: Добавляем ресурс: %s", TmpStruct.FileName.c_str() ); 
