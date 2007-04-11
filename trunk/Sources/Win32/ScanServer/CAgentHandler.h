@@ -14,8 +14,6 @@
 #include "Event.hpp"
 #include "CDBProvider.h"
 
-#define PORT 4000
-
 class CConnectionHandler;
 
 class CAgentHandler

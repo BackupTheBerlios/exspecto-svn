@@ -79,8 +79,10 @@ void CAgentHandler::Open()
 		return;
 	try
 	{
+		int iAgentListenPort;
+		Settings::instance().GetParam( AGENT_LISTEN_PORT, iAgentListenPort );
 		Log::instance().Trace( 90, "CAgentHandler::Open: открытие" );
-		m_Sock.Connect( m_strAddress, PORT );
+		m_Sock.Connect( m_strAddress, iAgentListenPort );
 	}catch( SocketErr& e )
 	{
 		Log::instance().Trace( 50, "CAgentHandler::Open: Ошибка соединения с агентом: %s; Описание ошибки: %s", m_strAddress.c_str(), e.what() );

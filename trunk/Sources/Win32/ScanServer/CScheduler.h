@@ -53,7 +53,7 @@ private:
 
 	CEvent m_CloseEv;
 	
-	HANDLE m_hListenThread, m_hMainThread;
+	HANDLE m_hListenThread;
 	
 	CServerSocket m_EventSock;
 

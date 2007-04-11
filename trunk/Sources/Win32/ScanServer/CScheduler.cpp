@@ -15,7 +15,10 @@ static char* pServerParamTypes[] = {
 	LOG_LEVEL,	"int",
 	AGENT_LIST, "string-list",
 	SCAN_AREA, "ip-list",
-	DB_PROV_NAME, "string"
+	DB_PROV_NAME, "string",
+	EVENT_PORT, "int",
+	AGENT_LISTEN_PORT, "int"
+
 };
 
 CScheduler::CScheduler(void)
@@ -52,7 +55,7 @@ CScheduler::~CScheduler(void)
 		Log::instance().Trace( 90, "CScheduler::~CScheduler:  анал событий опущен" );
 
 	Log::instance().Trace( 90, "CScheduler::~CScheduler: ќжидание закрыти€ потока прослушивани€" );
-	HANDLE hEvents[] = { m_hMainThread, m_hListenThread };
+	HANDLE hEvents[] = { m_hListenThread };
 	WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, TRUE, 10000 );
 	Log::instance().Trace( 90, "CScheduler::~CScheduler: 2" );
 	CloseHandle( m_hListenThread );
@@ -135,7 +138,9 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 	
 		Log::instance().Trace( 90, "CScheduler::fnListenThreadProc: «апуск потока ожидани€ вход€щих соединений" ); 
 	    //св€зываем серверный сокет с локальным адресом
-		pThis->m_EventSock.Bind( 3000, "127.0.0.1" );
+		int iEventPort;
+		Settings::instance().GetParam( EVENT_PORT, iEventPort );
+		pThis->m_EventSock.Bind( iEventPort );
 		//переводим сокет в режим прослушивани€
 		pThis->m_EventSock.Listen();
 		//ќжидаем вход€щее соединение и обрабатываем его
