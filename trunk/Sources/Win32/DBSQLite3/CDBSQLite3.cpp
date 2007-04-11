@@ -47,6 +47,7 @@ static char* pParamTypes[] = {
 //
 CDBSQLitProvider::CDBSQLitProvider()//: CDBProvider()
 {
+	Log::instance().SetModuleName( "SQLite" );
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [enter]", __FUNCTION__ );
 	
 	FAutoIndex = false;
