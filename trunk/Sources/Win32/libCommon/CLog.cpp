@@ -8,7 +8,7 @@
 CLog::CLog():m_iLogLevel(100)
 {
 	char str[255];
-	//Получаем имя файла текущего процесса и составляем ищ него имя файла журнала
+	//Получаем имя файла текущего процесса и составляем из него имя файла журнала
 	GetModuleFileName( NULL, str, sizeof(str) );
 
 	m_strFileName = str;
@@ -107,8 +107,8 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 	
 	if (k)
 	{
-		int i;
-		for ( i = 0; i <= (16-k)*3/8; i++ ) fprintf(fp, "\t");
+		int i=0;
+		while ((k*3+i*8) < 48)	{ i++; fprintf(fp, "\t");}
 		str[k] = '\0';
 		fprintf(fp, "| %s\n", str);
 	}
