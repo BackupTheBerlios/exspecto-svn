@@ -28,7 +28,7 @@
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="precomp.h"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
