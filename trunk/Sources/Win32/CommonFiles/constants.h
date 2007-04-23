@@ -25,3 +25,4 @@
 #define SCHEDULER_EVENT_PORT		"SchedulerEventPort"
 #define EVENT_PORT "EventPort"
 #define AGENT_LISTEN_PORT "AgentListenPort"
+#define POLLING_INTERVAL "PollingInterval"
