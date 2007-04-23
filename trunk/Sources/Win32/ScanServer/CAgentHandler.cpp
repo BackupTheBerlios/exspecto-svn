@@ -124,25 +124,25 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 			case ScanComplete:
 				Log::instance().Trace( 90, "CAgentHandler::OnMessage: Сканирование закончено" );
 				hostRecords Result;
-				GetData( Result );
-				Log::instance().Trace( 90, "CAgentHandler::OnMessage: Записываем данные в базу" );
-				for( std::list< hostRec >::iterator It = Result.begin(); It != Result.end(); It++ )
+				if( RESP_OK == GetData( Result ) )
 				{
-					DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", It->IPNum, 0 );
-					DbProviderFactory::instance().GetProviderInstance()->AddFiles( *It );
+					Log::instance().Trace( 90, "CAgentHandler::OnMessage: Записываем данные в базу" );
+					for( std::list< hostRec >::iterator It = Result.begin(); It != Result.end(); It++ )
+					{
+						DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", It->IPNum, 0 );
+						DbProviderFactory::instance().GetProviderInstance()->AddFiles( *It );
+					}
+					m_ScanFinished.Set();
 				}
-				m_ScanFinished.Set();
 				break;
 		};
 	}catch(std::exception& e)
 	{
 		Log::instance().Trace( 10, "CAgentHandler::OnMessage: Ошибка %s", e.what() );
-		//TODO:
 	}
 	catch(...)
 	{
 		Log::instance().Trace( 10, "CAgentHandler::OnMessage: Неизвестная ошибка " );
-		//TODO:
 	}
 
 }
@@ -219,19 +219,19 @@ enumAgentResponse CAgentHandler::GetData( hostRecords& Result )
 		Log::instance().Trace( 50, "CAgentHandler::GetData: Команда получения данных не выполнена, код возврата: %d", vecRes[0] );
 		return (enumAgentResponse)vecRes[0];
 	}
-	unsigned int iDataSize;
-	::memcpy( (BYTE*)&iDataSize, &vecRes[1], 4 );
-	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", iDataSize );
-	Log::instance().Dump( 90, &vecRes[1], iDataSize, "CAgentHandler::GetData: Получены данные:" );
+	unsigned long ulDataSize;
+	::memcpy( (BYTE*)&ulDataSize, &vecRes[1], sizeof( unsigned long ) );
+	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", ulDataSize );
+	//Log::instance().Dump( 90, &vecRes[0], vecRes.size(), "CAgentHandler::GetData: Получены данные:" );
 	//Разбираем данные
 	int iOffset = 5;
-	static const BYTE pbEnd[] = { 0,0,0,0 };
-	while( iOffset < (int)vecRes.size()-3 )
+	static const int iEnd = 0x1010;
+	while( iOffset < (int)vecRes.size() )
 	{
 		hostRec rec;
 		rec.IPNum =  (char*)&vecRes[ iOffset ];
 		iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
-		while( 0 != memcmp( pbEnd, &vecRes[iOffset], sizeof( pbEnd ) ) )
+		while( 0 != memcmp( (void*)&iEnd, &vecRes[iOffset], sizeof( iEnd ) ) )
 		{
 			fileStr file;
 			file.FileName += (char*)&vecRes[iOffset];
@@ -242,10 +242,10 @@ enumAgentResponse CAgentHandler::GetData( hostRecords& Result )
 			iOffset += sizeof( fileDate );
 			rec.Files.push_back( file );
 		}
-		iOffset += sizeof( pbEnd );
+		iOffset += sizeof( int );
 		Result.push_back( rec );
 	}
-	if( iOffset != (int)vecRes.size()-3 )
+	if( iOffset != (int)vecRes.size() )
 		Log::instance().Trace( 10, "CAgentHandler::GetData: произошла ошибка во время разбора входных данных" );
 	return RESP_OK;
 }

@@ -39,12 +39,17 @@ public:
 	//Метод вызывается триггером при срабатывании
 	virtual void OnStartScan();
 
+	bool IsStarted(){ return m_bStarted; }
+
 private:
 	CScheduler( const CScheduler& );
 	CScheduler& operator=( const CScheduler& );
 
+	bool m_bStarted;
+
 	//Контейнер, содержащий обьекты управления агентами, загружаемые стратегией AgentsLoadStrategy
 	std::map< std::string, SmartPtr< CAgentHandler > > m_mapAgentsContainer;
+	CCriticalSection m_csAgentsContainer;
 	
 	//Триггер, срабатывающий при необходимости начать сканирование
 	std::auto_ptr< CStartTrigger > m_pTrigger;

@@ -17,11 +17,11 @@ static char* pServerParamTypes[] = {
 	SCAN_AREA, "ip-list",
 	DB_PROV_NAME, "string",
 	EVENT_PORT, "int",
-	AGENT_LISTEN_PORT, "int"
-
+	AGENT_LISTEN_PORT, "int",
+	POLLING_INTERVAL, "int"
 };
 
-CScheduler::CScheduler(void)
+CScheduler::CScheduler(void):m_bStarted(false)
 {
 	int iLogLevel;
 	Settings::instance().SetModule( "ScanServer", pServerParamTypes, sizeof( pServerParamTypes )/sizeof( pServerParamTypes[0] ) );
@@ -30,13 +30,11 @@ CScheduler::CScheduler(void)
 	DbProviderFactory::instance();
 
 
-	std::list< std::string > listAgents;
-	Settings::instance().GetParam( "AgentList", listAgents );
-	//Загружаем контейнер агентов
-	for( std::list< std::string >::iterator It = listAgents.begin(); It != listAgents.end(); It++ )
-		m_mapAgentsContainer[ *It ] = SmartPtr< CAgentHandler >( new CAgentHandler( *It ) ); 
 	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
-		
+	//Если поток не закрылся в течении 2 с - инициализация прошла успешно
+	if( WAIT_TIMEOUT == WaitForSingleObject( m_hListenThread, 2000 ) )
+		m_bStarted = true;
+
 	Log::instance().Trace( 90, "CScheduler: создание, стартуем таймер" );
 	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
 	m_pTrigger->Start();
@@ -64,60 +62,150 @@ CScheduler::~CScheduler(void)
 void CScheduler::OnStartScan()
 {
 	try{
-		std::vector< std::string > listAdr;
-		Settings::instance().GetParam( SCAN_AREA, listAdr );
-		std::map< std::string, SmartPtr< CAgentHandler > > mapAgents = m_mapAgentsContainer;
-		std::vector< std::vector< std::string >::iterator > vecRanges;
-        int i = 1, iEndPos = 0;
-		bool bFail = true;
-		while( bFail )
+		m_csAgentsContainer.Enter();
+		//Загружаем контейнер агентов
+		m_mapAgentsContainer.clear();
+		std::list< std::string > listAgents;
+		Settings::instance().GetParam( "AgentList", listAgents );
+		for( std::list< std::string >::iterator It = listAgents.begin(); It != listAgents.end(); It++ )
+			m_mapAgentsContainer[ *It ] = SmartPtr< CAgentHandler >( new CAgentHandler( *It ) ); 
+		m_csAgentsContainer.Leave();
+		//Открываем соединение с агентами, отсеиваем недоступных
+		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end();)
 		{
-			vecRanges.clear();
-			vecRanges.push_back( listAdr.begin() );
-			for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = mapAgents.begin(); It != mapAgents.end(); It++, i++ )
+            It->second->Open();
+			if( !It->second->IsOpened() )
 			{
-				iEndPos = i*(int)listAdr.size()/(int)mapAgents.size();
-				vecRanges.push_back( listAdr.begin() + iEndPos );
+				Log::instance().Trace( 10, "CScheduler::OnStartScan: Агент %s не доступен, исключаем из списка в текущем сканировании", It->first.c_str() );
+				std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItTmp = It++;
+				m_csAgentsContainer.Enter();
+				m_mapAgentsContainer.erase( ItTmp );
+				m_csAgentsContainer.Leave();
+			}else
+				It++;
+		}
+		if( m_mapAgentsContainer.empty() )
+		{
+			Log::instance().Trace( 10, "CScheduler::OnStartScan: Нет доступных агентов, отменяем сканирование" );
+			return;
+		}
+		//Распределяем задания
+		std::vector< std::string > vecAdr;
+		Settings::instance().GetParam( SCAN_AREA, vecAdr );
+		std::map< std::string, std::vector< std::string > > mapRanges;
+		int i = 1, iEndPos = 0, iStartPos = 0;
+		std::vector< std::string > vecRange;
+		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++, i++ )
+		{
+			iStartPos = iEndPos;
+			iEndPos = i*(int)vecAdr.size()/(int)m_mapAgentsContainer.size();
+			vecRange.insert( vecRange.end(), vecAdr.begin() + iStartPos, vecAdr.begin() + iEndPos );
+			mapRanges[ It->first ] = vecRange;
+			It->second->BeginScan( vecRange );
+			vecRange.clear();
+		}
 
-				It->second->Open();
-				if( !It->second->IsOpened() )
-				{
-					Log::instance().Trace( 10, "CScheduler::OnStartScan: Агент %s не доступен, исключаем из списка в текущем сканировании", It->first.c_str() );
-					mapAgents.erase( It );
-					bFail = true;
-					break;
-				}
-				bFail = false;
-			}
-			if( mapAgents.empty() )
-			{
-				Log::instance().Trace( 10, "CScheduler::OnStartScan: Нет доступных агентов, отменяем сканирование" );
-				return;
-			}
-		}
-		int j = 0;
-		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = mapAgents.begin(); It != mapAgents.end(); It++, j++ )
-		{
-			std::vector<std::string> vec( vecRanges[j], vecRanges[j+1] );
-			It->second->BeginScan( vec );
-		}
 		DWORD dwWaitRes;
 		HANDLE hEvents[2];
 		hEvents[0] = m_CloseEv;
-		for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = mapAgents.begin(); It != mapAgents.end(); It++ )
+		bool bFail = true;
+		while( bFail )
 		{
-			hEvents[1] = It->second->GetScanFinishedEvent();
-			if( (WAIT_OBJECT_0) == ( dwWaitRes = WaitForMultipleObjects( 2, hEvents, FALSE, 10*60*1000 ) ) )
+			//Ожидаем в течении 10 мин окончания сканирования
+			for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++ )
 			{
-				Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование отменено!" );
-				return;
-			}else if( WAIT_TIMEOUT == dwWaitRes )
-			{
-				//TODO:
+				int iPollingInterval;
+				Settings::instance().GetParam( POLLING_INTERVAL, iPollingInterval );
+				hEvents[1] = It->second->GetScanFinishedEvent();
+				if( (WAIT_OBJECT_0) == ( dwWaitRes = WaitForMultipleObjects( 2, hEvents, FALSE, iPollingInterval*1000 ) ) )
+				{
+					Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование отменено!" );
+					return;
+				}else if( (WAIT_OBJECT_0+1) == dwWaitRes )
+				{
+					Log::instance().Trace( 50, "CScheduler::OnStartScan: Агент %s закончил сканирование", It->first.c_str() );
+				}else if( WAIT_TIMEOUT == dwWaitRes )
+				{
+					break;
+				}
 			}
+			//Если не дождались ответа от какого либо агента - распределяем 
+			//его задание между уже закончившими сканирование
+			if( WAIT_TIMEOUT == dwWaitRes )
+			{
+				//Агенты, закончившие сканирование
+				std::vector< std::string > vecFinished;
+				//Недоступные агенты
+				std::vector< std::string > vecInaccess;
+				//Опрашиваем агентов
+				for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItPoll = m_mapAgentsContainer.begin(); ItPoll != m_mapAgentsContainer.end();)
+				{
+					enumAgentResponse Response;
+					enumAgentState Status;
+					try{
+						Response = ItPoll->second->GetStatus( Status );
+					}catch( SocketErr& )
+					{
+						//Приравниваем ошибку связи к ошибке обработки команды
+						Response = RESP_PROC_ERR;
+					}
+					if( ( Response == RESP_OK ) && ( Status == Idling ) )
+					{
+						vecFinished.push_back( ItPoll->first );
+						ItPoll++;
+					}else if( Response != RESP_OK )
+					{
+						vecInaccess.push_back( ItPoll->first );
+						m_csAgentsContainer.Enter();
+						std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItTmp = ItPoll++;
+						m_mapAgentsContainer.erase( ItTmp );
+						m_csAgentsContainer.Leave();
+					}else
+						ItPoll++;
+				}
+				if( m_mapAgentsContainer.empty() )
+				{
+					Log::instance().Trace( 10, "CScheduler::OnStartScan: Доступных агентов не осталось,завершаем текущее сканирование" );
+					break;
+				}
+				//Если не дождались ответа от какого либо агента - распределяем 
+				//его задание между уже закончившими сканирование
+				for( std::vector< std::string >::iterator ItInacc = vecInaccess.begin(); ItInacc != vecInaccess.end(); ItInacc++ )
+				{
+					Log::instance().Trace( 10, "CScheduler::OnStartScan: Агент %s не доступен, исключаем из списка в текущем сканировании", ItInacc->c_str() );
+					if( !vecFinished.empty() )
+					{
+						Log::instance().Trace( 50, "CScheduler::OnStartScan: Разделяем задание между агентами,закончившими сканирование" );
+						int iPartsCount = mapRanges[ *ItInacc ].size()/vecFinished.size();
+						int i = 1, iStartPos = 0, iEndPos = 0;
+						for( std::vector< std::string >::iterator ItFinished = vecFinished.begin(); ItFinished != vecFinished.end(); ItFinished++, i++ )
+						{
+							Log::instance().Trace( 50, "CScheduler::OnStartScan: Добавляем задание агенту %s", ItFinished->c_str() );
+							iStartPos = iEndPos;
+							iEndPos = i*iPartsCount;
+							mapRanges[ *ItFinished ].insert( mapRanges[ *ItFinished ].begin(), mapRanges[ *ItInacc ].begin() + iStartPos, mapRanges[ *ItInacc ].begin() + iEndPos );
+							m_mapAgentsContainer[ *ItFinished ]->BeginScan( mapRanges[ *ItFinished ] );
+						}
+						vecFinished.clear();
+					}else
+					{
+						Log::instance().Trace( 50, "CScheduler::OnStartScan: Разделяем задание между оставшимися агентами" );
+						int iPartsCount = mapRanges[ *ItInacc ].size()/m_mapAgentsContainer.size();
+						int i = 1, iStartPos = 0, iEndPos = 0;
+						for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItFinished = m_mapAgentsContainer.begin(); ItFinished != m_mapAgentsContainer.end(); ItFinished++, i++ )
+						{
+							Log::instance().Trace( 50, "CScheduler::OnStartScan: Добавляем задание агенту %s", ItFinished->first.c_str() );
+							iStartPos = iEndPos;
+							iEndPos = i*iPartsCount;
+							mapRanges[ ItFinished->first ].insert( mapRanges[ ItFinished->first ].begin(), mapRanges[ It->first ].begin() + iStartPos, mapRanges[ It->first ].begin() + iEndPos );
+							ItFinished->second->BeginScan( mapRanges[ ItFinished->first ] );
+						}
+					}
+				}
+			}else
+				bFail = false;
 		}
 		Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование закончено успешно" );
-
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10, "CScheduler::OnStartScan: e= %s", e.what() );
@@ -146,6 +234,7 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 		//Ожидаем входящее соединение и обрабатываем его
 		while( ( NULL != ( client_sock = pThis->m_EventSock.Accept( adr ) ).get() ) && ( WAIT_OBJECT_0 != WaitForSingleObject( pThis->m_CloseEv, 0 ) ) )
 		{
+			CLock lock( pThis->m_csAgentsContainer );
 			Log::instance().Trace( 51, "CScheduler::ListenThread: Входящее соединение с адреса: %s", adr.strAddr.c_str() );
 			try{
 				//принимаем соединения только от заданного сервера сканирования
@@ -156,7 +245,6 @@ unsigned _stdcall CScheduler::fnListenThreadProc(  void* pParameter )
 			}catch( SocketErr& e )
 			{
 				Log::instance().Trace( 50, "CScheduler::ListenThread: Исключение socket: %s", e.what() );
-				//Если прислали пакет больше 10кб
 				continue;
 			}
 		}

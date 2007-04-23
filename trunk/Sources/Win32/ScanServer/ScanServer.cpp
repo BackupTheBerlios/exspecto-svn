@@ -130,8 +130,17 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		   TRAY_ICON_MSG
 		   );
 		   
-	pScheduler = new CScheduler();
-		   
+	try{
+		pScheduler = new CScheduler();
+		if( !pScheduler->IsStarted() )
+			return FALSE;
+	}catch( std::exception& e )
+	{
+		Log::instance().Trace( 0, "InitInstance: Возникло исключение при инициализации: %s", e.what() );
+	}catch( ... )
+	{
+		Log::instance().Trace( 0, "InitInstance: Возникло неизвестное исключение при инициализации" );
+	}
    	return TRUE;
 }
 

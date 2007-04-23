@@ -3,6 +3,7 @@
 //Module: Agents load strategy
 //Author: Parshin Dmitry
 //Description: Класс, описывающий стратегию загрузки Агентов в класс Container
+//В ДАННОЙ ВЕРСИИ НЕ ИСПОЛЬЗУЕТСЯ,РЕАЛИЗОВАН НЕ ДО КОНЦА
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
 #include "AgentsLoadStrategy.h"

@@ -26,7 +26,6 @@ CTimer::CTimer( CStartScanEventInterface* pCallBack ):CStartTrigger( pCallBack )
 													  ,m_hThread( INVALID_HANDLE_VALUE )
 {
 	Log::instance().Trace( 90, "CTimer: создание" );
-	//TODO:доставать значение таймера из параметров
 	Settings::instance().GetParam( TIMER_VALUE, m_iTimerValue );
 	Log::instance().Trace( 90, "CTimer: период таймера: %d с", m_iTimerValue );
 	m_hCancelEvent = CreateEvent( 0, 0, 0, NULL ); 
@@ -71,7 +70,8 @@ void CTimer::Stop()
 unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 {
 	CTimer* pThis = static_cast<CTimer*>( pParam );
-	//TODO: Этот try catch ничего не ловит
+	//TODO: Этот try catch ничего не ловит в gcc
+	//обработка исключений реализована внутри CScheduler::OnStartScan
 	try{
 		pThis->m_pCallBack->OnStartScan();
 		for(;;)
@@ -86,7 +86,6 @@ unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 		}
 	}catch( std::exception& e )
 	{
-		//TODO:
 		Log::instance().Trace( 0, "CTimer::fnTimerProc: Возникло исключение: %s" , e.what() );
 	}catch( ... )
 	{
