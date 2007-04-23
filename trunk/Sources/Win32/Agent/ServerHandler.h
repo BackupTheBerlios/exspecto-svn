@@ -18,7 +18,7 @@ public:
 	
 	void SendEvent( CPacket& Event );
 	
-	void SendMsg( CPacket& Msg );
+	void SendMsg( CPacket& Msg, bool bEnd = true );
 	
 	void Receive( CPacket& Msg );
 	

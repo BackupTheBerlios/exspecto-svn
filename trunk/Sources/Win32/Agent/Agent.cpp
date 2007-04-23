@@ -122,7 +122,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	{
 		return FALSE;
 	}
-  // Если окно создано успешно - поднимаем иконку в область системного трэя
+	// Если окно создано успешно - поднимаем иконку в область системного трэя
    // и регистрируем callback-сообщения на себя
 	TaskBarAddIcon(
 		   hWnd,
@@ -131,9 +131,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		   szTitle,
 		   TRAY_ICON_MSG
 		   );
+
+	try{
+		pAgent = new CAgent();
+		if( !pAgent->IsStarted() )
+			return FALSE;
+	}catch( std::exception& e )
+	{
+		Log::instance().Trace( 0, "InitInstance: Возникло исключение при инициализации: %s", e.what() );
+	}catch( ... )
+	{
+		Log::instance().Trace( 0, "InitInstance: Возникло неизвестное исключение при инициализации" );
+	}
 		   
-	pAgent = new CAgent();
-		   
+
    	return TRUE;
 }
 

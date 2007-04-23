@@ -23,7 +23,7 @@ static char* pAgentParamTypes[] = {
 //-----------------------------------------------------CAgent------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CAgent::CAgent()
+CAgent::CAgent():m_bStarted( false )
 {
 	//»нициализаци€ вспомогательных компонентов
 	int iLogLevel;
@@ -35,6 +35,9 @@ CAgent::CAgent()
 	m_pMsgSock = SmartPtr< CServerSocket >( new CServerSocket() );
 	m_pEventSock = SmartPtr< CClientSocket >( new CClientSocket() );
 	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
+	//≈сли поток не закрылс€ в течении 2 с - инициализаци€ прошла успешно
+	if( WAIT_TIMEOUT == WaitForSingleObject( m_hListenThread, 2000 ) )
+		m_bStarted = true;
 }
 
 CAgent::~CAgent(void)

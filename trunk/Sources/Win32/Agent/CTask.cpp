@@ -3,6 +3,9 @@
 #include "commands.h"
 #include "CTask.h"
 
+//Максимальный размер пакета с данными для посылки 20MB
+#define MAX_PACKET_SIZE 20971520
+
 enumAgentState CTask::m_CurState = Idling;
 CCriticalSection CTask::m_csCurState;
 CEvent CTask::m_CancelEv(false);
@@ -48,17 +51,25 @@ void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 {
 	m_pScanner->Scan( m_strAddr, m_TaskData, CancelEvent );
+	if( !m_TaskData.empty() )
+		m_DataStorage.Put( m_strAddr );
 	for( std::list<fileStr>::iterator It = m_TaskData.begin(); It != m_TaskData.end(); It++ )
 	{
-		m_DataStorage.GetStream()<<It->FileName;
-		m_DataStorage.GetStream().write( (char*)&It->FileSize, sizeof( __int64 ) );
-		m_DataStorage.GetStream().write( (char*)&It->FDate, sizeof( fileDate ) );
+		//TODO: добавить синхронизацию
+		m_DataStorage.Put( It->FileName );
+		m_DataStorage.Put( It->FileSize );
+		m_DataStorage.Put( It->FDate );
+	}
+	if( !m_TaskData.empty() )
+	{
+		static const int iHostEndMark = 0x1010;
+		m_DataStorage.Put( iHostEndMark );
 	}
 }
 
 CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner ):m_strAddr( strAddr )
 																				  ,m_pScanner( pScanner )
-																				  ,m_DataStorage( strAddr+pScanner->GetProtocolName() )
+																				  ,m_DataStorage( pScanner->GetProtocolName() + strAddr )
 {
 }
 
@@ -223,6 +234,7 @@ bool CGetData::Immidiate()
 	//Подсчитываем размер данных для отправки
 	unsigned int iSize = 0;
 	static const BYTE pbEnd[] = { 0,0,0,0 };
+/*	
 	for( std::map< std::string, filesStr >::iterator ItData = m_Data.begin(); ItData != m_Data.end(); ItData++ )
 	{
 		iSize += (int)ItData->first.size() + 1;
@@ -238,11 +250,10 @@ bool CGetData::Immidiate()
 	//4 байта на размер 1 байт - результат обработки команды
 	iSize += 5;
 	std::auto_ptr< BYTE > pbBuf = std::auto_ptr< BYTE >( new BYTE[ iSize ] );
+	
 	pbBuf.get()[0] = (BYTE)RESP_OK;
 	::memcpy( pbBuf.get() + 1, (void*)&iSize, 4 );
 	int iOffset = 5; 
-	//TODO:
-	//Здесь занимаемая память удваивается
 	for( std::map< std::string, filesStr >::iterator ItData = m_Data.begin(); ItData != m_Data.end(); ItData++ )
 	{
 		strcpy( (char*)pbBuf.get() + iOffset, ItData->first.c_str() );
@@ -264,11 +275,27 @@ bool CGetData::Immidiate()
 		iOffset += sizeof( pbEnd );
 	}
 	m_Data.clear();
-	CPacket Msg;
-	Msg.AddParam( pbBuf.get(), iSize );
-	Msg.EndCommand();
-	m_ServerHandler.SendMsg( Msg );
-	//Log::instance().Dump( 90, pbBuf.get(), iSize, "CGetData:Immidiate: Отправлен ответ:" );
+	*/
+
+    CPacket Msg;
+	unsigned long ulSize = m_DataStorage.Size();
+	SmartPtr< BYTE > pbBuf = SmartPtr< BYTE >( new BYTE[sizeof( unsigned long ) + 1] );
+	pbBuf.get()[0] = (BYTE)RESP_OK;
+	::memcpy( pbBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
+	Msg.SetBuffer( pbBuf.get(), sizeof( unsigned long ) + 1 );
+	if( 0 == ulSize )
+		m_ServerHandler.SendMsg( Msg );
+	else
+		m_ServerHandler.SendMsg( Msg, false );
+	unsigned long ulCount = MAX_PACKET_SIZE;
+	int j = ulSize%MAX_PACKET_SIZE;
+	for( unsigned long i = 0; i < ulSize; i += MAX_PACKET_SIZE )
+	{
+		pbBuf = m_DataStorage.GetBuf( ulCount );
+		Msg.SetBuffer( pbBuf.get(), ulCount );
+		m_ServerHandler.SendMsg( Msg );
+	}
+	m_DataStorage.Clear();
 	return true;
 }
 namespace

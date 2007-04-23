@@ -35,11 +35,12 @@ void CServerHandler::SendEvent( CPacket& Event )
 	m_pEventSocket->Send( pbBuf, iSize );
 }
 	
-void CServerHandler::SendMsg( CPacket& Msg )
+void CServerHandler::SendMsg( CPacket& Msg, bool bEnd )
 {
 	BYTE *pbBuf;
 	int iSize;
-	Msg.AddParam( EndStamp, sizeof( EndStamp ) );
+	if( bEnd )
+		Msg.AddParam( EndStamp, sizeof( EndStamp ) );
 	Msg.GetBuffer( pbBuf, iSize );
 	m_pMsgSocket->Send( pbBuf, iSize );
 }

@@ -40,10 +40,14 @@ public:
 	
 	~CAgent(void);
 
+	bool IsStarted(){ return m_bStarted; }
+
 private:
 
 	CAgent( const CAgent& );
 	CAgent& operator=( const CAgent& );
+
+	bool m_bStarted;
 
 	std::vector< SmartPtr< CConnectionHandler > > m_vecConnections;
 	
