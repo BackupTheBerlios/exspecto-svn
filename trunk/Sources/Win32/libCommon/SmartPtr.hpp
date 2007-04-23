@@ -235,8 +235,7 @@ public:
 	
 private:
 
-	//TODO:
-	//Можно избавиться от cs, используя Interlocked-функции
+	//TODO:Можно избавиться от cs, используя Interlocked-функции
 	struct Ref{
 		CCriticalSection cs;
 		int iRefCount;
