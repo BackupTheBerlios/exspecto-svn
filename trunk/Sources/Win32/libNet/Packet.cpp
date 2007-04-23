@@ -159,15 +159,3 @@ bool CPacket::IsDone()
 {
 	return m_vecBuf.empty();
 }
-
-//Отправить пакет в сокет
-//Синтаксис: CSocket sock;CPacket packet; sock << packet;
-CPacket& operator <<( CSocket& sock, CPacket& packet )
-{
-	//TODO:
-	BYTE* Buf = NULL;
-	int iSize;
-	packet.GetBuffer( Buf, iSize );
-    sock.Send( Buf, iSize );
-	return packet;
-}

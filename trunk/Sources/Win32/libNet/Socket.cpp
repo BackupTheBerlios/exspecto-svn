@@ -105,8 +105,6 @@ int CSocket::Receive( void* pBuffer, int iBufSize )
 			throw SocketRespSizeErr();
 		}else
 		{
-			//TODO:
-			Log::instance().Trace( 50, "CSocket::Receive: 1" );
 			SocketErr s( iLastError );	
 			throw s;
 		}

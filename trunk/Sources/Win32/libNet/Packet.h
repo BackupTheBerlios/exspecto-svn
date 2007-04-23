@@ -81,10 +81,6 @@ public:
 	//Выяснить закончена обработка пакета или нет
 	bool IsDone();
 
-	//Отправить пакет в сокет
-	//Синтаксис: CSocket sock;CPacket packet; sock << packet;
-	friend CPacket& operator <<( CSocket& sock, CPacket& packet );
-
 protected:
 	
 	//Добавить массив байт к пакету
