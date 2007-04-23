@@ -20,7 +20,6 @@ void CNetBiosScanner::EnumFiles( IN const char* strSharePath, OUT filesStr& File
 		return;
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFile;
-	//TODO:разобраться с Stack overflow
     fileStr TmpStruct;
 	if( INVALID_HANDLE_VALUE != ( hFile = ::FindFirstFile( strSharePath, &FindFileData ) ) )
 	{
