@@ -3,6 +3,7 @@
 #include <fstream>
 #include "SmartPtr.hpp"
 
+/*
 class TempStorageErr: public std::runtime_error
 {
 public:
@@ -10,7 +11,28 @@ public:
 	TempStorageErr( const std::string& strMsg ):std::runtime_error( strMsg ){};
 	virtual ~TempStorageErr(){};
 };
+*/
 
+class TempStorageErr: public std::exception
+{
+public:
+
+	TempStorageErr( const std::string& Msg )
+	{
+		strcpy( data, Msg.c_str() );
+	};
+
+	virtual ~TempStorageErr()throw(){};
+
+	virtual const char* what() const throw()
+	{
+		return data;	 
+	};
+
+private:
+
+	char data[1024];
+};
 
 class CTempStorage
 {
