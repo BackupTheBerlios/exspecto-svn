@@ -131,10 +131,12 @@ public:
 				}else
 					m_pPointerImpl->cs.Leave();
 			}
-			m_pPointerImpl = SmartPointer.m_pPointerImpl;
-			m_pPointerImpl->cs.Enter();
-			++m_pPointerImpl->iRefCount;
-			m_pPointerImpl->cs.Leave();
+			if( NULL != ( m_pPointerImpl = SmartPointer.m_pPointerImpl ) )
+			{
+				m_pPointerImpl->cs.Enter();
+				++m_pPointerImpl->iRefCount;
+				m_pPointerImpl->cs.Leave();
+			}
 		}
 		return *this;
 	}
@@ -157,10 +159,12 @@ public:
 				}else
 					m_pPointerImpl->cs.Leave();
 			}
-			m_pPointerImpl = SmartPointer.m_pPointerImpl;
-			m_pPointerImpl->cs.Enter();
-			++m_pPointerImpl->iRefCount;
-			m_pPointerImpl->cs.Leave();
+			if( NULL != ( m_pPointerImpl = SmartPointer.m_pPointerImpl ) )
+			{
+				m_pPointerImpl->cs.Enter();
+				++m_pPointerImpl->iRefCount;
+				m_pPointerImpl->cs.Leave();
+			}
 		}
 		return *this;
 	}

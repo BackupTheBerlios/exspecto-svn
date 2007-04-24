@@ -51,7 +51,7 @@ public:
 */
 	long Size(); 
 
-	SmartPtr<BYTE> GetBuf( unsigned long& ulCount );
+	SmartPtr<BYTE, AllocNewArray<BYTE> > GetBuf( unsigned long& ulCount );
 
 	CTempStorage& operator<<( CTempStorage& );
 
