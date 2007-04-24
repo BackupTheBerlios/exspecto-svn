@@ -139,9 +139,9 @@ public:
 
 		filesStr m_TaskData;
 
-		CTempStorage m_DataStorage;
-
 		CScanner* m_pScanner;
+
+		CTempStorage m_DataStorage;
 	};
 
 	class CAvailabilityScanTask: public CThreadTask

@@ -241,9 +241,6 @@ bool CGetData::Immidiate()
 {
 	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
 	//Подсчитываем размер данных для отправки
-	unsigned int iSize = 0;
-	static const BYTE pbEnd[] = { 0,0,0,0 };
-
     CPacket Msg;
 	unsigned long ulSize = m_DataStorage.Size();
 	SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
@@ -255,7 +252,6 @@ bool CGetData::Immidiate()
 	else
 		m_ServerHandler.SendMsg( Msg, false );
 	unsigned long ulCount = MAX_PACKET_SIZE;
-	int j = ulSize%MAX_PACKET_SIZE;
 	for( unsigned long i = 0; i < ulSize; i += MAX_PACKET_SIZE )
 	{
 		pbBuf = m_DataStorage.GetBuf( ulCount );
