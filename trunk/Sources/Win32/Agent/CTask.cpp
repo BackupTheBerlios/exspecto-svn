@@ -11,7 +11,7 @@ CCriticalSection CTask::m_csCurState;
 CEvent CTask::m_CancelEv(false);
 std::map< std::string, filesStr > CTask::m_Data;
 Container< CScanner*, PluginLoadStrategy > CStartScan::m_PluginContainer;
-CTempStorage CTask::m_DataStorage( "temp.h" );
+CTempStorage CTask::m_DataStorage( "temp.dat" );
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CGetStatus----------------------------------------------------------
@@ -50,20 +50,29 @@ void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 
 void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 {
-	m_pScanner->Scan( m_strAddr, m_TaskData, CancelEvent );
-	if( !m_TaskData.empty() )
-		m_DataStorage.Put( m_strAddr );
-	for( std::list<fileStr>::iterator It = m_TaskData.begin(); It != m_TaskData.end(); It++ )
+	try{
+		m_pScanner->Scan( m_strAddr, m_TaskData, CancelEvent );
+		if( !m_TaskData.empty() )
+			m_DataStorage.Put( m_strAddr );
+		for( std::list<fileStr>::iterator It = m_TaskData.begin(); It != m_TaskData.end(); It++ )
+		{
+			//TODO: добавить синхронизацию
+			m_DataStorage.Put( It->FileName );
+			m_DataStorage.Put( It->FileSize );
+			m_DataStorage.Put( It->FDate );
+		}
+		if( !m_TaskData.empty() )
+		{
+			static const int iHostEndMark = 0x1010;
+			m_DataStorage.Put( iHostEndMark );
+			m_TaskData.clear();
+		}
+	}catch( std::exception& e )
 	{
-		//TODO: добавить синхронизацию
-		m_DataStorage.Put( It->FileName );
-		m_DataStorage.Put( It->FileSize );
-		m_DataStorage.Put( It->FDate );
-	}
-	if( !m_TaskData.empty() )
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: Исключение: %s", e.what() );
+	}catch( ... )
 	{
-		static const int iHostEndMark = 0x1010;
-		m_DataStorage.Put( iHostEndMark );
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: Неизвестное сключение" );
 	}
 }
 
@@ -234,52 +243,10 @@ bool CGetData::Immidiate()
 	//Подсчитываем размер данных для отправки
 	unsigned int iSize = 0;
 	static const BYTE pbEnd[] = { 0,0,0,0 };
-/*	
-	for( std::map< std::string, filesStr >::iterator ItData = m_Data.begin(); ItData != m_Data.end(); ItData++ )
-	{
-		iSize += (int)ItData->first.size() + 1;
-		for( std::list< fileStr >::iterator It = ItData->second.begin(); It != ItData->second.end(); It++ )
-		{
-			//+1 - на завершающий ноль
-			iSize += (int)It->FileName.size() + 1;
-			iSize += sizeof( __int64 ) + sizeof( fileDate );
-		}
-		iSize += sizeof( pbEnd );
-	}
-	Log::instance().Trace( 90, "CGetData: Размер данных: %d", iSize );
-	//4 байта на размер 1 байт - результат обработки команды
-	iSize += 5;
-	std::auto_ptr< BYTE > pbBuf = std::auto_ptr< BYTE >( new BYTE[ iSize ] );
-	
-	pbBuf.get()[0] = (BYTE)RESP_OK;
-	::memcpy( pbBuf.get() + 1, (void*)&iSize, 4 );
-	int iOffset = 5; 
-	for( std::map< std::string, filesStr >::iterator ItData = m_Data.begin(); ItData != m_Data.end(); ItData++ )
-	{
-		strcpy( (char*)pbBuf.get() + iOffset, ItData->first.c_str() );
-		iOffset += (int)ItData->first.size()+1;
-		for( std::list< fileStr >::iterator It = ItData->second.begin(); It != ItData->second.end(); )
-		{
-			strcpy( (char*)pbBuf.get() + iOffset, It->FileName.c_str() );
-			iOffset += (int)It->FileName.size()+1;
-			memcpy( (char*)pbBuf.get() + iOffset, (void*)&It->FileSize, sizeof( __int64 ) );
-			iOffset += sizeof( __int64 );
-			memcpy( (char*)pbBuf.get() + iOffset, (void*)&It->FDate, sizeof( fileDate ) );
-			iOffset += sizeof( fileDate );
-			std::list< fileStr >::iterator ItTmp = It;
-			It++;
-			//Очищаем память,чтобы не было удваивания занимаемой памяти
-			ItData->second.erase( ItTmp );
-		}
-		memcpy( (char*)pbBuf.get() + iOffset, pbEnd, sizeof( pbEnd ) );
-		iOffset += sizeof( pbEnd );
-	}
-	m_Data.clear();
-	*/
 
     CPacket Msg;
 	unsigned long ulSize = m_DataStorage.Size();
-	SmartPtr< BYTE > pbBuf = SmartPtr< BYTE >( new BYTE[sizeof( unsigned long ) + 1] );
+	SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
 	pbBuf.get()[0] = (BYTE)RESP_OK;
 	::memcpy( pbBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
 	Msg.SetBuffer( pbBuf.get(), sizeof( unsigned long ) + 1 );
@@ -296,6 +263,7 @@ bool CGetData::Immidiate()
 		m_ServerHandler.SendMsg( Msg );
 	}
 	m_DataStorage.Clear();
+	Log::instance().Trace( 90, "CGetData: Данные отправлены" );
 	return true;
 }
 namespace
