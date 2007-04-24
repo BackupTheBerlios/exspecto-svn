@@ -33,6 +33,10 @@ CAgentHandler::~CAgentHandler()
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
 void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 {
+	//Команды посылаются синхронно
+	static CCriticalSection csExec;
+	CLock lock( csExec );
+
 	const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 };
 	if( !IsOpened() )
 	{
@@ -68,7 +72,11 @@ void CAgentHandler::SendMessage( CPacket &Msg, std::vector< BYTE >& vecBuf )
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер приемного буфера: %d", m_vecRecvBuf.size() );
 	}
 	Log::instance().Trace( 80, "CAgentHandler::SendMessage: Размер данных %d:", vecBuf.size() );
-	Log::instance().Dump( 80, &vecBuf[0], (int)vecBuf.size(), "CAgentHandler::SendMessage: Получили ответ:" );
+	//Записываем большие пакеты в лог на высоких уровнях логирования
+	if( vecBuf.size() < 1024 )
+		Log::instance().Dump( 80, &vecBuf[0], (int)vecBuf.size(), "CAgentHandler::SendMessage: Получили ответ:" );
+	else
+		Log::instance().Dump( 110, &vecBuf[0], (int)vecBuf.size(), "CAgentHandler::SendMessage: Получили ответ:" );
 	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
 }

@@ -55,7 +55,6 @@ CScheduler::~CScheduler(void)
 	Log::instance().Trace( 90, "CScheduler::~CScheduler: Ожидание закрытия потока прослушивания" );
 	HANDLE hEvents[] = { m_hListenThread };
 	WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, TRUE, 10000 );
-	Log::instance().Trace( 90, "CScheduler::~CScheduler: 2" );
 	CloseHandle( m_hListenThread );
 }
 
@@ -77,9 +76,8 @@ void CScheduler::OnStartScan()
 			if( !It->second->IsOpened() )
 			{
 				Log::instance().Trace( 10, "CScheduler::OnStartScan: Агент %s не доступен, исключаем из списка в текущем сканировании", It->first.c_str() );
-				std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItTmp = It++;
 				m_csAgentsContainer.Enter();
-				m_mapAgentsContainer.erase( ItTmp );
+				m_mapAgentsContainer.erase( It++ );
 				m_csAgentsContainer.Leave();
 			}else
 				It++;
@@ -157,8 +155,7 @@ void CScheduler::OnStartScan()
 					{
 						vecInaccess.push_back( ItPoll->first );
 						m_csAgentsContainer.Enter();
-						std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItTmp = ItPoll++;
-						m_mapAgentsContainer.erase( ItTmp );
+						m_mapAgentsContainer.erase( ItPoll++ );
 						m_csAgentsContainer.Leave();
 					}else
 						ItPoll++;
