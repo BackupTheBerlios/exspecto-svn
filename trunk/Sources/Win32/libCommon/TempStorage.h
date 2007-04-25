@@ -2,41 +2,18 @@
 #define _TEMP_STORAGE
 #include <fstream>
 #include "SmartPtr.hpp"
-
-/*
-class TempStorageErr: public std::runtime_error
-{
-public:
-
-	TempStorageErr( const std::string& strMsg ):std::runtime_error( strMsg ){};
-	virtual ~TempStorageErr(){};
-};
-*/
-
-class TempStorageErr: public std::exception
-{
-public:
-
-	TempStorageErr( const std::string& Msg )
-	{
-		strcpy( data, Msg.c_str() );
-	};
-
-	virtual ~TempStorageErr()throw(){};
-
-	virtual const char* what() const throw()
-	{
-		return data;	 
-	};
-
-private:
-
-	char data[1024];
-};
+#include <stdexcept>
 
 class CTempStorage
 {
 public:
+	class TempStorageErr: public std::runtime_error
+	{
+	public:
+	
+		TempStorageErr( const std::string& strMsg )throw():std::runtime_error( strMsg ){};
+		virtual ~TempStorageErr()throw(){};
+	};
 	CTempStorage( const std::string& strFileName );
 	virtual ~CTempStorage(void);
 
@@ -50,27 +27,18 @@ public:
 	void Put( std::string strData )
 	{
 		Open( false );
-		m_sFile.write( strData.c_str(), (std::streamsize)strData.size()+1 );
-		m_sFile.close();
-	}
-/*
-	template< class T > bool Get( T& data )
-	{
-		Open( true );
-		m_sFile.get( (char*)&data, sizeof( T ) );
+		m_sFile.write( strData.c_str(), (std::streamsize)strData.size() + 1 );
 		m_sFile.close();
 	}
 
-	void Get( std::string& strData )
+	void Put( const char* strData )
 	{
-		int iSize;
-		Get( iSize );
-		Open( true );
-		strData.resize( iSize );
-		m_sFile.get( (char*)&strData[0], iSize );
+		Open( false );
+		m_sFile.write( strData, (std::streamsize)strlen( strData) + 1 );
 		m_sFile.close();
 	}
-*/
+
+
 	long Size(); 
 
 	SmartPtr<BYTE, AllocNewArray<BYTE> > GetBuf( unsigned long& ulCount );
