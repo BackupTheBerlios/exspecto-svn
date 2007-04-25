@@ -51,6 +51,8 @@ public:
 
 private:
 
+	unsigned long m_ulReadOffset;
+
 	void Open( bool bRead );
 
 	CTempStorage( const CTempStorage& );

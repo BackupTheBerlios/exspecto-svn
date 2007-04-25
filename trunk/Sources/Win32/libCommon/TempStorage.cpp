@@ -1,6 +1,6 @@
 #include "tempstorage.h"
 
-CTempStorage::CTempStorage( const std::string& strFileName )
+CTempStorage::CTempStorage( const std::string& strFileName ):m_ulReadOffset( 0 )
 {
 	CreateDirectory( "temp", NULL );
 	m_strFileName = "temp\\" + strFileName;
@@ -65,17 +65,20 @@ long CTempStorage::Size()
 SmartPtr<BYTE, AllocNewArray<BYTE> > CTempStorage::GetBuf( unsigned long& ulCount )
 {
 	unsigned long ulSize = Size();
-	if( ulCount >= ulSize || ulCount == 0 )
-		ulCount = ulSize;
+	if( ( m_ulReadOffset + ulCount ) >= ulSize || ulCount == 0 )
+		ulCount = ulSize - m_ulReadOffset;
 	Open( true );
 	SmartPtr<BYTE, AllocNewArray<BYTE> > pBuf = SmartPtr<BYTE, AllocNewArray<BYTE> >( new BYTE[ ulCount ] );
+	m_sFile.seekg( m_ulReadOffset );
 	m_sFile.read( (char*)pBuf.get(), ulCount );
 	m_sFile.close();
+	m_ulReadOffset += ulCount;
 	return pBuf;
 }
 
 void CTempStorage::Clear()
 {
+	m_ulReadOffset = 0;
 	if( FALSE == DeleteFile( m_strFileName.c_str() ) )
 		Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s", m_strFileName.c_str() );
 }
