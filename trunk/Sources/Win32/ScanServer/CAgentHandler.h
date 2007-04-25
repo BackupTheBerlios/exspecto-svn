@@ -52,7 +52,7 @@ public:
 	enumAgentResponse GetStatus( enumAgentState& Status );
 	
 	//ѕолучить данные последнего сканировани€
-	enumAgentResponse GetData( hostRecords& Result );
+	enumAgentResponse GetData();
 	
 	//ќткрыто ли соединение с агентом
 	bool IsOpened()const;

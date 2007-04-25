@@ -8,10 +8,12 @@
 #include "CAgentHandler.h"
 #include <process.h>
 #include "DbProviderFactory.h"
+#include <set>
+#include <list>
 
 
 #define RECEIVE_BUF_START_SIZE 255
-#define RECEIVE_BUF_MAX_SIZE 50000000
+#define RECEIVE_BUF_MAX_SIZE 25000000
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
 														   ,m_ScanFinished( false )
@@ -132,16 +134,7 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 			case ScanComplete:
 				Log::instance().Trace( 90, "CAgentHandler::OnMessage: Сканирование закончено" );
 				hostRecords Result;
-				if( RESP_OK == GetData( Result ) )
-				{
-					Log::instance().Trace( 90, "CAgentHandler::OnMessage: Записываем данные в базу" );
-					for( std::list< hostRec >::iterator It = Result.begin(); It != Result.end(); It++ )
-					{
-						DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", It->IPNum, 0 );
-						DbProviderFactory::instance().GetProviderInstance()->AddFiles( *It );
-					}
-					m_ScanFinished.Set();
-				}
+				GetData();
 				break;
 		};
 	}catch(std::exception& e)
@@ -211,7 +204,7 @@ enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )
 	return RESP_OK;
 }
 	
-enumAgentResponse CAgentHandler::GetData( hostRecords& Result )
+enumAgentResponse CAgentHandler::GetData()
 {
 	Log::instance().Trace( 90, "CAgentHandler::GetData: Отправка команды получения данных" );	
 	CPacket Msg;
@@ -229,32 +222,74 @@ enumAgentResponse CAgentHandler::GetData( hostRecords& Result )
 	}
 	unsigned long ulDataSize;
 	::memcpy( (BYTE*)&ulDataSize, &vecRes[1], sizeof( unsigned long ) );
+	m_ScanFinished.Set();
 	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", ulDataSize );
 	//Log::instance().Dump( 90, &vecRes[0], vecRes.size(), "CAgentHandler::GetData: Получены данные:" );
 	//Разбираем данные
 	int iOffset = 5;
-	static const int iEnd = 0x1010;
+	static const int iEnd = 0x0D0A;
+	std::set< std::string > mapErased;
+	hostRec rec;
+	map< std::string, std::list<fileStr> > mapCache;
+	unsigned long ulCacheSize = 0;
 	while( iOffset < (int)vecRes.size() )
 	{
-		hostRec rec;
-		rec.IPNum =  (char*)&vecRes[ iOffset ];
+		std::string strIpAddr = (char*)&vecRes[ iOffset ];
 		iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
-		while( 0 != memcmp( (void*)&iEnd, &vecRes[iOffset], sizeof( iEnd ) ) )
+		fileStr file;
+		file.FileName += (char*)&vecRes[iOffset];
+		iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
+		memcpy( &file.FileSize, &vecRes[iOffset], sizeof( __int64 ) );
+		iOffset += sizeof( __int64 );
+		memcpy( &file.FDate.lFileTime, &vecRes[iOffset], sizeof( DWORD ) );
+		iOffset += sizeof( DWORD );
+		memcpy( &file.FDate.hFileTime, &vecRes[iOffset], sizeof( DWORD ) );
+		iOffset += sizeof( DWORD );
+		mapCache[ strIpAddr ].push_back( file );
+		if( strIpAddr == "" )
+			Log::instance().Trace( 0, "strIpAddr = 0, iOffset= %d", iOffset );
+		ulCacheSize += file.FileName.capacity() + sizeof( __int64 ) + 2*sizeof(DWORD);
+		if( mapCache.end() == mapCache.find( strIpAddr ) )
+			ulCacheSize += strIpAddr.capacity();
+
+		if( ulCacheSize > 2097152 )
 		{
-			fileStr file;
-			file.FileName += (char*)&vecRes[iOffset];
-			iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
-            memcpy( &file.FileSize, &vecRes[iOffset], sizeof( __int64 ) );
-			iOffset += sizeof( __int64 );
-			memcpy( &file.FDate, &vecRes[iOffset], sizeof( fileDate ) );
-			iOffset += sizeof( fileDate );
-			rec.Files.push_back( file );
+			Log::instance().Trace( 90, "CAgentHandler::OnMessage: Записываем данные в базу" );
+			ulCacheSize = 0;
+			for( std::map< std::string, std::list< fileStr > >::iterator It = mapCache.begin(); It != mapCache.end(); It++ )
+			{
+				hostRec rec;
+				rec.IPNum = It->first;
+				rec.Files.swap( It->second );
+				if( mapErased.find( rec.IPNum ) == mapErased.end() )
+				{
+					DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", rec.IPNum, 0 );
+					mapErased.insert( rec.IPNum );
+				}
+
+				DbProviderFactory::instance().GetProviderInstance()->AddFiles( rec );
+			}
+			mapCache.clear();
 		}
-		iOffset += sizeof( int );
-		Result.push_back( rec );
+		
 	}
+	//Дописываем в базу остатки
+	Log::instance().Trace( 90, "CAgentHandler::OnMessage: Записываем данные в базу" );
+	for( std::map< std::string, std::list< fileStr > >::iterator It = mapCache.begin(); It != mapCache.end(); It++ )
+	{
+		hostRec rec;
+		rec.IPNum = It->first;
+		rec.Files.swap( It->second );
+		if( mapErased.find( rec.IPNum ) == mapErased.end() )
+			DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", rec.IPNum, 0 );
+		DbProviderFactory::instance().GetProviderInstance()->AddFiles( rec );
+	}
+	mapCache.clear();
 	if( iOffset != (int)vecRes.size() )
+	{
 		Log::instance().Trace( 10, "CAgentHandler::GetData: произошла ошибка во время разбора входных данных" );
+		return RESP_PROC_ERR;
+	}
 	return RESP_OK;
 }
 
