@@ -7,11 +7,11 @@
 #ifndef PLUGINLOADSTRATEGY_H_
 #define PLUGINLOADSTRATEGY_H_
 
-#include "CScanner.h"
 #include <string>
 #include <vector>
+#include "PluginInterface.h"
 
-class PluginLoadStrategy
+class PluginContainer
 {
 public:
 	//Классы исключений, генерируемые PluginLoadStrategy
@@ -22,21 +22,36 @@ public:
 		virtual ~PluginLoadErr()throw(){};
 	};
 	
-	PluginLoadStrategy( std::vector< CScanner* >& vecStorage );
-	virtual ~PluginLoadStrategy();
+	PluginContainer();
+	virtual ~PluginContainer();
 	
+	//Тип итератора для манипуляций с содержимым контейнера
+	typedef std::map< std::string, ScanFunc >::iterator iterator;
+
+	//Возвращает итератор первого элемента контейнера	
+	iterator begin()
+	{
+		return m_mapScanners.begin();
+	}
+	
+	//Возвращает итератор следующего за последним элемента контейнера	
+	iterator end()
+	{
+		return m_mapScanners.end();
+	}
+	
+	//Возвращает кол-во элементов контейнера
+	int count()
+	{	
+		return m_mapScanners.size();
+	}	
 private:	
-	PluginLoadStrategy( const PluginLoadStrategy& );
-	PluginLoadStrategy& operator=( const PluginLoadStrategy& );
+	PluginContainer( const PluginContainer& );
+	PluginContainer& operator=( const PluginContainer& );
 
-	//Типы функций, содержащихся в dll с plugin-ом
-	typedef CScanner* (*fnGetScannerFunc)();
-	typedef void (*fnReleaseScannerFunc)();
-	
+	std::vector< HMODULE > m_vecLibraries;
 
-	typedef std::map< HINSTANCE , fnReleaseScannerFunc > LibrariesMapType;
-	//Вектор дескрипторов открытых библиотек и соответствующих им функций очистки 
-	LibrariesMapType m_mapLibraries;
+	std::map< std::string, ScanFunc > m_mapScanners;
 
 };
 

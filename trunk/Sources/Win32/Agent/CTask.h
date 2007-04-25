@@ -6,7 +6,7 @@
 #include "MessageParser.h"
 
 #include "Container.hpp"
-#include "PluginLoadStrategy.h"
+#include "PluginContainer.h"
 #include "CScanner.h"
 #include "ThreadsPool.h"
 #include "CDBProvider.h"
@@ -47,8 +47,6 @@ protected:
 	
 	static CCriticalSection m_csCurState; 	
 	
-	static std::map< std::string, filesStr > m_Data;
-
 	static CTempStorage m_DataStorage;
 	
 	static CEvent m_CancelEv;
@@ -124,24 +122,18 @@ public:
 	{
 	public:
 
-		CScanThreadTask( const std::string& strAddr, CScanner* pScanner );
+		CScanThreadTask( const std::string& strAddr, ScanFunc pScanner );
 		virtual ~CScanThreadTask(){};
 
 		virtual void Execute( const CEvent& CancelEvent );
 
-		void GetResData( std::map< std::string, filesStr >& vecResult );
-
-		void GetResData( CTempStorage& ResultStorage );
-
 	private:
+
+		static void StorageFunc( const char* strAddress, const char* strFileName, __int64 FileSize, DWORD lFileTime, DWORD hFileTime );
 
 		std::string m_strAddr;
 
-		filesStr m_TaskData;
-
-		CScanner* m_pScanner;
-
-		CTempStorage m_DataStorage;
+		ScanFunc m_pScanner;
 	};
 
 	class CAvailabilityScanTask: public CThreadTask
@@ -190,10 +182,10 @@ private:
 	std::vector< std::string > m_vecAddresses;
 	
 	//Контейнер плагинов
-	static Container< CScanner*, PluginLoadStrategy > m_PluginContainer;
+	static PluginContainer m_PluginContainer;
 	
 	//Тип итератор для манипуляций с контейнером плагинов
-	typedef Container< CScanner*, PluginLoadStrategy >::iterator PluginIterator;
+	typedef PluginContainer::iterator PluginIterator;
 	
 };
 

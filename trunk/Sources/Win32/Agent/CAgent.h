@@ -12,7 +12,6 @@
 #include "packet.h"
 #include "Container.hpp"
 #include "CScanner.h"
-#include "PluginLoadStrategy.h"
 #include <set>
 
 #include <map>

@@ -3,14 +3,13 @@
 #include "commands.h"
 #include "CTask.h"
 
-//Максимальный размер пакета с данными для посылки 20MB
-#define MAX_PACKET_SIZE 20971520
+//Максимальный размер пакета с данными для посылки 2MB
+#define MAX_PACKET_SIZE  2097152
 
 enumAgentState CTask::m_CurState = Idling;
 CCriticalSection CTask::m_csCurState;
 CEvent CTask::m_CancelEv(false);
-std::map< std::string, filesStr > CTask::m_Data;
-Container< CScanner*, PluginLoadStrategy > CStartScan::m_PluginContainer;
+PluginContainer CStartScan::m_PluginContainer;
 CTempStorage CTask::m_DataStorage( "temp.dat" );
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -51,22 +50,7 @@ void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 {
 	try{
-		m_pScanner->Scan( m_strAddr, m_TaskData, CancelEvent );
-		if( !m_TaskData.empty() )
-			m_DataStorage.Put( m_strAddr );
-		for( std::list<fileStr>::iterator It = m_TaskData.begin(); It != m_TaskData.end(); It++ )
-		{
-			//TODO: добавить синхронизацию
-			m_DataStorage.Put( It->FileName );
-			m_DataStorage.Put( It->FileSize );
-			m_DataStorage.Put( It->FDate );
-		}
-		if( !m_TaskData.empty() )
-		{
-			static const int iHostEndMark = 0x1010;
-			m_DataStorage.Put( iHostEndMark );
-			m_TaskData.clear();
-		}
+		m_pScanner( m_strAddr.c_str(), CStartScan::CScanThreadTask::StorageFunc, CancelEvent );
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: Исключение: %s", e.what() );
@@ -76,22 +60,27 @@ void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 	}
 }
 
-CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, CScanner* pScanner ):m_strAddr( strAddr )
-																				  ,m_pScanner( pScanner )
-																				  ,m_DataStorage( pScanner->GetProtocolName() + strAddr )
+void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
+											 , const char* strFileName
+											 , __int64 FileSize
+											 , DWORD lFileTime
+											 , DWORD hFileTime )
+{
+	static CCriticalSection csExec;
+	CLock lock( csExec );
+	m_DataStorage.Put( strAddress );
+    m_DataStorage.Put( strFileName );
+    m_DataStorage.Put( FileSize );
+	m_DataStorage.Put( lFileTime );
+	m_DataStorage.Put( hFileTime );
+	//m_DataStorage.Put( "\r\n" );
+}
+
+CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, ScanFunc pScanner ):m_strAddr( strAddr )
+																							,m_pScanner( pScanner )
 {
 }
 
-void CStartScan::CScanThreadTask::GetResData( std::map< std::string, filesStr >& Result )
-{
-	if( !m_TaskData.empty() )
-		Result[ m_strAddr ].insert( Result[ m_strAddr ].end(), m_TaskData.begin(), m_TaskData.end() );
-}
-
-void CStartScan::CScanThreadTask::GetResData( CTempStorage& ResultStorage )
-{
-	ResultStorage << m_DataStorage;
-}
 
 
 void CStartScan::Load( CPacket& Msg )
@@ -124,7 +113,6 @@ bool CStartScan::Immidiate()
 void CStartScan::Execute()
 {
 	//TODO:проверять состояние перед началом сканирования
-	m_Data.clear();
 	Log::instance().Trace( 90, "CStartScan: Поступил запрос на начало сканирования" );
 	m_csCurState.Enter();
 		m_CurState = Scanning;	
@@ -168,8 +156,8 @@ void CStartScan::Execute()
 		{
 			if( WAIT_OBJECT_0 == WaitForSingleObject( m_CancelEv, 0 ) )
 				break;
-			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), (*PlugIt)->GetProtocolName() );
-            vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, *PlugIt ) );
+			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), PlugIt->first.c_str() );
+			vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, PlugIt->second ) );
 			pool.AddTask( vecThreadTasks.back() );
 		}
 		if( WAIT_OBJECT_0 == WaitForSingleObject( m_CancelEv, 0 ) )
@@ -183,9 +171,6 @@ void CStartScan::Execute()
 	}
 	pool.WaitAllComplete( m_CancelEv );
 	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
-	m_Data.clear();
-	for( std::vector< SmartPtr< CScanThreadTask > >::iterator It = vecThreadTasks.begin(); It != vecThreadTasks.end(); It++ )
-		(*It)->GetResData( m_DataStorage );
 	CPacket Event;
 	BYTE bEvent = ScanComplete;
 	Event.AddParam( &bEvent, 1 );
@@ -241,6 +226,7 @@ bool CGetData::Immidiate()
 {
 	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
 	//Подсчитываем размер данных для отправки
+
     CPacket Msg;
 	unsigned long ulSize = m_DataStorage.Size();
 	SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
@@ -256,7 +242,10 @@ bool CGetData::Immidiate()
 	{
 		pbBuf = m_DataStorage.GetBuf( ulCount );
 		Msg.SetBuffer( pbBuf.get(), ulCount );
-		m_ServerHandler.SendMsg( Msg );
+		if( ( i + MAX_PACKET_SIZE ) < ulSize )
+			m_ServerHandler.SendMsg( Msg, false );
+		else
+			m_ServerHandler.SendMsg( Msg );
 	}
 	m_DataStorage.Clear();
 	Log::instance().Trace( 90, "CGetData: Данные отправлены" );
