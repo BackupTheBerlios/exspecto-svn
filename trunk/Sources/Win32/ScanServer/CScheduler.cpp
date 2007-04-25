@@ -110,18 +110,18 @@ void CScheduler::OnStartScan()
 		while( bFail )
 		{
 			//Ожидаем в течении 10 мин окончания сканирования
-			for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator It = m_mapAgentsContainer.begin(); It != m_mapAgentsContainer.end(); It++ )
+			for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItWait = m_mapAgentsContainer.begin(); ItWait != m_mapAgentsContainer.end(); ItWait++ )
 			{
 				int iPollingInterval;
 				Settings::instance().GetParam( POLLING_INTERVAL, iPollingInterval );
-				hEvents[1] = It->second->GetScanFinishedEvent();
+				hEvents[1] = ItWait->second->GetScanFinishedEvent();
 				if( (WAIT_OBJECT_0) == ( dwWaitRes = WaitForMultipleObjects( 2, hEvents, FALSE, iPollingInterval*1000 ) ) )
 				{
 					Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование отменено!" );
 					return;
 				}else if( (WAIT_OBJECT_0+1) == dwWaitRes )
 				{
-					Log::instance().Trace( 50, "CScheduler::OnStartScan: Агент %s закончил сканирование", It->first.c_str() );
+					Log::instance().Trace( 50, "CScheduler::OnStartScan: Агент %s закончил сканирование", ItWait->first.c_str() );
 				}else if( WAIT_TIMEOUT == dwWaitRes )
 				{
 					break;
@@ -194,7 +194,7 @@ void CScheduler::OnStartScan()
 							Log::instance().Trace( 50, "CScheduler::OnStartScan: Добавляем задание агенту %s", ItFinished->first.c_str() );
 							iStartPos = iEndPos;
 							iEndPos = i*iPartsCount;
-							mapRanges[ ItFinished->first ].insert( mapRanges[ ItFinished->first ].begin(), mapRanges[ It->first ].begin() + iStartPos, mapRanges[ It->first ].begin() + iEndPos );
+							mapRanges[ ItFinished->first ].insert( mapRanges[ ItFinished->first ].begin(), mapRanges[ ItFinished->first ].begin() + iStartPos, mapRanges[ ItFinished->first ].begin() + iEndPos );
 							ItFinished->second->BeginScan( mapRanges[ ItFinished->first ] );
 						}
 					}

@@ -224,6 +224,11 @@ enumAgentResponse CAgentHandler::GetData()
 	::memcpy( (BYTE*)&ulDataSize, &vecRes[1], sizeof( unsigned long ) );
 	m_ScanFinished.Set();
 	Log::instance().Trace( 80, "CAgentHandler::GetData: Размер данных: %d", ulDataSize );
+	if( ulDataSize != ( vecRes.size() - 5 ) )
+	{
+		Log::instance().Trace( 0, "CAgentHandler::GetData: Неверный размер данных, отменяем разбор данных" );
+		return RESP_PROC_ERR;
+	}
 	//Log::instance().Dump( 90, &vecRes[0], vecRes.size(), "CAgentHandler::GetData: Получены данные:" );
 	//Разбираем данные
 	int iOffset = 5;
@@ -232,12 +237,12 @@ enumAgentResponse CAgentHandler::GetData()
 	hostRec rec;
 	map< std::string, std::list<fileStr> > mapCache;
 	unsigned long ulCacheSize = 0;
-	while( iOffset < (int)vecRes.size() )
+	while( iOffset < (int)vecRes.size()  )
 	{
 		std::string strIpAddr = (char*)&vecRes[ iOffset ];
 		iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
 		fileStr file;
-		file.FileName += (char*)&vecRes[iOffset];
+		file.FileName = (char*)&vecRes[iOffset];
 		iOffset += (int)strlen( (char*)&vecRes[iOffset] )+1;
 		memcpy( &file.FileSize, &vecRes[iOffset], sizeof( __int64 ) );
 		iOffset += sizeof( __int64 );
@@ -246,8 +251,6 @@ enumAgentResponse CAgentHandler::GetData()
 		memcpy( &file.FDate.hFileTime, &vecRes[iOffset], sizeof( DWORD ) );
 		iOffset += sizeof( DWORD );
 		mapCache[ strIpAddr ].push_back( file );
-		if( strIpAddr == "" )
-			Log::instance().Trace( 0, "strIpAddr = 0, iOffset= %d", iOffset );
 		ulCacheSize += file.FileName.capacity() + sizeof( __int64 ) + 2*sizeof(DWORD);
 		if( mapCache.end() == mapCache.find( strIpAddr ) )
 			ulCacheSize += strIpAddr.capacity();
