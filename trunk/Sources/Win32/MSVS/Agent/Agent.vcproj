@@ -141,7 +141,7 @@ copy $(TargetPath) ..\..\..\..\bin;
 				RelativePath="..\..\Agent\MessageParser.cpp">
 			</File>
 			<File
-				RelativePath="..\..\Agent\PluginLoadStrategy.cpp">
+				RelativePath="..\..\Agent\PluginContainer.cpp">
 			</File>
 			<File
 				RelativePath="..\..\Agent\precomp.cpp">
@@ -173,7 +173,7 @@ copy $(TargetPath) ..\..\..\..\bin;
 				RelativePath="..\..\Agent\MessageParser.h">
 			</File>
 			<File
-				RelativePath="..\..\Agent\PluginLoadStrategy.h">
+				RelativePath="..\..\Agent\PluginContainer.h">
 			</File>
 			<File
 				RelativePath="..\..\Agent\precomp.h">
@@ -186,6 +186,19 @@ copy $(TargetPath) ..\..\..\..\bin;
 			</File>
 			<File
 				RelativePath="..\..\Agent\TaskHandler.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="CommonFiles"
+			Filter="">
+			<File
+				RelativePath="..\..\CommonFiles\CDBProvider.h">
+			</File>
+			<File
+				RelativePath="..\..\CommonFiles\commands.h">
+			</File>
+			<File
+				RelativePath="..\..\CommonFiles\PluginInterface.h">
 			</File>
 		</Filter>
 		<File

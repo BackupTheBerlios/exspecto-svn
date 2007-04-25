@@ -138,6 +138,9 @@ copy $(TargetPath) ..\..\..\..\bin\Plugins;
 			<File
 				RelativePath="..\..\NetBiosScanner\CNetBiosScanner.h">
 			</File>
+			<File
+				RelativePath="..\..\NetBiosScanner\NetBiosScanner.h">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
