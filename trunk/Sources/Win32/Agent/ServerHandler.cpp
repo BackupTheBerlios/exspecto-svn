@@ -42,6 +42,7 @@ void CServerHandler::SendMsg( CPacket& Msg, bool bEnd )
 	if( bEnd )
 		Msg.AddParam( EndStamp, sizeof( EndStamp ) );
 	Msg.GetBuffer( pbBuf, iSize );
+	Log::instance().Dump( 200, pbBuf, iSize, "CServerHandler::SendMsg: Отправляем сообщение:" );
 	m_pMsgSocket->Send( pbBuf, iSize );
 }
 

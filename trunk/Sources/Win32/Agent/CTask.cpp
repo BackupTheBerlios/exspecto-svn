@@ -11,6 +11,8 @@ CCriticalSection CTask::m_csCurState;
 CEvent CTask::m_CancelEv(false);
 PluginContainer CStartScan::m_PluginContainer;
 CTempStorage CTask::m_DataStorage( "temp.dat" );
+CCriticalSection CTask::m_csStorages;
+std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > CTask::m_mapStorages;
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CGetStatus----------------------------------------------------------
@@ -60,20 +62,54 @@ void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 	}
 }
 
+static DWORD dwTime = 0,dwTime2 = 0;
 void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
+											 , const char* strProtocolName
 											 , const char* strFileName
 											 , __int64 FileSize
 											 , DWORD lFileTime
 											 , DWORD hFileTime )
 {
+	DWORD dwtick1 = GetTickCount();
+	m_csStorages.Enter();
+	DWORD dwtick2 = GetTickCount();
+	dwTime += dwtick2 - dwtick1;
+	StoragesIt It;
+	if( ( m_mapStorages.end() == ( It = m_mapStorages.find( strAddress ) ) )
+		|| ( It->second.end() == It->second.find( strProtocolName ) ) )
+		m_mapStorages[ strAddress ][ strProtocolName ] = SmartPtr< CTempStorage >( new CTempStorage( std::string( strProtocolName ) + strAddress ) );
+	m_csStorages.Leave();
+	m_csStorages.Enter();
+	DWORD dwtick3,dwtick4;
+	dwtick3 = GetTickCount();
+
+	m_mapStorages[ strAddress ][ strProtocolName ]->Put( strAddress );
+    m_mapStorages[ strAddress ][ strProtocolName ]->Put( strFileName );
+    m_mapStorages[ strAddress ][ strProtocolName ]->Put( FileSize );
+	m_mapStorages[ strAddress ][ strProtocolName ]->Put( lFileTime );
+	m_mapStorages[ strAddress ][ strProtocolName ]->Put( hFileTime );
+	dwtick4 = GetTickCount();
+	dwTime2 += dwtick4 - dwtick3;
+
+	m_csStorages.Leave();
+/*
 	static CCriticalSection csExec;
-	CLock lock( csExec );
+	DWORD dwtick1 = GetTickCount();
+	//TODO:Здесь стоим треть времени сканирования
+    CLock lock( csExec );
+	DWORD dwtick2 = GetTickCount();
+	dwTime += dwtick2 - dwtick1;
+
+	DWORD dwtick3,dwtick4;
+	dwtick3 = GetTickCount();
 	m_DataStorage.Put( strAddress );
     m_DataStorage.Put( strFileName );
     m_DataStorage.Put( FileSize );
 	m_DataStorage.Put( lFileTime );
 	m_DataStorage.Put( hFileTime );
-	//m_DataStorage.Put( "\r\n" );
+	dwtick4 = GetTickCount();
+	dwTime2 += dwtick4 - dwtick3;
+*/
 }
 
 CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, ScanFunc pScanner ):m_strAddr( strAddr )
@@ -171,6 +207,8 @@ void CStartScan::Execute()
 	}
 	pool.WaitAllComplete( m_CancelEv );
 	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
+	Log::instance().Trace( 0, "CStartScan::Execute: DWTIME = %d", dwTime );
+	Log::instance().Trace( 0, "CStartScan::Execute: DWTIME 2 = %d", dwTime2 );
 	CPacket Event;
 	BYTE bEvent = ScanComplete;
 	Event.AddParam( &bEvent, 1 );
@@ -227,27 +265,58 @@ bool CGetData::Immidiate()
 	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
 	//Подсчитываем размер данных для отправки
 
+	//Флаг, отмечающий первый пакет,в котором дополнительно должены быть отправлены размер данных
+	//и код возврата
+	bool bFirst = true;
+	//считаем размер
+	unsigned long ulSize = 0;
+	for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
+		for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
+			ulSize += ProtoIt->second->Size();
+
+
     CPacket Msg;
-	unsigned long ulSize = m_DataStorage.Size();
-	SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
-	pbBuf.get()[0] = (BYTE)RESP_OK;
-	::memcpy( pbBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
-	Msg.SetBuffer( pbBuf.get(), sizeof( unsigned long ) + 1 );
-	if( 0 == ulSize )
-		m_ServerHandler.SendMsg( Msg );
-	else
-		m_ServerHandler.SendMsg( Msg, false );
-	unsigned long ulCount = MAX_PACKET_SIZE;
-	for( unsigned long i = 0; i < ulSize; i += MAX_PACKET_SIZE )
+	for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
 	{
-		pbBuf = m_DataStorage.GetBuf( ulCount );
-		Msg.SetBuffer( pbBuf.get(), ulCount );
-		if( ( i + MAX_PACKET_SIZE ) < ulSize )
-			m_ServerHandler.SendMsg( Msg, false );
-		else
-			m_ServerHandler.SendMsg( Msg );
+		for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
+		{
+			//Определяем последнее хранилище или нет,чтобы послать завершающий маркер пакета
+			bool bLast = false;
+			StoragesIt ItStoragesTmp = It;
+			std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoTmpIt = ProtoIt;
+			ItStoragesTmp++;ProtoTmpIt++;
+			if( ( ItStoragesTmp == m_mapStorages.end() ) && ( ProtoTmpIt == It->second.end() ) )
+				bLast = true;
+
+			SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf;
+			if( bFirst )
+			{
+				pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
+				pbBuf.get()[0] = (BYTE)RESP_OK;
+				::memcpy( pbBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
+				Msg.SetBuffer( pbBuf.get(), sizeof( unsigned long ) + 1 );
+				if( ( 0 == ulSize ) && bLast )
+					m_ServerHandler.SendMsg( Msg );
+				else
+					m_ServerHandler.SendMsg( Msg, false );
+			}
+
+			unsigned long ulCount = MAX_PACKET_SIZE;
+			unsigned long ulFileSize = ProtoIt->second->Size();
+			for( unsigned long i = 0; i < ulFileSize; i += MAX_PACKET_SIZE )
+			{
+				pbBuf = ProtoIt->second->GetBuf( ulCount );
+				Msg.SetBuffer( pbBuf.get(), ulCount );
+//				if( ( ( i + MAX_PACKET_SIZE ) < ulFileSize ) )
+				if( bLast )
+					m_ServerHandler.SendMsg( Msg );
+				else
+					m_ServerHandler.SendMsg( Msg, false );
+			}
+			ProtoIt->second->Clear();
+			bFirst = false;
+		}
 	}
-	m_DataStorage.Clear();
 	Log::instance().Trace( 90, "CGetData: Данные отправлены" );
 	return true;
 }

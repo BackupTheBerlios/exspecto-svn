@@ -48,6 +48,12 @@ protected:
 	static CCriticalSection m_csCurState; 	
 	
 	static CTempStorage m_DataStorage;
+
+	static std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > m_mapStorages;
+
+	typedef std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > >::iterator StoragesIt;
+
+	static CCriticalSection m_csStorages;
 	
 	static CEvent m_CancelEv;
 	
@@ -129,11 +135,13 @@ public:
 
 	private:
 
-		static void StorageFunc( const char* strAddress, const char* strFileName, __int64 FileSize, DWORD lFileTime, DWORD hFileTime );
+		static void StorageFunc( const char* strAddress, const char* strProtocolName, const char* strFileName, __int64 FileSize, DWORD lFileTime, DWORD hFileTime );
 
 		std::string m_strAddr;
 
 		ScanFunc m_pScanner;
+
+		CCriticalSection m_csStore;
 	};
 
 	class CAvailabilityScanTask: public CThreadTask
