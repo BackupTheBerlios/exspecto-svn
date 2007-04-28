@@ -70,6 +70,7 @@ void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 											 , DWORD lFileTime
 											 , DWORD hFileTime )
 {
+	//Убрать крит.секции, Сделать в StartScan при раздаче заданий раздачу CTempStorage-ей
 	DWORD dwtick1 = GetTickCount();
 	m_csStorages.Enter();
 	DWORD dwtick2 = GetTickCount();
