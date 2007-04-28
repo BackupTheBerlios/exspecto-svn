@@ -41,6 +41,7 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 			strFileName.append( strSharePath, strSharePath + strlen( strSharePath ) - 3 );
 			strFileName += FindFileData.cFileName;
 			pStoreFunc(	 strAddress
+						, MOD_NAME
 						, RemoveIp( strFileName ).c_str(), ( FindFileData.nFileSizeHigh * ((__int64)MAXDWORD+1) ) + FindFileData.nFileSizeLow
 						, FindFileData.ftLastWriteTime.dwLowDateTime
 						, FindFileData.ftLastWriteTime.dwHighDateTime );
@@ -54,6 +55,7 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 				strFileName += FindFileData.cFileName;
 				RemoveIp( strFileName );
 				pStoreFunc( strAddress
+							, MOD_NAME	
 							, RemoveIp( strFileName ).c_str(), ( FindFileData.nFileSizeHigh * ((__int64)MAXDWORD+1) ) + FindFileData.nFileSizeLow
 							, FindFileData.ftLastWriteTime.dwLowDateTime
 							, FindFileData.ftLastWriteTime.dwHighDateTime );
