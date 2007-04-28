@@ -319,7 +319,12 @@ CDbReceiver::buf_t::iterator CDbReceiver::AddData( buf_t::iterator begin, buf_t:
 			DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", rec.IPNum, 0 );
 			m_mapErased.insert( rec.IPNum );
 		}
+		DWORD dwtick1,dwtick2;
+		dwtick1 = GetTickCount();
 		DbProviderFactory::instance().GetProviderInstance()->AddFiles( rec );
+
+		dwtick2 = GetTickCount();
+		dwTime += dwtick2 - dwtick1;
 	}
 	mapTmpBuf.clear();
 	if( iOffset < (int)(end - begin) )
