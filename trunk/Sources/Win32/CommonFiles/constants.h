@@ -26,3 +26,6 @@
 #define EVENT_PORT "EventPort"
 #define AGENT_LISTEN_PORT "AgentListenPort"
 #define POLLING_INTERVAL "PollingInterval"
+#define ONLY_ACT "OnlyActive"
+#define ONLY_PATH_SRCH "OnlyPathSearch"
+#define TYPE_EXT "TypeExtension"
