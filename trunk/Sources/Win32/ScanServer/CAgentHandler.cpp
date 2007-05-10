@@ -73,7 +73,7 @@ enumAgentResponse CAgentHandler::SendMessage( CPacket &Msg, CReceiver& Receiver 
 			bOffset = 1;
 		}
 		Log::instance().Trace( 80, "CAgentHandler::SendMessage: iCount = %d", iCount );
-		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[iReceiveOffset], (int)m_vecRecvBuf.size()-iReceiveOffset, "CAgentHandler::SendMessage: Приняты данные:" );
+		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[iReceiveOffset], iCount, "CAgentHandler::SendMessage: Приняты данные:" );
 		//Проверяем на конец пакета
 		if( ( iCount > 4 ) && ( 0 == memcmp( EndStamp, &m_vecRecvBuf[ iReceiveOffset + iCount - 4 ], 4 ) ) )
 		{
