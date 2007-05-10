@@ -62,7 +62,6 @@ void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 	}
 }
 
-static DWORD dwTime = 0,dwTime2 = 0;
 void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 											 , const char* strProtocolName
 											 , const char* strFileName
@@ -70,47 +69,19 @@ void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 											 , DWORD lFileTime
 											 , DWORD hFileTime )
 {
-	//Убрать крит.секции, Сделать в StartScan при раздаче заданий раздачу CTempStorage-ей
-	DWORD dwtick1 = GetTickCount();
-	m_csStorages.Enter();
-	DWORD dwtick2 = GetTickCount();
-	dwTime += dwtick2 - dwtick1;
 	StoragesIt It;
 	if( ( m_mapStorages.end() == ( It = m_mapStorages.find( strAddress ) ) )
 		|| ( It->second.end() == It->second.find( strProtocolName ) ) )
-		m_mapStorages[ strAddress ][ strProtocolName ] = SmartPtr< CTempStorage >( new CTempStorage( std::string( strProtocolName ) + strAddress ) );
-	m_csStorages.Leave();
-	m_csStorages.Enter();
-	DWORD dwtick3,dwtick4;
-	dwtick3 = GetTickCount();
+	{
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::StorageFunc: Не найдено хранилище для данных, адрес: %s, протокол: %s", strAddress, strProtocolName );
+		return;
+	}
 
 	m_mapStorages[ strAddress ][ strProtocolName ]->Put( strAddress );
     m_mapStorages[ strAddress ][ strProtocolName ]->Put( strFileName );
     m_mapStorages[ strAddress ][ strProtocolName ]->Put( FileSize );
 	m_mapStorages[ strAddress ][ strProtocolName ]->Put( lFileTime );
 	m_mapStorages[ strAddress ][ strProtocolName ]->Put( hFileTime );
-	dwtick4 = GetTickCount();
-	dwTime2 += dwtick4 - dwtick3;
-
-	m_csStorages.Leave();
-/*
-	static CCriticalSection csExec;
-	DWORD dwtick1 = GetTickCount();
-	//TODO:Здесь стоим треть времени сканирования
-    CLock lock( csExec );
-	DWORD dwtick2 = GetTickCount();
-	dwTime += dwtick2 - dwtick1;
-
-	DWORD dwtick3,dwtick4;
-	dwtick3 = GetTickCount();
-	m_DataStorage.Put( strAddress );
-    m_DataStorage.Put( strFileName );
-    m_DataStorage.Put( FileSize );
-	m_DataStorage.Put( lFileTime );
-	m_DataStorage.Put( hFileTime );
-	dwtick4 = GetTickCount();
-	dwTime2 += dwtick4 - dwtick3;
-*/
 }
 
 CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, ScanFunc pScanner ):m_strAddr( strAddr )
@@ -195,7 +166,10 @@ void CStartScan::Execute()
 				break;
 			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), PlugIt->first.c_str() );
 			vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, PlugIt->second ) );
+			//Создаем временное хранилище для данных сканирования
+			m_mapStorages[ *AddrIt ][ PlugIt->first ] = SmartPtr< CTempStorage >( new CTempStorage( std::string( PlugIt->first ) + *AddrIt ) );
 			pool.AddTask( vecThreadTasks.back() );
+			
 		}
 		if( WAIT_OBJECT_0 == WaitForSingleObject( m_CancelEv, 0 ) )
 		{
@@ -208,8 +182,6 @@ void CStartScan::Execute()
 	}
 	pool.WaitAllComplete( m_CancelEv );
 	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
-	Log::instance().Trace( 0, "CStartScan::Execute: DWTIME = %d", dwTime );
-	Log::instance().Trace( 0, "CStartScan::Execute: DWTIME 2 = %d", dwTime2 );
 	CPacket Event;
 	BYTE bEvent = ScanComplete;
 	Event.AddParam( &bEvent, 1 );
@@ -308,12 +280,16 @@ bool CGetData::Immidiate()
 			{
 				pbBuf = ProtoIt->second->GetBuf( ulCount );
 				Msg.SetBuffer( pbBuf.get(), ulCount );
-//				if( ( ( i + MAX_PACKET_SIZE ) < ulFileSize ) )
-				if( bLast )
-					m_ServerHandler.SendMsg( Msg );
-				else
-					m_ServerHandler.SendMsg( Msg, false );
+				m_ServerHandler.SendMsg( Msg, false );
 			}
+			//Отправляем маркер окончания пакета
+			if( bLast )
+			{
+				pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[0] );
+				Msg.SetBuffer( pbBuf.get(), 0 );
+				m_ServerHandler.SendMsg( Msg );
+			}
+
 			ProtoIt->second->Clear();
 			bFirst = false;
 		}
