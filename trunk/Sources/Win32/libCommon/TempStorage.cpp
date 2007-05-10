@@ -79,8 +79,8 @@ SmartPtr<BYTE, AllocNewArray<BYTE> > CTempStorage::GetBuf( unsigned long& ulCoun
 void CTempStorage::Clear()
 {
 	m_ulReadOffset = 0;
-	if( FALSE == DeleteFile( m_strFileName.c_str() ) )
-		Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s", m_strFileName.c_str() );
+	DeleteFile( m_strFileName.c_str() );
+	//	Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s", m_strFileName.c_str() );
 }
 
 bool CTempStorage::IsExists()
