@@ -39,7 +39,8 @@ const char sepFile[] = "\\/,;:<>|. &()[]{}-_";
 
 static char* pParamTypes[] = {
 	LOG_LEVEL, "int",
-	DB_FILE,   "string"
+	DB_FILE,   "string",
+	DB_AUTOINDEX_WORD, "int"
 };
 //-----------------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ CDBSQLitProvider::CDBSQLitProvider()//: CDBProvider()
 	Log::instance().Trace( 100, "CDBSQLitProvider::%s [enter]", __FUNCTION__ );
 	
 	FAutoIndex = false;
-	int iLogLevel;
+	int iLogLevel, bAI;
 	string dbFile;
 
 SetLastError(RESULT_OK, "");
@@ -64,6 +65,8 @@ try
 		Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
 		Log::instance().SetLoglevel( iLogLevel );	
 		Settings::instance().GetParam( DB_FILE, dbFile );
+		Settings::instance().GetParam( DB_AUTOINDEX_WORD, bAI );
+		FAutoIndex = bAI;
 
 		Log::instance().Trace( 100, "CDBSQLitProvider::%s ::: Open BD", __FUNCTION__ );
 		db.open(dbFile.c_str()); // Открываю файл базы данных
