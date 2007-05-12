@@ -31,3 +31,4 @@
 #define TYPE_EXT "TypeExtension"
 #define TYPE_CAPT "TypeExtensionCaption"
 #define SCRIPT_PATH "ScriptPath"
+#define QUERY_TEXT "QueryText"
