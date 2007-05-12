@@ -30,3 +30,4 @@
 #define ONLY_PATH_SRCH "OnlyPathSearch"
 #define TYPE_EXT "TypeExtension"
 #define TYPE_CAPT "TypeExtensionCaption"
+#define SCRIPT_PATH "ScriptPath"
