@@ -724,14 +724,16 @@ bool __stdcall CDBSQLitProvider::RefreshDB()
 
 int __stdcall CDBSQLitProvider::GetProvError(string& mes)
 {
+	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	if(&mes != NULL)
-		mes = FErrMsg;
+		mes = FErrMsg.c_str();
 	return FErrCode;
 }
 //-----------------------------------------------------------------------------
 
 void __fastcall CDBSQLitProvider::SetLastError(int aCode, const string& aMes)
 {
+	Log::instance().Trace( 150, "%s [enter]", __FUNCTION__ );
 	if(&aMes != NULL)
 		FErrMsg = aMes;
 	FErrCode = aCode;
