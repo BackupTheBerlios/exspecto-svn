@@ -63,8 +63,10 @@ void CIniSettings::SetModule( const std::string& strModuleName, char** pModulePa
 		}else if( strModuleName == strModName )
 		{
 			strTmp = strBuffer;
-			//Удаляем пробелы
-			strTmp.erase( std::remove( strTmp.begin(), strTmp.end() - 1, ' ' ), strTmp.end() );
+			//Удаляем пробелы и перенводы строки
+			strTmp.erase( std::remove( strTmp.begin(), strTmp.end(), '\r' ), strTmp.end() );
+			strTmp.erase( std::remove( strTmp.begin(), strTmp.end(), '\n' ), strTmp.end() );
+			strTmp.erase( std::remove( strTmp.begin(), strTmp.end(), ' ' ), strTmp.end() );
 			//Сохраняем параметр до знака = и после 
 			if( ( iTmp = (int)strTmp.find( '=' ) ) != std::string::npos )
 			{
@@ -102,7 +104,7 @@ void CIniIntSerializer::Load( const std::string& strParamName, const std::string
 {
 	int iParam=0;
 	std::string strTmp;
-	if( ( 0 == ( iParam = atoi( strParamValue.c_str() ) ) && !strcmp( strParamValue.c_str(), "0" ) ) )
+	if( ( 0 == ( iParam = atoi( strParamValue.c_str() ) ) && ( 0 != strcmp( strParamValue.c_str(), "0" ) ) ) )
 	{
 		Log::instance().Trace( 10, " CIniIntSerializer::Load: Параметр %s должен быть целым числом %s", strParamName.c_str() );
 		throw ParamSerializeErr( strParamName );
