@@ -3,7 +3,7 @@
 
 <ManagedProjectBuildInfo>
 <project id="Web.cdt.managedbuild.target.gnu.cygwin.exe.1938540242" name="Executable (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.exe">
-<configuration artifactExtension="exe" artifactName="D:\Apache\cgi-bin\Web" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.850128294" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug" postbuildStep="">
+<configuration artifactExtension="exe" artifactName="${workspace_loc:/Bin}\Web" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.850128294" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug" postbuildStep="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug.643629803" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug">
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug.1930389776" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug">
 <option id="gnu.cpp.compiler.option.include.paths.1514610209" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">

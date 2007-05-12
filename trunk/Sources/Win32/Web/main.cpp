@@ -14,18 +14,23 @@ using namespace std;
 typedef map<string, string> TStrParams;
 TStrParams QueryStr;
 typedef list<string> TExts;
-map<string,TExts> Filters;
+typedef map<string,TExts> TFilters;
+TFilters Filters;
+TStrParams FiltersCapt;
 static char* pParamTypes[] = {
 	LOG_LEVEL, "int",
 	ONLY_ACT, "int",
 	ONLY_PATH_SRCH,"int",
-	TYPE_EXT,"string"
+	TYPE_EXT,"string",
+	TYPE_CAPT, "string",
+	SCRIPT_PATH, "string"
 };
 int iOnlyPath=-1; // -1:disable;
 int iOnlyAct=-1;
 string sExt="";
+string ScriptPath;
+string sCExt;
 
-#define ScriptPath "http://www.exspecto.ru/cgi-bin/web.exe?sqrt"
 string TmpBuf1;
 string TmpBuf2;
 
@@ -56,12 +61,14 @@ int main(int argc, char *argv[], char *envp[])
 	Settings::instance().GetParam( ONLY_ACT, iOnlyAct );
 	Settings::instance().GetParam( ONLY_PATH_SRCH, iOnlyPath );
 	Settings::instance().GetParam( TYPE_EXT, sExt );
+	Settings::instance().GetParam( TYPE_CAPT, sCExt );
+	Settings::instance().GetParam( SCRIPT_PATH, ScriptPath );
 
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 
-  int i;
+//  int i;
   string sFormat, sMenu, sCount;
-  char tmp[12];
+//  char tmp[12];
 
 	try
 	{
@@ -77,16 +84,16 @@ int main(int argc, char *argv[], char *envp[])
 		CrFormSq(sCount);
 	
 		Log::instance().Trace( 150, "%s:: If query fielt not empty, search", __FUNCTION__ );
-		if(argc>1 && _stricmp(argv[1],"sqrt") == 0 && IsSet("SqrtText") && $("SqrtText") != "")
+		if(argc>1 && _stricmp(argv[1],"sqrt") == 0 && IsSet(QUERY_TEXT) && $(QUERY_TEXT) != "")
 		{
 			CrResult(sCount);
 		}
 // DEBUG //////////////////////////////////////////////////////////////////////
 //		CrResult(sCount);
 ///////////////////////////////////////////////////////////////////////////////
-
 		Log::instance().Trace( 150, "%s::Debug information::Exit function CrResult", __FUNCTION__ );
-
+		sCount+="<div><p align=\"center\">Система распределеного поиска<br /><a href=\"http:\\\\exspecto.berlios.de\">exspecto.berlios.de</a></p></div>";
+/*
 		sCount+="<p>Аргументов ";
 		sCount+=itoa(argc,tmp,10);
 		sCount+="\n";
@@ -122,12 +129,17 @@ int main(int argc, char *argv[], char *envp[])
 			sCount+="]: ";
 			sCount+=p->second;
 		}	
+	//*/
 	}catch(...){
 		sCount+="ERROR!!!";
 	}
-		sCount+="<br />Ver.:08052007.1508";
+//		sCount+="<br />Ver.:08052007.1508";
 
-		printf(sFormat.c_str(), sMenu.c_str(), sCount.c_str());
+		Log::instance().Trace( 200, "%s::DEBUG::Template:%s\nMenu:%s\nCont.:%s", __FUNCTION__, sFormat.c_str(), sMenu.c_str(), sCount.c_str() );
+		TemplateAssignVar(sFormat, "MAIN_MENU", sMenu);
+		TemplateAssignVar(sFormat, "MAIN_CONT", sCount);
+		Log::instance().Trace( 200, "%s::DEBUG::Result:%s", __FUNCTION__, sFormat.c_str() );
+		printf(sFormat.c_str());
 //*/
 	Log::instance().Trace( 100, "%s [exit]", __FUNCTION__ );
 	return 0;
@@ -199,76 +211,30 @@ void CrResult(string& aBuf)
 						aParams[tstr]=true;
 					}
 
-		Log::instance().Trace( 190, "%s::DEBUG::Plugin name: %s", __FUNCTION__, db->GetNamePlugin() );
-//Log::instance().Trace( 150, "%s:: Debug, print plugin name", __FUNCTION__ );
-//printf("%s",db->GetNamePlugin());
-		Log::instance().Trace( 150, "%s:: Call function Search", __FUNCTION__ );
-		bResult = db->Search($("SqrtText"), aParams, rec);
-		Log::instance().Trace( 150, "%s:: Test by error", __FUNCTION__ );
-		i=db->GetProvError(tstr);
-		Log::instance().Trace( 180, "%s:: Проверка кода ошибки", __FUNCTION__ );
-		if( i != RESULT_OK )
+		Log::instance().Trace( 200, "%s::DEBUG::Plugin name: %s", __FUNCTION__, db->GetNamePlugin() );
+		for(int k = 0; k < 50; k++)
 		{
-			Log::instance().Trace( 10, "ERROR[%d]::%s", i, tstr.c_str() ); 
-			aBuf+="ERROR[";
-			aBuf+=itoa(i,tmp,10);
-			aBuf+="]:: ";
-			aBuf+=tstr;
-			throw;
+			Log::instance().Trace( 150, "%s:: Call function Search", __FUNCTION__ );
+			bResult = db->Search($(QUERY_TEXT), aParams, rec);
+			Log::instance().Trace( 150, "%s:: Test by error", __FUNCTION__ );
+			i=db->GetProvError(tstr);
+			Log::instance().Trace( 180, "%s:: Проверка кода ошибки", __FUNCTION__ );
+			if( i != RESULT_OK )
+			{
+				Log::instance().Trace( 10, "ERROR[%d]::%s", i, tstr.c_str() ); 
+				aBuf+="ERROR[";
+				aBuf+=itoa(i,tmp,10);
+				aBuf+="]:: ";
+				aBuf+=tstr;
+				rec.clear();
+			}else break;
 		}
+		if( i != RESULT_OK )return;
 //*/
 		Log::instance().Trace( 150, "%s:: If result then made table results", __FUNCTION__ );
 		if( bResult )
 		{
 			list<fileStr>::iterator idF;
-			aBuf+="<table width= \"100%\" border=\"0\" cellspacing=\"2\" cellpadding=\"0\">\n";
-			aBuf+="  <caption align=\"top\">\n";
-			aBuf+="    Результат поиска:\n";
-			aBuf+="  </caption>\n";
-			aBuf+="  <tr>\n";
-			aBuf+="    <th scope=\"col\">Имя</th>\n";
-			aBuf+="    <th scope=\"col\">Хост</th>\n";
-			aBuf+="    <th scope=\"col\">Путь</th>\n";
-			aBuf+="    <th scope=\"col\">Размер</th>\n";
-			aBuf+="    <th scope=\"col\">Дата</th>\n";
-			aBuf+="  </tr>\n";
-	  	for (idRec=rec.begin(); idRec != rec.end(); ++idRec)
-			{
-				hname = idRec->HostName;
-				hip = idRec->IPNum;
-				for (idF = (*idRec).Files.begin(); idF != (*idRec).Files.end(); ++idF)
-				{
-					aBuf+="  <tr>\n"; // начало ряда
-					aBuf+="    <td><a href=\"//"; // имя
-					aBuf+=hip;
-					aBuf+="\">";
-					aBuf+=hname;
-					aBuf+="</a></td>\n";
-					aBuf+="    <td><a href=\"//"; // адрес
-					aBuf+=hip;
-					aBuf+="\">";
-					aBuf+=hip;
-					aBuf+="</a></td>\n";
-					aBuf+="    <td><a href=\"//"; // путь
-					aBuf+=hip;
-					aBuf+="/";
-					aBuf+=idF->FileName;
-					aBuf+="\">";
-					aBuf+=idF->FileName;
-					aBuf+="</a></td>\n";
-					aBuf+="    <td>"; // размер
-					aBuf+=_ui64toa(idF->FileSize,tmp,10);
-					aBuf+="</td>\n";
-					aBuf+="    <td>"; // дата
-					timecr = gmtime(&(idF->FDate.UTS));
-					strftime(tmp,254,"%d.%m.%Y %H:%M",timecr);
-					aBuf+=tmp;
-					aBuf+="</td>\n";
-					aBuf+="  </tr>\n";
-				}
-			}
-			aBuf+="</table>\n";
-/*			
 	  	for (idRec=rec.begin(); idRec != rec.end(); ++idRec)
 			{
 				hname = idRec->HostName;
@@ -284,6 +250,7 @@ void CrResult(string& aBuf)
 					tstr+="/";
 					tstr+= idF->FileName.c_str();
 					StrPar["URL_LINK"]=tstr;
+					StrPar["CAP_FILENAME"]=idF->FileName.c_str();
 					StrPar["CAP_FILESIZE"]=_ui64toa(idF->FileSize,tmp,10);
 					timecr = gmtime(&(idF->FDate.UTS));
 					strftime(tmp,254,"%d.%m.%Y %H:%M",timecr);
@@ -292,9 +259,13 @@ void CrResult(string& aBuf)
 				}
 			}
 
-			if(TemplateLoad("Result.tpl", tmp))
-				TemplateAssignBlockVars(tmp, "restabrow", ArrayStrPar);
-			aBuf+=tmp;//*/
+			if(TemplateLoad("Result.tpl", tstr))
+			{
+				Log::instance().Trace( 200, "%s::DEBUG::Template:%s", __FUNCTION__, tstr.c_str() );
+				TemplateAssignBlockVars(tstr, "restabrow", ArrayStrPar);
+				Log::instance().Trace( 200, "%s::DEBUG::TemplateFill:%s", __FUNCTION__, tstr.c_str() );
+			}
+			aBuf+=tstr;//*/
 		}else{aBuf+="Ничего не найдено.";}
 //*/		
 	}catch(...){aBuf+="Произошла ошибка, дальнейшее выполнение скрипта невозможно. Оббратитесь к админестрации для устранения ошибки.";}
@@ -332,13 +303,17 @@ void LoadFilter()
 {
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
 	Filters.clear();
+	FiltersCapt.clear();
 	if(sExt == "") return;
 	
 	TExts lExt;
+	TFilters::iterator p;
+	
 	string Capt;
 	string tmp;
   int pStart, i, exS, exE;
   bool bEndExt = false;
+  
   pStart=0;
   i=pStart;
   while(i < (signed)sExt.length())
@@ -386,6 +361,38 @@ void LoadFilter()
   	}
     i++;
 	}
+	
+  pStart=0;
+  i=pStart;
+  bEndExt = false;
+  p = Filters.begin();
+	if( p != Filters.end() )
+	{ 
+	  while(i < (signed)sCExt.length() && !bEndExt)
+  	{
+    	switch(sCExt[i])
+	    {
+  	  	case '\\':
+	  	 		i++;
+    			break;
+	   		case 0:
+	   			bEndExt=true;
+	   		case '|':
+  	 			Capt = sCExt.substr(pStart, i-pStart);
+					exS=Capt.find_first_not_of(" ",0);
+					exE=Capt.find_last_not_of(" ",0);
+					FiltersCapt[p->first]=Capt.substr(exS, exE-exS+1);
+					p++;
+					if( p == Filters.end() )bEndExt=true;
+					pStart = i+1; 
+ 					break;
+   		}
+	    i++;
+  	}
+	}
+	for(;p != Filters.end(); ++p)
+		FiltersCapt[p->first]=p->first;
+		
 	Log::instance().Trace( 100, "%s [exit]", __FUNCTION__ );
 }
 
@@ -509,96 +516,145 @@ void Spliter(const string& aStr)
 void CrMenu(string& aBuf)
 {
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
-	aBuf = "&nbsp;";
+	string templ;
+	if(!TemplateLoad("Menu.tpl", templ))
+	{
+		Log::instance().Trace( 50, "%s::Невозможно загрузить шаблон Menu.tpl. Отображение формы меню недоступно.", __FUNCTION__ );
+		aBuf += "Невозможно загрузить шаблон Menu.tpl. Отображение формы меню недоступно.";
+		return;
+	}
+	aBuf+= templ;
 	Log::instance().Trace( 100, "%s [exit]", __FUNCTION__ );
 }
 
 void CrFormSq(string& aBuf)
 {
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
-	map<string,TExts>::iterator p = Filters.begin();
-	int iTabId=1;
+  TStrParams StrPar;
+	vector<TStrParams> ArrayStrPar;
+	map<string,TExts>::iterator p;
+	int iTabId=2;
 	char tmp[12];
-	aBuf= "<form  action='";
-	aBuf+=ScriptPath;
-	aBuf+="' method='POST' title='Поиск'>\n";
-	aBuf+="  <p>Поиск: <input type='text' name='SqrtText' size='80' maxlength='254' alt='Поиск' tabindex='0' value='";
-	if(IsSet("SqrtText") && $("SqrtText") != "")
-		aBuf+=$("SqrtText");
-	aBuf+="' /><br />\n";
+	string tstr, templ;
+	
+	if(!TemplateLoad("Query.tpl", templ))
+	{
+		Log::instance().Trace( 50, "%s::Невозможно загрузить шаблон Query.tpl. Отображение формы запроса недоступно.", __FUNCTION__ );
+		aBuf += "Невозможно загрузить шаблон Query.tpl. Отображение формы запроса недоступно.";
+		return;
+	}
+	Log::instance().Trace( 200, "%s::DEBUG::Template:%s", __FUNCTION__, templ.c_str() );
+
+	StrPar[SCRIPT_PATH]=ScriptPath;
+
+	tstr = "Value";
+	tstr+= QUERY_TEXT;
+	if(IsSet(QUERY_TEXT) && $(QUERY_TEXT) != "")
+		StrPar[tstr]=$(QUERY_TEXT);
+	else
+		StrPar[tstr]="";
+
 	if(iOnlyPath>=0)
 	{
-		aBuf+="  <input type='checkbox' name='";
-		aBuf+=ONLY_PATH_SRCH;
-		aBuf+="' alt='Искать только в названиях каталогов' tabindex='";
-		aBuf+=itoa(iTabId, tmp, 10);
-		iTabId++;
-		aBuf+="'";
+		tstr = "Checked";
+		tstr+= ONLY_PATH_SRCH;
 		if(IsSet(ONLY_PATH_SRCH) && $(ONLY_PATH_SRCH) != "")
-			aBuf+=" checked='checked'";
-		aBuf+=" />Искать в названиях каталогов<br />";
+			StrPar[tstr]=" checked=\"checked\"";
+		else
+			StrPar[tstr]="";
+	}else{
+		ArrayStrPar.clear();
+		tstr = "block";
+		tstr+= ONLY_PATH_SRCH;
+		TemplateAssignBlockVars(templ, tstr, ArrayStrPar); 		
 	}
+	TemplateAssignVars(templ,StrPar); 
+	Log::instance().Trace( 200, "%s::DEBUG::Template:%s", __FUNCTION__, templ.c_str() );
+	
 	if(Filters.size() > 0)
 	{
-		aBuf+="  Тип искомых файлов:<br />";
-		for(;p!=Filters.end();++p)
+		ArrayStrPar.clear();
+		StrPar.clear();
+		for(p=Filters.begin();p!=Filters.end();++p)
 		{
-			aBuf+="  <input type='checkbox' name='";
-			aBuf+=p->first;
-			aBuf+="' alt='' tabindex='"; // Добавить список заглавий и ставить в соответствие фильтрам
-			aBuf+=itoa(iTabId, tmp, 10);
+			StrPar["NAME"]=p->first;
+			StrPar["ALT"]=FiltersCapt[p->first];
+			StrPar["TABINDEX"]=itoa(iTabId, tmp, 10);
 			iTabId++;
-			aBuf+="'";
 			if(IsSet(p->first) && $(p->first) != "")
-				aBuf+=" checked='checked'";
-			aBuf+=" />";
-			aBuf+=p->first;
-			aBuf+=" &nbsp;";
+				StrPar["Checked"]=" checked=\"checked\"";
+			else
+				StrPar["Checked"]="";
+			ArrayStrPar.push_back(StrPar);
+			StrPar.clear();
 		}
-		aBuf+="<br />";
+		TemplateAssignBlockVars(templ, "filters", ArrayStrPar); 		
+	}else{
+		ArrayStrPar.clear();
+		tstr = "blockfilters";
+		TemplateAssignBlockVars(templ, tstr, ArrayStrPar); 		
 	}
+	Log::instance().Trace( 200, "%s::DEBUG::Template:%s", __FUNCTION__, templ.c_str() );
+	
+	StrPar.clear();
 	if(iOnlyAct>=0)
 	{
-		aBuf+="  <input type='checkbox' name='";
-		aBuf+=ONLY_ACT;
-		aBuf+="' alt='Выводить только активные ссылки' tabindex='";
-		aBuf+=itoa(iTabId, tmp, 10);
+		tstr = "Tab_";
+		tstr+= ONLY_ACT;
+		tstr+= "_Id";
+		StrPar[tstr]=itoa(iTabId, tmp, 10);
 		iTabId++;
-		aBuf+="'";
+		tstr = "Checked";
+		tstr+= ONLY_ACT;
 		if(IsSet(ONLY_ACT) && $(ONLY_ACT) != "")
-			aBuf+=" checked='checked'";
-		aBuf+=" />Выводить только активные ссылки";
+			StrPar[tstr]=" checked=\"checked\"";
+		else
+			StrPar[tstr]="";
+	}else{
+		ArrayStrPar.clear();
+		tstr = "block";
+		tstr+= ONLY_ACT;
+		TemplateAssignBlockVars(templ, tstr, ArrayStrPar); 		
 	}
-	aBuf+="  </p>";
-	aBuf+="  <input type='reset' value='Очистить форму' tabindex='";
-	aBuf+=itoa(iTabId, tmp, 10);
+
+	tstr = "Tab_";
+	tstr+= "Reset";
+	tstr+= "_Id";
+	StrPar[tstr]=itoa(iTabId, tmp, 10);
 	iTabId++;
-	aBuf+="'>&nbsp;";
-	aBuf+="  <input type='submit' name='BtnPost' value='Поиск' tabindex='";
-	aBuf+=itoa(iTabId, tmp, 10);
+
+	tstr = "Tab_";
+	tstr+= "Submit";
+	tstr+= "_Id";
+	StrPar[tstr]=itoa(iTabId, tmp, 10);
 	iTabId++;
-	aBuf+="'>";
-	aBuf+="</form>";
+
+	TemplateAssignVars(templ,StrPar); 
+	aBuf+=templ;
+	Log::instance().Trace( 200, "%s::DEBUG::Template:%s", __FUNCTION__, templ.c_str() );
 	Log::instance().Trace( 100, "%s [exit]", __FUNCTION__ );
 }
 
 void CrMainForm(string& aBuf)
 {
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
+	string templ;
 	aBuf= "Content-Type: text/html\r\n\r\n";
-	aBuf+="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
-	aBuf+="<html xmlns=\"http://www.w3.org/1999/xhtml\">";
-	aBuf+="<head>";
-	aBuf+="<meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" />";
-	aBuf+="<title>Untitled Document</title>";
-	aBuf+="</head>";
+	if(!TemplateLoad("Main.tpl", templ))
+	{
+		Log::instance().Trace( 50, "%s::Шаблон Main.tpl ненайден... Дальнейшая работа не возможна!", __FUNCTION__ );
+		aBuf+="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
+		aBuf+="<html xmlns=\"http://www.w3.org/1999/xhtml\">";
+		aBuf+="<head>";
+		aBuf+="<meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" />";
+		aBuf+="<title>Exspecto</title>";
+		aBuf+="</head>";
 
-	aBuf+="<body>";
-	aBuf+="<div width=\"100%\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
-	aBuf+="  <tr><td><div class=\"Menu\"> %s </div></td><td><div class=\"SearchCon\"> %s </div></td></tr>";
-	aBuf+="</table></div>";
-	aBuf+="</body>";
-	aBuf+="</html>";
+		aBuf+="<body>";
+		aBuf+="Шаблон Main.tpl ненайден... Дальнейшая работа не возможна!";
+		aBuf+="</body>";
+		aBuf+="</html>";
+	}else aBuf+=templ;
 	Log::instance().Trace( 100, "%s [exit]", __FUNCTION__ );
 }
 
@@ -620,14 +676,16 @@ bool TemplateLoad(const string& aFileName, string& aText)
   
   while( !feof(stream) )
   {
-  	fread(tmp, sizeof(char), sizeof(tmp), stream);
+  	ZeroMemory(tmp, 1024);
+  	i = fread(tmp, sizeof(char), sizeof(tmp)-1, stream);
+		Log::instance().Trace( 200, "%s:: %d read bytes.", __FUNCTION__, i );
+  	if( i>0 )aText += tmp;	
  		if( (i=ferror(stream)) )
  		{
 			Log::instance().Trace( 50, "%s::ERROR[%d] Read file.", __FUNCTION__, i );
 			aText = "Error read file!";
 			return false;
  		}
-  	aText += tmp;	
   }
   
   if( fclose( stream ) )
@@ -653,8 +711,12 @@ void TemplateAssignVar(string& aCode, const string& aName, const string& aVal)
 	tmp+= aName.c_str();
 	tmp+= "}";
 	iStart = 0;
-	while( (iStart = aCode.find(aName.c_str(),iStart)) != string::npos )
+	while( (iStart = aCode.find(tmp.c_str(),iStart)) != string::npos )
+	{
+		Log::instance().Trace( 210, "%s::DEBUG::Param:%s; Val.: %s", __FUNCTION__, aCode.substr(iStart, tmp.length()).c_str(), aVal.c_str() );
 		aCode.replace(iStart, tmp.length(), aVal.c_str());
+		Log::instance().Trace( 215, "%s::DEBUG::%s", __FUNCTION__, aCode.c_str() );
+	}
 }
  
 void TemplateAssignBlockVars(string& aText, const string& aName, const vector<TStrParams>& aArr)
@@ -673,6 +735,7 @@ void TemplateAssignBlockVars(string& aText, const string& aName, const vector<TS
 	cur+= " -->\n";
 	if( (stTmp = aText.find(cur.c_str(),stRep)) == string::npos ) return;
 	rep = aText.substr(stRep, stTmp-stRep);
+	Log::instance().Trace( 200, "%s::DEBUG::Block:%s", __FUNCTION__, rep.c_str() );
 	aText.erase(stRep, stTmp-stRep);
 	
 	for(unsigned int i=0; i < aArr.size(); i++)
@@ -683,11 +746,11 @@ void TemplateAssignBlockVars(string& aText, const string& aName, const vector<TS
 			tmp = aName.c_str();
 			tmp+= ".";
 			tmp+= p->first;
+			Log::instance().Trace( 210, "%s::DEBUG::Block::Param:%s; Val.: %s", __FUNCTION__, tmp.c_str(), p->second.c_str() );
 			TemplateAssignVar(cur, tmp, p->second);
 		}
 		aText.insert(stRep, cur.c_str());
 		stRep+=cur.length();
 	}
 }
-
  
