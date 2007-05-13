@@ -220,16 +220,16 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 			}
 			char strA[255], strB[255], strC[255], strD[255];
 			std::string strTmpIp;
-            for( int iAInd = Ip1.A; iAInd <= Ip2.A; iAInd++ )
+			for( int iAInd = Ip1.A, iBInd = Ip1.B, iCInd = Ip1.C, iDInd = Ip1.D; iAInd <= Ip2.A; iAInd++ )
 			{
 				itoa( iAInd, strA, 10 );
-				for( int iBInd = Ip1.B; ( (iAInd < Ip2.A) && (iBInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd <= Ip2.B) ); iBInd++ )
+				for( ; ( (iAInd < Ip2.A) && (iBInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd <= Ip2.B) ); iBInd++ )
 				{
 					itoa( iBInd, strB, 10 );
-					for( int iCInd = Ip1.C; ( (iBInd < Ip2.B) && (iCInd < 255) ) || ( (iBInd == Ip2.B) && (iCInd <= Ip2.C) ); iCInd++ )
+					for( ; ( ( (iAInd < Ip2.A) || (iBInd < Ip2.B) ) && (iCInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd == Ip2.B) && (iCInd <= Ip2.C) ); iCInd++ )
 					{
 						itoa( iCInd, strC, 10 );
-						for( int iDInd = Ip1.D; ( (iCInd < Ip2.C) && (iDInd < 255) ) || ( (iCInd == Ip2.C) && (iDInd <= Ip2.D) ); iDInd++ )
+						for( ; ( ( (iAInd < Ip2.A) || (iBInd < Ip2.B) || (iCInd < Ip2.C) ) && (iDInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd == Ip2.B) && (iCInd == Ip2.C) && (iDInd <= Ip2.D) ); iDInd++ )
 						{
                             itoa( iDInd, strD, 10 );
 							strTmpIp.clear();
@@ -242,8 +242,11 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 							strTmpIp += strD;
 							listIp.push_back( strTmpIp );
 						}
+						iDInd = 1;
 					}
+					iCInd = 1;
 				}
+				iBInd = 1;
 			}
 
 			
