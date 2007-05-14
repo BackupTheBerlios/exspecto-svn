@@ -23,6 +23,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBSQLite3", "DBSQLite3\DBSQ
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Web", "Web\Web.vcproj", "{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -53,6 +57,10 @@ Global
 		{A3AAE8EA-7ED8-4744-AD78-DB97244C78F8}.Debug.Build.0 = Debug|Win32
 		{A3AAE8EA-7ED8-4744-AD78-DB97244C78F8}.Release.ActiveCfg = Release|Win32
 		{A3AAE8EA-7ED8-4744-AD78-DB97244C78F8}.Release.Build.0 = Release|Win32
+		{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}.Debug.ActiveCfg = Debug|Win32
+		{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}.Debug.Build.0 = Debug|Win32
+		{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}.Release.ActiveCfg = Release|Win32
+		{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
