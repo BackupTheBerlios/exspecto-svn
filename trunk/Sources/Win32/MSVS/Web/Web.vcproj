@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libCommon.lib ws2_32.lib iphlpapi.lib"
-				OutputFile="$(ProjectDir)\..\..\..\..\Bin\Web.exe"
+				OutputFile="$(OutDir)\..\..\..\..\..\Bin\Web.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\libCommon\Debug;..\libCommon"
 				GenerateDebugInformation="TRUE"
@@ -44,8 +44,7 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="copy $(TargetPath) D:\Apache\cgi-bin\$(TargetFileName)"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
