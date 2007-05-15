@@ -11,6 +11,8 @@
 
 using namespace std;
 
+#define ErrStr(c) Log::instance().Trace(c,"%s[%d]::ERROR[%d]::%s",__FUNCTION__,__LINE__,FErrorCode,FErrorText.c_str())
+
 typedef map<string, string> TStrParams;
 TStrParams QueryStr;
 typedef list<string> TExts;
@@ -30,6 +32,8 @@ int iOnlyAct=-1;
 string sExt="";
 string ScriptPath;
 string sCExt;
+string FErrorText = "";
+int FErrorCode = 0;
 
 string TmpBuf1;
 string TmpBuf2;
@@ -53,25 +57,25 @@ void TemplateAssignBlockVars(string& aText, const string& aName, const vector<TS
 int main(int argc, char *argv[], char *envp[])
 {
 	int iLogLevel;
-	//Инициализация установок и логера
-	Log::instance().SetModuleName( "Web" );
-	Settings::instance().SetModule( "Web", pParamTypes, sizeof( pParamTypes )/sizeof( pParamTypes[0] ) );
-	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
-	Log::instance().SetLoglevel( iLogLevel );	
-	Settings::instance().GetParam( ONLY_ACT, iOnlyAct );
-	Settings::instance().GetParam( ONLY_PATH_SRCH, iOnlyPath );
-	Settings::instance().GetParam( TYPE_EXT, sExt );
-	Settings::instance().GetParam( TYPE_CAPT, sCExt );
-	Settings::instance().GetParam( SCRIPT_PATH, ScriptPath );
-
-	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
-
-//  int i;
   string sFormat, sMenu, sCount;
-//  char tmp[12];
-
+	//Инициализация установок и логера
 	try
 	{
+		Log::instance().SetModuleName( "Web" );
+		Settings::instance().SetModule( "Web", pParamTypes, sizeof( pParamTypes )/sizeof( pParamTypes[0] ) );
+		Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
+		Log::instance().SetLoglevel( iLogLevel );	
+		Settings::instance().GetParam( ONLY_ACT, iOnlyAct );
+		Settings::instance().GetParam( ONLY_PATH_SRCH, iOnlyPath );
+		Settings::instance().GetParam( TYPE_EXT, sExt );
+		Settings::instance().GetParam( TYPE_CAPT, sCExt );
+		Settings::instance().GetParam( SCRIPT_PATH, ScriptPath );
+
+		Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
+
+//  int i;
+//  char tmp[12];
+
 		Log::instance().Trace( 150, "%s:: Load list filters", __FUNCTION__ );
 		LoadFilter();
 		Log::instance().Trace( 150, "%s:: Load envirement to array", __FUNCTION__ );
@@ -84,9 +88,18 @@ int main(int argc, char *argv[], char *envp[])
 		CrFormSq(sCount);
 	
 		Log::instance().Trace( 150, "%s:: If query fielt not empty, search", __FUNCTION__ );
-		if(argc>1 && _stricmp(argv[1],"sqrt") == 0 && IsSet(QUERY_TEXT) && $(QUERY_TEXT) != "")
+		Log::instance().Trace( 190, "%s::Debug::argv[1]=%s; QUERY_TEXT=%s", __FUNCTION__, argv[1], QUERY_TEXT );
+		if(argc>1 && _stricmp(argv[1],"sqrt") == 0)
 		{
-			CrResult(sCount);
+			Log::instance().Trace( 190, "%s::Debug::IsSet=%d", __FUNCTION__, IsSet(QUERY_TEXT) );
+			if(IsSet(QUERY_TEXT))
+			{
+				Log::instance().Trace( 190, "%s::Debug::\$=%s", __FUNCTION__, $(QUERY_TEXT).c_str() );
+				if($(QUERY_TEXT) != "")
+				{
+					CrResult(sCount);
+				}
+			}
 		}
 // DEBUG //////////////////////////////////////////////////////////////////////
 //		CrResult(sCount);
@@ -131,7 +144,14 @@ int main(int argc, char *argv[], char *envp[])
 		}	
 	//*/
 	}catch(...){
-		sCount+="ERROR!!!";
+		printf("Content-Type: text/html\r\n\r\n");
+		printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" /></head>");
+		printf("<body>");
+		printf("ERROR[%d]<br>\n%s",FErrorCode, FErrorText.c_str()); 
+		printf("</body></html>");
+		Log::instance().Trace( 15, "%s::ERROR[%d]::%s", __FUNCTION__, FErrorCode, FErrorText.c_str() );
+		Log::instance().Trace( 100, "%s [exit(%d)]", __FUNCTION__, FErrorCode );
+		return FErrorCode;
 	}
 //		sCount+="<br />Ver.:08052007.1508";
 
@@ -157,7 +177,7 @@ void CrResult(string& aBuf)
 	ProvType *ProvFn;
 	hostRecords rec;
 	map<string,bool> aParams;
-	map<string,TExts>::iterator p;
+	TFilters::iterator p;
 	hostRecords::iterator idRec;
 	TExts::iterator l;
 	string tstr, hname, hip;
@@ -172,46 +192,54 @@ void CrResult(string& aBuf)
 		Log::instance().Trace( 150, "%s:: Load Library", __FUNCTION__ );
 		if( NULL == ( hLib = ::LoadLibraryA( "DBSQLite3" ) ) )
 		{
-			Log::instance().Trace( 10, "%d", GetLastError() );
-			aBuf+="ERROR[";
-			aBuf+=itoa(GetLastError(),tmp,10);
-			aBuf+="]:: Load Library DBSQLite3";
+//			Log::instance().Trace( 10, "%d", GetLastError() );
+			FErrorCode = GetLastError();
+			FErrorText = "Load Library DBSQLite3";
+			ErrStr(10);
 			throw;
 		}
 		Log::instance().Trace( 150, "%s:: Load Main Function", __FUNCTION__ );
 		if( NULL == ( ProvFn = (ProvType *)::GetProcAddress( hLib, "RegisterPlugin" ) ) )
 		{
-			Log::instance().Trace( 10, "не удалось получить адрес функции RegisterPlugin из библиотеки DBSQLite" ); 
+			FErrorCode = GetLastError();
+			FErrorText = "не удалось получить адрес функции RegisterPlugin из библиотеки DBSQLite";
+			ErrStr(10);
 			::FreeLibrary( hLib );
 			hLib=NULL;
-			aBuf+="ERROR[";
-			aBuf+=itoa(GetLastError(),tmp,10);
-			aBuf+="]:: не удалось получить адрес функции RegisterPlugin из библиотеки DBSQLite";
 			throw;
 		}
 		Log::instance().Trace( 150, "%s:: Call Class Constructor", __FUNCTION__ );
 		db = (CDBProvider*)ProvFn();
 		if(db == NULL)
 		{
-			Log::instance().Trace( 10, "не удалось получить адресс класса провайдера из библиотеки DBSQLite" ); 
-			aBuf+="ERROR[";
-			aBuf+=itoa(GetLastError(),tmp,10);
-			aBuf+="]:: не удалось получить адресс класса провайдера из библиотеки DBSQLite";
+			FErrorCode = -1;
+			FErrorText = "не удалось получить адресс класса провайдера из библиотеки DBSQLite";
+			ErrStr(10);
 			throw;
 		}
 		Log::instance().Trace( 150, "%s:: Set params search", __FUNCTION__ );
-	  aParams["IndexFind"]= false; // Отключение поиска по таблице индексированых слов
 		if(Filters.size() > 0)
+		{
+			Log::instance().Trace( 190, "%s::DEBUG::Find filters", __FUNCTION__ );
 			for(p = Filters.begin();p!=Filters.end();++p)
-				if(IsSet(p->first) && $(p->first) != "")
-					for(l=p->second.begin();l!=p->second.end();++l)
+			{
+				Log::instance().Trace( 190, "%s::DEBUG::Filter name: %s", __FUNCTION__, p->first );
+				if(IsSet(p->first))
+					if($(p->first) != "")
 					{
-						tstr = "$EXT$";
-						tstr += l->c_str();
-						aParams[tstr]=true;
+						Log::instance().Trace( 190, "%s::DEBUG::Filter exist: %s", __FUNCTION__, $(p->first) );
+						for(l=p->second.begin();l!=p->second.end();++l)
+						{
+							tstr = "$EXT$";
+							tstr += l->c_str();
+							aParams[tstr]=true;
+						}
 					}
+			}
+		}//*/
+	  aParams["IndexFind"]= false; // Отключение поиска по таблице индексированых слов
 
-		Log::instance().Trace( 200, "%s::DEBUG::Plugin name: %s", __FUNCTION__, db->GetNamePlugin() );
+		Log::instance().Trace( 190, "%s::DEBUG::Plugin name: %s", __FUNCTION__, db->GetNamePlugin() );
 		for(int k = 0; k < 50; k++)
 		{
 			Log::instance().Trace( 150, "%s:: Call function Search", __FUNCTION__ );
@@ -221,11 +249,9 @@ void CrResult(string& aBuf)
 			Log::instance().Trace( 180, "%s:: Проверка кода ошибки", __FUNCTION__ );
 			if( i != RESULT_OK )
 			{
-				Log::instance().Trace( 10, "ERROR[%d]::%s", i, tstr.c_str() ); 
-				aBuf+="ERROR[";
-				aBuf+=itoa(i,tmp,10);
-				aBuf+="]:: ";
-				aBuf+=tstr;
+				FErrorCode = i;
+				FErrorText = tstr.c_str();
+				ErrStr(10);
 				rec.clear();
 			}else break;
 		}
@@ -247,13 +273,14 @@ void CrResult(string& aBuf)
 					tstr = "//";
 					tstr+= hip.c_str();
 					StrPar["URL_HOST"]=tstr;
-					tstr+="/";
 					tstr+= idF->FileName.c_str();
 					StrPar["URL_LINK"]=tstr;
 					StrPar["CAP_FILENAME"]=idF->FileName.c_str();
 					StrPar["CAP_FILESIZE"]=_ui64toa(idF->FileSize,tmp,10);
 					timecr = gmtime(&(idF->FDate.UTS));
-					strftime(tmp,254,"%d.%m.%Y %H:%M",timecr);
+					if(timecr != NULL)
+						strftime(tmp,254,"%d.%m.%Y %H:%M",timecr);
+					else strcpy(tmp, "ERROR");
 					StrPar["CAP_FILEDATE"]=tmp;
 					ArrayStrPar.push_back(StrPar);
 				}
@@ -268,7 +295,14 @@ void CrResult(string& aBuf)
 			aBuf+=tstr;//*/
 		}else{aBuf+="Ничего не найдено.";}
 //*/		
-	}catch(...){aBuf+="Произошла ошибка, дальнейшее выполнение скрипта невозможно. Оббратитесь к админестрации для устранения ошибки.";}
+	}catch(...){
+		if(!FErrorCode)
+			FErrorCode = -1;
+		if(FErrorText.empty())
+			FErrorText = "Произошла ошибка, дальнейшее выполнение скрипта невозможно. Оббратитесь к админестрации для устранения ошибки.";
+		ErrStr(10);
+		throw;
+	}
 
 //printf("%s", aBuf.c_str());
 
