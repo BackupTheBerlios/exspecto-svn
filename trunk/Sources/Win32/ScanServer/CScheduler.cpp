@@ -61,6 +61,8 @@ CScheduler::~CScheduler(void)
 void CScheduler::OnStartScan()
 {
 	try{
+		//Засекаем время начала сканирования
+		DWORD dwStartScanTime = GetTickCount();		
 		m_csAgentsContainer.Enter();
 		//Загружаем контейнер агентов
 		m_mapAgentsContainer.clear();
@@ -203,6 +205,7 @@ void CScheduler::OnStartScan()
 				bFail = false;
 		}
 		Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование закончено успешно" );
+		Log::instance().Trace( 10, "CScheduler::OnStartScan: Общее время сканирования: %d", GetTickCount() - dwStartScanTime );
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10, "CScheduler::OnStartScan: e= %s", e.what() );
