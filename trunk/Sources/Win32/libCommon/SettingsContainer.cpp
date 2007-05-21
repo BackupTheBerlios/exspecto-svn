@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <list>
 #include <vector>
+#include <set>
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CSettings-----------------------------------------------------------
@@ -196,7 +197,8 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 	std::vector< std::string > listIp;
 	//Считываем список диапазонов
 	std::list< std::string > listStr;
-	if( !Tools::GetStringList( strParamValue, listStr ) )
+	std::set< std::string > setExclude;
+    if( !Tools::GetStringList( strParamValue, listStr ) )
 	{
 		Log::instance().Trace( 0, "CIniIpListSerializer::Load: Параметр %s должен быть целым списком IP-адресов", strParamName.c_str() );		
 		throw ParamSerializeErr( strParamName );
@@ -206,9 +208,18 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 	{
 		int iDelimPos = 0;
 		
-		if( std::string::npos == (size_t)( iDelimPos = (int)It->find( "-" ) ) )
+		int iExclPos = -2;
+
+		if( std::string::npos == (size_t)( iDelimPos = (int)It->find( "-" ) ) 
+			&& std::string::npos == (size_t)( iExclPos = It->find( "!" ) ) )
 		{
 			listIp.push_back( *It );
+		}else if( iExclPos > 0 )
+		{
+			Log::instance().Trace( 5, "CIniIpListSerializer::Load: Неверная позиция символа !" );
+		}else if( 0 == iExclPos )
+		{
+			setExclude.insert( It->substr( 1 ) );
 		}else
 		{
 			Tools::structIp Ip1, Ip2;
@@ -248,9 +259,14 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 				}
 				iBInd = 1;
 			}
-
-			
 		}
+	}
+	std::vector< std::string >::iterator EraseIt;
+	for( std::set< std::string >::iterator It = setExclude.begin(); It != setExclude.end(); It++ )
+	{
+		
+		if( listIp.end() != ( EraseIt = std::find( listIp.begin(), listIp.end(), *It ) ) )
+			listIp.erase( EraseIt );
 	}
 	pParamContainer->PutParam( strParamName, listIp );
 }
