@@ -383,7 +383,9 @@ unsigned __stdcall CConnectionHandler::fnListenThread( void* param )
 
 CConnectionHandler::~CConnectionHandler()
 {
-	m_pSocket->Close();
+	//Если соединение событий существует - закрываем его
+	if( NULL != m_pSocket.get() )
+		m_pSocket->Close();
 	SetEvent( m_hCloseEv );
 	WaitForSingleObject( m_hListenThread, 10000 );
 	CloseHandle( m_hCloseEv );
