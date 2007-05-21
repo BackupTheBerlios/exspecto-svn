@@ -126,6 +126,8 @@ void CStartScan::Execute()
 		m_CurState = Scanning;	
 	m_csCurState.Leave();
 
+	m_mapStorages.clear();
+
 	int iThreadsCount;
 	Settings::instance().GetParam( SCAN_THREADS_COUNT, iThreadsCount );
 	Log::instance().Trace( 10, "CStartScan::Execute: Инициализируем пул потоков, кол-во потоков: %d", iThreadsCount );

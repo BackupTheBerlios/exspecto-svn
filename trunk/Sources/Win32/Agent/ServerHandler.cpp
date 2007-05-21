@@ -22,7 +22,6 @@ CServerHandler::~CServerHandler()
 	
 void CServerHandler::SendEvent( CPacket& Event )
 {
-	
 	if( !m_pEventSocket->IsConnected() )
 	{
 		Log::instance().Trace( 99, "CServerHandler::SendEvent: Поднимаем канал для посылки события" );
