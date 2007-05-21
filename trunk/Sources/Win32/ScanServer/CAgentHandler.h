@@ -77,8 +77,6 @@ private:
 	//Критическая секция на посылку команд
 	CCriticalSection m_csExec;
 	
-
-
 	//Адрес агента
 	std::string m_strAddress;
 	

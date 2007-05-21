@@ -151,7 +151,6 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 		{
 			case ScanComplete:
 				Log::instance().Trace( 90, "CAgentHandler::OnMessage: Сканирование закончено" );
-				hostRecords Result;
 				GetData();
 				break;
 		};
@@ -384,6 +383,7 @@ unsigned __stdcall CConnectionHandler::fnListenThread( void* param )
 
 CConnectionHandler::~CConnectionHandler()
 {
+	m_pSocket->Close();
 	SetEvent( m_hCloseEv );
 	WaitForSingleObject( m_hListenThread, 10000 );
 	CloseHandle( m_hCloseEv );
