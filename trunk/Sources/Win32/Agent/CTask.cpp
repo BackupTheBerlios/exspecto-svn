@@ -291,12 +291,13 @@ bool CGetData::Immidiate()
 				Msg.SetBuffer( pbBuf.get(), 0 );
 				m_ServerHandler.SendMsg( Msg );
 			}
-
+			//TODO: это похоже необязательное если оставить дальше m_mapStorages.clear();
 			ProtoIt->second->Clear();
 			bFirst = false;
 		}
 	}
 	Log::instance().Trace( 90, "CGetData: Данные отправлены" );
+	m_mapStorages.clear();
 	return true;
 }
 namespace
