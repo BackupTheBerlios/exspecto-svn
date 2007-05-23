@@ -60,6 +60,9 @@ private:
 
 	std::fstream m_sFile;
 	std::string m_strFileName;
+
+	//По сути - флаг создания файла
+	bool m_bOpenedForWrite;
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "tempstorage.h"
 
 CTempStorage::CTempStorage( const std::string& strFileName ):m_ulReadOffset( 0 )
+															,m_bOpenedForWrite( false )
 {
 	CreateDirectory( "temp", NULL );
 	m_strFileName = "temp\\" + strFileName;
@@ -47,6 +48,7 @@ void CTempStorage::Open( bool bRead )
 			strTmp += " не удалось открыть файл для записи";
 			throw TempStorageErr( strTmp );
 		}
+		m_bOpenedForWrite = true;
 	}
 }
 
@@ -79,8 +81,10 @@ SmartPtr<BYTE, AllocNewArray<BYTE> > CTempStorage::GetBuf( unsigned long& ulCoun
 void CTempStorage::Clear()
 {
 	m_ulReadOffset = 0;
-	DeleteFile( m_strFileName.c_str() );
-	//	Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s", m_strFileName.c_str() );
+	//Если файл создавался - удаляем его
+	if( m_bOpenedForWrite && !DeleteFile( m_strFileName.c_str() ) )
+		Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s, LastError = %d", m_strFileName.c_str(), GetLastError() );
+	m_bOpenedForWrite = false;
 }
 
 bool CTempStorage::IsExists()
