@@ -87,7 +87,8 @@ enumAgentResponse CAgentHandler::SendMessage( CPacket &Msg, CReceiver& Receiver 
 		{
 			//Копируем неполную запись в начало приемного буфера
 			iReceiveOffset = std::copy( ItRecv, m_vecRecvBuf.begin()+ iReceiveOffset + iCount, m_vecRecvBuf.begin() ) - m_vecRecvBuf.begin();
-		}
+		}else
+			iReceiveOffset = 0;
 		//Увеличиваем размер буфера при необходимости
 		if( (iCount == ( (int)m_vecRecvBuf.size()-iReceiveOffset ) ) )
 			if( (m_vecRecvBuf.size()<<1) <= RECEIVE_BUF_MAX_SIZE )
@@ -326,9 +327,12 @@ CDbReceiver::buf_t::iterator CDbReceiver::AddData( buf_t::iterator begin, buf_t:
 		dwTime += dwtick2 - dwtick1;
 	}
 	mapTmpBuf.clear();
-	if( iOffset < (int)(end - begin) )
-		return (begin + iOffset);
-	return end;
+	if( iOffset > (int)(end - begin) )
+	{
+		Log::instance().Trace( 2, "CDbReceiver::AddData: Случилось чтото странное, iOffset > (end-begin)!!!Требуется исследование ситуации." );
+		return end;
+	}	
+	return (begin + iOffset);
 }
 
 enumAgentResponse CAgentHandler::GetData()
