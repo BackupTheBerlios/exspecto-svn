@@ -33,7 +33,7 @@ void CIniSettings::SetModule( const std::string& strModuleName, char** pModulePa
 	Log::instance().Trace( 100, "CSettings::CSettings: Загрузка параметров из CSettings.ini" );
 	std::map< std::string, std::string > mapParamTypes;
 	unsigned int iTmp;
-	char strBuffer[1024], strModName[1024];
+	char strBuffer[10240], strModName[1024];
 	std::string strArg1, strArg2, strTmp;
 	char *pFirstPos, *pSecondPos;
 
@@ -54,8 +54,11 @@ void CIniSettings::SetModule( const std::string& strModuleName, char** pModulePa
 			throw ParamLoadErr( "Не удалось произвести чтение из файла CSettings.ini" );
 		}
 
+		//Если строка комментария - пропускаем
+		if( '//' == strBuffer[0] && '//' == strBuffer[1] )
+			continue;
 		//Нашли новый раздел в файле параметров...
-		if( ( pFirstPos = strstr( strBuffer, "[" ) ) && ( pSecondPos = strstr( strBuffer, "]" ) ) )
+		else if( ( pFirstPos = strstr( strBuffer, "[" ) ) && ( pSecondPos = strstr( strBuffer, "]" ) ) )
 		{
 			//Все следующие параметры будут считаться принадлежащими этому модулю
 			memcpy( strModName, strBuffer + 1, pSecondPos - pFirstPos - 1 );
