@@ -79,7 +79,9 @@ enumAgentResponse CAgentHandler::SendMessage( CPacket &Msg, CReceiver& Receiver 
 		{
 			iCount -= 4;
 			bEnd = true;
-		}
+		//Если получили только маркер конца
+		}else if ( ( iCount == 4 ) && ( 0 == iReceiveOffset ) && ( 0 == memcmp( EndStamp, &m_vecRecvBuf[ 0 ], 4 ) ) )
+			break;
 
 		//AddData возвращает итератор, указывающий на первый элемент неполной записи(см.коментарий к iReceiveOffset)
 		std::vector<BYTE>::iterator ItRecv;
