@@ -292,7 +292,7 @@ bool CGetData::Immidiate()
 				m_ServerHandler.SendMsg( Msg );
 			}
 			//TODO: это похоже необязательное если оставить дальше m_mapStorages.clear();
-			ProtoIt->second->Clear();
+			//ProtoIt->second->Clear();
 			bFirst = false;
 		}
 	}
