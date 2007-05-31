@@ -251,6 +251,7 @@ CDbReceiver::buf_t::iterator CDbReceiver::AddData( buf_t::iterator begin, buf_t:
 	while( iOffset < (int)( end - begin )  )
 	{
 		fileStr file;
+		::ZeroMemory( &file.FDate, sizeof( fileDate ) );
 		//≈сли запись неполна€ - заканчиваем разбор
 		if( end == std::find( begin + iOffset, end, 0 ) )
 			break;
