@@ -159,7 +159,7 @@ int main(int argc, char *argv[], char *envp[])
 		TemplateAssignVar(sFormat, "MAIN_MENU", sMenu);
 		TemplateAssignVar(sFormat, "MAIN_CONT", sCount);
 		Log::instance().Trace( 200, "%s::DEBUG::Result:%s", __FUNCTION__, sFormat.c_str() );
-		printf(sFormat.c_str());
+		printf("%s", sFormat.c_str());
 //*/
 	Log::instance().Trace( 100, "%s [exit]", __FUNCTION__ );
 	return 0;

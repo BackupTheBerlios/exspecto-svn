@@ -1,4 +1,4 @@
-<table width= "100%" border="0" cellspacing="2" cellpadding="0">
+<table width= "100%" border="1" cellspacing="2" cellpadding="0">
   <caption align="top">
     Результат поиска:
   </caption>
