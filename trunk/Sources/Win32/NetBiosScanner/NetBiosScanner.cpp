@@ -29,7 +29,10 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 {
 	//Если задание отменили - завершаем выполнение
 	if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
+	{
+		Log::instance().Trace( 10, "EnumFiles: Сканирование отменено" );
 		return;
+	}
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFile;
 	std::string strFileName;
@@ -46,7 +49,13 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 						, FindFileData.ftLastWriteTime.dwLowDateTime
 						, FindFileData.ftLastWriteTime.dwHighDateTime );
 		}
-		while( 0 != ::FindNextFile( hFile, &FindFileData ) && WAIT_OBJECT_0 != WaitForSingleObject( hCancelEvent, 0 )) 
+		while( 0 != ::FindNextFile( hFile, &FindFileData ) ) 
+		{
+			if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
+			{
+				Log::instance().Trace( 10, "EnumFiles: Сканирование отменено" );
+				break;
+			}
 			//не выводим в результат записи вида . и ..
 			if( 0 != strcmp( ".", FindFileData.cFileName ) && 0 != strcmp( "..", FindFileData.cFileName ) )
 			{
@@ -66,6 +75,7 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 				//Рекурсивно проводим поиск во вложенных папках
 				EnumFiles( strAddress, strFileName.c_str(), pStoreFunc, hCancelEvent );
 			}
+		}
 		::FindClose( hFile );
 	}else
 		return;
@@ -110,7 +120,10 @@ DllExport bool Scan( IN const char* strAddress, IN StoreDataFunc pStoreFunc, IN 
 					//получаем список файлов
 					EnumFiles( strAddress, strTmpSharePath, pStoreFunc, hCancelEvent );
 					if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
+					{
+						Log::instance().Trace( 10, "EnumFiles: Сканирование отменено" );
 						break; 
+					}
 				}
 			}
 			::NetApiBufferFree( buf );
