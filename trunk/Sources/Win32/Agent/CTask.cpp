@@ -8,7 +8,7 @@
 
 enumAgentState CTask::m_CurState = Idling;
 CCriticalSection CTask::m_csCurState;
-CEvent CTask::m_CancelEv(false);
+//CEvent CTask::m_CancelEv(false);
 PluginContainer CStartScan::m_PluginContainer;
 CTempStorage CTask::m_DataStorage( "temp.dat" );
 CCriticalSection CTask::m_csStorages;
@@ -118,7 +118,7 @@ bool CStartScan::Immidiate()
 	return false;
 }
 
-void CStartScan::Execute()
+void CStartScan::Execute( CEvent& CancelEv )
 {
 	//TODO:проверять состояние перед началом сканирования
 	Log::instance().Trace( 90, "CStartScan: Поступил запрос на начало сканирования" );
@@ -146,8 +146,11 @@ void CStartScan::Execute()
 			pool.AddTask( vecAvailTasks.back() );
 		}
 		Log::instance().Trace( 10, "CStartScan::Execute: WAITING" );
-		if( !pool.WaitAllComplete( m_CancelEv ) )
+		if( !pool.WaitAllComplete( CancelEv ) )
+		{
+			pool.CancelAllTasks();
 			return;
+		}
 		m_vecAddresses.clear();
 		for( std::vector< SmartPtr< CAvailabilityScanTask > >::iterator It = vecAvailTasks.begin(); It != vecAvailTasks.end(); It++ )
 		{
@@ -164,7 +167,7 @@ void CStartScan::Execute()
 	{
 		for( PluginIterator PlugIt = m_PluginContainer.begin(); PlugIt != m_PluginContainer.end(); PlugIt++ )
 		{
-			if( WAIT_OBJECT_0 == WaitForSingleObject( m_CancelEv, 0 ) )
+			if( WAIT_OBJECT_0 == WaitForSingleObject( CancelEv, 0 ) )
 				break;
 			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), PlugIt->first.c_str() );
 			vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, PlugIt->second ) );
@@ -173,16 +176,17 @@ void CStartScan::Execute()
 			pool.AddTask( vecThreadTasks.back() );
 			
 		}
-		if( WAIT_OBJECT_0 == WaitForSingleObject( m_CancelEv, 0 ) )
+		if( WAIT_OBJECT_0 == WaitForSingleObject( CancelEv, 0 ) )
 		{
 			Log::instance().Trace( 90, "CStartScan: Сканирование отменено" );
 			//Сбрасываем событие отмены
-            m_CancelEv.Reset();
+            //m_CancelEv.Reset();
 			pool.CancelAllTasks();
 			break;
 		}
 	}
-	pool.WaitAllComplete( m_CancelEv );
+	if( !pool.WaitAllComplete( CancelEv ) ){};
+//		pool.CancelAllTasks();
 	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
 	CPacket Event;
 	BYTE bEvent = ScanComplete;
@@ -212,7 +216,7 @@ bool CStopScan::Immidiate()
 		if( Scanning == m_CurState )
 		{
 			Log::instance().Trace( 90, "CStopScan: Отменяем текущее сканирование" );
-			Cancel();
+			//Cancel();
 		}else
 			Log::instance().Trace( 90, "CStopScan: В данный момент не находится в состоянии сканирования" );
 	m_csCurState.Leave();

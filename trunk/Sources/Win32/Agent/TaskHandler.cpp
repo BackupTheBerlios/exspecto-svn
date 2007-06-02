@@ -69,7 +69,7 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 			if( pTask.get() )
 			{			
 				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Выполнение задания: %s", pTask->GetDescription().c_str() );
-				pTask->Execute();
+				pTask->Execute( pThis->m_CloseEv );
 				pTask.Release();
 			}
 		}

@@ -17,6 +17,7 @@ CConnectionHandler::~CConnectionHandler()
 	try{
 		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Закрытие соединения с %s", m_ServerHandler.GetServerAddress().c_str() );
 		m_CloseEv.Set();
+		m_ServerHandler.CloseSession();
 		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Ожидание закрытия потока прослушивания" );
 		WaitForSingleObject( m_hListenThread, 10000 );
 		CloseHandle( m_hListenThread );
@@ -52,7 +53,7 @@ unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
 		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
 	}catch( SocketErr& e )
 	{
-		pThis->m_ServerHandler.CloseSession();
+		//pThis->m_ServerHandler.CloseSession();
 		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Ошибка связи: %s", e.what() );
 	}catch( std::exception& e )
 	{

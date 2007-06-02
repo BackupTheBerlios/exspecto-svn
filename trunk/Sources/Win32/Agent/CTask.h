@@ -24,16 +24,16 @@ public:
 	
 	virtual bool Immidiate() = 0;
 	
-	virtual void Execute() = 0;
+	virtual void Execute( CEvent& CancelEv ) = 0;
 	
 	virtual void Load( CPacket& Msg ) = 0;
-	
+/*	
 	void Cancel()
 	{
 		Log::instance().Trace( 80, "CTask::Cancel: Отмена операции" );
 		m_CancelEv.Set();
 	};
-	
+*/	
 	virtual std::string GetDescription() = 0;
 	
 protected:
@@ -55,7 +55,7 @@ protected:
 
 	static CCriticalSection m_csStorages;
 	
-	static CEvent m_CancelEv;
+	//static CEvent m_CancelEv;
 	
 };
 
@@ -68,7 +68,7 @@ public:
 	
 	virtual bool Immidiate();
 	
-	virtual void Execute(){};
+	virtual void Execute( CEvent& CancelEv ){};
 	
 	virtual void Load( CPacket& Msg ){};
 	
@@ -89,7 +89,7 @@ public:
 	
 	virtual bool Immidiate();
 	
-	virtual void Execute(){};
+	virtual void Execute( CEvent& CancelEv ){};
 	
 	virtual void Load( CPacket& Msg ){};
 
@@ -110,7 +110,7 @@ public:
 	
 	virtual bool Immidiate();
 	
-	virtual void Execute(){};
+	virtual void Execute( CEvent& CancelEv ){};
 	
 	virtual void Load( CPacket& Msg ){};
 
@@ -174,7 +174,7 @@ public:
 	
 	virtual bool Immidiate();
 	
-	virtual void Execute();
+	virtual void Execute( CEvent& CancelEv );
 	
 	virtual void Load( CPacket& Msg );
 	
