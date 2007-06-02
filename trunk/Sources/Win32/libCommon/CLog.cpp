@@ -52,7 +52,7 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 	fp = fopen( m_strFileName.c_str(), "a+");
 
 	va_list args;
-	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d.%03d:%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
+	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d.%03d-%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
 	
 	va_start(args, trace_text);
 	
@@ -77,7 +77,7 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
    	GetLocalTime(&st);
 	fp = fopen( m_strFileName.c_str(), "a+");
 	
-	fprintf(fp, "%02d.%02d.%02d %02d:%02d:%02d.%03d:%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
+	fprintf(fp, "%02d.%02d.%02d %02d:%02d:%02d.%03d-%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
     
 	va_list args;
 	va_start(args, strAbout);

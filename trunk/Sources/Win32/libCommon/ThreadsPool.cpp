@@ -13,7 +13,7 @@ CThreadsPool::CThreadsPool( int iThreadsCount ):m_Cancel( false )
 		pParams = new structParam;
 		pParams->pThis = this;
 		pParams->iId = i;
-		CloseHandle( (HANDLE)_beginthreadex( NULL, 0, ThreadFunc, (void*)pParams, 0, NULL ) );
+		m_vecThreads.push_back( (HANDLE)_beginthreadex( NULL, 0, ThreadFunc, (void*)pParams, 0, NULL ) );
 		m_vecThreadsStates.push_back( SmartPtr<CEvent>( new CEvent(false,1) ) );
 	}
 }
@@ -22,8 +22,13 @@ CThreadsPool::~CThreadsPool(void)
 {
 	CancelAllTasks();
 	m_Exit.Set();
-//	WaitForMultipleObjects( (DWORD)m_vecStateHandles.size(), (HANDLE*)&m_vecStateHandles[0], TRUE, 10000 );
-	//TODO: Ќужно ли ждать завершени€ всех потоков?
+	
+	//TODO:«десь нужно ждать корректного завершени€ всех потоков,
+	//в этом случае все задачи успеют корректно завершитьс€ и не
+	//будут обращатьс€ к удаленным ресурсам
+	//Ётот wait не работает,нужно провести исследование
+	WaitForMultipleObjects( (DWORD)m_vecThreads.size(), (HANDLE*)&m_vecThreads[0], TRUE, 10000 );
+	Sleep(10000);
 }
 
 void CThreadsPool::AddTask( SmartPtr< CThreadTask > pTask )
@@ -144,7 +149,7 @@ unsigned __stdcall CThreadsPool::ThreadFunc( void* param )
 	for(;;)
 	{
 		HANDLE hEvents[] = { pThis->m_TasksSem, pThis->m_Exit };
-		
+
 		if( WAIT_OBJECT_0 + 1 == ( dwRes = WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, FALSE, INFINITE ) )
 			|| ( WAIT_FAILED == dwRes ) )
 			break;
@@ -158,5 +163,6 @@ unsigned __stdcall CThreadsPool::ThreadFunc( void* param )
 
 		pThis->SetCompleted( iId, TRUE );
 	}
+
 	return 0;
 }

@@ -53,6 +53,8 @@ private:
 
 	CCriticalSection m_csThreadsStates;
 
+	std::vector< HANDLE > m_vecThreads;
+
 	std::vector< SmartPtr< CThreadTask > > m_vecTasks;
 
 	CCriticalSection m_csTasks;
