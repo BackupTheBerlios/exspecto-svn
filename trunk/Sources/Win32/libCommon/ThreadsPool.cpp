@@ -26,9 +26,8 @@ CThreadsPool::~CThreadsPool(void)
 	//TODO:Здесь нужно ждать корректного завершения всех потоков,
 	//в этом случае все задачи успеют корректно завершиться и не
 	//будут обращаться к удаленным ресурсам
-	//Этот wait не работает,нужно провести исследование
-	WaitForMultipleObjects( (DWORD)m_vecThreads.size(), (HANDLE*)&m_vecThreads[0], TRUE, 10000 );
-	Sleep(10000);
+	for( std::vector< HANDLE >::iterator It = m_vecThreads.begin(); It != m_vecThreads.end(); It++ )
+		WaitForSingleObject( *It, 10000 );
 }
 
 void CThreadsPool::AddTask( SmartPtr< CThreadTask > pTask )
