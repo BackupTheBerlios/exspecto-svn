@@ -7,7 +7,7 @@
 //---------------------------------------------CTaskHandler--------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CTaskHandler::CTaskHandler()
+CTaskHandler::CTaskHandler():m_CloseEv(false)
 {
 	m_hProcessThread = (HANDLE)::_beginthreadex( NULL, 0, fnProcessThread, this, 0, NULL );
 }
@@ -17,7 +17,7 @@ CTaskHandler::~CTaskHandler()
 	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Закрытие обработчика заданий" );
 	m_CloseEv.Set();
 	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Ожидание закрытия потока обработки" );
-	WaitForSingleObject( m_hProcessThread, 10000 );
+	WaitForSingleObject( m_hProcessThread, 20000 );
 	CloseHandle( m_hProcessThread );
 	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Закрытие обработчика команд" );
 }
