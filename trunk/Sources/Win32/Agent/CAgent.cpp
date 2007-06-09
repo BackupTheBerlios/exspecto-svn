@@ -33,7 +33,6 @@ CAgent::CAgent():m_bStarted( false )
 
 	Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress );
 	m_pMsgSock = SmartPtr< CServerSocket >( new CServerSocket() );
-	m_pEventSock = SmartPtr< CClientSocket >( new CClientSocket() );
 	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
 	//Если поток не закрылся в течении 2 с - инициализация прошла успешно
 	if( WAIT_TIMEOUT == WaitForSingleObject( m_hListenThread, 2000 ) )
@@ -88,6 +87,7 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 			//принимаем соединения только от заданного сервера сканирования
 			if( pThis->m_strSchedulerAddress == adr.strAddr ) 
 			{
+				pThis->m_pEventSock = SmartPtr< CClientSocket >( new CClientSocket() );
 				CServerHandler Handler( client_sock, pThis->m_pEventSock, pThis->m_strSchedulerAddress, iEventPort );
 				pThis->m_vecConnections.push_back( SmartPtr< CConnectionHandler >( new CConnectionHandler( Handler ) ) );
 			}else
