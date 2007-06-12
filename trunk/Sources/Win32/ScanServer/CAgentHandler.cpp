@@ -355,14 +355,14 @@ enumAgentResponse CAgentHandler::GetData()
 	return res;
 }
 
-void CConnectionHandler::Listen( SmartPtr<CSocket> pSocket )
+void CAgentHandler::CConnectionHandler::Listen( SmartPtr<CSocket> pSocket )
 {
 	m_pSocket = pSocket;
 	if( WAIT_OBJECT_0 != WaitForSingleObject( m_hListenThread, 0 ) )
 		m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThread, this, 0, NULL );
 }
 
-unsigned __stdcall CConnectionHandler::fnListenThread( void* param )
+unsigned __stdcall CAgentHandler::CConnectionHandler::fnListenThread( void* param )
 {
 	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск" );
 	CConnectionHandler* pThis = (CConnectionHandler*)param;
@@ -388,7 +388,7 @@ unsigned __stdcall CConnectionHandler::fnListenThread( void* param )
 	return 0;
 }
 
-CConnectionHandler::~CConnectionHandler()
+CAgentHandler::CConnectionHandler::~CConnectionHandler()
 {
 	//Если соединение событий существует - закрываем его
 	if( NULL != m_pSocket.get() )

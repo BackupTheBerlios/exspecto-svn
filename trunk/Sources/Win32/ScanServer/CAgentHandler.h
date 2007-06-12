@@ -22,6 +22,30 @@ class CAgentHandler
 {
 public:
 
+	class CConnectionHandler
+	{
+	public:
+
+		CConnectionHandler( CAgentHandler* pAgentHandler ):m_pAgentHandler( pAgentHandler )
+		{
+			m_hCloseEv = CreateEvent( 0,0,0,0 );
+		};
+
+		virtual ~CConnectionHandler();
+
+		void Listen( SmartPtr<CSocket> pSocket );
+
+	private:
+
+		static unsigned __stdcall fnListenThread( void* );
+
+		HANDLE m_hListenThread, m_hCloseEv;
+
+		CAgentHandler* m_pAgentHandler;
+
+		SmartPtr< CSocket > m_pSocket;
+	};
+
 	//классы исключений, генерируемых CAgentHandler
 	class HandlerErr: public std::runtime_error
 	{
@@ -61,11 +85,11 @@ public:
 	
 	void OnConnection( SmartPtr< CSocket > pSocket );
 	
-	void OnMessage( CPacket& Msg );
-	
 	CEvent& GetScanFinishedEvent(){ return m_ScanFinished; };
 		
 protected:
+
+	void OnMessage( CPacket& Msg );
 	
 	//ќтправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
 	enumAgentResponse SendMessage( CPacket &Msg, CReceiver& Receiver );
@@ -141,32 +165,6 @@ private:
 	//карта хостов, которые уже были очещены
 	std::set< std::string > m_mapErased;
 
-};
-
-class CConnectionHandler
-{
-public:
-	
-	typedef void(CConnectionHandler::*fnOnMessageProc)(CPacket&);
-	
-	CConnectionHandler( CAgentHandler* pAgentHandler ):m_pAgentHandler( pAgentHandler )
-	{
-		m_hCloseEv = CreateEvent( 0,0,0,0 );
-	};
-	
-	virtual ~CConnectionHandler();
-	
-	void Listen( SmartPtr<CSocket> pSocket );
-	
-private:
-	
-	static unsigned __stdcall fnListenThread( void* );
-	
-	HANDLE m_hListenThread, m_hCloseEv;
-	
-	CAgentHandler* m_pAgentHandler;
-	
-	SmartPtr< CSocket > m_pSocket;
 };
 
 #endif /*CAGENTHANDLER_H_*/

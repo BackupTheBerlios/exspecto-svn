@@ -92,6 +92,7 @@ void CScheduler::OnStartScan()
 		//Распределяем задания
 		std::vector< std::string > vecAdr;
 		Settings::instance().GetParam( SCAN_AREA, vecAdr );
+		Log::instance().Trace( 12, "CScheduler::OnStartScan: Всего адресов для сканирования: %d", vecAdr.size() );
 		std::map< std::string, std::vector< std::string > > mapRanges;
 		int i = 1, iEndPos = 0, iStartPos = 0;
 		std::vector< std::string > vecRange;
@@ -124,6 +125,7 @@ void CScheduler::OnStartScan()
 				}else if( (WAIT_OBJECT_0+1) == dwWaitRes )
 				{
 					Log::instance().Trace( 50, "CScheduler::OnStartScan: Агент %s закончил сканирование", ItWait->first.c_str() );
+					Log::instance().Trace( 12, "CScheduler::OnStartScan: Время сканирования агентом %s = %d", ItWait->first.c_str(), GetTickCount()-dwStartScanTime );
 				}else if( WAIT_TIMEOUT == dwWaitRes )
 				{
 					break;
@@ -205,7 +207,7 @@ void CScheduler::OnStartScan()
 				bFail = false;
 		}
 		Log::instance().Trace( 10, "CScheduler::OnStartScan: Сканирование закончено успешно" );
-		Log::instance().Trace( 10, "CScheduler::OnStartScan: Общее время сканирования: %d", GetTickCount() - dwStartScanTime );
+		Log::instance().Trace( 12, "CScheduler::OnStartScan: Общее время сканирования: %d", GetTickCount() - dwStartScanTime );
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10, "CScheduler::OnStartScan: e= %s", e.what() );
