@@ -46,10 +46,10 @@ public:
 
 	//Добавить параметр
 	//	strParam - строковый параметр
-	void AddParam( std::string strParam );
+	void AddParam( const std::string& strParam );
 
 	//Добавить IP - адрес в пакет
-	void AddAddress( std::string strAddress );
+	void AddAddress( const std::string& strAddress );
 
 	//Добавить метку конца пакета
 	void EndCommand();
@@ -98,14 +98,6 @@ private:
 	//BYTE* m_pbBuf;
 	std::vector< BYTE > m_vecBuf;
 
-	//Размер данных,содержащихся в буфере
-	//int	m_iDataSize;
-
-	//Кол-во памяти,отведенной под буфер
-	//int m_iBufSize;
-	
-	//Текущее смещение от начала пакета
-	//int m_iOffset;
 };
 
 //Отправить пакет в сокет

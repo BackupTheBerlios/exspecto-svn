@@ -45,13 +45,13 @@ void CPacket::AddParam( DWORD dwParam )
 
 //Добавить параметр
 //	strParam - строковый параметр
-void CPacket::AddParam( std::string strParam )
+void CPacket::AddParam( const std::string& strParam )
 {
 	Push( (BYTE*)strParam.c_str(), (int)strParam.size() );
 }
 
 //Добавить IP - адрес в пакет
-void CPacket::AddAddress( std::string strAddress )
+void CPacket::AddAddress( const std::string& strAddress )
 {
 	u_long lAdr;
 	//Передаем адрес в сетевом формате - 4 байта
