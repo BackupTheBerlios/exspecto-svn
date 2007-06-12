@@ -55,7 +55,7 @@ void CIniSettings::SetModule( const std::string& strModuleName, char** pModulePa
 		}
 
 		//Если строка комментария - пропускаем
-		if( '//' == strBuffer[0] && '//' == strBuffer[1] )
+		if( '/' == strBuffer[0] && '/' == strBuffer[1] )
 			continue;
 		//Нашли новый раздел в файле параметров...
 		else if( ( pFirstPos = strstr( strBuffer, "[" ) ) && ( pSecondPos = strstr( strBuffer, "]" ) ) )
