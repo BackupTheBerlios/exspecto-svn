@@ -162,6 +162,7 @@ void CStartScan::Execute( CEvent& CancelEv )
 		Log::instance().Trace( 10, "CStartScan::Execute: Проверка доступности закончена" );
 	}
 	std::vector< SmartPtr< CScanThreadTask > > vecThreadTasks;
+	Log::instance().Trace( 12, "CStartScan::Execute: Всего адресов для сканирования: %d", m_vecAddresses.size() );
 
 	for( std::vector< std::string >::iterator AddrIt = m_vecAddresses.begin(); AddrIt != m_vecAddresses.end(); AddrIt++ )
 	{
