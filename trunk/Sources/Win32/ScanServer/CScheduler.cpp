@@ -112,7 +112,7 @@ void CScheduler::OnStartScan()
 		bool bFail = true;
 		while( bFail )
 		{
-			//Ожидаем в течении 10 мин окончания сканирования
+			//Ожидаем в течении периода опроса окончания сканирования
 			for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItWait = m_mapAgentsContainer.begin(); ItWait != m_mapAgentsContainer.end(); ItWait++ )
 			{
 				int iPollingInterval;
@@ -124,8 +124,7 @@ void CScheduler::OnStartScan()
 					return;
 				}else if( (WAIT_OBJECT_0+1) == dwWaitRes )
 				{
-					Log::instance().Trace( 50, "CScheduler::OnStartScan: Агент %s закончил сканирование", ItWait->first.c_str() );
-					Log::instance().Trace( 12, "CScheduler::OnStartScan: Время сканирования агентом %s = %d", ItWait->first.c_str(), GetTickCount()-dwStartScanTime );
+					//Log::instance().Trace( 50, "CScheduler::OnStartScan: Агент %s закончил сканирование", ItWait->first.c_str() );
 				}else if( WAIT_TIMEOUT == dwWaitRes )
 				{
 					break;
