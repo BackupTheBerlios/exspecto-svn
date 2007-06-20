@@ -197,6 +197,12 @@ void CSocket::SetConnected( bool bConnected )
 	m_bConnected = bConnected;
 }
 
+bool CSocket::GetPendingDataSize( u_long& ulSize )
+{
+	if( ioctlsocket( m_Socket, FIONREAD, &ulSize ) == -1 ) return false;
+	return true; 
+}
+
 namespace Tools{
 
 	CPingHelper::CPingHelper()

@@ -116,6 +116,9 @@ public:
 	//Timeout - время ожидания (мкс),если -1,бесконечное ожидание
 	bool IsReadyForWrite( int iTimeout = -1 );
 
+	//Получить размер данных в буфере
+	bool GetPendingDataSize( u_long& ulSize );
+
 protected:
 
 	void SetConnected( bool bConnected );
