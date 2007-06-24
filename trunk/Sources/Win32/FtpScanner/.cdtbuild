@@ -16,13 +16,12 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.861643941" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.615741926" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug">
 <option id="gnu.cpp.link.option.libs.1678627495" superClass="gnu.cpp.link.option.libs" valueType="libs">
-<listOptionValue builtIn="false" value="ws2_32"/>
 <listOptionValue builtIn="false" value="Common"/>
 <listOptionValue builtIn="false" value="netapi32"/>
+<listOptionValue builtIn="false" value="ws2_32"/>
 </option>
 <option id="gnu.cpp.link.option.paths.510939935" superClass="gnu.cpp.link.option.paths" valueType="stringList">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon/Debug}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CommonFiles}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/libNet/Debug}&quot;"/>
 </option>
 </tool>
