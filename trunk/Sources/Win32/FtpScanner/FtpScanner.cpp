@@ -1,10 +1,4 @@
 #include "FtpScanner.h"
-#include "MemLeakDetector.h"
-#include "ClientSocket.h"
-#include <vector>
-#include <string>
-#include "ftpparse.c"
-
 DllExport const char* GetProtocolName()
 {
 	static const char* str = MOD_NAME;
@@ -268,18 +262,18 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 		}catch( std::exception& e)
 		{
 			Log::instance().Trace( 0, "DllMain: Ошибка: %s", e.what() );
-			return FALSE;
+			return false;
 		}catch( ... )
 		{
 			Log::instance().Trace( 0, "DllMain: Неизвестная шибка" );
-			return FALSE;
+			return false;
 		}
 	}
 	if( DLL_PROCESS_DETACH == ul_reason_for_call )
 	{
 		DumpMemLeaks();
 	}
-    return TRUE;
+    return true;
 }
 
 
