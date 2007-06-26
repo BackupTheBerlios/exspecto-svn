@@ -3,7 +3,7 @@
 
 <ManagedProjectBuildInfo>
 <project id="FtpScanner.cdt.managedbuild.target.gnu.cygwin.so.332923150" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
-<configuration id="cdt.managedbuild.config.gnu.cygwin.so.debug.104668724" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" artifactName="FtpScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.debug.104668724" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" artifactName="${workspace_loc:/Bin}\Plugins\FtpScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.1017581763" name="GCC Tool Chain">
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1119269275" name="GCC C++ Compiler">
 <option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.28644821" valueType="includePath">
