@@ -1,4 +1,12 @@
+#include "ClientSocket.h"
 #include "FtpScanner.h"
+#include "CLog.h"
+#include "MemLeakDetector.h"
+#include <vector>
+#include <string>
+#include "ftpparse.h"
+
+
 DllExport const char* GetProtocolName()
 {
 	static const char* str = MOD_NAME;
@@ -47,7 +55,7 @@ try{
 	string strAns;
 	while ( bytes == packet){
 		strAns = ReceiveAns( sock );
-		bytes = strAns.size();
+		bytes = (int)strAns.size();
 		int LastPos = 0;
 		int NewPos = (int)strAns.find("\r");
 					
@@ -61,10 +69,10 @@ try{
 				stik = "";
 			}
 			if ( flagStik ){
-				ftpparse( &fp, &stroka[0], stroka.size());
+				ftpparse( &fp, &stroka[0], (int)stroka.size());
 				flagStik = false;
 			}
-			else ftpparse( &fp, &stroka[0], stroka.size());				
+			else ftpparse( &fp, &stroka[0], (int)stroka.size());				
 			
 			name.clear();
 			for (int p=0; p<fp.namelen; p++)

@@ -24,7 +24,7 @@ NCSA Telnet FTP server. Has LIST = NLST (and bad NLST for directories).
 #include <time.h>
 #include "ftpparse.h"
 
-static long totai(long year,long month,long mday)
+long totai(long year,long month,long mday)
 {
   long result;
   if (month >= 2) month -= 2;
@@ -50,7 +50,7 @@ static long now; /* current time */
 static int flagneedcurrentyear = 1;
 static long currentyear; /* approximation to current year */
 
-static void initbase(void)
+void initbase(void)
 {
   struct tm *t;
   if (!flagneedbase) return;
@@ -63,7 +63,7 @@ static void initbase(void)
   flagneedbase = 0;
 }
 
-static void initnow(void)
+void initnow(void)
 {
   long day;
   long year;
@@ -98,7 +98,7 @@ static void initnow(void)
 /* So we have to guess the year. */
 /* Apparently NetWare uses ``twelve months'' instead of ``six months''; ugh. */
 /* Some versions of ls also fail to show the year for future dates. */
-static long guesstai(long month,long mday)
+long guesstai(long month,long mday)
 {
   long year;
   long t;
@@ -112,7 +112,7 @@ static long guesstai(long month,long mday)
   }
 }
 
-static int check(char *buf,char *monthname)
+int check(char *buf,char *monthname)
 {
   if ((buf[0] != monthname[0]) && (buf[0] != monthname[0] - 32)) return 0;
   if ((buf[1] != monthname[1]) && (buf[1] != monthname[1] - 32)) return 0;
@@ -124,7 +124,7 @@ static char *months[12] = {
   "jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"
 } ;
 
-static int getmonth(char *buf,int len)
+int getmonth(char *buf,int len)
 {
   int i;
   if (len == 3)
@@ -133,7 +133,7 @@ static int getmonth(char *buf,int len)
   return -1;
 }
 
-static long getlong(char *buf,int len)
+long getlong(char *buf,int len)
 {
   long u = 0;
   while (len-- > 0)
@@ -141,7 +141,7 @@ static long getlong(char *buf,int len)
   return u;
 }
 
-int ftpparse(struct ftpparse *fp,char *buf,int len)
+extern int ftpparse(struct ftpparse *fp,char *buf,int len)
 {
   int i;
   int j;

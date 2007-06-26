@@ -3,38 +3,39 @@
 
 <ManagedProjectBuildInfo>
 <project id="FtpScanner.cdt.managedbuild.target.gnu.cygwin.so.332923150" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
-<configuration artifactExtension="dll" artifactName="FtpScanner" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.104668724" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.so.debug">
-<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.1017581763" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug">
-<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1119269275" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug">
-<option id="gnu.cpp.compiler.option.include.paths.28644821" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libNet}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CommonFiles}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon}&quot;"/>
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.debug.104668724" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" artifactName="FtpScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.1017581763" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1119269275" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.28644821" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/libNet}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
 </option>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.1290717010" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug"/>
-<tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.861643941" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug"/>
-<tool id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.615741926" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug">
-<option id="gnu.cpp.link.option.libs.1678627495" superClass="gnu.cpp.link.option.libs" valueType="libs">
-<listOptionValue builtIn="false" value="Common"/>
-<listOptionValue builtIn="false" value="Net"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.1290717010" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.861643941" name="GCC C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.615741926" name="GCC C++ Linker">
+<option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.1678627495" valueType="libs">
+<listOptionValue value="Common" builtIn="false"/>
+<listOptionValue value="Net" builtIn="false"/>
+<listOptionValue value="ws2_32" builtIn="false"/>
 </option>
-<option id="gnu.cpp.link.option.paths.510939935" superClass="gnu.cpp.link.option.paths" valueType="stringList">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libCommon/Debug}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libNet/Debug}&quot;"/>
+<option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.510939935" valueType="stringList">
+<listOptionValue value="&quot;${workspace_loc:/libCommon/Debug}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet/Debug}&quot;" builtIn="false"/>
 </option>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.1241349373" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug"/>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.1241349373" name="GCC Assembler"/>
 <macros/>
 </toolChain>
 </configuration>
-<configuration artifactExtension="dll" artifactName="FtpScanner" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.release.158634816" name="Release" parent="cdt.managedbuild.config.gnu.cygwin.so.release">
-<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.release.1423428284" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.release">
-<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release.1447448846" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release"/>
-<tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release.1156427851" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release"/>
-<tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release.1085245796" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release"/>
-<tool id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release.1976285924" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release"/>
-<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release.1318726986" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release"/>
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.release.158634816" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.so.release" artifactName="FtpScanner" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.release" id="cdt.managedbuild.toolchain.gnu.cygwin.so.release.1423428284" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release.1447448846" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release.1156427851" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release.1085245796" name="GCC C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release.1976285924" name="GCC C++ Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release.1318726986" name="GCC Assembler"/>
 </toolChain>
 </configuration>
 <macros/>

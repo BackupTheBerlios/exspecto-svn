@@ -1,11 +1,5 @@
 #include "PluginInterface.h"
 
-#include "MemLeakDetector.h"
-#include "ClientSocket.h"
-#include <vector>
-#include <string>
-#include "ftpparse.c"
-
 #define MOD_NAME "Ftp"
 #define DllExport __declspec( dllexport )
 
