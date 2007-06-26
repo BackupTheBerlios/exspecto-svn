@@ -27,6 +27,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Web", "Web\Web.vcproj", "{A
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FtpScanner", "FtpScanner\FtpScanner.vcproj", "{946FFF0C-48AC-430F-8443-A286BA04365B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -76,6 +80,12 @@ Global
 		{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}.Release.Build.0 = Release|Win32
 		{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}.test.ActiveCfg = Debug|Win32
 		{A9E902BB-9D3D-4E0B-BF9B-2EFDADE8C938}.test.Build.0 = Debug|Win32
+		{946FFF0C-48AC-430F-8443-A286BA04365B}.Debug.ActiveCfg = Debug|Win32
+		{946FFF0C-48AC-430F-8443-A286BA04365B}.Debug.Build.0 = Debug|Win32
+		{946FFF0C-48AC-430F-8443-A286BA04365B}.Release.ActiveCfg = Release|Win32
+		{946FFF0C-48AC-430F-8443-A286BA04365B}.Release.Build.0 = Release|Win32
+		{946FFF0C-48AC-430F-8443-A286BA04365B}.test.ActiveCfg = Release|Win32
+		{946FFF0C-48AC-430F-8443-A286BA04365B}.test.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
