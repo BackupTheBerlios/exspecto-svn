@@ -245,60 +245,69 @@ bool CGetData::Immidiate()
 	Log::instance().Trace( 90, "CGetData: ѕоступил запрос на получение данных" );
 	//ѕодсчитываем размер данных дл€ отправки
 
-	//‘лаг, отмечающий первый пакет,в котором дополнительно должены быть отправлены размер данных
-	//и код возврата
-	bool bFirst = true;
 	//считаем размер
 	unsigned long ulSize = 0;
 	for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
 		for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
 			ulSize += ProtoIt->second->Size();
 
+	CPacket Msg;
 
-    CPacket Msg;
-	for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
+	SmartPtr< BYTE, AllocNewArray<BYTE> > pbFirstBuf;
+	pbFirstBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
+	pbFirstBuf.get()[0] = (BYTE)RESP_OK;
+	::memcpy( pbFirstBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
+	Msg.SetBuffer( pbFirstBuf.get(), sizeof( unsigned long ) + 1 );
+	if( 0 == ulSize )
 	{
-		for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
-		{
-			//ќпредел€ем последнее хранилище или нет,чтобы послать завершающий маркер пакета
-			bool bLast = false;
-			StoragesIt ItStoragesTmp = It;
-			std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoTmpIt = ProtoIt;
-			ItStoragesTmp++;ProtoTmpIt++;
-			if( ( ItStoragesTmp == m_mapStorages.end() ) && ( ProtoTmpIt == It->second.end() ) )
-				bLast = true;
+		m_ServerHandler.SendMsg( Msg );
+	}else
+	{
+		m_ServerHandler.SendMsg( Msg, false );
 
-			SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf;
-			if( bFirst )
+		for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
+		{
+			for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
 			{
+				//ќпредел€ем последнее хранилище или нет,чтобы послать завершающий маркер пакета
+				bool bLast = false;
+				StoragesIt ItStoragesTmp = It;
+				std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoTmpIt = ProtoIt;
+				ItStoragesTmp++;ProtoTmpIt++;
+				if( ( ItStoragesTmp == m_mapStorages.end() ) && ( ProtoTmpIt == It->second.end() ) )
+					bLast = true;
+
+				SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf;
+				/*			if( bFirst )
+				{
 				pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
 				pbBuf.get()[0] = (BYTE)RESP_OK;
 				::memcpy( pbBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
 				Msg.SetBuffer( pbBuf.get(), sizeof( unsigned long ) + 1 );
 				if( ( 0 == ulSize ) && bLast )
-					m_ServerHandler.SendMsg( Msg );
-				else
-					m_ServerHandler.SendMsg( Msg, false );
-			}
-
-			unsigned long ulCount = MAX_PACKET_SIZE;
-			unsigned long ulFileSize = ProtoIt->second->Size();
-			for( unsigned long i = 0; i < ulFileSize; i += MAX_PACKET_SIZE )
-			{
-				pbBuf = ProtoIt->second->GetBuf( ulCount );
-				Msg.SetBuffer( pbBuf.get(), ulCount );
-				m_ServerHandler.SendMsg( Msg, false );
-			}
-			//ќтправл€ем маркер окончани€ пакета
-			if( bLast )
-			{
-				pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[0] );
-				Msg.SetBuffer( pbBuf.get(), 0 );
 				m_ServerHandler.SendMsg( Msg );
+				else
+				m_ServerHandler.SendMsg( Msg, false );
+				}
+				*/
+				unsigned long ulCount = MAX_PACKET_SIZE;
+				unsigned long ulFileSize = ProtoIt->second->Size();
+				for( unsigned long i = 0; i < ulFileSize; i += MAX_PACKET_SIZE )
+				{
+					pbBuf = ProtoIt->second->GetBuf( ulCount );
+					Msg.SetBuffer( pbBuf.get(), ulCount );
+					m_ServerHandler.SendMsg( Msg, false );
+				}
+				//ќтправл€ем маркер окончани€ пакета
+				if( bLast )
+				{
+					pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[0] );
+					Msg.SetBuffer( pbBuf.get(), 0 );
+					m_ServerHandler.SendMsg( Msg );
+				}
+				//TODO: это похоже необ€зательное если оставить дальше m_mapStorages.clear();
+				//ProtoIt->second->Clear();
 			}
-			//TODO: это похоже необ€зательное если оставить дальше m_mapStorages.clear();
-			//ProtoIt->second->Clear();
-			bFirst = false;
 		}
 	}
 	Log::instance().Trace( 90, "CGetData: ƒанные отправлены" );
