@@ -340,7 +340,7 @@ CDbReceiver::buf_t::iterator CDbReceiver::AddData( buf_t::iterator begin, buf_t:
 
 enumAgentResponse CAgentHandler::GetData()
 {
-	Log::instance().Trace( 90, "CAgentHandler::GetData: Отправка команды получения данных" );	
+	Log::instance().Trace( 90, "CAgentHandler::GetData(%s): Отправка команды получения данных", m_strAddress );	
 	CPacket Msg;
 
 	Msg.BeginCommand( GET_DATA );
@@ -350,7 +350,7 @@ enumAgentResponse CAgentHandler::GetData()
 	std::vector<BYTE> vecRes;
 	CDbReceiver Receiver;
 	enumAgentResponse res = SendMessage( Msg, Receiver );
-	Log::instance().Trace( 0, "Суммарное время записи в БД: %d", dwTime );
+	Log::instance().Trace( 0, "CAgentHandler::GetData(%s):Суммарное время записи в БД: %d", m_strAddress, dwTime );
 	m_ScanFinished.Set();
 	return res;
 }
