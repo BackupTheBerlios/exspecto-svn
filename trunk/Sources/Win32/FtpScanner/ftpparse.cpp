@@ -69,7 +69,7 @@ void initnow(void)
   long year;
 
   initbase();
-  now = time((time_t *) 0) - base;
+  now = (long)time((time_t *) 0) - base;
 
   if (flagneedcurrentyear) {
     day = now / 86400;
@@ -110,6 +110,7 @@ long guesstai(long month,long mday)
     if (now - t < 350 * 86400)
       return t;
   }
+  return 0;
 }
 
 int check(char *buf,char *monthname)
