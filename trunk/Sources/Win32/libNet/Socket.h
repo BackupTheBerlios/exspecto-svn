@@ -93,7 +93,7 @@ public:
     void Close( void );
 
 	//Метод посылки данных,возвращает кол-во отправленных байт
-	int Send( void* pBuffer, int iSize );
+	void Send( void* pBuffer, int iSize );
 
 	//Метод приёма данных,возвращает кол-во принятых байт
 	int Receive( void* pBuffer, int iBufSize );

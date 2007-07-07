@@ -84,13 +84,17 @@ void CSocket::SetBlocking( bool bIsBlocking )
 }
 
 //Метод посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт
-int CSocket::Send( void* pBuffer, int iSize )
+void CSocket::Send( void* pBuffer, int iSize )
 {
 	int res;
 	if( SOCKET_ERROR == ( res = ::send( m_Socket, (const char*)pBuffer, iSize, 0 ) ) )
 		throw SocketErr( WSAGetLastError() );
+	if( res != iSize )
+	{
+		Log::instance().Trace( 1, "CSocket::Send: Количество посланных и фактически отправленных байт не совпадает" );
+		throw SocketErr( "Количество посланных и фактически отправленных байт не совпадает" );
+	}
 	SetConnected( true );		
-	return res;
 }
 
 //Метод приёма,возвращает SOCKET_ERROR либо кол-во полученных байт

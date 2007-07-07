@@ -9,99 +9,98 @@
 
 #include "Socket.h"
 #include "precomp.h"
-#include "../CommonFiles/commands.h"
+#define TIXML_USE_STL
+#include "tinyxml.h"
+#include "SmartPtr.hpp"
+#include <string>
+#include "CDBProvider.h"
 
-class CPacket
+//Классы исключений, генерируемыз CPacket
+class PacketErr: public std::runtime_error
 {
 public:
-	//Классы исключений, генерируемыз CPacket
-	class PacketErr: public std::runtime_error
+	PacketErr( const std::string& strErr ):std::runtime_error( strErr ){};
+	virtual ~PacketErr()throw(){};
+};
+
+class CInPacket
+{
+public:
+
+	CInPacket( BYTE* pbBuf, int iSize );
+
+	CInPacket();
+
+	bool Load( BYTE* pbBuf, int iSize );
+
+	void GetField( const std::string& strName, std::string& strValue );
+	void GetField( const std::string& strName, int& iValue );
+	void GetField( const std::string& strName, bool& bValue );
+
+	void GetFirstAddress( std::string& strAddress );
+	bool GetNextAddress( std::string& strAddress );
+
+	void GetFirstHostRec( hostRec& Host );
+	bool GetNextHostRec( hostRec& Host );
+
+	static std::vector<BYTE> GetEndStamp()
 	{
-	public:
-		PacketErr( const std::string& strErr ):std::runtime_error( strErr ){};
-		virtual ~PacketErr()throw(){};
-	};
-
-	class PacketFormatErr: public PacketErr
-	{
-	public:
-		PacketFormatErr( const std::string& strErr ):PacketErr( strErr ){};
-		virtual ~PacketFormatErr()throw(){};
-	};
-
-	CPacket(void);
-	~CPacket(void);
-
-	//Добавить в пакет идентификатор команды
-	void BeginCommand( enumCommands Command );
-
-	//Добавить параметр
-	//	pbParam - буфер с данными
-	//	iSize - размер данных
-	void AddParam( const BYTE* pbParam, int iSize );
-
-	//Добавить параметр
-	//	dwParam - параметр типа DWORD
-	void AddParam( DWORD dwParam );
-
-	//Добавить параметр
-	//	strParam - строковый параметр
-	void AddParam( const std::string& strParam );
-
-	//Добавить IP - адрес в пакет
-	void AddAddress( const std::string& strAddress );
-
-	//Добавить метку конца пакета
-	void EndCommand();
-
-	//Очистить пакет
-	void Clear();
-
-	//Получить адрес буфера для отправки пакета(адрес данных подготовленного пакета)
-	void GetBuffer( OUT BYTE* &pbBuffer, OUT int &iSize );
-
-	//Установить данные для разбора
-	void SetBuffer( IN BYTE* pbBuffer, IN int iSize );
-
-	//Получить идентификатор команды по текущему смещению в пакете
-	void GetCommandId( BYTE& pByte );
-
-	//Получить массив байт из пакета по текущему смещению
-	void GetParam( BYTE* pbValue, int iSize );
-
-	//Получить параметр типа DWORD по текущему смещению
-	void GetParam( DWORD& dwValue );
-
-	//Получить строку длиной iSize из пакета по текущему смещению
-	void GetParam( std::string&	strValue, int iSize );
-
-	//Получить IP-адрес из пакета по текущему смещению
-	void GetAddress( std::string& strAddress );
-	
-	//Выяснить закончена обработка пакета или нет
-	bool IsDone();
-
-protected:
-	
-	//Добавить массив байт к пакету
-	void Push( const BYTE *pbData, int iSize );
-
-	//Получить массив байт из пакета
-	void Pop( BYTE *pbBuf, int iCount );
+		const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 }; 
+		return std::vector<BYTE>( EndStamp, EndStamp + sizeof( EndStamp ) );
+	}
 
 private:
 
-	CPacket( const CPacket& );
-	CPacket& operator=( const CPacket& );
+	void GetFileStruct( TiXmlElement* pElem, fileStr& File );
 
-	//Внутренний буфер,содержащий пакет
-	//BYTE* m_pbBuf;
-	std::vector< BYTE > m_vecBuf;
+	void GetField( TiXmlElement* pParentElem, const std::string& strName , std::string& strValue );
 
+	void GetField( TiXmlElement* pParentElem, const std::string& strName , __int64& iValue );
+
+	void GetField( TiXmlElement* pParentElem, const std::string& strName , int& iValue );
+
+	void GetField( TiXmlElement* pParentElem, const std::string& strName , bool& bValue );
+
+	void GetField( TiXmlElement* pParentElem, const std::string& strName , time_t& bValue );
+
+	TiXmlDocument m_XmlDoc;
+
+	TiXmlElement* m_pXmlRoot;
+
+	TiXmlElement* m_pHostElement;
+
+	TiXmlElement* m_pAddrElement;
+
+	CInPacket( const CInPacket& );
+	CInPacket& operator=( const CInPacket& );
+};
+
+class COutPacket
+{
+	friend COutPacket& operator <<( CSocket& sock, COutPacket& packet );
+public:
+
+	COutPacket();
+
+	void PutField( const std::string& strName, const std::string& strValue );
+
+	void PutField( const std::string& strName, int iValue );
+
+	void PutHostRec( const hostRec& Host );
+
+	std::string ToString(){ return m_strPacket; }
+
+private:
+
+	COutPacket( const COutPacket& );
+	COutPacket& operator=( const COutPacket& );
+
+	std::string m_strPacket;
 };
 
 //Отправить пакет в сокет
 //Синтаксис: CSocket sock;CPacket packet; sock << packet;
-CPacket& operator <<( CSocket& sock, CPacket& packet );
+COutPacket& operator <<( CSocket& sock, COutPacket& packet );
+
 
 #endif
