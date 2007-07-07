@@ -1,6 +1,29 @@
 Описание протокола обмена между агентом и планировщиком:
 
 Пакет с командами от хоста состои из следующих полей:
+<packet>
+	<Command>StartScan</Command>
+	<>
+</packet>
+
+<packet>
+	<Status>ok</Status>
+</packet>
+
+<packet>
+	<CommandStatus>ok</CommandStatus>
+	<host ip="127.0.0.1" hostname="ss">
+		<file>
+			<filepath>c:\sss</filepath>
+			<filesize>123403424</filesize>
+			<filedate>@$Tsdf</filedate>
+		</file>
+		<file>
+			<filepath>c:\sdfs</filepath>
+			<filesize>1234233424</filesize>
+			<filedate>@$gdfdf</filedate>
+		</file>
+	</host>
 
 1.Идентификатор команды
 2.Параметры(зависят от команды)
