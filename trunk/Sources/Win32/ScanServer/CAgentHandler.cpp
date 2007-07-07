@@ -12,8 +12,6 @@
 #include <algorithm>
 
 
-#define RECEIVE_BUF_START_SIZE 255
-#define RECEIVE_BUF_MAX_SIZE 25000000
 
 CAgentHandler::CAgentHandler( std::string strAgentAddress ):m_strAddress( strAgentAddress )
 														   ,m_ScanFinished( false )
@@ -33,66 +31,40 @@ CAgentHandler::~CAgentHandler()
 }
 
 //Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-enumAgentResponse CAgentHandler::SendMessage( CPacket &Msg, CReceiver& Receiver )
+void CAgentHandler::SendMessage( COutPacket &Msg, CInPacket& Response )
 {
 	//Команды посылаются синхронно
 	CLock lock( m_csExec );
-	
-	char Result = -1;
-	const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 };
+
 	if( !IsOpened() )
 	{
 		Log::instance().Trace( 10, "CAgentHandler(%s)::SendMessage: Ошибка!Сессия не открыта!", m_strAddress.c_str() );
 		throw HandlerErr( "Session has not been opened, but SendMessage called" );
 	}
-	BYTE* pBuf = NULL;
-	int iSize = 0;
-	//Получаем буфер с данными сообщения Msg для отправки по сети
-	Msg.GetBuffer( pBuf, iSize );
-	Log::instance().Dump( 80, pBuf, iSize, "CAgentHandler(%s)::SendMessage: отправляем буфер:", m_strAddress.c_str() );
-	if( 0 == iSize )
-		throw HandlerErr( "Attempt to send message with zero-length was made" );		
-	m_Sock.Send( pBuf, iSize );
+	Log::instance().Trace( 80, "CAgentHandler(%s)::SendMessage: отправляем пакет: %s", m_strAddress.c_str(), Msg.ToString().c_str() );
+	m_Sock << Msg;
 
 	int iCount;
 	bool bEnd = false;
-	//Как правило если пакет данных - промежуточный, то в конце он содержит неполную запись,
-	//эта неполная запись копируется в начало приемного буфера,а iReceiveOffset - указывает на 
-	//конец этой неполной записи, т.о. данные записываются корректно
-	int iReceiveOffset = 0;
+	std::vector< BYTE > vecPacketBuf;
 	//Получаем ответ на сообщение
-	while( !bEnd && ( iCount = m_Sock.Receive( &m_vecRecvBuf[iReceiveOffset], (int)m_vecRecvBuf.size()-iReceiveOffset ) ) > 0 )
+	while( !bEnd && ( iCount = m_Sock.Receive( &m_vecRecvBuf[0], (int)m_vecRecvBuf.size() ) ) > 0 )
 	{
-		//Смещение от начала буфера, 0 или 1
-		//1 - когда пакет первый в очереди и содержит первый байт обработки команды
-		//0 - в остальных случаях
-		BYTE bOffset = 0;
-		if( -1 == Result )
-		{
-			Result = m_vecRecvBuf[0];
-			bOffset = 1;
-		}
 		Log::instance().Trace( 80, "CAgentHandler(%s)::SendMessage: iCount = %d", m_strAddress.c_str(), iCount );
-		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[iReceiveOffset], iCount, "CAgentHandler(%s)::SendMessage: Приняты данные:", m_strAddress.c_str() );
+		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[0], iCount, "CAgentHandler(%s)::SendMessage: Приняты данные:", m_strAddress.c_str() );
 		//Проверяем на конец пакета
-		if( ( iCount > 4 ) && ( 0 == memcmp( EndStamp, &m_vecRecvBuf[ iReceiveOffset + iCount - 4 ], 4 ) ) )
+		if( ( iCount > (int)CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ iCount - CInPacket::GetEndStamp().size() ], CInPacket::GetEndStamp().size() ) ) )
 		{
-			iCount -= 4;
+			iCount -= CInPacket::GetEndStamp().size();
 			bEnd = true;
 		//Если получили только маркер конца
-		}else if ( ( iCount == 4 ) && ( 0 == iReceiveOffset ) && ( 0 == memcmp( EndStamp, &m_vecRecvBuf[ 0 ], 4 ) ) )
+		}else if ( ( iCount == CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ 0 ], CInPacket::GetEndStamp().size() ) ) )
 			break;
-
-		//AddData возвращает итератор, указывающий на первый элемент неполной записи(см.коментарий к iReceiveOffset)
-		std::vector<BYTE>::iterator ItRecv;
-		if( (m_vecRecvBuf.begin() + iReceiveOffset + iCount) != ( ItRecv = Receiver.AddData( m_vecRecvBuf.begin() + bOffset, m_vecRecvBuf.begin()+ iReceiveOffset + iCount ) ) )
-		{
-			//Копируем неполную запись в начало приемного буфера
-			iReceiveOffset = std::copy( ItRecv, m_vecRecvBuf.begin()+ iReceiveOffset + iCount, m_vecRecvBuf.begin() ) - m_vecRecvBuf.begin();
-		}else
-			iReceiveOffset = 0;
+		
+		vecPacketBuf.insert( vecPacketBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
+		
 		//Увеличиваем размер буфера при необходимости
-		if( (iCount == ( (int)m_vecRecvBuf.size()-iReceiveOffset ) ) )
+		if( (iCount == ( (int)m_vecRecvBuf.size() ) ) )
 			if( (m_vecRecvBuf.size()<<1) <= RECEIVE_BUF_MAX_SIZE )
 				m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
 			else if( m_vecRecvBuf.size() < RECEIVE_BUF_MAX_SIZE )
@@ -101,7 +73,7 @@ enumAgentResponse CAgentHandler::SendMessage( CPacket &Msg, CReceiver& Receiver 
 	}
 	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
-	return (enumAgentResponse)Result;
+	Response.Load( &vecPacketBuf[0], vecPacketBuf.size() );
 }
 
 void CAgentHandler::Open()
@@ -145,18 +117,17 @@ void CAgentHandler::OnConnection( SmartPtr< CSocket > pSocket )
 	m_pConnectionHandler->Listen( pSocket );
 }
 
-void CAgentHandler::OnMessage( CPacket& Msg )
+void CAgentHandler::OnMessage( CInPacket& Msg )
 {
 	try{
-		BYTE bCommandId;
-		Msg.GetCommandId( bCommandId );
-		switch( bCommandId )
+		std::string strEventId;
+		Msg.GetField( EVENT_ID, strEventId );
+		if( SCAN_COMPLETE == strEventId )
 		{
-			case ScanComplete:
-				Log::instance().Trace( 90, "CAgentHandler(%s)::OnMessage: Сканирование закончено", m_strAddress.c_str() );
-				GetData();
-				break;
-		};
+			Log::instance().Trace( 90, "CAgentHandler(%s)::OnMessage: Сканирование закончено", m_strAddress.c_str() );
+			GetData();
+		}else
+			Log::instance().Trace( 3, "CAgentHandler(%s)::OnMessage: Неизвестное событие", m_strAddress.c_str(), strEventId );
 	}catch(std::exception& e)
 	{
 		Log::instance().Trace( 10, "CAgentHandler(%s)::OnMessage: Ошибка %s", m_strAddress.c_str() , e.what() );
@@ -168,191 +139,102 @@ void CAgentHandler::OnMessage( CPacket& Msg )
 
 }
 
-enumAgentResponse CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )
+std::string CAgentHandler::BeginScan( std::vector< std::string > vecAddresses )
 {
 	Log::instance().Trace( 90, "CAgentHandler(%s)::BeginScan: Отправка команды начала сканирования", m_strAddress.c_str() );
-	CPacket Msg;
+	COutPacket Msg;
 
-	Msg.BeginCommand( START_SCAN );
+	Msg.PutField( COMMAND_ID, START_SCAN );
 	Log::instance().Trace( 90, "CAgentHandler(%s)::BeginScan: Всего адресов: %d", m_strAddress.c_str(), vecAddresses.size() );
-	Msg.AddParam( (DWORD)vecAddresses.size() );
+	Msg.PutField( ADDR_COUNT, (int)vecAddresses.size() );
 	for( std::vector< std::string >::iterator It = vecAddresses.begin(); It != vecAddresses.end(); It++ )
 	{
 		Log::instance().Trace( 92, "CAgentHandler(%s)::BeginScan: Добавляем адрес %s", m_strAddress.c_str(), It->c_str() );
-		Msg.AddAddress( *It );
+		Msg.PutField( HOST_ADDR, *It );
 	}
-	Msg.EndCommand();
-	
-	Log::instance().Trace( 92, "CAgentHandler(%s)::BeginScan: Отправляем сообщение агенту: %s", m_strAddress.c_str(), m_strAddress.c_str() );
-	std::vector<BYTE> vecRes;
-	CBufReceiver Receiver( vecRes );
-	enumAgentResponse res = SendMessage( Msg, Receiver );
+	Log::instance().Trace( 92, "CAgentHandler(%s)::BeginScan: Отправляем сообщение агенту", m_strAddress.c_str() );
+	CInPacket Response;
+	SendMessage( Msg, Response );
+	std::string strStatus;
+	Response.GetField( COMMAND_STAT, strStatus );
 	m_ScanFinished.Reset();
-	return res; 
+	return strStatus; 
 }
 	
-enumAgentResponse CAgentHandler::StopScan()
+std::string CAgentHandler::StopScan()
 {
 	Log::instance().Trace( 90, "CAgentHandler(%s)::StopScan: Отправка команды окончания сканирования", m_strAddress.c_str() );
-	CPacket Msg;
+	COutPacket Msg;
 
-	Msg.BeginCommand( STOP_SCAN );
-	Msg.EndCommand();
+	Msg.PutField( COMMAND_ID, STOP_SCAN );
 
-	SmartPtr< BYTE, AllocMalloc<BYTE> >  pbRecvBuf;
-	std::vector<BYTE> vecRes;
-	CBufReceiver Receiver( vecRes );
-	enumAgentResponse res = SendMessage( Msg, Receiver );
-	return res; 
+	std::string strRes;
+	CInPacket Response;
+	SendMessage( Msg, Response );
+	Response.GetField( COMMAND_STAT, strRes );
+	return strRes; 
 }
 	
-enumAgentResponse CAgentHandler::GetStatus( enumAgentState& Status )
+std::string CAgentHandler::GetStatus( std::string& Status )
 {
 	Log::instance().Trace( 90, "CAgentHandler(%s)::GetStatus: Отправка команды получения статуса", m_strAddress.c_str() );
-	CPacket Msg;
+	COutPacket Msg;
+	Msg.PutField( COMMAND_ID, GET_STATUS );
 
-	Msg.BeginCommand( GET_STATUS );
-	Msg.EndCommand();
-
-	std::vector<BYTE> vecRes;
-	CBufReceiver Receiver( vecRes );
-	enumAgentResponse res = SendMessage( Msg, Receiver );
-	if( RESP_OK != res )
-	{
-		Log::instance().Trace( 50, "CAgentHandler(%s)::GetStatus: Команда получения статуса не выполнена, код возврата: %d", m_strAddress.c_str(), res );
-		return res;
-	}
-	Status = (enumAgentState)vecRes[0];
-	Log::instance().Trace( 80, "CAgentHandler(%s)::GetStatus: Получен статус: %d", m_strAddress.c_str(), Status );
-	return RESP_OK;
+	std::string strRes;
+	CInPacket Response;
+	SendMessage( Msg, Response );
+	Response.GetField( COMMAND_STAT, strRes );
+	if( AGENT_RESP_OK == strRes )
+		Response.GetField( AGENT_STATUS, Status );
+	return strRes;
 }
 
-static DWORD dwTime = 0;
-	
-CDbReceiver::buf_t::iterator CDbReceiver::AddData( buf_t::iterator begin, buf_t::iterator end )
+std::string CAgentHandler::GetData()
 {
-	
-	//Текущее смещение в пакете
-	int iOffset = 0;
-	//Размер данных приходит один раз в первом пакете
-	//TODO:нигде не используется
-	if( 0 == m_ulDataSize )
+	Log::instance().Trace( 90, "CAgentHandler::GetData(%s): Отправка команды получения данных", m_strAddress.c_str() );	
+	COutPacket Msg;
+
+	Msg.PutField( COMMAND_ID, GET_DATA );
+	Msg.PutField( FILES_COUNT, 100 );
+
+	//отправляем команду
+	std::string strRes;
+	CInPacket Response;
+	bool bFilesLeft = true;
+	DWORD dwTime = 0;
+	while( bFilesLeft )
 	{
-		::memcpy( (BYTE*)&m_ulDataSize, &(*begin), sizeof( unsigned long ) );
-		Log::instance().Trace( 12, "CDbReceiver::AddData: Размер данных: %d", m_ulDataSize );
-		iOffset = 4;
-	}
-	//Разбираем данные
-
-	//Промежуточный буфер,нужен для того чтобы записывать файлы в базу не по одному,что очень долго
-	//а пакетами
-	map< std::string, std::list<fileStr> > mapTmpBuf;
-	unsigned long ulTmpBufSize = 0;
-	while( iOffset < (int)( end - begin )  )
-	{
-		fileStr file;
-		::ZeroMemory( &file.FDate, sizeof( fileDate ) );
-		//Если запись неполная - заканчиваем разбор
-		if( end == std::find( begin + iOffset, end, 0 ) )
+		SendMessage( Msg, Response );
+		Response.GetField( COMMAND_STAT, strRes );
+		if( AGENT_RESP_OK != strRes )
 			break;
-        std::string strIpAddr = (char*)&*(begin + iOffset);
-		iOffset += (int)strIpAddr.size() + 1;
-		//Если запись неполная - заканчиваем разбор
-		if( end == std::find( begin + iOffset, end, 0 ) )
+		Response.GetField( FILES_LEFT, bFilesLeft );
+		int iFilesCount;
+		Response.GetField( FILES_COUNT, iFilesCount );
+		if( iFilesCount > 0 )
 		{
-			iOffset -= ( (int)strIpAddr.size() + 1 );
-			break;
-		}
-		file.FileName = (char*)&*(begin + iOffset);
-		iOffset += file.FileName.size() + 1;
-		//Если запись неполная - заканчиваем разбор
-		if( ( end - ( begin + iOffset + sizeof( __int64 ) + 2*sizeof( DWORD ) ) ) < 0 )
-		{
-			iOffset -= ( (int)strIpAddr.size() + 1 + file.FileName.size() + 1 );
-			break;
-		}
-
-		memcpy( &file.FileSize, &*(begin + iOffset), sizeof( __int64 ) );
-		iOffset += sizeof( __int64 );
-		memcpy( &file.FDate.lFileTime, &*(begin + iOffset), sizeof( DWORD ) );
-		iOffset += sizeof( DWORD );
-		memcpy( &file.FDate.hFileTime, &*(begin + iOffset), sizeof( DWORD ) );
-		iOffset += sizeof( DWORD );
-		Log::instance().Trace( 101, "Добавляем запись: IP=%s,FileName=%s,\r\n FileSize=%d", strIpAddr.c_str(), file.FileName.c_str(), file.FileSize );
-		mapTmpBuf[ strIpAddr ].push_back( file );
-		ulTmpBufSize += file.FileName.capacity() + sizeof( __int64 ) + 2*sizeof(DWORD);
-		if( mapTmpBuf.end() == mapTmpBuf.find( strIpAddr ) )
-			ulTmpBufSize += strIpAddr.capacity();
-
-		//Если размер промежуточного буфера превысил 2Мб - скидываем его в базу
-		if( ulTmpBufSize > 2097152 )
-		{
-			Log::instance().Trace( 90, "CDbReceiver::AddData: Записываем данные в базу" );
-			ulTmpBufSize = 0;
-			for( std::map< std::string, std::list< fileStr > >::iterator It = mapTmpBuf.begin(); It != mapTmpBuf.end(); It++ )
+			std::set<std::string> setErased;
+			hostRec TmpHost;
+			Response.GetFirstHostRec( TmpHost );
+			do
 			{
-				hostRec rec;
-				rec.IPNum = It->first;
-				rec.Files.swap( It->second );
-				if( m_mapErased.find( rec.IPNum ) == m_mapErased.end() )
+				if( setErased.find( TmpHost.IPNum ) == setErased.end() )
 				{
-					DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", rec.IPNum, 0 );
-					m_mapErased.insert( rec.IPNum );
+					DbProviderFactory::instance().GetProviderInstance()->EraseHost( TmpHost.HostName, TmpHost.IPNum, 0 );
+					setErased.insert( TmpHost.IPNum );
 				}
 				DWORD dwtick1,dwtick2;
 				dwtick1 = GetTickCount();
-				DbProviderFactory::instance().GetProviderInstance()->AddFiles( rec );
+				DbProviderFactory::instance().GetProviderInstance()->AddFiles( TmpHost );
 				dwtick2 = GetTickCount();
 				dwTime += dwtick2 - dwtick1;
-
-			}
-			mapTmpBuf.clear();
+			}while( Response.GetNextHostRec( TmpHost ) );
 		}
-		
 	}
-	//Дописываем в базу остатки
-	Log::instance().Trace( 90, "CDbReceiver::AddData: Записываем данные в базу" );
-	for( std::map< std::string, std::list< fileStr > >::iterator It = mapTmpBuf.begin(); It != mapTmpBuf.end(); It++ )
-	{
-		hostRec rec;
-		rec.IPNum = It->first;
-		rec.Files.swap( It->second );
-		if( m_mapErased.find( rec.IPNum ) == m_mapErased.end() )
-		{
-			DbProviderFactory::instance().GetProviderInstance()->EraseHost( "", rec.IPNum, 0 );
-			m_mapErased.insert( rec.IPNum );
-		}
-		DWORD dwtick1,dwtick2;
-		dwtick1 = GetTickCount();
-		DbProviderFactory::instance().GetProviderInstance()->AddFiles( rec );
-
-		dwtick2 = GetTickCount();
-		dwTime += dwtick2 - dwtick1;
-	}
-	mapTmpBuf.clear();
-	if( iOffset > (int)(end - begin) )
-	{
-		Log::instance().Trace( 2, "CDbReceiver::AddData: Случилось чтото странное, iOffset > (end-begin)!!!Требуется исследование ситуации." );
-		return end;
-	}	
-	return (begin + iOffset);
-}
-
-enumAgentResponse CAgentHandler::GetData()
-{
-	Log::instance().Trace( 90, "CAgentHandler::GetData(%s): Отправка команды получения данных", m_strAddress );	
-	CPacket Msg;
-
-	Msg.BeginCommand( GET_DATA );
-	Msg.EndCommand();
-
-	//отправляем команду
-	std::vector<BYTE> vecRes;
-	CDbReceiver Receiver;
-	enumAgentResponse res = SendMessage( Msg, Receiver );
-	Log::instance().Trace( 0, "CAgentHandler::GetData(%s):Суммарное время записи в БД: %d", m_strAddress, dwTime );
+	Log::instance().Trace( 0, "CAgentHandler::GetData(%s):Суммарное время записи в БД: %d", m_strAddress.c_str(), dwTime );
 	m_ScanFinished.Set();
-	return res;
+	return strRes;
 }
 
 void CAgentHandler::CConnectionHandler::Listen( SmartPtr<CSocket> pSocket )
@@ -367,13 +249,12 @@ unsigned __stdcall CAgentHandler::CConnectionHandler::fnListenThread( void* para
 	CConnectionHandler* pThis = (CConnectionHandler*)param;
 	Log::instance().Trace( 90, "CConnectionHandler(%s)::fnListenThread: Запуск", pThis->m_pAgentHandler->m_strAddress.c_str() );
 	try{
-		CPacket Msg;
 		BYTE pBuf[10240];
 		int iCount;
 		while( iCount = pThis->m_pSocket->Receive( pBuf, sizeof( pBuf ) ) )
 		{
 			Log::instance().Dump( 90, pBuf, iCount, "CConnectionHandler(%s)::fnListenThread: Получен пакет:", pThis->m_pAgentHandler->m_strAddress.c_str() );
-			Msg.SetBuffer( pBuf, iCount );
+			CInPacket Msg( pBuf, iCount );
 			pThis->m_pAgentHandler->OnMessage( Msg );
 		}
 	}catch( std::exception& e )

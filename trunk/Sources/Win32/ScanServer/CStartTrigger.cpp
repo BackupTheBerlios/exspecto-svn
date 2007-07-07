@@ -82,7 +82,6 @@ unsigned __stdcall CTimer::fnTimerProc( void* pParam )
 			Log::instance().Trace( 95, "CTimer: событие таймера" );
 			//Вызываем обработчик в планировщике и ждем его отработки
 			pThis->m_pCallBack->OnStartScan();
-			Log::instance().Trace( 10,"2" );
 		}
 	}catch( std::exception& e )
 	{

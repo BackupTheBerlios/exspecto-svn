@@ -141,8 +141,8 @@ void CScheduler::OnStartScan()
 				//Опрашиваем агентов
 				for( std::map< std::string, SmartPtr< CAgentHandler > >::iterator ItPoll = m_mapAgentsContainer.begin(); ItPoll != m_mapAgentsContainer.end();)
 				{
-					enumAgentResponse Response;
-					enumAgentState Status;
+					std::string Response;
+					std::string Status;
 					try{
 						Response = ItPoll->second->GetStatus( Status );
 					}catch( SocketErr& )
@@ -150,11 +150,11 @@ void CScheduler::OnStartScan()
 						//Приравниваем ошибку связи к ошибке обработки команды
 						Response = RESP_PROC_ERR;
 					}
-					if( ( Response == RESP_OK ) && ( Status == Idling ) )
+					if( ( Response == AGENT_RESP_OK ) && ( Status == IDLING ) )
 					{
 						vecFinished.push_back( ItPoll->first );
 						ItPoll++;
-					}else if( Response != RESP_OK )
+					}else if( Response != AGENT_RESP_OK )
 					{
 						vecInaccess.push_back( ItPoll->first );
 						m_csAgentsContainer.Enter();

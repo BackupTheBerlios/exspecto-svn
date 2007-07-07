@@ -8,12 +8,18 @@
 #define CAGENTHANDLER_H_
 
 #include "ClientSocket.h"
-#include "commands.h"
 #include "packet.h"
 #include "SmartPtr.hpp"
 #include "Event.hpp"
 #include "CDBProvider.h"
 #include <set>
+
+
+enum enumAgentResponse{
+	RESP_OK = 0x00,
+	RESP_INPUT_DATA_ERR = 0x01,
+	RESP_PROC_ERR = 0x02
+};
 
 class CConnectionHandler;
 class CReceiver;
@@ -69,16 +75,16 @@ public:
 	//Команды, передаваемые агенту:
 	
 	//Начать сканирование
-	enumAgentResponse BeginScan( std::vector< std::string > vecAddresses );
+	std::string BeginScan( std::vector< std::string > vecAddresses );
 	
 	//Остановить сканирование
-	enumAgentResponse StopScan();
+	std::string StopScan();
 	
 	//Получить статус
-	enumAgentResponse GetStatus( enumAgentState& Status );
+	std::string GetStatus( std::string& Status );
 	
 	//Получить данные последнего сканирования
-	enumAgentResponse GetData();
+	std::string GetData();
 	
 	//Открыто ли соединение с агентом
 	bool IsOpened()const;
@@ -89,10 +95,12 @@ public:
 		
 protected:
 
-	void OnMessage( CPacket& Msg );
+	void OnMessage( CInPacket& Msg );
 	
 	//Отправить пакет Msg агенту и получить ответ в pbRespBuf, iRespSize - ожидаемый размер ответа
-	enumAgentResponse SendMessage( CPacket &Msg, CReceiver& Receiver );
+	//enumAgentResponse SendMessage( COutPacket &Msg, CReceiver& Receiver );
+
+	void SendMessage( COutPacket &Msg, CInPacket& Response );
 	
 private:
 	CAgentHandler( const CAgentHandler& );
@@ -113,57 +121,6 @@ private:
 
 	//Приемный буфер
 	std::vector<BYTE> m_vecRecvBuf;
-
-};
-
-//Абстрактный интерфейс к приемнику данных во время получения от агента
-class CReceiver
-{
-public:
-
-	virtual ~CReceiver(){}
-
-	typedef std::vector<BYTE> buf_t;
-
-	virtual buf_t::iterator AddData( buf_t::iterator begin, buf_t::iterator end ) = 0;
-};
-
-//Получает данные в заданный вектор
-class CBufReceiver: public CReceiver
-{
-public:
-
-	virtual ~CBufReceiver(){}
-
-	CBufReceiver( buf_t& buf ):m_buf( buf ){};
-
-	virtual buf_t::iterator AddData( buf_t::iterator begin, buf_t::iterator end )
-	{
-		m_buf.insert( m_buf.end(), begin, end );
-		return end;
-	}
-
-private:
-
-	buf_t& m_buf;
-};
-
-//Разбирает данные и кладет их в БД
-class CDbReceiver: public CReceiver
-{
-public:
-
-	CDbReceiver():m_ulDataSize(0){}
-	virtual ~CDbReceiver(){}
-
-	virtual buf_t::iterator AddData( buf_t::iterator begin, buf_t::iterator end );
-
-private:
-
-	unsigned long m_ulDataSize;
-
-	//карта хостов, которые уже были очещены
-	std::set< std::string > m_mapErased;
 
 };
 
