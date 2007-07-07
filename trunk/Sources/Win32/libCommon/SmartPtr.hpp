@@ -106,10 +106,13 @@ public:
 				m_pPointerImpl->cs.Leave();
 				m_pPointerImpl = new Ref;
 			}
-			m_pPointerImpl->pPointer = pPointer;
-			m_pPointerImpl->iRefCount = 1;
-		}
+		}else
+			m_pPointerImpl = new Ref;
+		m_pPointerImpl->pPointer = pPointer;
+		m_pPointerImpl->iRefCount = 1;
 
+
+		return *this;
 	}
 	
 	template< class T1, class T2 >
