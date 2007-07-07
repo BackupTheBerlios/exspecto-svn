@@ -19,11 +19,11 @@ public:
 	
 	virtual ~CMessageParser(){};
 
-	std::vector< SmartPtr< CTask > > Parse( CPacket& Message );
+	SmartPtr< CTask > Parse( CInPacket& Message );
 	
 	typedef CTask* (*CreateTaskCallBack)( CServerHandler& Handler );
 
-	static CreateTaskCallBack GetRegisterCreator( int iTaskId, CreateTaskCallBack fnCreator = NULL ); 
+	static CreateTaskCallBack GetRegisterCreator( std::string strTaskId, CreateTaskCallBack fnCreator = NULL ); 
 	
 private:
 

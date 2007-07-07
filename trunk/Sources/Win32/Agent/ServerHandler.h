@@ -4,6 +4,7 @@
 #include "ClientSocket.h"
 #include "SmartPtr.hpp"
 #include "Packet.h"
+#include <vector>
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CServerHandler------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
@@ -16,11 +17,11 @@ public:
 	
 	virtual ~CServerHandler();
 	
-	void SendEvent( CPacket& Event );
+	void SendEvent( COutPacket& Event );
 	
-	void SendMsg( CPacket& Msg, bool bEnd = true );
+	void SendMsg( COutPacket& Msg, bool bEnd = true );
 	
-	void Receive( CPacket& Msg );
+	void Receive( CInPacket& Msg );
 	
 	std::string GetServerAddress();
 	
@@ -39,6 +40,7 @@ public:
 			m_pEventSocket = Handler.m_pEventSocket;
 			m_strAddress = Handler.m_strAddress;
 			m_iEventPort = Handler.m_iEventPort;
+			m_vecRecvBuf.resize( RECEIVE_BUF_START_SIZE );
 		}
 		return *this;
 	};
@@ -55,7 +57,10 @@ private:
 	int m_iEventPort;
 	
 	static CCriticalSection m_csEventSocket;
-	
+
+	//Приемный буфер
+	std::vector<BYTE> m_vecRecvBuf;
+
 };
 
 #endif /*SERVERHANDLER_H_*/

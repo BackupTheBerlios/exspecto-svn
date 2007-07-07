@@ -1,16 +1,14 @@
 #include "precomp.h"
 #include "MessageParser.h"
-#include "commands.h"
 #include "CTask.h"
 
 //Максимальный размер пакета с данными для посылки 2MB
 #define MAX_PACKET_SIZE  2097152
 
-enumAgentState CTask::m_CurState = Idling;
+std::string CTask::m_CurState = IDLING;
 CCriticalSection CTask::m_csCurState;
 //CEvent CTask::m_CancelEv(false);
 PluginContainer CStartScan::m_PluginContainer;
-CTempStorage CTask::m_DataStorage( "temp.dat" );
 CCriticalSection CTask::m_csStorages;
 std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > CTask::m_mapStorages;
 
@@ -21,11 +19,11 @@ std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > CTask::
 bool CGetStatus::Immidiate()
 {
 	m_csCurState.Enter();
-		BYTE bResp[] = { RESP_OK, m_CurState };
-		CPacket Msg;
-		Msg.AddParam( bResp, sizeof(bResp) );
+		COutPacket Msg;
+		Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
+		Msg.PutField( AGENT_STATUS, m_CurState );
 		m_ServerHandler.SendMsg( Msg );
-		Log::instance().Dump( 90, bResp, sizeof( bResp ), "CGetStatus:Immidiate: Отправлен ответ:" );
+		Log::instance().Trace( 90, "CGetStatus:Immidiate: Отправлен ответ: %s", Msg.ToString().c_str() );
 	m_csCurState.Leave();
 	return true;
 }
@@ -48,6 +46,14 @@ void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s END", m_strAddr.c_str() );
 }
 
+
+void CStartScan::CResolveTask::Execute( const CEvent& CancelEvent )
+{
+	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
+	hostent* res;
+	if( NULL != ( res = ::gethostbyaddr( m_strAddr.c_str(), m_strAddr.size(), AF_INET ) ) )
+		m_strHostName = res->h_name;
+}
 
 void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 {
@@ -76,12 +82,15 @@ void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::StorageFunc: Не найдено хранилище для данных, адрес: %s, протокол: %s", strAddress, strProtocolName );
 		return;
 	}
-
-	m_mapStorages[ strAddress ][ strProtocolName ]->Put( strAddress );
-    m_mapStorages[ strAddress ][ strProtocolName ]->Put( strFileName );
-    m_mapStorages[ strAddress ][ strProtocolName ]->Put( FileSize );
-	m_mapStorages[ strAddress ][ strProtocolName ]->Put( lFileTime );
-	m_mapStorages[ strAddress ][ strProtocolName ]->Put( hFileTime );
+	//TODO: переделать интерфейс StorageFunc, чтобы он использовал FileStr
+	fileStr File;
+	File.FileSize = FileSize;
+	File.FileName = strFileName;
+	ULARGE_INTEGER ulFileTime;
+	ulFileTime.LowPart = lFileTime;
+	ulFileTime.HighPart = hFileTime;
+	File.FDate.UTS = (time_t)( ulFileTime.QuadPart - 0x19DB1DED53E8000 ) / 10000000;
+	m_mapStorages[ strAddress ][ strProtocolName ]->PutRecord( File );
 }
 
 CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, ScanFunc pScanner ):m_strAddr( strAddr )
@@ -91,30 +100,26 @@ CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, ScanFu
 
 
 
-void CStartScan::Load( CPacket& Msg )
+void CStartScan::Load( CInPacket& Msg )
 {
-	DWORD dwCount;
+	m_strDescription.clear();
 	std::string strAddress;
 	std::vector< std::string > vecAddresses;
-	//Получаем кол-во адресов в пакете
-	Msg.GetParam( dwCount );
-	for( unsigned int i = 0; i < dwCount; i++ )
+	Msg.GetFirstAddress( strAddress );
+	do
 	{
-		//получаем очередной адрес
-		Msg.GetAddress( strAddress );
-		m_vecAddresses.push_back( strAddress );
+		vecAddresses.push_back( strAddress );
 		m_strDescription += strAddress;
 		m_strDescription += " ";
-	}	
+	}while( Msg.GetNextAddress( strAddress ) );
 }	
 	
 bool CStartScan::Immidiate()
 {
-	BYTE bResp[] = { RESP_OK };
-	CPacket Msg;
-	Msg.AddParam( bResp, sizeof(bResp) );
+	COutPacket Msg;
+	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Dump( 90, bResp, sizeof( bResp ), "CStartScan:Immidiate: Отправлен ответ:" );
+	Log::instance().Trace( 90, "CStartScan:Immidiate: Отправлен ответ" );
 	return false;
 }
 
@@ -123,7 +128,7 @@ void CStartScan::Execute( CEvent& CancelEv )
 	//TODO:проверять состояние перед началом сканирования
 	Log::instance().Trace( 90, "CStartScan: Поступил запрос на начало сканирования" );
 	m_csCurState.Enter();
-		m_CurState = Scanning;	
+		m_CurState = SCANNING;	
 	m_csCurState.Leave();
 
 	m_mapStorages.clear();
@@ -161,6 +166,32 @@ void CStartScan::Execute( CEvent& CancelEv )
 		}
 		Log::instance().Trace( 10, "CStartScan::Execute: Проверка доступности закончена" );
 	}
+	//Получаем имена хостов по адресам
+	bool bResolveOn;
+    Settings::instance().GetParam( RESOLVE_HOST, bResolveOn );
+	std::vector< std::string > vecHostNames;
+	if( bResolveOn )
+	{
+		Log::instance().Trace( 10, "%s: Получаем имена хостов", __FUNCTION__ );
+		std::vector< SmartPtr< CResolveTask > > vecResolveTasks;
+		for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
+		{
+			vecResolveTasks.push_back( SmartPtr<CResolveTask>( new CResolveTask( *It ) ) );
+			pool.AddTask( vecResolveTasks.back() );
+		}
+		if( !pool.WaitAllComplete( CancelEv ) )
+		{
+			pool.CancelAllTasks();
+			return;
+		}
+		for( std::vector< SmartPtr< CResolveTask > >::iterator It = vecResolveTasks.begin(); It != vecResolveTasks.end(); It++ )
+		{
+			Log::instance().Trace( 5, "%s: Имя хоста с адресом %s: %s", __FUNCTION__, m_vecAddresses[ std::distance( vecResolveTasks.begin(), It ) ].c_str(), (*It)->GetHostName().c_str() );
+			vecHostNames.push_back( (*It)->GetHostName() );
+		}
+		Log::instance().Trace( 10, "CStartScan::Execute: Получение имен хостов окончено" );
+	}
+
 	std::vector< SmartPtr< CScanThreadTask > > vecThreadTasks;
 	Log::instance().Trace( 12, "CStartScan::Execute: Всего адресов для сканирования: %d", m_vecAddresses.size() );
 
@@ -173,7 +204,7 @@ void CStartScan::Execute( CEvent& CancelEv )
 			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), PlugIt->first.c_str() );
 			vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, PlugIt->second ) );
 			//Создаем временное хранилище для данных сканирования
-			m_mapStorages[ *AddrIt ][ PlugIt->first ] = SmartPtr< CTempStorage >( new CTempStorage( std::string( PlugIt->first ) + *AddrIt ) );
+			m_mapStorages[ *AddrIt ][ PlugIt->first ] = SmartPtr< CTempStorage >( new CTempStorage( vecHostNames.empty()?"":vecHostNames[ std::distance( m_vecAddresses.begin(), AddrIt ) ], *AddrIt, std::string( PlugIt->first ) ) );
 			pool.AddTask( vecThreadTasks.back() );
 			
 		}
@@ -189,13 +220,12 @@ void CStartScan::Execute( CEvent& CancelEv )
 	if( !pool.WaitAllComplete( CancelEv ) ){};
 //		pool.CancelAllTasks();
 	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
-	CPacket Event;
-	BYTE bEvent = ScanComplete;
-	Event.AddParam( &bEvent, 1 );
+	COutPacket Event;
+	Event.PutField( EVENT_ID, SCAN_COMPLETE );
 	Log::instance().Trace( 99, "CStartScan::Execute: Отправляем событие окончания сканирования" );
 	m_ServerHandler.SendEvent( Event );
 	m_csCurState.Enter();
-		m_CurState = Idling;		
+		m_CurState = IDLING;
 	m_csCurState.Leave();
 }
 namespace
@@ -214,18 +244,18 @@ bool CStopScan::Immidiate()
 {
 	Log::instance().Trace( 90, "CStopScan: Поступил запрос на отмену сканирования" );
 	m_csCurState.Enter();
-		if( Scanning == m_CurState )
+		if( SCANNING == m_CurState )
 		{
 			Log::instance().Trace( 90, "CStopScan: Отменяем текущее сканирование" );
+			//TODO:StopScan не работает
 			//Cancel();
 		}else
 			Log::instance().Trace( 90, "CStopScan: В данный момент не находится в состоянии сканирования" );
 	m_csCurState.Leave();
-	BYTE bResp[] = { RESP_OK };	
-	CPacket Msg;
-	Msg.AddParam( bResp, sizeof(bResp) );
+	COutPacket Msg;
+	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Dump( 90, bResp, sizeof( bResp ), "CStopScan:Immidiate: Отправлен ответ:" );
+	Log::instance().Trace( 90, "CStopScan:Immidiate: Отправлен ответ: %s", Msg.ToString().c_str() );
 	return true;
 }
 namespace
@@ -240,80 +270,40 @@ namespace
 //---------------------------------------------CGetData------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
+void CGetData::Load( CInPacket& Msg )
+{
+	Msg.GetField( FILES_COUNT, m_iPacketSize );
+}
+
 bool CGetData::Immidiate()
 {
 	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
 	//Подсчитываем размер данных для отправки
 
-	//считаем размер
-	unsigned long ulSize = 0;
 	for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
+	{
 		for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
-			ulSize += ProtoIt->second->Size();
-
-	CPacket Msg;
-
-	SmartPtr< BYTE, AllocNewArray<BYTE> > pbFirstBuf;
-	pbFirstBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
-	pbFirstBuf.get()[0] = (BYTE)RESP_OK;
-	::memcpy( pbFirstBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
-	Msg.SetBuffer( pbFirstBuf.get(), sizeof( unsigned long ) + 1 );
-	if( 0 == ulSize )
-	{
-		m_ServerHandler.SendMsg( Msg );
-	}else
-	{
-		m_ServerHandler.SendMsg( Msg, false );
-
-		for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
 		{
-			for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
-			{
-				//Определяем последнее хранилище или нет,чтобы послать завершающий маркер пакета
-				bool bLast = false;
-				StoragesIt ItStoragesTmp = It;
-				std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoTmpIt = ProtoIt;
-				ItStoragesTmp++;ProtoTmpIt++;
-				if( ( ItStoragesTmp == m_mapStorages.end() ) && ( ProtoTmpIt == It->second.end() ) )
-					bLast = true;
-
-				SmartPtr< BYTE, AllocNewArray<BYTE> > pbBuf;
-				/*			if( bFirst )
-				{
-				pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[sizeof( unsigned long ) + 1] );
-				pbBuf.get()[0] = (BYTE)RESP_OK;
-				::memcpy( pbBuf.get() + 1, (void*)&ulSize, sizeof( unsigned long ) );
-				Msg.SetBuffer( pbBuf.get(), sizeof( unsigned long ) + 1 );
-				if( ( 0 == ulSize ) && bLast )
-				m_ServerHandler.SendMsg( Msg );
-				else
-				m_ServerHandler.SendMsg( Msg, false );
-				}
-				*/
-				unsigned long ulCount = MAX_PACKET_SIZE;
-				unsigned long ulFileSize = ProtoIt->second->Size();
-				for( unsigned long i = 0; i < ulFileSize; i += MAX_PACKET_SIZE )
-				{
-					pbBuf = ProtoIt->second->GetBuf( ulCount );
-					Msg.SetBuffer( pbBuf.get(), ulCount );
-					m_ServerHandler.SendMsg( Msg, false );
-				}
-				//Отправляем маркер окончания пакета
-				if( bLast )
-				{
-					pbBuf = SmartPtr< BYTE, AllocNewArray<BYTE> >( new BYTE[0] );
-					Msg.SetBuffer( pbBuf.get(), 0 );
-					m_ServerHandler.SendMsg( Msg );
-				}
-				//TODO: это похоже необязательное если оставить дальше m_mapStorages.clear();
-				//ProtoIt->second->Clear();
-			}
+			COutPacket Msg;
+			hostRec TmpHost;
+			Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
+			Msg.PutField( FILES_LEFT, "true" );
+			ProtoIt->second->GetRecords( TmpHost, m_iPacketSize );
+			Msg.PutField( FILES_COUNT, TmpHost.Files.size() );
+			Msg.PutHostRec( TmpHost );
+			m_ServerHandler.SendMsg( Msg );
 		}
 	}
+	COutPacket Msg;
+	Msg.PutField( FILES_LEFT, "false" );
+	Msg.PutField( FILES_COUNT, 0 );
+	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
+	m_ServerHandler.SendMsg( Msg );
 	Log::instance().Trace( 90, "CGetData: Данные отправлены" );
 	m_mapStorages.clear();
 	return true;
 }
+
 namespace
 {
 	CTask* GetDataCreator( CServerHandler& Handler )

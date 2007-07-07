@@ -34,21 +34,17 @@ CConnectionHandler::~CConnectionHandler()
 unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
 {
 	CConnectionHandler* pThis = (CConnectionHandler*)param;
-	CPacket Msg;
+	CInPacket Msg;
 
 	try{
 		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск потока ожидания входящих сообщений c адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
 		while( true )
 		{
 			pThis->m_ServerHandler.Receive( Msg );
-			BYTE* pbBuf;
-			int iSize = 0;
-			Msg.GetBuffer( pbBuf, iSize );
-			Log::instance().Dump( 90, pbBuf, iSize, "CConnectionHandler::fnListenThread: Получен пакет: " );
+			Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Получен пакет" );
 			//Задаем данные для разбора входящего пакета
-			std::vector< SmartPtr< CTask > > vecTasks = pThis->m_MessageParser.Parse( Msg );
-			for( std::vector< SmartPtr< CTask > >::iterator It = vecTasks.begin(); It != vecTasks.end(); It++ )
-				pThis->m_TaskHandler.AddTask( *It );
+			SmartPtr< CTask > pTask = pThis->m_MessageParser.Parse( Msg );
+			pThis->m_TaskHandler.AddTask( pTask );
 		}
 		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
 	}catch( SocketErr& e )

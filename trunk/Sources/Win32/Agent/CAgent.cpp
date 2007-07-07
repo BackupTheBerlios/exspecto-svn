@@ -17,7 +17,8 @@ static char* pAgentParamTypes[] = {
 	SCAN_THREADS_COUNT, "int",
 	PING_ON, "bool",
 	SCHEDULER_EVENT_PORT, "int",
-	LISTEN_PORT, "int"
+	LISTEN_PORT, "int",
+	RESOLVE_HOST, "bool"
 };
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------CAgent------------------------------------------------------

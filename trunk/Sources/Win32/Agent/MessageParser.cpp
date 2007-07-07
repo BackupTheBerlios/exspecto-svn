@@ -6,44 +6,33 @@
 //---------------------------------------------CMessageParser------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 	
-CMessageParser::CreateTaskCallBack CMessageParser::GetRegisterCreator( int iTaskId, CreateTaskCallBack fnCreator )
+CMessageParser::CreateTaskCallBack CMessageParser::GetRegisterCreator( std::string strTaskId, CreateTaskCallBack fnCreator )
 {
-	static std::map< int, CreateTaskCallBack > m_mapCreators;
+	static std::map< std::string, CreateTaskCallBack > m_mapCreators;
 	if( NULL != fnCreator )
 	{
-		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Зарегистрирован тип сообщений %d", iTaskId );
-		m_mapCreators[ iTaskId ] = fnCreator;
-	}else if( m_mapCreators.find( iTaskId ) != m_mapCreators.end() )
+		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Зарегистрирован тип сообщений %s", strTaskId.c_str() );
+		m_mapCreators[ strTaskId ] = fnCreator;
+	}else if( m_mapCreators.find( strTaskId ) != m_mapCreators.end() )
 	{
-		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Запрошен тип сообщений %d", iTaskId );
-		return m_mapCreators[ iTaskId ];
+		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Запрошен тип сообщений %s", strTaskId.c_str() );
+		return m_mapCreators[ strTaskId ];
 	}
 	return NULL;
 }
 
-std::vector< SmartPtr< CTask > > CMessageParser::Parse( CPacket& Message )
+SmartPtr< CTask > CMessageParser::Parse( CInPacket& Message )
 {
 	Log::instance().Trace( 95, "CMessageParser::Parse: Обработка входящего пакета" );
-	BYTE bCommandId;
-	std::vector< SmartPtr< CTask > > vecRes;
 	SmartPtr< CTask > pTask;
-	for(;;)
+	std::string strCommandId;
+	Message.GetField( COMMAND_ID, strCommandId );
+	CreateTaskCallBack fnCreator;
+	if( ( fnCreator = GetRegisterCreator( strCommandId ) ) != NULL )
 	{
-		if( !Message.IsDone() )	
-			Message.GetCommandId( bCommandId );
-		else
-		{
-			Log::instance().Trace( 95, "CMessageParser::Parse: Обработка входящего пакета завершена.Всего команд:%d", vecRes.size() ); 
-			break;
-		}
-		CreateTaskCallBack fnCreator;
-		if( ( fnCreator = GetRegisterCreator( bCommandId ) ) != NULL )
-		{
-			CTask* pTask = fnCreator( m_ServerHandler );
-			pTask->Load( Message );
-			vecRes.push_back( pTask );
-		}else
-			Log::instance().Trace( 95, "CMessageParser::Parse: Неизвестный тип сообщения: %d", bCommandId );
-	}
-	return vecRes;
+		pTask = fnCreator( m_ServerHandler );
+		pTask->Load( Message );
+	}else
+		Log::instance().Trace( 95, "CMessageParser::Parse: Неизвестный тип сообщения: %s", strCommandId.c_str() );
+	return pTask;
 }

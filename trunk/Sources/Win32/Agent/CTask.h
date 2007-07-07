@@ -26,7 +26,7 @@ public:
 	
 	virtual void Execute( CEvent& CancelEv ) = 0;
 	
-	virtual void Load( CPacket& Msg ) = 0;
+	virtual void Load( CInPacket& Msg ) = 0;
 /*	
 	void Cancel()
 	{
@@ -43,12 +43,11 @@ protected:
 
 	CServerHandler m_ServerHandler;
 	
-	static enumAgentState m_CurState;
+	static std::string m_CurState;
 	
 	static CCriticalSection m_csCurState; 	
 	
-	static CTempStorage m_DataStorage;
-
+	//Адрес,имя проотокола,хранилище
 	static std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > m_mapStorages;
 
 	typedef std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > >::iterator StoragesIt;
@@ -70,7 +69,7 @@ public:
 	
 	virtual void Execute( CEvent& CancelEv ){};
 	
-	virtual void Load( CPacket& Msg ){};
+	virtual void Load( CInPacket& Msg ){};
 	
 	virtual std::string GetDescription()
 	{
@@ -91,7 +90,7 @@ public:
 	
 	virtual void Execute( CEvent& CancelEv ){};
 	
-	virtual void Load( CPacket& Msg ){};
+	virtual void Load( CInPacket& Msg ){};
 
 	virtual std::string GetDescription()
 	{
@@ -106,19 +105,23 @@ class CGetData: public CTask
 {
 public:
 	
-	CGetData( CServerHandler& Handler ):CTask( Handler ){};
+	CGetData( CServerHandler& Handler ):CTask( Handler )
+									   ,m_iPacketSize(0)
+	{};
 	
 	virtual bool Immidiate();
 	
 	virtual void Execute( CEvent& CancelEv ){};
 	
-	virtual void Load( CPacket& Msg ){};
+	virtual void Load( CInPacket& Msg );
 
 	virtual std::string GetDescription()
 	{
 		return "Получение данных"; 
 	};
-	
+private:
+
+	int m_iPacketSize;
 };
 
 class CStartScan: public CTask
@@ -164,7 +167,27 @@ public:
 
 		bool m_bResult;
 	};
-	
+
+	class CResolveTask: public CThreadTask
+	{
+	public:
+		CResolveTask( const std::string& strAddress ):m_strAddr( strAddress )
+		{};
+
+		virtual ~CResolveTask(){};
+
+		virtual void Execute( const CEvent& CancelEvent );
+
+		std::string GetHostName(){ return m_strHostName; }
+
+		std::string GetAddress(){ return m_strAddr; }
+
+	private:
+
+		std::string m_strAddr;
+
+		std::string m_strHostName;
+	};
 
 
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
@@ -176,7 +199,7 @@ public:
 	
 	virtual void Execute( CEvent& CancelEv );
 	
-	virtual void Load( CPacket& Msg );
+	virtual void Load( CInPacket& Msg );
 	
 	virtual std::string GetDescription()
 	{
