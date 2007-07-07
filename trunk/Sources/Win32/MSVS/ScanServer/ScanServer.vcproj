@@ -119,6 +119,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 		<ProjectReference
 			ReferencedProjectIdentifier="{76918729-7A0F-4529-8BA8-737E750291FA}"
 			Name="libNet"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}"
+			Name="tinyxmlSTL"/>
 	</References>
 	<Files>
 		<Filter

@@ -31,6 +31,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FtpScanner", "FtpScanner\Ft
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxmlSTL", "..\tinyxml\tinyxmlSTL.vcproj", "{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -86,6 +90,12 @@ Global
 		{946FFF0C-48AC-430F-8443-A286BA04365B}.Release.Build.0 = Release|Win32
 		{946FFF0C-48AC-430F-8443-A286BA04365B}.test.ActiveCfg = Release|Win32
 		{946FFF0C-48AC-430F-8443-A286BA04365B}.test.Build.0 = Release|Win32
+		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.Debug.ActiveCfg = Debug|Win32
+		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.Debug.Build.0 = Debug|Win32
+		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.Release.ActiveCfg = Release|Win32
+		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.Release.Build.0 = Release|Win32
+		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.test.ActiveCfg = Release|Win32
+		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.test.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

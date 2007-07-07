@@ -61,6 +61,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\CommonFiles"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
@@ -109,9 +110,6 @@
 				RelativePath="..\..\libCommon\SettingsContainer.cpp">
 			</File>
 			<File
-				RelativePath="..\..\libCommon\TempStorage.cpp">
-			</File>
-			<File
 				RelativePath="..\..\libCommon\ThreadsPool.cpp">
 			</File>
 			<File
@@ -148,9 +146,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libCommon\SmartPtr.hpp">
-			</File>
-			<File
-				RelativePath="..\..\libCommon\TempStorage.h">
 			</File>
 			<File
 				RelativePath="..\..\libCommon\ThreadsPool.h">

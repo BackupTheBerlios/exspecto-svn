@@ -119,6 +119,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 		<ProjectReference
 			ReferencedProjectIdentifier="{76918729-7A0F-4529-8BA8-737E750291FA}"
 			Name="libNet"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}"
+			Name="tinyxmlSTL"/>
 	</References>
 	<Files>
 		<Filter
@@ -151,6 +154,9 @@ copy $(TargetPath) ..\..\..\..\bin;
 			</File>
 			<File
 				RelativePath="..\..\Agent\TaskHandler.cpp">
+			</File>
+			<File
+				RelativePath="..\..\Agent\TempStorage.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -187,15 +193,15 @@ copy $(TargetPath) ..\..\..\..\bin;
 			<File
 				RelativePath="..\..\Agent\TaskHandler.h">
 			</File>
+			<File
+				RelativePath="..\..\Agent\TempStorage.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="CommonFiles"
 			Filter="">
 			<File
 				RelativePath="..\..\CommonFiles\CDBProvider.h">
-			</File>
-			<File
-				RelativePath="..\..\CommonFiles\commands.h">
 			</File>
 			<File
 				RelativePath="..\..\CommonFiles\PluginInterface.h">
