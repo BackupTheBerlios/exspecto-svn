@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 3.1.0?>
+
+<ManagedProjectBuildInfo>
+<project id="tinyxml.cdt.managedbuild.target.gnu.cygwin.lib.1781743144" name="Static Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.lib">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.lib.debug.576027674" name="Debug" description="" parent="cdt.managedbuild.config.gnu.cygwin.lib.debug" artifactName="tinyxml" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.441148048" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug.1680022904" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.976684080" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/tinyxml}&quot;" builtIn="false"/>
+</option>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug.768463782" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug.895957902" name="GCC Archiver"/>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug.1582118627" name="GCC Assembler"/>
+<macros/>
+</toolChain>
+</configuration>
+<configuration id="cdt.managedbuild.config.gnu.cygwin.lib.release.1272220738" name="Release" description="" parent="cdt.managedbuild.config.gnu.cygwin.lib.release" artifactName="tinyxml" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release" id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.1545769593" name="GCC Tool Chain">
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release.251267685" name="GCC C++ Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release.1299984394" name="GCC C Compiler"/>
+<tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release.1673218803" name="GCC Archiver"/>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release.910091232" name="GCC Assembler"/>
+</toolChain>
+</configuration>
+<macros/>
+</project>
+</ManagedProjectBuildInfo>
