@@ -23,6 +23,7 @@
 #define ADDR_COUNT "count"
 #define HOST_ADDR "ipaddress"
 #define HOST_NAME "hostname"
+#define PROTO_NAME "protoname"
 #define FILE_DATE "filedate"
 #define FILE_SIZE "filesize"
 #define FILE_PATH "filepath"
