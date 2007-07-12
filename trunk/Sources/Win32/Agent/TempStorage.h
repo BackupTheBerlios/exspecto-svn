@@ -24,11 +24,13 @@ public:
 
 	void PutRecord( const fileStr& File );
 
-	std::string GetPacket( int iRecordsCount );
-
-	void GetRecords( hostRec& Host, int iRecordsCount );
+	int GetRecords( hostRec& Host, int iRecordsCount );
 
 	CTempStorage& operator<<( CTempStorage& );
+
+	unsigned int GetSize();
+
+	bool IsEof();
 
 	void Clear();
 
@@ -43,6 +45,8 @@ private:
 
 	std::fstream m_sFile;
 	std::string m_strFileName, m_strHostName, m_strHostAddr;
+
+	std::istream::pos_type m_ReadPos;
 
 	//сути - флаг создания файла
 	bool m_bOpenedForWrite;

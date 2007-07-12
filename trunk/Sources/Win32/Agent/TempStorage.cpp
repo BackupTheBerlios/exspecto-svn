@@ -18,40 +18,29 @@ CTempStorage::~CTempStorage(void)
 void CTempStorage::PutRecord( const fileStr& File )
 {
 	Open( false );
-/*	m_sFile << "<" << FILE_TAG << ">";
-		m_sFile << "<" << FILE_PATH << ">" + File.FileName + "</" + FILE_PATH + ">";
-		m_sFile << "<" << FILE_DATE << ">";
-		m_sFile.write( (const char*)&File.FDate.UTS, sizeof( time_t ) );
-		m_sFile << "</" << FILE_DATE << ">";
-		m_sFile << "<" << FILE_SIZE << ">" << File.FileSize << "</" << FILE_SIZE << ">";
-	m_sFile << "</" << FILE_TAG << ">\r\n";
-	*/
-	m_sFile << File.FileSize << File.FileName << File.FDate.UTS;
+
+	m_sFile << File.FileSize << " " << File.FileName << " " << File.FDate.UTS << " ";
     m_sFile.close();
 }
 
-void CTempStorage::GetRecords( hostRec& Host, int iRecordsCount )
+int CTempStorage::GetRecords( hostRec& Host, int iRecordsCount )
 {
-	Host.IPNum = m_strHostAddr;
-	Host.HostName = m_strHostName;
-	Host.Files.clear();
-	fileStr TmpFile;
-	int i = 0;
-	while( m_sFile >> TmpFile.FileSize >> TmpFile.FileName >> TmpFile.FDate.UTS && ++i < iRecordsCount );
-	m_sFile.close();
-}
-
-std::string CTempStorage::GetPacket( int iRecordsCount )
-{
-	std::string strTmp = "<?xml version=\"1.0\" encoding=\"windows-1251\"?>\r\n<packet>\r\n</packet>\r\n";
-	strTmp += "<";strTmp += HOST_TAG;strTmp += " ";strTmp += HOST_ADDR;strTmp += "=" + m_strHostAddr;
-	strTmp += " ";strTmp += HOST_NAME;strTmp += " ";strTmp += m_strHostName + ">";
-    Open( true );
-	int i = 0;
-	while( m_sFile >> strTmp && ++i < iRecordsCount );
-	m_sFile.close();
-	strTmp += "</";strTmp += HOST_TAG;strTmp += ">";
-	return strTmp;
+	if( IsExists() )
+	{
+		Open( true );
+		Host.IPNum = m_strHostAddr;
+		Host.HostName = m_strHostName;
+		Host.Files.clear();
+		fileStr TmpFile;
+		int i = 0;
+		m_sFile.seekg( m_ReadPos );
+		while( m_sFile >> TmpFile.FileSize >> TmpFile.FileName >> TmpFile.FDate.UTS && ++i < iRecordsCount )
+			Host.Files.push_back( TmpFile );
+		m_ReadPos = m_sFile.tellg();
+		m_sFile.close();
+		return i?--i:0;
+	}else
+		return 0;
 }
 
 CTempStorage& CTempStorage::operator<<( CTempStorage& st )
@@ -62,6 +51,7 @@ CTempStorage& CTempStorage::operator<<( CTempStorage& st )
 		Open( false );
 		char ch;
 		while( st.m_sFile.get( ch ) ) m_sFile.put( ch );
+		m_ReadPos = m_sFile.tellg();
 		st.m_sFile.close();
 		st.Clear();
 		m_sFile.close();
@@ -107,4 +97,27 @@ bool CTempStorage::IsExists()
 	bool bRes = m_sFile.is_open();
 	m_sFile.close();
 	return bRes;
+}
+
+unsigned int CTempStorage::GetSize()
+{
+	m_sFile.open( m_strFileName.c_str(), std::ios::binary|std::ios::in );
+	if( !m_sFile.is_open() )
+		return 0;
+	else
+	m_sFile.seekp( 0, std::ios_base::end );
+	long lSize = m_sFile.tellp();
+	m_sFile.close();
+	return lSize;  
+}
+
+bool CTempStorage::IsEof()
+{
+	m_sFile.open( m_strFileName.c_str(), std::ios::binary|std::ios::in );
+	if( !m_sFile.is_open() )
+		return true;
+	m_sFile.seekg( 0, std::ios_base::end );
+	bool bRes = ( m_ReadPos >= m_sFile.tellg() )?true:false;
+	m_sFile.close();
+	return bRes;  
 }

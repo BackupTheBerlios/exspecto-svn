@@ -51,7 +51,8 @@ void CStartScan::CResolveTask::Execute( const CEvent& CancelEvent )
 {
 	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
 	hostent* res;
-	if( NULL != ( res = ::gethostbyaddr( m_strAddr.c_str(), m_strAddr.size(), AF_INET ) ) )
+	unsigned long addr = inet_addr( m_strAddr.c_str() );
+	if( NULL != ( res = ::gethostbyaddr( (char *) &addr, 4, AF_INET ) ) )
 		m_strHostName = res->h_name;
 }
 
@@ -89,7 +90,7 @@ void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 	ULARGE_INTEGER ulFileTime;
 	ulFileTime.LowPart = lFileTime;
 	ulFileTime.HighPart = hFileTime;
-	File.FDate.UTS = (time_t)( ulFileTime.QuadPart - 0x19DB1DED53E8000 ) / 10000000;
+	File.FDate.UTS = (time_t)(( ulFileTime.QuadPart - 0x19DB1DED53E8000 ) / 10000000);
 	m_mapStorages[ strAddress ][ strProtocolName ]->PutRecord( File );
 }
 
@@ -102,13 +103,11 @@ CStartScan::CScanThreadTask::CScanThreadTask( const std::string& strAddr, ScanFu
 
 void CStartScan::Load( CInPacket& Msg )
 {
-	m_strDescription.clear();
 	std::string strAddress;
-	std::vector< std::string > vecAddresses;
 	Msg.GetFirstAddress( strAddress );
 	do
 	{
-		vecAddresses.push_back( strAddress );
+		m_vecAddresses.push_back( strAddress );
 		m_strDescription += strAddress;
 		m_strDescription += " ";
 	}while( Msg.GetNextAddress( strAddress ) );
@@ -143,7 +142,7 @@ void CStartScan::Execute( CEvent& CancelEv )
 	Settings::instance().GetParam( PING_ON, bPingOn );
 	if( bPingOn )
 	{
-		Log::instance().Trace( 10, "CStartScan::Execute: Проверяем доступность хостов" );
+		Log::instance().Trace( 10, "CStartScan::Execute: Проверяем доступность хостов, кол-во хостов: %d", m_vecAddresses.size() );
 		std::vector< SmartPtr< CAvailabilityScanTask > > vecAvailTasks;
 		for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
 		{
@@ -278,26 +277,36 @@ void CGetData::Load( CInPacket& Msg )
 bool CGetData::Immidiate()
 {
 	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
-	//Подсчитываем размер данных для отправки
-
-	for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end(); It++ )
-	{
-		for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end(); ProtoIt++ )
-		{
-			COutPacket Msg;
-			hostRec TmpHost;
-			Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
-			Msg.PutField( FILES_LEFT, "true" );
-			ProtoIt->second->GetRecords( TmpHost, m_iPacketSize );
-			Msg.PutField( FILES_COUNT, TmpHost.Files.size() );
-			Msg.PutHostRec( TmpHost );
-			m_ServerHandler.SendMsg( Msg );
-		}
-	}
+	
 	COutPacket Msg;
-	Msg.PutField( FILES_LEFT, "false" );
-	Msg.PutField( FILES_COUNT, 0 );
+	hostRec TmpHost;
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
+	int iRecordsCount = 0;
+	for( StoragesIt It = m_mapStorages.begin(); It != m_mapStorages.end() && iRecordsCount < m_iPacketSize;)
+	{
+		for( std::map< std::string, SmartPtr< CTempStorage > >::iterator ProtoIt = It->second.begin(); ProtoIt != It->second.end() && iRecordsCount < m_iPacketSize;)
+		{
+			iRecordsCount += ProtoIt->second->GetRecords( TmpHost, m_iPacketSize - iRecordsCount );
+			Msg.PutHostRec( TmpHost, ProtoIt->first );
+			if( ProtoIt->second->IsEof() )
+			{
+				ProtoIt->second->Clear();
+				It->second.erase( ProtoIt++ );
+			}else
+				ProtoIt++;
+			
+		}
+		if( It->second.empty() )
+			m_mapStorages.erase( It++ );
+		else
+			It++;
+
+	}
+	Msg.PutField( FILES_COUNT, iRecordsCount );
+	if( m_mapStorages.empty() )
+		Msg.PutField( FILES_LEFT, "false" );
+	else
+		Msg.PutField( FILES_LEFT, "true" );
 	m_ServerHandler.SendMsg( Msg );
 	Log::instance().Trace( 90, "CGetData: Данные отправлены" );
 	m_mapStorages.clear();

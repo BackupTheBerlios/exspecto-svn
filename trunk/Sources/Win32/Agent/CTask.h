@@ -192,7 +192,7 @@ public:
 
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
 	{
-		m_strDescription = "Сканирование адресов:";
+		m_strDescription = "Сканирование адресов: ";
 	};
 	
 	virtual bool Immidiate();
