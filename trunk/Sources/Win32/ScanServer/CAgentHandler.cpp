@@ -71,8 +71,10 @@ void CAgentHandler::SendMessage( COutPacket &Msg, CInPacket& Response )
 				m_vecRecvBuf.resize( RECEIVE_BUF_MAX_SIZE );
 		Log::instance().Trace( 80, "CAgentHandler(%s)::SendMessage: Размер приемного буфера: %d", m_strAddress.c_str(), m_vecRecvBuf.size() );
 	}
+	
 	if( 0 == iCount )
 		throw HandlerErr( "Connection closed" );
+	Log::instance().Dump( 3, &vecPacketBuf[0], vecPacketBuf.size(), "CAgentHandler(%s)::SendMessage: Принят пакет:", m_strAddress.c_str() );
 	Response.Load( &vecPacketBuf[0], vecPacketBuf.size() );
 }
 
@@ -196,7 +198,7 @@ std::string CAgentHandler::GetData()
 	COutPacket Msg;
 
 	Msg.PutField( COMMAND_ID, GET_DATA );
-	Msg.PutField( FILES_COUNT, 100 );
+	Msg.PutField( FILES_COUNT, 1000 );
 
 	//отправляем команду
 	std::string strRes;
@@ -221,6 +223,7 @@ std::string CAgentHandler::GetData()
 			{
 				if( setErased.find( TmpHost.IPNum ) == setErased.end() )
 				{
+					//TODO: В базу также нужно записывать имя протокола
 					DbProviderFactory::instance().GetProviderInstance()->EraseHost( TmpHost.HostName, TmpHost.IPNum, 0 );
 					setErased.insert( TmpHost.IPNum );
 				}
