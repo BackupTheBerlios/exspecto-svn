@@ -42,7 +42,7 @@ public:
 
 	void GetFirstHostRec( hostRec& Host );
 	bool GetNextHostRec( hostRec& Host );
-
+    
 	static std::vector<BYTE> GetEndStamp()
 	{
 		const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 }; 
@@ -50,6 +50,8 @@ public:
 	}
 
 private:
+
+	void GetHostRec( hostRec& Host );
 
 	void GetFileStruct( TiXmlElement* pElem, fileStr& File );
 
@@ -62,6 +64,8 @@ private:
 	void GetField( TiXmlElement* pParentElem, const std::string& strName , bool& bValue );
 
 	void GetField( TiXmlElement* pParentElem, const std::string& strName , time_t& bValue );
+
+	time_t StrToTimet( const std::string& str );
 
 	TiXmlDocument m_XmlDoc;
 
@@ -86,7 +90,8 @@ public:
 
 	void PutField( const std::string& strName, int iValue );
 
-	void PutHostRec( const hostRec& Host );
+	//TODO: Имя протокола strProtoName должно быть в структуре hostRec
+	void PutHostRec( const hostRec& Host, const std::string& strProtoName );
 
 	std::string ToString(){ return m_strPacket; }
 
@@ -94,6 +99,8 @@ private:
 
 	COutPacket( const COutPacket& );
 	COutPacket& operator=( const COutPacket& );
+
+	std::string TimetToStr( time_t time );
 
 	std::string m_strPacket;
 };
