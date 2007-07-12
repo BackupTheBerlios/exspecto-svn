@@ -35,6 +35,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxmlSTL", "..\tinyxml\ti
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PTypes_DLL", "..\ptypes\win32\PTypes_DLL.vcproj", "{85125081-50AB-41EE-8385-84B9E402B1A7}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -96,6 +100,12 @@ Global
 		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.Release.Build.0 = Release|Win32
 		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.test.ActiveCfg = Release|Win32
 		{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}.test.Build.0 = Release|Win32
+		{85125081-50AB-41EE-8385-84B9E402B1A7}.Debug.ActiveCfg = Debug|Win32
+		{85125081-50AB-41EE-8385-84B9E402B1A7}.Debug.Build.0 = Debug|Win32
+		{85125081-50AB-41EE-8385-84B9E402B1A7}.Release.ActiveCfg = Release|Win32
+		{85125081-50AB-41EE-8385-84B9E402B1A7}.Release.Build.0 = Release|Win32
+		{85125081-50AB-41EE-8385-84B9E402B1A7}.test.ActiveCfg = Release|Win32
+		{85125081-50AB-41EE-8385-84B9E402B1A7}.test.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
