@@ -298,7 +298,7 @@ std::string COutPacket::TimetToStr( time_t time )
 
 COutPacket& operator<<( CSocket& sock, COutPacket& packet )
 {
-	sock.Send( (BYTE*)packet.m_strPacket.c_str(), packet.m_strPacket.size() );
-	sock.Send( &CInPacket::GetEndStamp()[0], CInPacket::GetEndStamp().size() );
+	sock.Send( (BYTE*)packet.m_strPacket.c_str(), (int)packet.m_strPacket.size() );
+	sock.Send( &CInPacket::GetEndStamp()[0], (int)CInPacket::GetEndStamp().size() );
 	return packet;
 }
