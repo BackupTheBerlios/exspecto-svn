@@ -39,6 +39,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PTypes_DLL", "..\ptypes\win
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCommonTest", "UnitTests\libCommonTest\libCommonTest.vcproj", "{F242AD70-5C23-4282-8E18-0BC77DC95060}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppunit", "..\UnitTests\cppunit\src\cppunit\cppunit.vcproj", "{3419A602-B8F9-49AE-8A40-5AECFE78F267}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libNetTest", "UnitTests\libNetTest\libNetTest.vcproj", "{B49EDD40-81DB-4719-A359-8F523AC8FA39}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -106,6 +118,24 @@ Global
 		{85125081-50AB-41EE-8385-84B9E402B1A7}.Release.Build.0 = Release|Win32
 		{85125081-50AB-41EE-8385-84B9E402B1A7}.test.ActiveCfg = Release|Win32
 		{85125081-50AB-41EE-8385-84B9E402B1A7}.test.Build.0 = Release|Win32
+		{F242AD70-5C23-4282-8E18-0BC77DC95060}.Debug.ActiveCfg = Debug|Win32
+		{F242AD70-5C23-4282-8E18-0BC77DC95060}.Debug.Build.0 = Debug|Win32
+		{F242AD70-5C23-4282-8E18-0BC77DC95060}.Release.ActiveCfg = Release|Win32
+		{F242AD70-5C23-4282-8E18-0BC77DC95060}.Release.Build.0 = Release|Win32
+		{F242AD70-5C23-4282-8E18-0BC77DC95060}.test.ActiveCfg = Release|Win32
+		{F242AD70-5C23-4282-8E18-0BC77DC95060}.test.Build.0 = Release|Win32
+		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.Debug.ActiveCfg = Debug|Win32
+		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.Debug.Build.0 = Debug|Win32
+		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.Release.ActiveCfg = Release|Win32
+		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.Release.Build.0 = Release|Win32
+		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.test.ActiveCfg = Release|Win32
+		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.test.Build.0 = Release|Win32
+		{B49EDD40-81DB-4719-A359-8F523AC8FA39}.Debug.ActiveCfg = Debug|Win32
+		{B49EDD40-81DB-4719-A359-8F523AC8FA39}.Debug.Build.0 = Debug|Win32
+		{B49EDD40-81DB-4719-A359-8F523AC8FA39}.Release.ActiveCfg = Release|Win32
+		{B49EDD40-81DB-4719-A359-8F523AC8FA39}.Release.Build.0 = Release|Win32
+		{B49EDD40-81DB-4719-A359-8F523AC8FA39}.test.ActiveCfg = Release|Win32
+		{B49EDD40-81DB-4719-A359-8F523AC8FA39}.test.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

@@ -63,7 +63,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\CommonFiles"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
-				RuntimeLibrary="4"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -122,9 +123,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath="..\..\libCommon\CLog.h">
-			</File>
-			<File
-				RelativePath="..\..\libCommon\Container.hpp">
 			</File>
 			<File
 				RelativePath="..\..\libCommon\CriticalSection.hpp">
