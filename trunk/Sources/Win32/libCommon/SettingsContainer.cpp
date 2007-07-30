@@ -214,7 +214,7 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 		int iExclPos = -2;
 
 		if( std::string::npos == (size_t)( iDelimPos = (int)It->find( "-" ) ) 
-			&& std::string::npos == (size_t)( iExclPos = It->find( "!" ) ) )
+			&& std::string::npos == (size_t)( iExclPos = (int)It->find( "!" ) ) )
 		{
 			listIp.push_back( *It );
 		}else if( iExclPos > 0 )

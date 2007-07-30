@@ -83,7 +83,7 @@ public:
 	}
 
 
-	template< class T1, class T2 >
+	template< class T1 >
 	bool operator==( const SmartPtr< T1, AllocationPolicy >& SmartPointer )
 	{
 		return m_pPointerImpl->pPointer == SmartPointer.m_pPointerImpl->pPointer;
@@ -220,21 +220,8 @@ public:
 			m_pPointerImpl = NULL;
 		}
 	}
-/*	
-	void Realloc( int iNewSize )
-	{
 
-		T* pTmp = m_pPointer;
-		AllocationPolicy::Realloc( m_pPointer, iNewSize );
-		if( pTmp != m_pPointer )
-		{
-			m_mapRefs[ m_pPointer ] = m_mapRefs[ pTmp ];
-			m_mapRefs[ pTmp ] = 0;
-		}
-
-	}
-*/	
-	T& operator*()
+    T& operator*()
 	{
 		return *m_pPointerImpl->pPointer;
 	}

@@ -85,15 +85,6 @@ class CSettings
 {	
 public:
 
-/*
-	void SetModule( const char* strModuleName, char** pModuleParams, int iParamCount )
-	{
-		LoadStrategy.Load( strModuleName, pModuleParams, iParamCount );
-		m_strModuleName = strModuleName;
-		m_pParamTypes = pModuleParams;
-		m_iParamCount = iParamCount;
-	}
-*/	
 	/*!
 		Шаблонная функция помещения параметров в ассоциативный массив параметров.
 		(Шаблонной сделана для того, чтобы передавать константную ссылку)
