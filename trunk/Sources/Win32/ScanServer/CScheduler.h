@@ -10,7 +10,6 @@
 #include "ServerSocket.h"
 #include "CAgentHandler.h"
 #include "CStartTrigger.h"
-#include "Container.hpp"
 #include "AgentsLoadStrategy.h"
 #include "SmartPtr.hpp"
 #include "Event.hpp"
