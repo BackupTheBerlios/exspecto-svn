@@ -5,7 +5,6 @@
 #include "Event.hpp"
 #include "MessageParser.h"
 
-#include "Container.hpp"
 #include "PluginContainer.h"
 #include "CScanner.h"
 #include "ThreadsPool.h"
