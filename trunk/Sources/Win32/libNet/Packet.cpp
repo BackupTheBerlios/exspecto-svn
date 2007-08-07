@@ -11,8 +11,8 @@
 #include <time.h>
 
 
-CInPacket::CInPacket( BYTE* pbBuf, int iSize ):m_pHostElement( NULL )
-											  ,m_pXmlRoot( NULL )
+CInPacket::CInPacket( BYTE* pbBuf, int iSize ):m_pXmlRoot( NULL )
+											  ,m_pHostElement( NULL )
 											  ,m_pAddrElement( NULL )
 {
 	std::string strPacket( pbBuf, pbBuf+iSize );
@@ -25,8 +25,8 @@ CInPacket::CInPacket( BYTE* pbBuf, int iSize ):m_pHostElement( NULL )
 	}
 }
 
-CInPacket::CInPacket():m_pHostElement( NULL )
-					  ,m_pXmlRoot( NULL )
+CInPacket::CInPacket():m_pXmlRoot( NULL )
+					  ,m_pHostElement( NULL )
 					  ,m_pAddrElement( NULL )
 {}
 
@@ -229,10 +229,10 @@ time_t CInPacket::StrToTimet( const std::string& str )
 									  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
 	BYTE bTmp;
 	time_t res;
-	for( int i = 0; i < sizeof( time_t ); i++ )
+	for( unsigned int i = 0; i < sizeof( time_t ); i++ )
 	{
-		bTmp = ( AsciToHex[ str[ 2*i ] ] ) * 16;
-		bTmp += AsciToHex[ str[ 2*i + 1 ] ];
+		bTmp = ( AsciToHex[ (BYTE)str[ 2*i ] ] ) * 16;
+		bTmp += AsciToHex[ (BYTE)str[ 2*i + 1 ] ];
 		memcpy( (BYTE*)&res + i, &bTmp, 1 );
 	}
 	return res;
@@ -287,7 +287,7 @@ std::string COutPacket::TimetToStr( time_t time )
 	static const char HexToAsci[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 	std::string strRes;
 	BYTE bTmp;
-	for( int i = 0; i < sizeof(time_t); i++ )
+	for( unsigned int i = 0; i < sizeof(time_t); i++ )
 	{
 		bTmp = (BYTE)*( (BYTE*)&time + i );
 		strRes += HexToAsci[ bTmp/16 ];

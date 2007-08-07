@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 4.0.0?>
+
+<cproject>
+<storageModule moduleId="org.eclipse.cdt.core.settings">
+<cconfiguration id="cdt.managedbuild.config.gnu.cygwin.lib.debug.144867959">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.cygwin.lib.debug.144867959" name="Debug" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<externalSettings>
+<externalSetting>
+<entry kind="includePath" flags="VALUE_WORKSPACE_PATH" name="/libNet"/>
+<entry kind="libraryPath" flags="VALUE_WORKSPACE_PATH" name="/libNet/Debug"/>
+</externalSetting>
+</externalSettings>
+<extensions>
+<extension point="org.eclipse.cdt.core.BinaryParser" id="org.eclipse.cdt.core.Cygwin_PE"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GASErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GCCErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GLDErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.MakeErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.lib.debug.144867959" name="Debug" description="" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" parent="cdt.managedbuild.config.gnu.cygwin.lib.debug" artifactName="Net" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">
+<folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.debug.144867959.1396075716" name="/" resourcePath="">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.1580589528" name="GCC Tool Chain">
+<targetPlatform superClass="cdt.managedbuild.target.gnu.platform.cygwin.lib.debug" id="cdt.managedbuild.target.gnu.platform.cygwin.lib.debug.278124074" name="Debug Platform"/>
+<builder superClass="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug" id="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug.1994856238" name="Gnu Make Builder.Debug" buildPath="${workspace_loc:/libNet/Debug}"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug.629381218" name="GCC C Compiler">
+<option superClass="gnu.c.compiler.cygwin.lib.debug.option.optimization.level" id="gnu.c.compiler.cygwin.lib.debug.option.optimization.level.439017191" defaultValue="gnu.c.optimization.level.none" valueType="enumerated"/>
+<option superClass="gnu.c.compiler.cygwin.lib.debug.option.debugging.level" id="gnu.c.compiler.cygwin.lib.debug.option.debugging.level.1856700019" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.1483386787"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug.92567813" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.1035492081" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.compiler.cygwin.lib.debug.option.optimization.level" id="gnu.cpp.compiler.cygwin.lib.debug.option.optimization.level.603380045" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option superClass="gnu.cpp.compiler.cygwin.lib.debug.option.debugging.level" id="gnu.cpp.compiler.cygwin.lib.debug.option.debugging.level.1018271333" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin.1216277599"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.debug.43295887" name="GCC Archiver"/>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.debug.1659645368" name="GCC Assembler">
+<inputType superClass="cdt.managedbuild.tool.gnu.assembler.input" id="cdt.managedbuild.tool.gnu.assembler.input.640288590"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.base" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.base.812281472" name="Cygwin C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.base" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.base.785074772" name="Cygwin C++ Linker"/>
+</toolChain>
+</folderInfo>
+</configuration>
+</storageModule>
+<storageModule moduleId="scannerConfiguration"/>
+</cconfiguration>
+<cconfiguration id="cdt.managedbuild.config.gnu.cygwin.lib.release.770068188">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.cygwin.lib.release.770068188" name="Release" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<externalSettings>
+<externalSetting>
+<entry kind="includePath" flags="VALUE_WORKSPACE_PATH" name="/libNet"/>
+<entry kind="libraryPath" flags="VALUE_WORKSPACE_PATH" name="/libNet/Release"/>
+</externalSetting>
+</externalSettings>
+<extensions>
+<extension point="org.eclipse.cdt.core.BinaryParser" id="org.eclipse.cdt.core.Cygwin_PE"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GASErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GCCErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GLDErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.MakeErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.lib.release.770068188" name="Release" description="" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" parent="cdt.managedbuild.config.gnu.cygwin.lib.release" artifactName="Net" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="a" cleanCommand="rm -rf">
+<folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.release.770068188.449589890" name="/" resourcePath="">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release" id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.726326325" name="GCC Tool Chain">
+<targetPlatform superClass="cdt.managedbuild.target.gnu.platform.cygwin.lib.release" id="cdt.managedbuild.target.gnu.platform.cygwin.lib.release.426367581" name="Debug Platform"/>
+<builder superClass="cdt.managedbuild.target.gnu.builder.cygwin.lib.release" id="cdt.managedbuild.target.gnu.builder.cygwin.lib.release.723040677" name="Gnu Make Builder.Release" buildPath="${workspace_loc:/libNet/Release}"/>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release.532647147" name="GCC C Compiler">
+<option superClass="gnu.c.compiler.cygwin.lib.release.option.optimization.level" id="gnu.c.compiler.cygwin.lib.release.option.optimization.level.1684265526" defaultValue="gnu.c.optimization.level.most" valueType="enumerated"/>
+<option superClass="gnu.c.compiler.cygwin.lib.release.option.debugging.level" id="gnu.c.compiler.cygwin.lib.release.option.debugging.level.1877180854" value="gnu.c.debugging.level.none" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.585423288"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release.740612633" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.883900783" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.compiler.cygwin.lib.release.option.optimization.level" id="gnu.cpp.compiler.cygwin.lib.release.option.optimization.level.1925845270" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+<option superClass="gnu.cpp.compiler.cygwin.lib.release.option.debugging.level" id="gnu.cpp.compiler.cygwin.lib.release.option.debugging.level.57064589" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin.1099096238"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release.1378160328" name="GCC Archiver"/>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release.1381441488" name="GCC Assembler">
+<inputType superClass="cdt.managedbuild.tool.gnu.assembler.input" id="cdt.managedbuild.tool.gnu.assembler.input.575504032"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.base" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.base.1674902327" name="Cygwin C Linker"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.base" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.base.1240327909" name="Cygwin C++ Linker"/>
+</toolChain>
+</folderInfo>
+</configuration>
+</storageModule>
+</cconfiguration>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<project id="Net.lib.cdt.managedbuild.target.gnu.cygwin.lib.1453808172" name="Static Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.lib"/>
+</storageModule>
+</cproject>
