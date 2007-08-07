@@ -90,7 +90,7 @@ void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 	ULARGE_INTEGER ulFileTime;
 	ulFileTime.LowPart = lFileTime;
 	ulFileTime.HighPart = hFileTime;
-	File.FDate.UTS = (time_t)(( ulFileTime.QuadPart - 0x19DB1DED53E8000 ) / 10000000);
+	File.FDate.UTS = (time_t)(( ulFileTime.QuadPart - 0x19DB1DED53E8000LL ) / 10000000);
 	m_mapStorages[ strAddress ][ strProtocolName ]->PutRecord( File );
 }
 

@@ -1,9 +1,9 @@
 #include "tempstorage.h"
 
 CTempStorage::CTempStorage( const std::string& strHostName, const std::string& strHostAddr, const std::string& strProtoName )
-:m_bOpenedForWrite( false )
+:m_strHostName( strHostName )
 ,m_strHostAddr( strHostAddr )
-,m_strHostName( strHostName )
+,m_bOpenedForWrite( false )
 {
 	CreateDirectory( "temp", NULL );
 	m_strFileName = "temp\\" + strProtoName + strHostAddr;

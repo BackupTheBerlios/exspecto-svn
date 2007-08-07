@@ -57,7 +57,7 @@ void CServerHandler::Receive( CInPacket& Msg )
 			iCount -= CInPacket::GetEndStamp().size();
 			bEnd = true;
 		//Если получили только маркер конца
-		}else if ( ( iCount == CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ 0 ], CInPacket::GetEndStamp().size() ) ) )
+		}else if ( ( iCount == (int)CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ 0 ], (int)CInPacket::GetEndStamp().size() ) ) )
 			break;
 		
 		vecPacketBuf.insert( vecPacketBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
@@ -72,7 +72,7 @@ void CServerHandler::Receive( CInPacket& Msg )
 	}
 	if( 0 == iCount )
 		//TODO:
-		throw std::exception( "Connection closed" );
+		throw std::runtime_error( "Connection closed" );
 	Msg.Load( &vecPacketBuf[0], vecPacketBuf.size() );
 }
 
