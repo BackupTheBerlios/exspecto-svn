@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 4.0.0?>
+
+<cproject>
+<storageModule moduleId="org.eclipse.cdt.core.settings">
+<cconfiguration id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416" name="Debug" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<externalSettings>
+<externalSetting>
+<entry kind="includePath" flags="VALUE_WORKSPACE_PATH" name="/DBSQLite3"/>
+<entry kind="libraryPath" flags="VALUE_WORKSPACE_PATH" name="/DBSQLite3/Debug"/>
+</externalSetting>
+</externalSettings>
+<extensions>
+<extension point="org.eclipse.cdt.core.BinaryParser" id="org.eclipse.cdt.core.Cygwin_PE"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GASErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GCCErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GLDErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.MakeErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416" name="Debug" description="" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" parent="cdt.managedbuild.config.gnu.cygwin.so.debug" artifactName="DBSQLite3" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf" postbuildStep="cp dbsqlite3.dll &quot;../../../../Bin/dbsqlite3.dll&quot;;cp dbsqlite3.dll &quot;d:/Apache/cgi-bin/dbsqlite3.dll&quot;">
+<folderInfo id="cdt.managedbuild.config.gnu.cygwin.so.debug.397959416.882561233" name="/" resourcePath="">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug" id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.508662628" name="GCC Tool Chain">
+<targetPlatform superClass="cdt.managedbuild.target.gnu.platform.cygwin.so.debug" id="cdt.managedbuild.target.gnu.platform.cygwin.so.debug.593214322" name="Debug Platform"/>
+<builder superClass="cdt.managedbuild.target.gnu.builder.cygwin.so.debug" id="cdt.managedbuild.target.gnu.builder.cygwin.so.debug.1734756706" name="Gnu Make Builder.Debug" buildPath="${workspace_loc:/DBSQLite3/Debug}"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1509271261" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.1342886315" valueType="includePath">
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.compiler.cygwin.so.debug.option.optimization.level" id="gnu.cpp.compiler.cygwin.so.debug.option.optimization.level.1415192058" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option superClass="gnu.cpp.compiler.cygwin.so.debug.option.debugging.level" id="gnu.cpp.compiler.cygwin.so.debug.option.debugging.level.895215389" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin.1895468150"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.1364690662" name="GCC C Compiler">
+<option superClass="gnu.c.compiler.cygwin.so.debug.option.optimization.level" id="gnu.c.compiler.cygwin.so.debug.option.optimization.level.701889813" defaultValue="gnu.c.optimization.level.none" valueType="enumerated"/>
+<option superClass="gnu.c.compiler.cygwin.so.debug.option.debugging.level" id="gnu.c.compiler.cygwin.so.debug.option.debugging.level.1667422152" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.1801588888"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.536541255" name="GCC C Linker">
+<option superClass="gnu.c.link.cygwin.so.debug.option.shared" id="gnu.c.link.cygwin.so.debug.option.shared.1197941153" defaultValue="true" valueType="boolean"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.148415485" name="GCC C++ Linker">
+<option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.1068444666" valueType="libs">
+<listOptionValue value="sqlite3" builtIn="false"/>
+<listOptionValue value="Common" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.1652366734" valueType="stringList">
+<listOptionValue value="&quot;${workspace_loc:/DBSQLite3}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon/Debug}&quot;" builtIn="false"/>
+</option>
+<option superClass="gnu.cpp.link.option.implname" id="gnu.cpp.link.option.implname.223877116" value="dbsqlite3.lib" valueType="string"/>
+<option superClass="gnu.cpp.link.option.defname" id="gnu.cpp.link.option.defname.702585667" value="dbsqlite3.def" valueType="string"/>
+<option superClass="gnu.cpp.link.cygwin.so.debug.option.shared" id="gnu.cpp.link.cygwin.so.debug.option.shared.1851986801" defaultValue="true" valueType="boolean"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.1841657269" name="GCC Assembler">
+<inputType superClass="cdt.managedbuild.tool.gnu.assembler.input" id="cdt.managedbuild.tool.gnu.assembler.input.372566647"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.base" id="cdt.managedbuild.tool.gnu.archiver.cygwin.base.2007617065" name="GCC Archiver"/>
+</toolChain>
+</folderInfo>
+</configuration>
+</storageModule>
+<storageModule moduleId="scannerConfiguration"/>
+</cconfiguration>
+<cconfiguration id="cdt.managedbuild.config.gnu.cygwin.so.release.774908514">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.cygwin.so.release.774908514" name="Release" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<externalSettings>
+<externalSetting>
+<entry kind="includePath" flags="VALUE_WORKSPACE_PATH" name="/DBSQLite3"/>
+<entry kind="libraryPath" flags="VALUE_WORKSPACE_PATH" name="/DBSQLite3/Release"/>
+</externalSetting>
+</externalSettings>
+<extensions>
+<extension point="org.eclipse.cdt.core.BinaryParser" id="org.eclipse.cdt.core.Cygwin_PE"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GASErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GCCErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.GLDErrorParser"/>
+<extension point="org.eclipse.cdt.core.ErrorParser" id="org.eclipse.cdt.core.MakeErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.so.release.774908514" name="Release" description="" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" parent="cdt.managedbuild.config.gnu.cygwin.so.release" artifactName="DBSQLite3" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="dll" cleanCommand="rm -rf">
+<folderInfo id="cdt.managedbuild.config.gnu.cygwin.so.release.774908514.790339556" name="/" resourcePath="">
+<toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.release" id="cdt.managedbuild.toolchain.gnu.cygwin.so.release.265740915" name="GCC Tool Chain">
+<targetPlatform superClass="cdt.managedbuild.target.gnu.platform.cygwin.so.release" id="cdt.managedbuild.target.gnu.platform.cygwin.so.release.2132869876" name="Debug Platform"/>
+<builder superClass="cdt.managedbuild.target.gnu.builder.cygwin.so.release" id="cdt.managedbuild.target.gnu.builder.cygwin.so.release.818673290" name="Gnu Make Builder.Release" buildPath="${workspace_loc:/DBSQLite3/Release}"/>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.release.1704842089" name="GCC C++ Compiler">
+<option superClass="gnu.cpp.compiler.cygwin.so.release.option.optimization.level" id="gnu.cpp.compiler.cygwin.so.release.option.optimization.level.1823817656" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+<option superClass="gnu.cpp.compiler.cygwin.so.release.option.debugging.level" id="gnu.cpp.compiler.cygwin.so.release.option.debugging.level.1259041101" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin.719402655"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.release.1030380845" name="GCC C Compiler">
+<option superClass="gnu.c.compiler.cygwin.so.release.option.optimization.level" id="gnu.c.compiler.cygwin.so.release.option.optimization.level.2079813849" defaultValue="gnu.c.optimization.level.most" valueType="enumerated"/>
+<option superClass="gnu.c.compiler.cygwin.so.release.option.debugging.level" id="gnu.c.compiler.cygwin.so.release.option.debugging.level.1030050351" value="gnu.c.debugging.level.none" valueType="enumerated"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.731956536"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.release.1420771519" name="GCC C Linker">
+<option superClass="gnu.c.link.cygwin.so.release.option.shared" id="gnu.c.link.cygwin.so.release.option.shared.1756887297" defaultValue="true" valueType="boolean"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.release.1406732564" name="GCC C++ Linker">
+<option superClass="gnu.cpp.link.cygwin.so.release.option.shared" id="gnu.cpp.link.cygwin.so.release.option.shared.1671793102" defaultValue="true" valueType="boolean"/>
+<inputType superClass="cdt.managedbuild.tool.gnu.cpp.linker.input" id="cdt.managedbuild.tool.gnu.cpp.linker.input.116329970">
+<additionalInput paths="$(USER_OBJS)" kind="additionalinputdependency"/>
+<additionalInput paths="$(LIBS)" kind="additionalinput"/>
+</inputType>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.release.1156814459" name="GCC Assembler">
+<inputType superClass="cdt.managedbuild.tool.gnu.assembler.input" id="cdt.managedbuild.tool.gnu.assembler.input.1221820679"/>
+</tool>
+<tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.base" id="cdt.managedbuild.tool.gnu.archiver.cygwin.base.302077349" name="GCC Archiver"/>
+</toolChain>
+</folderInfo>
+</configuration>
+</storageModule>
+</cconfiguration>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<project id="DBSQLite3.cdt.managedbuild.target.gnu.cygwin.so.877732560" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so"/>
+</storageModule>
+</cproject>
