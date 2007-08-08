@@ -4,7 +4,7 @@
 <cproject>
 <storageModule moduleId="org.eclipse.cdt.core.settings">
 <cconfiguration id="cdt.managedbuild.config.gnu.mingw.lib.debug.2069521653">
-<storageModule moduleId="org.eclipse.cdt.core.settings" name="Debug" id="cdt.managedbuild.config.gnu.mingw.lib.debug.2069521653" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.mingw.lib.debug.2069521653" name="Debug" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
 <externalSettings>
 <externalSetting>
 <entry kind="includePath" flags="VALUE_WORKSPACE_PATH" name="/cppunit"/>
@@ -23,15 +23,17 @@
 <folderInfo id="cdt.managedbuild.config.gnu.mingw.lib.debug.2069521653." name="/" resourcePath="">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.base" id="cdt.managedbuild.toolchain.gnu.cygwin.base.748965287" name="Cygwin GCC">
 <targetPlatform superClass="cdt.managedbuild.target.gnu.platform.cygwin.base" id="cdt.managedbuild.target.gnu.platform.cygwin.base.1599196047" name="Debug Platform" binaryParser="org.eclipse.cdt.core.Cygwin_PE" osList="win32" archList="all"/>
-<builder superClass="cdt.managedbuild.target.gnu.builder.cygwin.base" id="cdt.managedbuild.target.gnu.builder.cygwin.base.308141851" name="Gnu Make Builder.Debug" buildPath="${workspace_loc:/cppunit/Debug}"/>
+<builder superClass="cdt.managedbuild.target.gnu.builder.cygwin.base" id="cdt.managedbuild.target.gnu.builder.cygwin.base.308141851" name="Gnu Make Builder" keepEnvironmentInBuildfile="false" buildPath="${workspace_loc:/cppunit/Debug}"/>
 <tool superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.base" id="cdt.managedbuild.tool.gnu.assembler.cygwin.base.41846996" name="GCC Assembler">
 <inputType superClass="cdt.managedbuild.tool.gnu.assembler.input" id="cdt.managedbuild.tool.gnu.assembler.input.658472302"/>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.base" id="cdt.managedbuild.tool.gnu.archiver.cygwin.base.1188247202" name="GCC Archiver"/>
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.base" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.base.1788197196" name="Cygwin C++ Compiler">
-<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.2097067468" valueType="includePath">
+<option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.2097067468" name="Include paths (-I)" valueType="includePath">
 <listOptionValue value="&quot;${workspace_loc:/cppunit/include}&quot;" builtIn="false"/>
 </option>
+<option superClass="gnu.cpp.compiler.option.optimization.level" id="gnu.cpp.compiler.option.optimization.level.66440213" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option superClass="gnu.cpp.compiler.option.debugging.level" id="gnu.cpp.compiler.option.debugging.level.1764955075" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 <inputType superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin" id="cdt.managedbuild.tool.gnu.cpp.compiler.input.cygwin.2027432332"/>
 </tool>
 <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.base" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.base.1723915345" name="Cygwin C Compiler">
@@ -461,7 +463,7 @@
 </storageModule>
 </cconfiguration>
 <cconfiguration id="cdt.managedbuild.config.gnu.mingw.lib.release.726607005">
-<storageModule moduleId="org.eclipse.cdt.core.settings" name="Release" id="cdt.managedbuild.config.gnu.mingw.lib.release.726607005" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.mingw.lib.release.726607005" name="Release" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
 <externalSettings>
 <externalSetting>
 <entry kind="includePath" flags="VALUE_WORKSPACE_PATH" name="/cppunit"/>
@@ -475,7 +477,7 @@
 </extensions>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration id="cdt.managedbuild.config.gnu.mingw.lib.release.726607005" name="Release" description="" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" parent="cdt.managedbuild.config.gnu.mingw.lib.release" artifactName="cppunit" artifactExtension="a" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.mingw.lib.release.726607005" name="Release" description="" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" parent="cdt.managedbuild.config.gnu.mingw.lib.release" artifactName="cppunit" artifactExtension="a" cleanCommand="rm -rf">
 <folderInfo id="cdt.managedbuild.config.gnu.mingw.lib.release.726607005." name="/" resourcePath="">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.mingw.lib.release" id="cdt.managedbuild.toolchain.gnu.mingw.lib.release.1783730325" name="MinGW GCC">
 <targetPlatform superClass="cdt.managedbuild.target.gnu.platform.mingw.lib.release" id="cdt.managedbuild.target.gnu.platform.mingw.lib.release.803073303" name="Debug Platform"/>
