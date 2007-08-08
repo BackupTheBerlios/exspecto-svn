@@ -6,6 +6,7 @@
 		<project>CommonFiles</project>
 		<project>libCommon</project>
 		<project>libNet</project>
+		<project>tinyxml</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

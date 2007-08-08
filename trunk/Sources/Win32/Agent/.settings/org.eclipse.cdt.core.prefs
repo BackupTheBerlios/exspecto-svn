@@ -1,4 +1,8 @@
-#Thu Aug 09 12:21:27 MSD 2007
+#Sun Aug 12 22:39:39 MSD 2007
 eclipse.preferences.version=1
+indexer/filesToParseUpFront=
+indexer/indexAllFiles=false
 indexer/indexerId=org.eclipse.cdt.core.fastIndexer
+indexer/skipReferences=false
+indexer/skipTypeReferences=false
 indexerId=org.eclipse.cdt.core.fastIndexer
