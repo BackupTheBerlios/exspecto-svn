@@ -53,6 +53,7 @@ CSocket::~CSocket(void)
 	{
 		Log::instance().Trace( 50, "CSocket::~CSocket: Возникло исключение: %s", e.what() );
 	};
+	WSACleanup();
 }
 
 //Метод закрытия сокета
@@ -211,6 +212,11 @@ namespace Tools{
 
 	CPingHelper::CPingHelper()
 	{
+		WSADATA WSAData;
+		//Инициализация сокетов
+		if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
+			throw SocketErr( WSAGetLastError() );
+
 		m_hLib = LoadLibrary("ICMP.DLL");
 		if( NULL == m_hLib )
 			throw SocketErr( GetLastError() );
@@ -240,12 +246,11 @@ namespace Tools{
 	CPingHelper::~CPingHelper()
 	{
 		FreeLibrary( m_hLib );
+		WSACleanup();
 	}
 
 	bool CPingHelper::Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount )
 	{
-
-
 		char acPingBuffer[32]={0};  // буфер для передачи
 		struct in_addr DestAddress;
 		struct hostent* pHostEnt;

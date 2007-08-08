@@ -51,6 +51,9 @@ public:
 
 private:
 
+	CInPacket( const CInPacket& );
+	CInPacket& operator=( const CInPacket& );
+
 	void GetHostRec( hostRec& Host );
 
 	void GetFileStruct( TiXmlElement* pElem, fileStr& File );
@@ -75,8 +78,6 @@ private:
 
 	TiXmlElement* m_pAddrElement;
 
-	CInPacket( const CInPacket& );
-	CInPacket& operator=( const CInPacket& );
 };
 
 class COutPacket

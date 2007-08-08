@@ -246,9 +246,9 @@ COutPacket::COutPacket()
 void COutPacket::PutField( const std::string& strName, const std::string& strValue )
 {
 	size_t Pos;
-	if( std::string::npos == ( Pos = m_strPacket.find( "</packet>" ) ) )
-		throw PacketErr( "Не найден завершающий тег </packet>" );
-	m_strPacket.insert( Pos, "\t<" + strName + ">" + strValue + "</" + strName + ">\r\n" );
+	Pos = m_strPacket.find( "</packet>" );
+	assert( Pos != std::string::npos );
+	m_strPacket.insert( Pos, "<" + strName + ">" + strValue + "</" + strName + ">\r\n" );
 }
 
 void COutPacket::PutField( const std::string& strName, int iValue )
