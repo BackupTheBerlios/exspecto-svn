@@ -1,15 +1,15 @@
 //-------------------------------------------------------------------------------------//
-//Этот файл является частью проекта Exspecto 2006г.
+//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Exspecto 2006пїЅ.
 //Module: CClientSocket class
 //Author: Parshin Dmitry
-//Description: Класс, реализующий клиентскую часть сокетов
+//Description: пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
-#include "clientsocket.h"
+#include "ClientSocket.h"
 
-//Конструктор
-//iType - тип сокета, возможные значения - SOCK_STREAM и SOCK_DGRAM
-//bBlocking - блокирующий либо не блокирующий сокет
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+//iType - пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - SOCK_STREAM пїЅ SOCK_DGRAM
+//bBlocking - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 CClientSocket::CClientSocket( int iType, bool bBlocking ):CSocket( iType, bBlocking )
 {
 }
@@ -19,14 +19,14 @@ CClientSocket::~CClientSocket(void)
 }
 
 
-//Соединение с strAddr:iPort,где sAddr - имя удаленного хоста,либо его IP-адресс
-//								 iPort - порт, к которому необходимо подключиться
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ strAddr:iPort,пїЅпїЅпїЅ sAddr - пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ,пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ IP-пїЅпїЅпїЅпїЅпїЅпїЅ
+//								 iPort - пїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 void CClientSocket::Connect( std::string strAddr, int iPort )
 {
-	//Если соединение закрывали - восстанавливаем сокет
+	//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	if( INVALID_SOCKET == ( m_Socket = ::socket( AF_INET, m_iType, 0 ) ) )
 		throw SocketErr( WSAGetLastError() );
-	//Устанавливаем тип вызовов
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	SetBlocking( m_bBlocking );
 	
 	sockaddr_in sAddr;
@@ -39,7 +39,7 @@ void CClientSocket::Connect( std::string strAddr, int iPort )
 		sAddr.sin_addr.S_un.S_addr = ::inet_addr( strAddr.c_str() );
 	else
 	{
-		//если указан не адрес а имя компьютера - получаем адрес с помощью DNS
+		//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ DNS
 		if( NULL == ( hn = ::gethostbyname( strAddr.c_str() ) ) )
 		{
 			int iLastError = ::WSAGetLastError();
@@ -51,7 +51,7 @@ void CClientSocket::Connect( std::string strAddr, int iPort )
 		sAddr.sin_addr.S_un.S_addr = ::inet_addr( hn->h_addr_list[0] );
 	}
 	sAddr.sin_port = ::htons( iPort );
-	//Выполняем соединение
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if( SOCKET_ERROR == ::connect( m_Socket, (sockaddr*)&sAddr, sizeof( sAddr ) ) )
 		throw SocketErr( WSAGetLastError() );
 	SetConnected( true );

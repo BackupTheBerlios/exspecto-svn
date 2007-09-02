@@ -50,13 +50,7 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 				break;
 			else if( dwRes != ( WAIT_OBJECT_0 + 1 ) )
 				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: Внутрення ошибка!" );
-/*
-			else if( dwRes == ( WAIT_OBJECT_0+1 ) );
-			else
-				break;
-			if( WAIT_OBJECT_0 == WaitForSingleObject( pThis->m_CloseEv, 0 ) )
-				break;
-*/
+
 			
 			pThis->m_csTasks.Enter();
 				if( pThis->m_deqTasks.size() != 0 )
