@@ -4,7 +4,7 @@
 <cproject>
 <storageModule moduleId="org.eclipse.cdt.core.settings">
 <cconfiguration id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1990899398">
-<storageModule moduleId="org.eclipse.cdt.core.settings" name="Debug" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1990899398" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1990899398" name="Debug" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
 <externalSettings/>
 <extensions>
 <extension point="org.eclipse.cdt.core.BinaryParser" id="org.eclipse.cdt.core.Cygwin_PE"/>
@@ -29,8 +29,8 @@
 <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.exe.debug.116793182" name="GCC C++ Compiler">
 <option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.1937690199" name="Include paths (-I)" valueType="includePath">
 <listOptionValue value="&quot;${workspace_loc:/CommonFiles}&quot;" builtIn="false"/>
-<listOptionValue value="&quot;${workspace_loc:/libNet}&quot;" builtIn="false"/>
-<listOptionValue value="&quot;${workspace_loc:/libCommon}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libNet/libNet}&quot;" builtIn="false"/>
+<listOptionValue value="&quot;${workspace_loc:/libCommon/libCommon}&quot;" builtIn="false"/>
 </option>
 <option superClass="gnu.cpp.compiler.option.preprocessor.preprocess" id="gnu.cpp.compiler.option.preprocessor.preprocess.982258254" name="Preprocess only (-E)" value="false" valueType="boolean"/>
 <option superClass="gnu.cpp.compiler.cygwin.exe.debug.option.optimization.level" id="gnu.cpp.compiler.cygwin.exe.debug.option.optimization.level.694456155" name="Optimization Level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
@@ -62,6 +62,10 @@
 <tool superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.base" id="cdt.managedbuild.tool.gnu.archiver.cygwin.base.703179979" name="GCC Archiver"/>
 </toolChain>
 </folderInfo>
+<sourceEntries>
+<entry kind="sourcePath" flags="VALUE_WORKSPACE_PATH|RESOLVED" name="" excluding="ScanServer"/>
+<entry kind="sourcePath" flags="VALUE_WORKSPACE_PATH|RESOLVED" name="ScanServer"/>
+</sourceEntries>
 </configuration>
 </storageModule>
 
@@ -315,9 +319,10 @@
 </profile>
 </scannerConfigBuildInfo>
 </storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
 </cconfiguration>
 <cconfiguration id="cdt.managedbuild.config.gnu.cygwin.exe.release.2023842670">
-<storageModule moduleId="org.eclipse.cdt.core.settings" name="Release" id="cdt.managedbuild.config.gnu.cygwin.exe.release.2023842670" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
+<storageModule moduleId="org.eclipse.cdt.core.settings" id="cdt.managedbuild.config.gnu.cygwin.exe.release.2023842670" name="Release" buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider">
 <externalSettings/>
 <extensions>
 <extension point="org.eclipse.cdt.core.BinaryParser" id="org.eclipse.cdt.core.Cygwin_PE"/>
@@ -328,7 +333,7 @@
 </extensions>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.release.2023842670" name="Release" description="" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" parent="cdt.managedbuild.config.gnu.cygwin.exe.release" artifactName="${workspace_loc:/Bin}\ScanServer" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf">
+<configuration id="cdt.managedbuild.config.gnu.cygwin.exe.release.2023842670" name="Release" description="" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" parent="cdt.managedbuild.config.gnu.cygwin.exe.release" artifactName="${workspace_loc:/Bin}\ScanServer" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="exe" cleanCommand="rm -rf">
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.exe.release.2023842670.285831696" name="/" resourcePath="">
 <toolChain superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.release" id="cdt.managedbuild.toolchain.gnu.cygwin.exe.release.2052817511" name="GCC Tool Chain">
 <targetPlatform superClass="cdt.managedbuild.target.gnu.platform.cygwin.exe.release" id="cdt.managedbuild.target.gnu.platform.cygwin.exe.release.1314486002" name="Debug Platform"/>
@@ -620,6 +625,7 @@
 </profile>
 </scannerConfigBuildInfo>
 </storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
 </cconfiguration>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
