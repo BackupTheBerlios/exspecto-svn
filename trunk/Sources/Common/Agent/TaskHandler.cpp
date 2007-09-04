@@ -1,0 +1,80 @@
+#include "precomp.h"
+#include "Socket.h"
+#include <process.h>
+#include "TaskHandler.h"
+
+//-----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------CTaskHandler--------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
+
+CTaskHandler::CTaskHandler():m_CloseEv(false)
+{
+	m_hProcessThread = (HANDLE)::_beginthreadex( NULL, 0, fnProcessThread, this, 0, NULL );
+}
+
+CTaskHandler::~CTaskHandler()
+{
+	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Закрытие обработчика заданий" );
+	m_CloseEv.Set();
+	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Ожидание закрытия потока обработки" );
+	WaitForSingleObject( m_hProcessThread, 20000 );
+	CloseHandle( m_hProcessThread );
+	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Закрытие обработчика команд" );
+}
+	
+void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
+{
+	Log::instance().Trace( 95, "CTaskHandler::AddTask: Добавление задания: %s", pTask->GetDescription().c_str() );
+	m_csTasks.Enter();
+		if( !pTask->Immidiate() )
+		{
+			Log::instance().Trace( 95, "CTaskHandler::AddTask: Задание поставленно в очередь выполнения" );
+			m_deqTasks.push_back( pTask );
+			m_TaskAddedEv.Set();
+		}
+	m_csTasks.Leave();
+}
+
+unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
+{
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Запуск потока обработчика команд" );
+	CTaskHandler* pThis = (CTaskHandler*)param;
+	SmartPtr< CTask > pTask;
+	DWORD dwRes;
+	try{
+		for(;;)
+		{
+			HANDLE hEvents[] = { pThis->m_CloseEv, pThis->m_TaskAddedEv };
+			
+			if( WAIT_OBJECT_0 == ( dwRes = WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, FALSE, INFINITE ) ) )
+				break;
+			else if( dwRes != ( WAIT_OBJECT_0 + 1 ) )
+				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: Внутрення ошибка!" );
+
+			
+			pThis->m_csTasks.Enter();
+				if( pThis->m_deqTasks.size() != 0 )
+				{
+					pTask = pThis->m_deqTasks.front();
+					pThis->m_deqTasks.pop_front();
+				}
+			pThis->m_csTasks.Leave();
+			
+			if( pTask.get() )
+			{			
+				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Выполнение задания: %s", pTask->GetDescription().c_str() );
+				pTask->Execute( pThis->m_CloseEv );
+				pTask.Release();
+			}
+		}
+	}catch( std::exception& e )
+	{
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло исключение: %s", e.what() );
+	}/*catch( ... )
+	{
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло неизвестное исключение" );
+	}*/	
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Завершение потока обработчика команд" );
+	return 0;
+}
+
