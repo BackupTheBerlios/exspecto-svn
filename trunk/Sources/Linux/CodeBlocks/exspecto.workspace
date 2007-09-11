@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="ptypes/ptypes.cbp" />
+		<Project filename="cppunit/cppunit.cbp" />
+		<Project filename="tinyxml/tinyxml.cbp" />
+		<Project filename="libLinuxSpecific/libLinuxSpecific.cbp" />
+		<Project filename="libCommon/libCommon.cbp" />
+		<Project filename="libCommonTest/libCommonTest.cbp" active="1">
+			<Depends filename="ptypes/ptypes.cbp" />
+			<Depends filename="cppunit/cppunit.cbp" />
+			<Depends filename="libLinuxSpecific/libLinuxSpecific.cbp" />
+			<Depends filename="libCommon/libCommon.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../../../Common/libCommon/CLog.h" open="0" top="0" tabpos="2">
+		<Cursor position="547" topLine="0" />
+	</File>
+	<File name="../../../Common/libCommon/Event.hpp" open="1" top="1" tabpos="3">
+		<Cursor position="553" topLine="18" />
+	</File>
+	<File name="../../../Common/libCommon/SettingsContainer.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="15" topLine="0" />
+	</File>
+	<File name="../../../Common/libCommon/SettingsContainer.h" open="0" top="0" tabpos="4">
+		<Cursor position="177" topLine="12" />
+	</File>
+	<File name="../../../Common/libCommon/Singleton.hpp" open="0" top="0" tabpos="1">
+		<Cursor position="138" topLine="0" />
+	</File>
+	<File name="../../../Common/libCommon/SmartPtr.hpp" open="1" top="0" tabpos="2">
+		<Cursor position="871" topLine="54" />
+	</File>
+	<File name="../../../Common/libCommon/ThreadsPool.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="2420" topLine="14" />
+	</File>
+	<File name="../../../Common/libCommon/ThreadsPool.h" open="1" top="0" tabpos="4">
+		<Cursor position="1293" topLine="3" />
+	</File>
+</CodeBlocks_layout_file>

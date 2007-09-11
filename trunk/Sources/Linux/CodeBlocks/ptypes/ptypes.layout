@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../../../Common/CommonFiles/ptypes/pasync.h" open="1" top="1" tabpos="1">
+		<Cursor position="7079" topLine="321" />
+	</File>
+	<File name="../../../Common/CommonFiles/ptypes/ptypes.h" open="1" top="0" tabpos="7">
+		<Cursor position="14444" topLine="331" />
+	</File>
+	<File name="../../../Common/ptypes/src/pasync.cxx" open="1" top="0" tabpos="9">
+		<Cursor position="343" topLine="25" />
+	</File>
+	<File name="../../../Common/ptypes/src/pmtxtable.cxx" open="0" top="0" tabpos="0">
+		<Cursor position="216" topLine="0" />
+	</File>
+	<File name="../../../Common/ptypes/src/psemaphore.cxx" open="1" top="0" tabpos="10">
+		<Cursor position="825" topLine="38" />
+	</File>
+	<File name="../../../Common/ptypes/src/pthread.cxx" open="0" top="0" tabpos="0">
+		<Cursor position="3003" topLine="115" />
+	</File>
+	<File name="../../../Common/ptypes/src/ptimedsem.cxx" open="1" top="0" tabpos="8">
+		<Cursor position="514" topLine="79" />
+	</File>
+	<File name="../../../Common/ptypes/src/ptrigger.cxx" open="1" top="0" tabpos="11">
+		<Cursor position="996" topLine="35" />
+	</File>
+</CodeBlocks_layout_file>
