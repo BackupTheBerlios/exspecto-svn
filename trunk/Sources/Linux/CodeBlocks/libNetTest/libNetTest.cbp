@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libNetTest" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="Src/;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/libNetTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option external_deps="../libNet/libNet.a;../libCommon/libCommon.a;../cppunit/libcppunit.a;../tinyxml/libtinyxml.a;../ptypes/libptypes.a;../libLinuxSpecific/libLinuxSpecific.a;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="../../../Common/UnitTests/cppunit/include" />
+					<Add directory="../../../Common/libNet" />
+					<Add directory="../../../Common/libCommon" />
+					<Add directory="../../../Common/CommonFiles" />
+					<Add directory="../../../Common/CommonFiles/ptypes" />
+					<Add directory="../../LinuxSpec" />
+				</Compiler>
+				<Linker>
+					<Add library="../libNet/libNet.a" />
+					<Add library="../tinyxml/libtinyxml.a" />
+					<Add library="../cppunit/libcppunit.a" />
+					<Add library="../ptypes/libptypes.a" />
+					<Add library="../libCommon/libCommon.a" />
+					<Add library="../libLinuxSpecific/libLinuxSpecific.a" />
+					<Add library="pthread" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/libNetTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../../../Common/UnitTests/libNetTest/NetTest.cpp">
+			<Option virtualFolder="Src/" />
+		</Unit>
+		<Unit filename="../../../Common/UnitTests/libNetTest/NetTest.h">
+			<Option virtualFolder="Src/" />
+		</Unit>
+		<Unit filename="../../../Common/UnitTests/libNetTest/libNetTest.cpp">
+			<Option virtualFolder="Src/" />
+		</Unit>
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

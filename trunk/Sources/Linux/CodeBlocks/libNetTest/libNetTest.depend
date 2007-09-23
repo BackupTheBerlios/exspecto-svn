@@ -1,0 +1,308 @@
+# depslib dependency file v1.0
+1190570592 source:/home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/libNetTest/NetTest.cpp
+	"NetTest.h"
+	<cppunit/config/SourcePrefix.h>
+	"Packet.h"
+	<vector>
+	<sstream>
+	"ping.h"
+
+1189533359 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/libNetTest/NetTest.h
+	<cppunit/extensions/HelperMacros.h>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/HelperMacros.h
+	<cppunit/TestCaller.h>
+	<cppunit/TestSuite.h>
+	<cppunit/extensions/AutoRegisterSuite.h>
+	<cppunit/extensions/ExceptionTestCaseDecorator.h>
+	<cppunit/extensions/TestFixtureFactory.h>
+	<cppunit/extensions/TestNamer.h>
+	<cppunit/extensions/TestSuiteBuilderContext.h>
+	<memory>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestCaller.h
+	<cppunit/Exception.h>
+	<cppunit/TestCase.h>
+	<cppunit/extensions/TypeInfoHelper.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/Exception.h
+	<cppunit/Portability.h>
+	<cppunit/Message.h>
+	<cppunit/SourceLine.h>
+	<exception>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/Portability.h
+	<cppunit/config/config-bcb5.h>
+	<cppunit/config/config-evc4.h>
+	<cppunit/config/config-msvc6.h>
+	<cppunit/config-auto.h>
+	<cppunit/config/CppUnitApi.h>
+	<cppunit/config/SelectDllLoader.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/config/config-bcb5.h
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/config/config-evc4.h
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/config/config-msvc6.h
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/config-auto.h
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/config/CppUnitApi.h
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/config/SelectDllLoader.h
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/Message.h
+	<cppunit/Portability.h>
+	<cppunit/portability/CppUnitDeque.h>
+	<string>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/portability/CppUnitDeque.h
+	<cppunit/Portability.h>
+	<deque>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/SourceLine.h
+	<cppunit/Portability.h>
+	<string>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestCase.h
+	<cppunit/Portability.h>
+	<cppunit/TestLeaf.h>
+	<cppunit/TestAssert.h>
+	<cppunit/TestFixture.h>
+	<string>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestLeaf.h
+	<cppunit/Test.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/Test.h
+	<cppunit/Portability.h>
+	<string>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestAssert.h
+	<cppunit/Portability.h>
+	<cppunit/Exception.h>
+	<cppunit/Asserter.h>
+	<cppunit/portability/Stream.h>
+	<stdio.h>
+	<float.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/Asserter.h
+	<cppunit/AdditionalMessage.h>
+	<cppunit/SourceLine.h>
+	<string>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/AdditionalMessage.h
+	<cppunit/Message.h>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/portability/Stream.h
+	<cppunit/Portability.h>
+	<string>
+	<stdio.h>
+	<string.h>
+	<sstream>
+	<fstream>
+	<string>
+	<strstream>
+	<strstream.h>
+	<iostream>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestFixture.h
+	<cppunit/Portability.h>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TypeInfoHelper.h
+	<cppunit/Portability.h>
+	<typeinfo>
+	<string>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestSuite.h
+	<cppunit/Portability.h>
+	<cppunit/TestComposite.h>
+	<cppunit/portability/CppUnitVector.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestComposite.h
+	<cppunit/Test.h>
+	<string>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/portability/CppUnitVector.h
+	<cppunit/Portability.h>
+	<vector>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/AutoRegisterSuite.h
+	<cppunit/extensions/TestSuiteFactory.h>
+	<cppunit/extensions/TestFactoryRegistry.h>
+	<string>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TestSuiteFactory.h
+	<cppunit/extensions/TestFactory.h>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TestFactory.h
+	<cppunit/Portability.h>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TestFactoryRegistry.h
+	<cppunit/Portability.h>
+	<cppunit/portability/CppUnitSet.h>
+	<cppunit/extensions/TestFactory.h>
+	<string>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/portability/CppUnitSet.h
+	<cppunit/Portability.h>
+	<functional>
+	<set>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/ExceptionTestCaseDecorator.h
+	<cppunit/Portability.h>
+	<cppunit/Exception.h>
+	<cppunit/extensions/TestCaseDecorator.h>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TestCaseDecorator.h
+	<cppunit/Portability.h>
+	<cppunit/TestCase.h>
+
+1189105916 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TestFixtureFactory.h
+	<cppunit/Portability.h>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TestNamer.h
+	<cppunit/Portability.h>
+	<string>
+	<typeinfo>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/extensions/TestSuiteBuilderContext.h
+	<cppunit/Portability.h>
+	<cppunit/portability/CppUnitMap.h>
+	<string>
+
+1189104731 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/portability/CppUnitMap.h
+	<cppunit/Portability.h>
+	<functional>
+	<map>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/config/SourcePrefix.h
+	<cppunit/Portability.h>
+
+1190570655 /home/unb/programming/Workspace/Exspecto/Sources/Common/libNet/Packet.h
+	"Socket.h"
+	"precomp.h"
+	"tinyxml.h"
+	"SmartPtr.hpp"
+	<string>
+	"CDBProvider.h"
+
+1190554987 /home/unb/programming/Workspace/Exspecto/Sources/Common/libNet/Socket.h
+	"Singleton.hpp"
+	<stdexcept>
+	"CLog.h"
+	"winsock2.h"
+	<sys/types.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<sys/ioctl.h>
+	<netdb.h>
+	<arpa/inet.h>
+	"Os_Spec.h"
+
+1189452791 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/Singleton.hpp
+	"pasync.h"
+
+1189518362 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/ptypes/pasync.h
+	<windows.h>
+	"errno.h"
+	<pthread.h>
+	<semaphore.h>
+	"pport.h"
+	"ptypes.h"
+
+1189239925 /home/unb/programming/Workspace/Exspecto/Sources/Linux/LinuxSpec/windows.h
+
+1189104745 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/ptypes/pport.h
+	<stdint.h>
+	<sys/types.h>
+
+1189104745 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/ptypes/ptypes.h
+	"pport.h"
+	<string.h>
+
+1189452831 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/CLog.h
+	<string>
+	"Singleton.hpp"
+	"pasync.h"
+	"windows.h"
+
+1189531446 /home/unb/programming/Workspace/Exspecto/Sources/Linux/LinuxSpec/Os_Spec.h
+	<string>
+	"time.h"
+
+1189104746 /home/unb/programming/Workspace/Exspecto/Sources/Common/libNet/precomp.h
+	"windows.h"
+	<string>
+	<map>
+	<vector>
+	<stdexcept>
+	"MemLeakDetector.h"
+	"CLog.h"
+
+1189104730 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/MemLeakDetector.h
+	<new>
+	<map>
+	<string>
+	"CLog.h"
+
+1190569411 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<string>
+	<iostream>
+	<sstream>
+	"tinystr.h"
+
+1189452971 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/SmartPtr.hpp
+	<map>
+	"CLog.h"
+	<assert.h>
+
+1189528447 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/CDBProvider.h
+	<stdio.h>
+	"constants.h"
+	"CLog.h"
+	<string>
+	<list>
+	<map>
+	<windows.h>
+	<time.h>
+	<malloc.h>
+	<stdlib.h>
+
+1189104745 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/constants.h
+
+1189533552 source:/home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/libNetTest/libNetTest.cpp
+	<cppunit/CompilerOutputter.h>
+	<cppunit/extensions/TestFactoryRegistry.h>
+	<cppunit/ui/text/TestRunner.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/CompilerOutputter.h
+	<cppunit/Portability.h>
+	<cppunit/Outputter.h>
+	<cppunit/portability/Stream.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/Outputter.h
+	<cppunit/Portability.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/ui/text/TestRunner.h
+	<cppunit/ui/text/TextTestRunner.h>
+
+1189105995 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/ui/text/TextTestRunner.h
+	<cppunit/Portability.h>
+	<string>
+	<cppunit/TestRunner.h>
+
+1189104732 /home/unb/programming/Workspace/Exspecto/Sources/Common/UnitTests/cppunit/include/cppunit/TestRunner.h
+	<cppunit/TestSuite.h>
+	<string>
+
+1190554939 /home/unb/programming/Workspace/Exspecto/Sources/Common/libNet/ping.h
+	"Singleton.hpp"
+	<string>
+	<arpa/inet.h>
+
