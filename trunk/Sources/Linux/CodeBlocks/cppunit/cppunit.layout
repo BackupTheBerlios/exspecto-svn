@@ -4,13 +4,13 @@
 	<File name="../../../Common/UnitTests/cppunit/src/cppunit/AdditionalMessage.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="32" topLine="0" />
 	</File>
-	<File name="../../../Common/UnitTests/cppunit/src/cppunit/Message.cpp" open="1" top="0" tabpos="10">
+	<File name="../../../Common/UnitTests/cppunit/src/cppunit/Message.cpp" open="0" top="0" tabpos="10">
 		<Cursor position="369" topLine="0" />
 	</File>
-	<File name="../../../Common/UnitTests/cppunit/src/cppunit/SourceLine.cpp" open="1" top="0" tabpos="9">
+	<File name="../../../Common/UnitTests/cppunit/src/cppunit/SourceLine.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="413" topLine="0" />
 	</File>
-	<File name="../../../Common/UnitTests/cppunit/src/cppunit/TestCase.cpp" open="1" top="0" tabpos="8">
+	<File name="../../../Common/UnitTests/cppunit/src/cppunit/TestCase.cpp" open="0" top="0" tabpos="8">
 		<Cursor position="670" topLine="15" />
 	</File>
 </CodeBlocks_layout_file>

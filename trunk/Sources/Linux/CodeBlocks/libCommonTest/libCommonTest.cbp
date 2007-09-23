@@ -27,6 +27,11 @@
 					<Add library="../libLinuxSpecific/libLinuxSpecific.a" />
 					<Add library="pthread" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp ../../../Common/CommonFiles/settings.ini ./" />
+					<Add after="./bin/Debug/libCommonTest" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/libCommonTest" prefix_auto="1" extension_auto="1" />
