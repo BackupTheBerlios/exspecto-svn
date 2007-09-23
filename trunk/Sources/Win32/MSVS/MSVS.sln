@@ -11,6 +11,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppunit", "..\..\Common\Uni
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCommon", "libCommon\libCommon.vcproj", "{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libWinSpec", "libWinSpec\libWinSpec.vcproj", "{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -36,6 +44,18 @@ Global
 		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.Release.Build.0 = Release|Win32
 		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.test.ActiveCfg = Release|Win32
 		{3419A602-B8F9-49AE-8A40-5AECFE78F267}.test.Build.0 = Release|Win32
+		{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}.Debug.ActiveCfg = Debug|Win32
+		{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}.Debug.Build.0 = Debug|Win32
+		{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}.Release.ActiveCfg = Release|Win32
+		{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}.Release.Build.0 = Release|Win32
+		{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}.test.ActiveCfg = Release|Win32
+		{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}.test.Build.0 = Release|Win32
+		{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}.Debug.ActiveCfg = Debug|Win32
+		{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}.Debug.Build.0 = Debug|Win32
+		{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}.Release.ActiveCfg = Release|Win32
+		{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}.Release.Build.0 = Release|Win32
+		{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}.test.ActiveCfg = Release|Win32
+		{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}.test.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

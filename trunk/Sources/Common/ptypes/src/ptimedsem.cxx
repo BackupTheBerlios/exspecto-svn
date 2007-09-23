@@ -61,7 +61,6 @@ void timedsem::post()
         tsem_fail();
 }
 
-
 #else
 
 

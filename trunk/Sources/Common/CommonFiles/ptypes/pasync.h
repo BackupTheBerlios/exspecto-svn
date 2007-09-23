@@ -355,6 +355,10 @@ public:
     timedsem(int initvalue);
     virtual ~timedsem();
     bool wait(int msecs = -1);
+	bool trywait()
+	{
+		return wait(0);
+	}
     void post();
     void signal()  { post(); }
 };
