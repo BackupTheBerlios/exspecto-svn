@@ -1,16 +1,16 @@
 #ifndef SINGLETON
 #define SINGLETON
-#include "CriticalSection.hpp"
+#include "pasync.h"
 
 template< class T >
 class CSingleton
 {
 public:
-	
+
 	static T& instance()
 	{
-		static CCriticalSection cs;
-		CLock lock( cs );
+	    static pt::mutex mutex;
+	    pt::scopelock lock( mutex );
 		static T instance;
 		return instance;
 	}

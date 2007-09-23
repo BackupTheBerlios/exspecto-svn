@@ -9,6 +9,7 @@ class CommonTest : public CPPUNIT_NS::TestFixture
 {
 	CPPUNIT_TEST_SUITE( CommonTest );
 	CPPUNIT_TEST( testSmartPtr );
+	CPPUNIT_TEST( testEvent );
 	CPPUNIT_TEST( testThreadsPool );
 	CPPUNIT_TEST( testSettingsContainer );
 	CPPUNIT_TEST_EXCEPTION( testSettingsContainerThrow, ParamErr );
@@ -19,6 +20,8 @@ public:
 	void tearDown();
 
 	void testSmartPtr();
+	
+	void testEvent();
 
 	void testThreadsPool();
 

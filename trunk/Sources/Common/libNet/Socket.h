@@ -7,10 +7,27 @@
 
 #ifndef CSOCKET_H_
 #define CSOCKET_H_
-#include "winsock2.h"
+
 #include "Singleton.hpp"
 #include <stdexcept>
 #include "CLog.h"
+#ifdef WIN32
+#include "winsock2.h"
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/ioctl.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+#define WSAEMSGSIZE EMSGSIZE
+#define WSAEINTR EINTR
+#define WSAHOST_NOT_FOUND HOST_NOT_FOUND
+typedef int SOCKET;
+#endif
+#include "Os_Spec.h"
 
 
 //Исключения, генерируемые CSocket и классами, наследующими от него, и функциями из Tools
@@ -19,10 +36,18 @@ class SocketErr: public std::exception
 public:
 	SocketErr( int iLastError )
 	{
+	    #ifdef WIN32
 		if( 0 == FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, iLastError, 0, data, sizeof(data), NULL ) )
+		#else
+		if( 0 == strerror_r( errno, data, sizeof( data ) ) )
+		#endif
 		{
 			strcpy( data, "Error during formating error message" );
+			#ifdef WIN32
 			Log::instance().Trace( 0, "SocketErr: ошибка: %d", GetLastError() );
+			#else
+			Log::instance().Trace( 0, "SocketErr: ошибка: %d", errno );
+			#endif
 		}
 	};
 
@@ -35,7 +60,7 @@ public:
 
 	virtual const char* what() const throw()
 	{
-		return data;	 
+		return data;
 	};
 
 private:
@@ -44,26 +69,26 @@ private:
 };
 
 
-class CSocket 
+class CSocket
 {
 public:
 
 
-	class SocketDNSErr: public SocketErr 
+	class SocketDNSErr: public SocketErr
 	{
 		public:
-			SocketDNSErr():SocketErr( WSAHOST_NOT_FOUND ){};
+        SocketDNSErr():SocketErr( "Адрес не найден" ){};
 		virtual ~SocketDNSErr()throw(){};
 	};
-	
-	class SocketRespSizeErr: public SocketErr 
+
+	class SocketRespSizeErr: public SocketErr
 	{
 		public:
-			SocketRespSizeErr():SocketErr( WSAEMSGSIZE ){};
+			SocketRespSizeErr():SocketErr( "Размер ответа слишком велик" ){};
 		virtual ~SocketRespSizeErr()throw(){};
 	};
-	
-	class SocketConnectionLost: public SocketErr 
+
+	class SocketConnectionLost: public SocketErr
 	{
 		public:
 			SocketConnectionLost():SocketErr( "Разрыв связи" ){};
@@ -76,9 +101,9 @@ public:
 		std::string strAddr;
 		std::string strName;
 		int iPort;
-	};	
-	
-	
+	};
+
+
 	//Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 	//			   bBlocking - тип вызовов, по умолчанию - блокирующие
 	CSocket( int iType = SOCK_STREAM, bool bBlocking = true );
@@ -97,13 +122,13 @@ public:
 
 	//Метод приёма данных,возвращает кол-во принятых байт
 	int Receive( void* pBuffer, int iBufSize );
-	
+
 	//Метод возврщает адрес удаленного хоста
-	structAddr GetRemoteHost(); 
+	structAddr GetRemoteHost();
 
 	//Метод, устанавливающий тип вызовов(true - блокирующие,false - неблокирующие )
 	void SetBlocking( bool bIsBlocking );
-	
+
 	bool IsConnected()const;
 
 	//При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
@@ -125,7 +150,7 @@ protected:
 
 	//Дескриптор сокета, используемый практически во всех функциях
 	SOCKET m_Socket;
-	
+
 	//Флаг,указывающий на тип используемых вызовов (блокирующие/неблокирующие)
 	bool m_bBlocking;
 
@@ -139,59 +164,6 @@ private:
 
 	bool m_bConnected;
 };
-//-----------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------Tools-------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------
 
-namespace Tools{
-
-	class CPingHelper
-	{
-	public:
-
-		CPingHelper();
-		~CPingHelper();
-
-		//реализована через вызовы icmp.dll, если использовать RAW сокеты  - понадобятся админские права
-		//а пока работает и без них
-		bool Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount );
-
-	private:
-
-		CPingHelper( const CPingHelper& );
-		CPingHelper& operator=( const CPingHelper& );
-		
-		typedef struct {
-			unsigned char Ttl;                                 // Time To Live
-			unsigned char Tos;                                 // Type Of Service
-			unsigned char Flags;                               // IP header flags
-			unsigned char OptionsSize;                         // Size in bytes of options data
-			unsigned char *OptionsData;                        // Pointer to options data
-		} IP_OPTION_INFORMATION, * PIP_OPTION_INFORMATION;
-
-		typedef struct {
-			unsigned int Address;                    // Replying address
-			unsigned long  Status;                   // Reply status
-			unsigned long  RoundTripTime;            // RTT in milliseconds
-			unsigned short DataSize;                 // Echo data size
-			unsigned short Reserved;                 // Reserved for system use
-			void *Data;                              // Pointer to the echo data
-			IP_OPTION_INFORMATION Options;           // Reply options
-		} IP_ECHO_REPLY, * PIP_ECHO_REPLY;
-
-		HMODULE m_hLib;
-
-		typedef HANDLE (WINAPI* pfnHV)(VOID);
-		typedef BOOL (WINAPI* pfnBH)(HANDLE);
-		typedef DWORD (WINAPI* pfnDHDPWPipPDD)(HANDLE, DWORD, LPVOID, WORD,
-			PIP_OPTION_INFORMATION, LPVOID, DWORD, DWORD);
-
-		pfnHV m_pIcmpCreateFile;
-		pfnBH m_pIcmpCloseHandle;
-		pfnDHDPWPipPDD m_pIcmpSendEcho;
-
-	};
-	typedef CSingleton< CPingHelper > PingHelper;
-}
 
 #endif

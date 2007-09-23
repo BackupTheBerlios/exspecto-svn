@@ -32,20 +32,20 @@ static void sem_fail()
 }
 
 
-semaphore::semaphore(int initvalue) 
+semaphore::semaphore(int initvalue)
 {
     if (sem_init(&handle, 0, initvalue) != 0)
         sem_fail();
 }
 
 
-semaphore::~semaphore() 
+semaphore::~semaphore()
 {
     sem_destroy(&handle);
 }
 
 
-void semaphore::wait() 
+void semaphore::wait()
 {
     int err;
     do {
@@ -55,12 +55,17 @@ void semaphore::wait()
         sem_fail();
 }
 
+bool semaphore::trywait()
+{
+    return (0 == sem_trywait(&handle))?true:false;
+}
 
-void semaphore::post() 
+void semaphore::post()
 {
     if (sem_post(&handle) != 0)
         sem_fail();
 }
+
 
 
 #else

@@ -87,8 +87,9 @@ protected:
   virtual void printResult( bool doPrintResult );
 
   TestResultCollector *m_result;
-  TestResult *m_eventManager;
   Outputter *m_outputter;
+  TestResult *m_eventManager;
+  
 };
 
 

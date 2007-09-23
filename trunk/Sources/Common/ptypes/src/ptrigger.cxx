@@ -74,8 +74,7 @@ void trigger::wait()
     if (autoreset)
 	state = 0;
     pthread_mutex_unlock(&mtx);
-} 
-
+}
 
 void trigger::post()
 {

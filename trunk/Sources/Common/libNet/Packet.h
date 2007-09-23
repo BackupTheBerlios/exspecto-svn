@@ -31,6 +31,9 @@ public:
 
 	CInPacket();
 
+	virtual ~CInPacket()
+	{};
+
 	bool Load( BYTE* pbBuf, int iSize );
 
 	void GetField( const std::string& strName, std::string& strValue );
@@ -42,10 +45,10 @@ public:
 
 	void GetFirstHostRec( hostRec& Host );
 	bool GetNextHostRec( hostRec& Host );
-    
+
 	static std::vector<BYTE> GetEndStamp()
 	{
-		const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 }; 
+		const static BYTE EndStamp[] = { 0, 0x10, 0x13, 0 };
 		return std::vector<BYTE>( EndStamp, EndStamp + sizeof( EndStamp ) );
 	}
 
@@ -60,7 +63,7 @@ private:
 
 	void GetField( TiXmlElement* pParentElem, const std::string& strName , std::string& strValue );
 
-	void GetField( TiXmlElement* pParentElem, const std::string& strName , __int64& iValue );
+	void GetField( TiXmlElement* pParentElem, const std::string& strName , long long& iValue );
 
 	void GetField( TiXmlElement* pParentElem, const std::string& strName , int& iValue );
 
@@ -70,7 +73,9 @@ private:
 
 	time_t StrToTimet( const std::string& str );
 
-	TiXmlDocument m_XmlDoc;
+    //TODO:можно и без указателя но в линуксе почему то падает-в отладчике два раза
+    //вызывается деструктор TiXmlDocument
+	std::auto_ptr<TiXmlDocument> m_pXmlDoc;
 
 	TiXmlElement* m_pXmlRoot;
 
@@ -82,7 +87,7 @@ private:
 
 class COutPacket
 {
-	friend COutPacket& operator <<( CSocket& sock, COutPacket& packet );
+	friend COutPacket& operator<<( CSocket& sock, COutPacket& packet );
 public:
 
 	COutPacket();

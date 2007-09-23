@@ -264,6 +264,8 @@ private:
 class CIniTypeSerializer
 {
 public:
+	
+	virtual ~CIniTypeSerializer(){};
 
 	virtual void Load( const std::string& strParamName, const std::string& strParamValue, CSettings* pParamContainer ) = 0;
 };

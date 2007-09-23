@@ -27,7 +27,7 @@
 //   IDfile        INT            Индекс файла                             //
 //   IsPath        BOOL           "Идиома" - часть пути?                   //
 /////////////////////////////////////////////////////////////////////////////
- 
+
 //-----------------------------------------------------------------------------
 #ifdef __BCPLUSPLUS__
   #define __FUNCTION__ __FUNC__
@@ -46,24 +46,22 @@
 
 #include <malloc.h>
 #include <stdlib.h>
- 
+
 #define RESULT_OK 0
 
 using namespace std;
 
 // функции преобразуют значения полей lFileTime и hFileTime в UTS или возвращают UTS, если он не равен 0
 // ВНИМАНИЕ!!! если поле UTS не равно 0!!! то в базу будет внесено значение этого поля
-typedef struct FileDateTag 
+typedef struct FileDateTag
 {
-	DWORD lFileTime;
-	DWORD hFileTime;
 	time_t UTS;
 } fileDate;
 
 typedef struct FileStrTag
 {
 	string FileName;
-	__int64 FileSize;
+	long long FileSize;
 	fileDate FDate;
 } fileStr;
 typedef list<fileStr> filesStr;
@@ -86,8 +84,8 @@ public:
 // Добавляет список файлов в БД
 // aRec  список содержит имена хостов и список файлов для каждого хоста
 // при добавлении файлов по умолчанию индексация по словам не производится
-// IsAutoIndex = false;	
-	virtual void __stdcall AddFiles(hostRec &aRec)=0;
+// IsAutoIndex = false;
+	virtual void AddFiles(hostRec &aRec)=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)
@@ -97,8 +95,8 @@ public:
 // Result  список результатов
 // если значение параметра IndexFind = false то поиск производит без поиска по
 // словам. При этом введенная фраза ищется в строчке телеком.
-// Если значение IsAutoIndex = false то производить поиск с учетом слов, нельзя. 	
-	virtual bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
+// Если значение IsAutoIndex = false то производить поиск с учетом слов, нельзя.
+	virtual bool Search(const string& aText, map<string,bool> &aParams, hostRecords &Result)=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)
@@ -108,7 +106,7 @@ public:
 // aDate      удаляет записи старше указаной даты (дата обновления хоста меньше указаной)
 // aOnlyFiles удаляет только файлы, записи из таблицы хостов не удаляются
 // Можно передавать только по одному из параемтров, остальные поля занулять
-	virtual void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0;
+	virtual void EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false)=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // GetRefDateHost(const string& aHostName, const string& aIPnum)
@@ -118,24 +116,24 @@ public:
 // Можно передавать один из параметров, но запись должна быть определена однозначно
 // Если по заданным значениям найдено более одной записи, то возвращается время
 // только первой записи
-	virtual time_t __stdcall GetRefDateHost(const string& aHostName, const string& aIPnum)=0;
+	virtual time_t GetRefDateHost(const string& aHostName, const string& aIPnum)=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // GetNamePlugin()
 // Возвращает имя класса
-  virtual char* __stdcall GetNamePlugin()=0;
+  virtual char* GetNamePlugin()=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // RefreshDB()
 // Оптимизация Базы данных, обновление списка слов и их индексов
 // ПОКА НЕРАБОТАЕТ!!!
-  virtual bool __stdcall RefreshDB()=0;
+  virtual bool RefreshDB()=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // GetProvError(string& mes)
 // mes строковая переменя в которую возвращается текст ошибки
 // функция возвращает код ошибки или RESULT_OK если ошибки нет
-	virtual int __stdcall GetProvError(string& mes)=0;
+	virtual int GetProvError(string& mes)=0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // SetAutoIndex(bool aVal)
@@ -148,7 +146,7 @@ public:
 // IsAutoIndex()
 // Возвращет значение автоиндексирования
 //  virtual bool __stdcall IsAutoIndex()=0;
-  
+
 ///////////////////////////////////////////////////////////////////////////////
 // StartIndexing(map<string,bool> &aParams)
 // aParams зарезервировано для передачи параметров

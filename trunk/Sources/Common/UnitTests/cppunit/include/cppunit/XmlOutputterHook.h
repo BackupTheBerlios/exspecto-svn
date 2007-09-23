@@ -117,6 +117,7 @@ class XmlElement;
 class CPPUNIT_API XmlOutputterHook
 {
 public:
+	virtual ~XmlOutputterHook(){}
   /*! Called before any elements is added to the root element.
    * \param document XML Document being created.
    */

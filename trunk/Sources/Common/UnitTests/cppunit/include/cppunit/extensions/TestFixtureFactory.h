@@ -16,6 +16,7 @@ class TestFixture;
 class TestFixtureFactory
 {
 public:
+	virtual ~TestFixtureFactory(){}
   //! Creates a new TestFixture instance.
   virtual TestFixture *makeFixture() =0;
 };

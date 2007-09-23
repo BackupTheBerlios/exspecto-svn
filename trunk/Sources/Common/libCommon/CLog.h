@@ -7,20 +7,19 @@
 #ifndef _CLOG_H
 #define _CLOG_H
 #include <string>
-#include "CriticalSection.hpp"
-#include "windows.h"
 #include "Singleton.hpp"
-
+#include "pasync.h"
+#include "windows.h"
 
 /*
  * Класс Log является Singleton-ом( см. паттерн проектирования Singleton )
- * Гарантированно существует только один экземпляр этого класса, доступ к 
+ * Гарантированно существует только один экземпляр этого класса, доступ к
  * нему осуществляется через метод instance()
- * 
+ *
  * Пример.
- * 
+ *
  * в любом модуле
- * 
+ *
  * #include "CLog.h"
  * ...
  * Log::instance().Trace( 10, "LALALA" );
@@ -43,27 +42,27 @@ public:
 	//	trace_text - строка, содержащая формат записи (аналогичный printf)
 	//	... - аргументы форматирования
 	void Trace(int iLevel, char* trace_text, ...);
-	
+
 	//Метод используется для записи форматированной записи в журнал, с добавлением
-	//дампа участка памяти 
+	//дампа участка памяти
 	//	iLevel - приоритет записи, все записи с приоритетом > установленного не записываются в журнал
 	//	pbDumpData, iDataSize - указатель на уч-к памяти и его размер
 	//	trace_text - строка, содержащая формат записи (аналогичный printf)
 	//	... - аргументы форматирования
 	void Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* about, ...);
-	
+
 	void SetLoglevel( int iLoglevel );
-	
+
 private:
 	CLog( const CLog& );
 	CLog& operator=( const CLog& );
-	
+
 	//имя файла лога
 	std::string m_strFileName;
-	
+
 	//критическая секция на запись в файл
-	CCriticalSection m_cs;
-	
+	pt::mutex m_mutex;
+
 	int m_iLogLevel;
 };
 

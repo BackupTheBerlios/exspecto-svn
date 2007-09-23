@@ -2,10 +2,15 @@
 #include "CommonTest.h"
 #include "SmartPtr.hpp"
 #include "ThreadsPool.h"
+#include "Os_Spec.h"
+#include "pasync.h"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( CommonTest );
-
+/*
+cp ../../../Common/CommonFiles/settings.ini ./bin/
+./bin/Debug/libCommonTest
+*/
 
 void CommonTest::setUp()
 {
@@ -14,6 +19,60 @@ void CommonTest::setUp()
 
 void CommonTest::tearDown()
 {
+}
+
+void CommonTest::testEvent()
+{
+	class TestThread: public pt::thread
+	{
+	public:
+		TestThread( CEvent* pEvent, bool* bflag ):pt::thread(false),m_pEvent(pEvent),m_pbFlag(bflag){}
+		virtual void cleanup(){}
+		virtual void execute()
+		{
+			m_pEvent->Wait();
+			*m_pbFlag = true;
+		}
+	private:
+		CEvent* m_pEvent;
+		bool* m_pbFlag;
+	};
+
+	{
+		CEvent event;
+		bool bFlag = false;
+		TestThread thread( &event, &bFlag );
+		thread.start();
+		event.Set();
+		pt::psleep(1000);
+		CPPUNIT_ASSERT( bFlag );
+		CPPUNIT_ASSERT( !event.Wait(0) );
+		CPPUNIT_ASSERT( !event.Wait(0) );
+		event.Set();
+		CPPUNIT_ASSERT( event.Wait(0) );
+		CPPUNIT_ASSERT( !event.Wait(0) );
+
+	}
+	{
+		CEvent event( false, true );
+		bool bFlag = false;
+		TestThread thread( &event, &bFlag );
+		thread.start();
+		pt::psleep(1000);
+		CPPUNIT_ASSERT( bFlag );
+	}
+	{
+		CEvent event( false, true );
+		CPPUNIT_ASSERT( event.Wait(0) );
+		CPPUNIT_ASSERT( event.Wait(0) );
+		event.Reset();
+		CPPUNIT_ASSERT( !event.Wait(0) );
+		CPPUNIT_ASSERT( !event.Wait(0) );
+		event.Set();
+		CPPUNIT_ASSERT( event.Wait(0) );
+		CPPUNIT_ASSERT( event.Wait(0) );
+	}
+
 }
 
 void CommonTest::testSmartPtr()
@@ -43,7 +102,7 @@ void CommonTest::testThreadsPool()
 	public:
 		virtual void Execute( const CEvent& CancelEvent )
 		{
-			
+
 		}
 	};
 

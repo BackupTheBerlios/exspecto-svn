@@ -4,22 +4,24 @@
 #include "SettingsContainer.h"
 #include "CLog.h"
 #include <windows.h>
+#include "Os_Spec.h"
+#include "time.h"
+#include <sstream>
 
 CLog::CLog():m_iLogLevel(100)
 {
-	char str[255];
 	//ѕолучаем им€ файла текущего процесса и составл€ем из него им€ файла журнала
-	GetModuleFileName( NULL, str, sizeof(str) );
-
-	m_strFileName = str;
+	m_strFileName = get_basepath();
 
 	int iPointPos = (int)m_strFileName.find_first_of( '.' );
 	int iSlashPos = (int)m_strFileName.find_last_of( '\\' ) + 1;
 	m_strFileName = m_strFileName.substr( iSlashPos, iPointPos - iSlashPos );
-	SYSTEMTIME st;
-	GetLocalTime(&st);
-	sprintf( str, "_%02d%02d%04d_%02d%02d%02d.log", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond );
-	m_strFileName += str;
+	time_t tTime;
+	time( &tTime );
+	struct tm* lt = localtime( &tTime );
+	std::stringstream ss;
+	ss << lt->tm_mday << lt->tm_mon << lt->tm_year << "_" << lt->tm_hour << lt->tm_min << lt->tm_sec << ".log";
+	m_strFileName += ss.str();
 }
 
 CLog::~CLog()
@@ -28,14 +30,14 @@ CLog::~CLog()
 
 void CLog::SetModuleName( const std::string& strModuleName )
 {
-	char str[255];
-	
 	m_strFileName = strModuleName;	
 
-	SYSTEMTIME st;
-   	GetLocalTime(&st);
-	sprintf( str, "_%02d%02d%04d_%02d%02d%02d.log", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond );
-	m_strFileName += str;
+	time_t tTime;
+	time( &tTime );
+	struct tm* lt = localtime( &tTime );
+	std::stringstream ss;
+	ss << lt->tm_mday << lt->tm_mon << lt->tm_year << "_" << lt->tm_hour << lt->tm_min << lt->tm_sec << ".log";
+	m_strFileName += ss.str();
 }
 
 void CLog::Trace(int iLevel, char* trace_text, ...)
@@ -43,17 +45,17 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 	//≈сли приоритет записи больше чем установленный - не выполн€ем никаких действий
 	if( iLevel > m_iLogLevel ) return;
 
-	SYSTEMTIME st;
 	FILE* fp;
 
-	m_cs.Enter();	
+	m_mutex.enter();
 
-   	GetLocalTime(&st);
 	fp = fopen( m_strFileName.c_str(), "a+");
 
-	va_list args;
-	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d.%03d-%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
-	
+	time_t tTime;
+	time( &tTime );
+	struct tm* lt = localtime( &tTime );
+	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d-%d	", lt->tm_mday, lt->tm_mon, lt->tm_year, lt->tm_hour, lt->tm_min, lt->tm_sec, iLevel );
+	va_list args;	
 	va_start(args, trace_text);
 	
 	vfprintf(fp, trace_text, args);
@@ -62,7 +64,7 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 
 	va_end(args);
 	fclose(fp);
-	m_cs.Leave();
+	m_mutex.leave();
 }
 
 void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
@@ -70,14 +72,15 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 	//≈сли приоритет записи больше чем установленный - не выполн€ем никаких действий
 	if( iLevel > m_iLogLevel ) return;
 	
-	SYSTEMTIME st;
 	FILE* fp;
 
-	m_cs.Enter();
-   	GetLocalTime(&st);
+	m_mutex.enter();
 	fp = fopen( m_strFileName.c_str(), "a+");
-	
-	fprintf(fp, "%02d.%02d.%02d %02d:%02d:%02d.%03d-%d	", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, iLevel );
+
+	time_t tTime;
+	time( &tTime );
+	struct tm* lt = localtime( &tTime );
+	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d-%d	", lt->tm_mday, lt->tm_mon, lt->tm_year, lt->tm_hour, lt->tm_min, lt->tm_sec, iLevel );
     
 	va_list args;
 	va_start(args, strAbout);
@@ -114,7 +117,7 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 	}
 	else putc('\n', fp);
 	
-	m_cs.Leave();
+	m_mutex.leave();
 		
 	fclose(fp);	
 }

@@ -5,7 +5,7 @@
 //Description:  ласс, реализующий серверную часть сокетов
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
-#include "serversocket.h"
+#include "ServerSocket.h"
 
 // онструктор
 //iType - тип сокета, возможные значени€ - SOCK_STREAM и SOCK_DGRAM
@@ -40,14 +40,14 @@ void CServerSocket::Bind( int iPort, std::string strAddr )
 	sockaddr_in sAddr;
 	hostent* hn;
 
-	::ZeroMemory( &sAddr, sizeof( sAddr ) );
+    memset( &sAddr, 0, sizeof( sAddr ) );
 	sAddr.sin_family = AF_INET;
-	//Adress	
+	//Adress
 	if( "Any" == strAddr )
-        sAddr.sin_addr.S_un.S_addr =  htonl(INADDR_ANY);
+        sAddr.sin_addr.s_addr =  htonl(INADDR_ANY);
 	else if( INADDR_NONE != ::inet_addr( strAddr.c_str() ) )
 	{
-		sAddr.sin_addr.S_un.S_addr = ::inet_addr( strAddr.c_str() );
+		sAddr.sin_addr.s_addr = ::inet_addr( strAddr.c_str() );
 	}else
 	{
 		if( NULL == ( hn = ::gethostbyname( strAddr.c_str() ) ) )
@@ -58,7 +58,7 @@ void CServerSocket::Bind( int iPort, std::string strAddr )
 			else
 				throw SocketErr( iLastError );
 		}
-		sAddr.sin_addr.S_un.S_addr = ::inet_addr( hn->h_addr_list[0] );
+		sAddr.sin_addr.s_addr = ::inet_addr( hn->h_addr_list[0] );
 	}
 	//Port
 	sAddr.sin_port = htons( iPort );
@@ -74,11 +74,11 @@ void CServerSocket::Listen( int iMaxConn )
 		throw SocketErr( WSAGetLastError() );
 }
 
-//ѕри вызове accept, сокет блокируетс€ вплоть до по€влени€ сигнала о вход€щем 
-//соединении . ‘ункци€ возвращает 
-//новый сокет, который будет использоватьс€ дл€ св€зи с присоединившейс€ машиной 
-//(система создаЄт его сама, при успешном соединении). Ѕолее подробные данные 
-//о присоединившейс€ машине accept возвращает в параметре addr 
+//ѕри вызове accept, сокет блокируетс€ вплоть до по€влени€ сигнала о вход€щем
+//соединении . ‘ункци€ возвращает
+//новый сокет, который будет использоватьс€ дл€ св€зи с присоединившейс€ машиной
+//(система создаЄт его сама, при успешном соединении). Ѕолее подробные данные
+//о присоединившейс€ машине accept возвращает в параметре addr
 //(тип адреса, IP-адрес, порт).
 SmartPtr< CSocket > CServerSocket::Accept( structAddr& addr )
 {
@@ -87,21 +87,21 @@ SmartPtr< CSocket > CServerSocket::Accept( structAddr& addr )
 	sockaddr_in sAddr;
 	int len = sizeof(sAddr);
 	hostent* hn;
-	ZeroMemory (&sAddr, sizeof (sAddr));
+	memset( &sAddr, 0, sizeof( sAddr ) );
 	SetConnected( true );
-	if( INVALID_SOCKET == ( s = ::accept( m_Socket, (sockaddr*)&sAddr, &len ) ) )
+	if( INVALID_SOCKET == ( s = ::accept( m_Socket, (sockaddr*)&sAddr, (socklen_t*)&len ) ) )
 	{
 		SetConnected( false );
 		int iLastErr;
 		//≈сли ожидание отменено - выходим без ошибки
 		if( WSAEINTR == ( iLastErr = WSAGetLastError() ) )
 			return sock;
-		throw SocketErr( WSAGetLastError() );	
+		throw SocketErr( WSAGetLastError() );
 	}else
 	{
 		addr.iPort = ::ntohs( sAddr.sin_port );
 		addr.strAddr = ::inet_ntoa( sAddr.sin_addr );
-		if( NULL != ( hn = ::gethostbyaddr( (const char*)&sAddr.sin_addr.S_un.S_addr, sizeof( sAddr.sin_addr.S_un.S_addr ), m_iType ) ) )
+		if( NULL != ( hn = ::gethostbyaddr( (const char*)&sAddr.sin_addr.s_addr, sizeof( sAddr.sin_addr.s_addr ), m_iType ) ) )
 		{
 			addr.strName = hn->h_name;
 		}

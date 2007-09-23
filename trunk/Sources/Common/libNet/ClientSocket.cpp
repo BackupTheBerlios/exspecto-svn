@@ -28,27 +28,27 @@ void CClientSocket::Connect( std::string strAddr, int iPort )
 		throw SocketErr( WSAGetLastError() );
 	//������������� ��� �������
 	SetBlocking( m_bBlocking );
-	
+
 	sockaddr_in sAddr;
 	hostent* hn;
 
-	::ZeroMemory( &sAddr, sizeof( sAddr ) );
+    memset( &sAddr, 0, sizeof( sAddr ) );
 	sAddr.sin_family = AF_INET;
 
 	if( INADDR_NONE != ::inet_addr( strAddr.c_str() ) )
-		sAddr.sin_addr.S_un.S_addr = ::inet_addr( strAddr.c_str() );
+		sAddr.sin_addr.s_addr = ::inet_addr( strAddr.c_str() );
 	else
 	{
 		//���� ������ �� ����� � ��� ���������� - �������� ����� � ������� DNS
 		if( NULL == ( hn = ::gethostbyname( strAddr.c_str() ) ) )
 		{
 			int iLastError = ::WSAGetLastError();
-			if( WSAHOST_NOT_FOUND == iLastError )
+			if( HOST_NOT_FOUND == iLastError )
 				throw SocketDNSErr();
 			else
 				throw SocketErr( iLastError );
 		}
-		sAddr.sin_addr.S_un.S_addr = ::inet_addr( hn->h_addr_list[0] );
+		sAddr.sin_addr.s_addr = ::inet_addr( hn->h_addr_list[0] );
 	}
 	sAddr.sin_port = ::htons( iPort );
 	//��������� ����������

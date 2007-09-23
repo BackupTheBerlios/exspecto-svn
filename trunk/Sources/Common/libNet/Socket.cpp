@@ -7,6 +7,7 @@
 #include "Socket.h"
 #include "SmartPtr.hpp"
 
+
 //Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
 CSocket::CSocket( int iType, bool bBlocking ):m_Socket( INVALID_SOCKET ),
@@ -14,11 +15,12 @@ CSocket::CSocket( int iType, bool bBlocking ):m_Socket( INVALID_SOCKET ),
 											 					m_iType( iType ),
 											 					m_bConnected( false )
 {
+    #ifdef WIN32
 	WSADATA WSAData;
 	 //Инициализация сокетов
 	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
 		throw SocketErr( WSAGetLastError() );
-
+    #endif
 	//Создаем сокет
 	if( INVALID_SOCKET == ( m_Socket = ::socket( AF_INET, iType, 0 ) ) )
 		throw SocketErr( WSAGetLastError() );
@@ -31,17 +33,18 @@ CSocket::CSocket( int iType, bool bBlocking ):m_Socket( INVALID_SOCKET ),
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
 CSocket::CSocket( SOCKET s, bool bBlocking, bool bConnected ):m_bBlocking( bBlocking )
 {
+    #ifdef WIN32
 	WSADATA WSAData;
 	//Инициализация сокетов
 	if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
 	{
 		throw SocketErr( WSAGetLastError() );
 	}
-
+    #endif
 	SetConnected( bConnected );
 	m_Socket = s;
 	int Size = sizeof(int);
-	::getsockopt( m_Socket, SOL_SOCKET, SO_TYPE, (char*)&m_iType, &Size );
+	::getsockopt( m_Socket, SOL_SOCKET, SO_TYPE, (char*)&m_iType, (socklen_t*)&Size );
 }
 
 CSocket::~CSocket(void)
@@ -53,7 +56,9 @@ CSocket::~CSocket(void)
 	{
 		Log::instance().Trace( 50, "CSocket::~CSocket: Возникло исключение: %s", e.what() );
 	};
+	#ifdef WIN32
 	WSACleanup();
+	#endif
 }
 
 //Метод закрытия сокета
@@ -62,8 +67,12 @@ void CSocket::Close( void )
 	//TODO:разобраться что происходит при вызове shutdown если соединение не установлено либо разорвано
 	if( INVALID_SOCKET != m_Socket )
 	{
+	    #ifdef WIN32
 		if( SOCKET_ERROR == ::closesocket( m_Socket ) )
 			throw SocketErr( WSAGetLastError() );
+        #else
+        close( m_Socket );
+        #endif
 		m_Socket = INVALID_SOCKET;
 		SetConnected( false );
 	}
@@ -77,11 +86,8 @@ void CSocket::SetBlocking( bool bIsBlocking )
 	if( m_bBlocking )
 	{
 		l = 0;
-		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
-	}else
-	{
-		::ioctlsocket( m_Socket, FIONBIO, (unsigned long* )&l );
 	}
+	::ioctl( m_Socket, FIONBIO, (unsigned long* )&l );
 }
 
 //Метод посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт
@@ -95,7 +101,7 @@ void CSocket::Send( void* pBuffer, int iSize )
 		Log::instance().Trace( 1, "CSocket::Send: Количество посланных и фактически отправленных байт не совпадает" );
 		throw SocketErr( "Количество посланных и фактически отправленных байт не совпадает" );
 	}
-	SetConnected( true );		
+	SetConnected( true );
 }
 
 //Метод приёма,возвращает SOCKET_ERROR либо кол-во полученных байт
@@ -110,7 +116,7 @@ int CSocket::Receive( void* pBuffer, int iBufSize )
 			throw SocketRespSizeErr();
 		}else
 		{
-			SocketErr s( iLastError );	
+			SocketErr s( iLastError );
 			throw s;
 		}
 	}else if( 0 == res )
@@ -129,20 +135,20 @@ CSocket::structAddr CSocket::GetRemoteHost()
 	sockaddr_in sAddr;
 	int len = sizeof(sAddr);
 	hostent* hn;
-	
-	if( SOCKET_ERROR == getpeername( m_Socket, (sockaddr*)&sAddr, &len ) )
+
+	if( SOCKET_ERROR == getpeername( m_Socket, (sockaddr*)&sAddr, (socklen_t*)&len ) )
 		throw SocketErr( WSAGetLastError() );
 	else
 	{
 		SetConnected( true );
 		res.iPort = ::ntohs( sAddr.sin_port );
 		res.strAddr = ::inet_ntoa( sAddr.sin_addr );
-		if( NULL != ( hn = ::gethostbyaddr( (const char*)&sAddr.sin_addr.S_un.S_addr, sizeof( sAddr.sin_addr.S_un.S_addr ), m_iType ) ) )
+		if( NULL != ( hn = ::gethostbyaddr( (const char*)&sAddr.sin_addr.s_addr, sizeof( sAddr.sin_addr.s_addr ), m_iType ) ) )
 			res.strName = hn->h_name;
 		return res;
 	}
 }
-	
+
 //При использовании неблокирующих вызовов, метод возвращает true,если в приемный буфер
 //поступили данные и можно производить операцию Receive
 //Timeout - время ожидания (мкс),если -1,бесконечное ожидание
@@ -194,7 +200,7 @@ bool CSocket::IsReadyForWrite( int iTimeout )
 bool CSocket::IsConnected()const
 {
 	Log::instance().Trace( 50, "CSocket::IsConnected %s", m_bConnected?"true":"false" );
-	return m_bConnected;	
+	return m_bConnected;
 }
 
 void CSocket::SetConnected( bool bConnected )
@@ -204,99 +210,7 @@ void CSocket::SetConnected( bool bConnected )
 
 bool CSocket::GetPendingDataSize( u_long& ulSize )
 {
-	if( ioctlsocket( m_Socket, FIONREAD, &ulSize ) == -1 ) return false;
-	return true; 
+	if( ioctl( m_Socket, FIONREAD, &ulSize ) == -1 ) return false;
+	return true;
 }
 
-namespace Tools{
-
-	CPingHelper::CPingHelper()
-	{
-		WSADATA WSAData;
-		//Инициализация сокетов
-		if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
-			throw SocketErr( WSAGetLastError() );
-
-		m_hLib = LoadLibrary("ICMP.DLL");
-		if( NULL == m_hLib )
-			throw SocketErr( GetLastError() );
-
-		m_pIcmpCreateFile = (pfnHV)GetProcAddress( m_hLib, "IcmpCreateFile" );
-		if( NULL == m_pIcmpCreateFile )
-		{
-			FreeLibrary( m_hLib );
-            throw SocketErr( GetLastError() );
-		}
-		m_pIcmpCloseHandle = (pfnBH)GetProcAddress( m_hLib, "IcmpCloseHandle" );
-		if( NULL == m_pIcmpCloseHandle )
-		{
-			FreeLibrary( m_hLib );
-            throw SocketErr( GetLastError() );
-		}
-
-		m_pIcmpSendEcho = (pfnDHDPWPipPDD)GetProcAddress( m_hLib, "IcmpSendEcho" );
-		if( NULL == m_pIcmpSendEcho )
-		{
-			FreeLibrary( m_hLib );
-            throw SocketErr( GetLastError() );
-		}
-
-	}
-
-	CPingHelper::~CPingHelper()
-	{
-		FreeLibrary( m_hLib );
-		WSACleanup();
-	}
-
-	bool CPingHelper::Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount )
-	{
-		char acPingBuffer[32]={0};  // буфер для передачи
-		struct in_addr DestAddress;
-		struct hostent* pHostEnt;
-		// Выделяем память под пакет
-		PIP_ECHO_REPLY pIpe = (PIP_ECHO_REPLY)new BYTE[ sizeof(IP_ECHO_REPLY) + sizeof(acPingBuffer)];
-		if (pIpe == 0) {
-			throw SocketErr( GetLastError() );
-		}
-
-
-		// получаем адрес хоста, который надо пингануть
-		DestAddress.s_addr = inet_addr(strHost.c_str());
-		if (DestAddress.s_addr == INADDR_NONE)
-			pHostEnt = gethostbyname(strHost.c_str());
-		else
-			pHostEnt = gethostbyaddr((const char *)&DestAddress, sizeof(struct in_addr), AF_INET);
-
-		if (pHostEnt == NULL) {
-			return false;
-		}
-
-		HANDLE hIP;
-		// Пытаемся создать файл сервиса
-		hIP = m_pIcmpCreateFile();
-
-		if (hIP == INVALID_HANDLE_VALUE) {
-			delete[] pIpe;
-			throw SocketErr( GetLastError() );
-		}
-
-
-
-		pIpe->Data = acPingBuffer;
-		pIpe->DataSize = sizeof(acPingBuffer);
-
-		bool bRes = true;
-		DWORD dwStatus;
-		for(unsigned int c=0;c<iRequestCount;c++) {
-			dwStatus = m_pIcmpSendEcho( hIP, *((unsigned int*)pHostEnt->h_addr_list[0]),
-				acPingBuffer, sizeof(acPingBuffer), NULL, pIpe,
-				sizeof(IP_ECHO_REPLY) + sizeof(acPingBuffer), iTimeout );
-			bRes &= (dwStatus == 0)?false:true;
-		}
-		m_pIcmpCloseHandle(hIP);
-		delete[] pIpe;
-		return bRes;
-	}
-
-}

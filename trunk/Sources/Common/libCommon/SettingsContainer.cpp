@@ -3,6 +3,7 @@
 #include <list>
 #include <vector>
 #include <set>
+#include <sstream>
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CSettings-----------------------------------------------------------
@@ -40,7 +41,7 @@ void CIniSettings::SetModule( const std::string& strModuleName, char** pModulePa
 	for( int i = 0; i < iParamCount; i+=2 )
 		mapParamTypes.insert( std::make_pair( pModuleParams[ i ], pModuleParams[ i + 1 ] ) );
 
-	FILE* f = fopen( "Settings.ini", "r" );
+	FILE* f = fopen( "settings.ini", "r" );
 	if( NULL == f )
 		throw ParamLoadErr( "Не удалось найти файл Settings.ini" );
 
@@ -232,28 +233,27 @@ void CIniIpListSerializer::Load( const std::string& strParamName, const std::str
 				Log::instance().Trace( 10, "CIniIpListSerializer::Load: Ошибка при разборе параметра %s: %s.Продолжаем разбор ", strParamName.c_str(), It->c_str() );		
 				continue;
 			}
-			char strA[255], strB[255], strC[255], strD[255];
 			std::string strTmpIp;
 			for( int iAInd = Ip1.A, iBInd = Ip1.B, iCInd = Ip1.C, iDInd = Ip1.D; iAInd <= Ip2.A; iAInd++ )
 			{
-				itoa( iAInd, strA, 10 );
+				std::stringstream ssA; ssA << iAInd;
 				for( ; ( (iAInd < Ip2.A) && (iBInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd <= Ip2.B) ); iBInd++ )
 				{
-					itoa( iBInd, strB, 10 );
+					std::stringstream ssB; ssB << iBInd;
 					for( ; ( ( (iAInd < Ip2.A) || (iBInd < Ip2.B) ) && (iCInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd == Ip2.B) && (iCInd <= Ip2.C) ); iCInd++ )
 					{
-						itoa( iCInd, strC, 10 );
+						std::stringstream ssC; ssC << iCInd;
 						for( ; ( ( (iAInd < Ip2.A) || (iBInd < Ip2.B) || (iCInd < Ip2.C) ) && (iDInd < 255) ) || ( (iAInd == Ip2.A) && (iBInd == Ip2.B) && (iCInd == Ip2.C) && (iDInd <= Ip2.D) ); iDInd++ )
 						{
-                            itoa( iDInd, strD, 10 );
+							std::stringstream  ssD; ssD << iDInd;
 							strTmpIp.clear();
-							strTmpIp += strA;
+							strTmpIp += ssA.str();
 							strTmpIp += ".";
-							strTmpIp += strB;
+							strTmpIp += ssB.str();
 							strTmpIp += ".";
-							strTmpIp += strC;
+							strTmpIp += ssC.str();
 							strTmpIp += ".";
-							strTmpIp += strD;
+							strTmpIp += ssD.str();
 							listIp.push_back( strTmpIp );
 						}
 						iDInd = 1;

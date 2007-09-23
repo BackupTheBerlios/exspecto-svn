@@ -16,6 +16,7 @@
 #  define _WINSOCKAPI_   // prevent inclusion of winsock.h, since we need winsock2.h
 #  include <windows.h>
 #else
+#  include "errno.h"
 #  include <pthread.h>
 #  ifndef __bsdi__
 #    include <semaphore.h>
@@ -117,8 +118,10 @@ public:
     mutex()         { pthread_mutex_init(&mtx, 0); }
     ~mutex()        { pthread_mutex_destroy(&mtx); }
     void enter()    { pthread_mutex_lock(&mtx); }
+    bool tryenter() { return EBUSY==pthread_mutex_trylock(&mtx)?false:true; }
     void leave()    { pthread_mutex_unlock(&mtx); }
     void lock()     { enter(); }
+    bool trylock()  { return tryenter(); }
     void unlock()   { leave(); }
 };
 
@@ -330,6 +333,7 @@ public:
     virtual ~semaphore();
 
     void wait();
+    bool trywait();
     void post();
     void signal()  { post(); }
 };

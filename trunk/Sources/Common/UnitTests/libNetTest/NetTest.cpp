@@ -1,9 +1,10 @@
 #include "NetTest.h"
 #include <cppunit/config/SourcePrefix.h>
 
-#include "packet.h"
+#include "Packet.h"
 #include <vector>
 #include <sstream>
+#include "ping.h"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( NetTest );
@@ -58,9 +59,10 @@ void NetTest::testPacket()
 								"<host ipaddress=\"127.0.0.1\"  hostname=\"local\" protoname=\"netbios\"><file><filepath>tmp.tmp</filepath><filedate>BC040000</filedate><filesize>10</filesize></file></host>"
 								"<host ipaddress=\"127.0.0.2\"  hostname=\"local2\" protoname=\"netbios2\"><file><filepath>tmp2.tmp2</filepath><filedate>BC040000</filedate><filesize>102</filesize></file></host></packet>\r\n";
 		//Проверяем методы разбора входящих пакетов
-		CInPacket p( (BYTE*)strPacket.c_str(), (int)strPacket.size() );
+		CInPacket p( (BYTE*)strPacket.c_str(), (int)strPacket.length() );
+
 		std::string strTmp;
-		p.GetFirstAddress( strTmp ); 
+		p.GetFirstAddress( strTmp );
 		int j = 0;
 		do{
 			CPPUNIT_ASSERT( strTmp == vecAddresses[j++] );
@@ -81,7 +83,7 @@ void NetTest::testPacket()
 		CPPUNIT_ASSERT( file.FileSize == 102 );
 		CPPUNIT_ASSERT( file.FileName == "tmp2.tmp2" );
 		CPPUNIT_ASSERT( file.FDate.UTS == 1212 );
-		
+
 		CPPUNIT_ASSERT( false == p.GetNextHostRec( hostTmp ) );
 
 		std::string strPacket2 = "<?xml version=\"1.0\" encoding=\"windows-1251\"?>"
@@ -110,5 +112,5 @@ void NetTest::testPacket()
 void NetTest::testPing()
 {
 	Tools::CPingHelper ping;
-	CPPUNIT_ASSERT( true == ping.Ping( "127.0.0.1", 10, 1 ) );
+	CPPUNIT_ASSERT( true == ping.Ping( "127.0.0.1", 1000, 1 ) );
 }

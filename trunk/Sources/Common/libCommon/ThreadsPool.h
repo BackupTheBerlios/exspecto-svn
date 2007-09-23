@@ -2,7 +2,6 @@
 #define CTHREADPOOL_H_
 
 #include "SmartPtr.hpp"
-#include "CriticalSection.hpp"
 #include "Event.hpp"
 #include <vector>
 #include "Semaphore.hpp"
@@ -27,8 +26,6 @@ public:
 
 	void CancelAllTasks();
 
-//	bool WaitAllComplete( int iTimeout = -1 );
-
 	bool WaitAllComplete( CEvent& CancelEv );
 
 private:
@@ -42,30 +39,37 @@ private:
 
 	SmartPtr< CThreadTask > GetTask();
 
-	struct structParam{
-		CThreadsPool* pThis;
-		int	iId;
+	class WorkingThread: public pt::thread
+	{
+	public:
+		WorkingThread( CThreadsPool* pThis, int iId ):pt::thread(false),m_pThis(pThis),m_iId(iId){}
+		virtual void execute();
+		virtual void cleanup(){}
+
+	private:
+		CThreadsPool* m_pThis;
+		int m_iId;
 	};
 
-	static unsigned __stdcall ThreadFunc( void* );
 
 	std::vector< SmartPtr< CEvent > > m_vecThreadsStates;
 
-	CCriticalSection m_csThreadsStates;
+	pt::mutex m_mtThreadsStates;
 
-	std::vector< HANDLE > m_vecThreads;
+	std::vector< SmartPtr<WorkingThread> > m_vecThreads;
 
 	std::vector< SmartPtr< CThreadTask > > m_vecTasks;
 
-	CCriticalSection m_csTasks;
-
-	CSemaphore m_TasksSem;
+	pt::mutex m_mtTasks;
 
 	CEvent m_Cancel;
 
 	CEvent m_Exit;
 
 	CEvent m_TasksEmpty;
+
+	pt::semaphore m_sem;
+
 };
 
 #endif
