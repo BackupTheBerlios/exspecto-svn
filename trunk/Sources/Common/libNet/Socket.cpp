@@ -7,7 +7,6 @@
 #include "Socket.h"
 #include "SmartPtr.hpp"
 
-
 //Конструктор, iType - тип сокета,может быть SOCK_STREAM/SOCK_DGRAM
 //			   bBlocking - тип вызовов, по умолчанию - блокирующие
 CSocket::CSocket( int iType, bool bBlocking ):m_Socket( INVALID_SOCKET ),
@@ -87,7 +86,7 @@ void CSocket::SetBlocking( bool bIsBlocking )
 	{
 		l = 0;
 	}
-	::ioctl( m_Socket, FIONBIO, (unsigned long* )&l );
+    ::ioctl( m_Socket, FIONBIO, (unsigned long* )&l );
 }
 
 //Метод посылки данных,возвращает SOCKET_ERROR либо кол-во отправленных байт

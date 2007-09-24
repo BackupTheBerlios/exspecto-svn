@@ -13,6 +13,8 @@
 #include "CLog.h"
 #ifdef WIN32
 #include "winsock2.h"
+#define socklen_t int
+#define ioctl ioctlsocket
 #else
 #include <sys/types.h>
 #include <sys/socket.h>

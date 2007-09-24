@@ -11,6 +11,10 @@
 #include <time.h>
 #include "Os_Spec.h"
 
+#ifdef WIN32
+#define atoll _atoi64
+#endif
+
 
 CInPacket::CInPacket( BYTE* pbBuf, int iSize ):m_pXmlDoc( new TiXmlDocument() )
                                               ,m_pXmlRoot( NULL )

@@ -23,6 +23,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCommonTest", "libCommonT
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libNet", "libNet\libNet.vcproj", "{9E6BC4AD-0049-4378-A4D7-6305F2366450}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libNetTest", "libNetTest\libNetTest.vcproj", "{77F27F9B-F500-41AE-975D-0E11205C301B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -66,6 +74,18 @@ Global
 		{10D26EF7-B3E7-4373-8823-D03B1179D477}.Release.Build.0 = Release|Win32
 		{10D26EF7-B3E7-4373-8823-D03B1179D477}.test.ActiveCfg = Release|Win32
 		{10D26EF7-B3E7-4373-8823-D03B1179D477}.test.Build.0 = Release|Win32
+		{9E6BC4AD-0049-4378-A4D7-6305F2366450}.Debug.ActiveCfg = Debug|Win32
+		{9E6BC4AD-0049-4378-A4D7-6305F2366450}.Debug.Build.0 = Debug|Win32
+		{9E6BC4AD-0049-4378-A4D7-6305F2366450}.Release.ActiveCfg = Release|Win32
+		{9E6BC4AD-0049-4378-A4D7-6305F2366450}.Release.Build.0 = Release|Win32
+		{9E6BC4AD-0049-4378-A4D7-6305F2366450}.test.ActiveCfg = Release|Win32
+		{9E6BC4AD-0049-4378-A4D7-6305F2366450}.test.Build.0 = Release|Win32
+		{77F27F9B-F500-41AE-975D-0E11205C301B}.Debug.ActiveCfg = Debug|Win32
+		{77F27F9B-F500-41AE-975D-0E11205C301B}.Debug.Build.0 = Debug|Win32
+		{77F27F9B-F500-41AE-975D-0E11205C301B}.Release.ActiveCfg = Release|Win32
+		{77F27F9B-F500-41AE-975D-0E11205C301B}.Release.Build.0 = Release|Win32
+		{77F27F9B-F500-41AE-975D-0E11205C301B}.test.ActiveCfg = Release|Win32
+		{77F27F9B-F500-41AE-975D-0E11205C301B}.test.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
