@@ -22,8 +22,9 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="5"
-				UsePrecompiledHeader="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
@@ -98,10 +99,10 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\Os_Spec.h">
+				RelativePath="..\..\libWinSpec\Os_Spec.h">
 			</File>
 			<File
-				RelativePath=".\winspec.cpp">
+				RelativePath="..\..\libWinSpec\winspec.cpp">
 			</File>
 		</Filter>
 	</Files>

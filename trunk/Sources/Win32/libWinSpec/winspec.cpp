@@ -1,5 +1,6 @@
 #include "Os_Spec.h"
 #include <errno.h>
+#include "windows.h"
 
 
 std::string get_basepath()

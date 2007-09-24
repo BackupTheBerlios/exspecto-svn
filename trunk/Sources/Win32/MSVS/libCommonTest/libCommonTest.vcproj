@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="libCommon"
-	ProjectGUID="{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}"
+	Name="libCommonTest"
+	ProjectGUID="{10D26EF7-B3E7-4373-8823-D03B1179D477}"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -14,13 +14,13 @@
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\libWinSpec;..\..\..\Common\libCommon;..\..\..\Common\CommonFiles\ptypes;..\..\..\Common\CommonFiles"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories="..\..\libWinSpec;..\..\..\Common\CommonFiles\ptypes;..\..\..\Common\CommonFiles;..\..\..\Common\libCommon;..\..\..\Common\UnitTests\cppunit\include;..\..\..\Common\UnitTests\libCommonTest"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -32,8 +32,13 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/libCommon.lib"/>
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)/libCommonTest.exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/libCommonTest.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -48,6 +53,8 @@
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -57,11 +64,11 @@
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
@@ -70,8 +77,14 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/libCommon.lib"/>
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)/libCommonTest.exe"
+				LinkIncremental="1"
+				GenerateDebugInformation="TRUE"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -87,12 +100,26 @@
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
 			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{3419A602-B8F9-49AE-8A40-5AECFE78F267}"
+			Name="cppunit"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}"
+			Name="libCommon"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}"
+			Name="libWinSpec"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{00889BD2-3123-4DBB-861A-87D32A421FC6}"
+			Name="PTypes_Lib"/>
 	</References>
 	<Files>
 		<Filter
@@ -100,49 +127,13 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\..\..\Common\libCommon\CLog.cpp">
+				RelativePath="..\..\..\Common\UnitTests\libCommonTest\CommonTest.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\Common\libCommon\CLog.h">
+				RelativePath="..\..\..\Common\UnitTests\libCommonTest\CommonTest.h">
 			</File>
 			<File
-				RelativePath="..\..\..\Common\libCommon\CriticalSection.hpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\Event.hpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\MemLeakDetector.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\MemLeakDetector.h">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\Semaphore.hpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\SettingsContainer.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\SettingsContainer.h">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\Singleton.hpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\SmartPtr.hpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\ThreadsPool.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\ThreadsPool.h">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\TrayManagement.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\Common\libCommon\TrayManagement.h">
+				RelativePath="..\..\..\Common\UnitTests\libCommonTest\libCommonTest.cpp">
 			</File>
 		</Filter>
 	</Files>
