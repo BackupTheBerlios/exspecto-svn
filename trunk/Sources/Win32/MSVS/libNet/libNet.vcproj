@@ -112,6 +112,12 @@
 				RelativePath="..\..\..\Common\libNet\Packet.h">
 			</File>
 			<File
+				RelativePath="..\..\..\Common\libNet\ping.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\Common\libNet\ping.h">
+			</File>
+			<File
 				RelativePath="..\..\..\Common\libNet\precomp.cpp">
 			</File>
 			<File

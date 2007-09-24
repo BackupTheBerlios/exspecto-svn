@@ -33,6 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/libNetTest.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -108,6 +109,24 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{3419A602-B8F9-49AE-8A40-5AECFE78F267}"
+			Name="cppunit"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{2D9BBCBC-B812-4F9A-B7E5-8FB2B9FE8F4E}"
+			Name="libCommon"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{9E6BC4AD-0049-4378-A4D7-6305F2366450}"
+			Name="libNet"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{ACE5D54D-A323-4B47-ACA7-FDF8A4EDF8CD}"
+			Name="libWinSpec"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{00889BD2-3123-4DBB-861A-87D32A421FC6}"
+			Name="PTypes_Lib"/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{BF5A3437-8A6C-4A6E-BDA6-DC3F2DBC9575}"
+			Name="tinyxmlSTL"/>
 	</References>
 	<Files>
 		<Filter
