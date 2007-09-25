@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../../../Common/libCommon/CLog.cpp" open="1" top="0" tabpos="1">
+	<File name="../../../Common/libCommon/CLog.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="870" topLine="91" />
 	</File>
 	<File name="../../../Common/libCommon/CLog.h" open="0" top="0" tabpos="2">
@@ -19,8 +19,8 @@
 	<File name="../../../Common/libCommon/Singleton.hpp" open="0" top="0" tabpos="10">
 		<Cursor position="203" topLine="0" />
 	</File>
-	<File name="../../../Common/libCommon/SmartPtr.hpp" open="0" top="0" tabpos="2">
-		<Cursor position="871" topLine="54" />
+	<File name="../../../Common/libCommon/SmartPtr.hpp" open="1" top="1" tabpos="1">
+		<Cursor position="1714" topLine="0" />
 	</File>
 	<File name="../../../Common/libCommon/ThreadsPool.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="2567" topLine="39" />

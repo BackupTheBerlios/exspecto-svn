@@ -62,9 +62,7 @@ public:
 		if( SmartPointer.m_pPointerImpl != NULL )
 		{
 			m_pPointerImpl = reinterpret_cast<Ref*>( SmartPointer.m_pPointerImpl );
-			m_pPointerImpl->mt.lock();
-			++m_pPointerImpl->iRefCount;
-			m_pPointerImpl->mt.unlock();
+			IncreaseRef();
 		}
 	}
 
@@ -74,11 +72,8 @@ public:
 		if( SmartPointer.m_pPointerImpl != NULL )
 		{
 			m_pPointerImpl = SmartPointer.m_pPointerImpl;
-			m_pPointerImpl->mt.lock();
-			++m_pPointerImpl->iRefCount;
-			m_pPointerImpl->mt.unlock();
+			IncreaseRef();
 		}
-
 	}
 
 
@@ -90,27 +85,10 @@ public:
 
 	SmartPtr& operator=( T* pPointer )
 	{
-		if( NULL != m_pPointerImpl )
-		{
-			m_pPointerImpl->mt.lock();
-			--m_pPointerImpl->iRefCount;
-			assert( m_pPointerImpl->iRefCount >= 0 && "SmartPtr: MEMORY LEAK"  );
-
-			if( 0 == m_pPointerImpl->iRefCount  )
-			{
-				m_pPointerImpl->mt.unlock();
-				AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
-			}else
-			{
-				m_pPointerImpl->mt.unlock();
-				m_pPointerImpl = new Ref;
-			}
-		}else
-			m_pPointerImpl = new Ref;
+	    DecreaseRef();
+		m_pPointerImpl = new Ref;
 		m_pPointerImpl->pPointer = pPointer;
 		m_pPointerImpl->iRefCount = 1;
-
-
 		return *this;
 	}
 
@@ -119,56 +97,16 @@ public:
 	{
 		if( ( this != &SmartPointer ) && ( m_pPointerImpl != SmartPointer.m_pPointerImpl ) )
 		{
-			if( NULL != m_pPointerImpl )
-			{
-				m_pPointerImpl->mt.lock();
-				--m_pPointerImpl->iRefCount;
-				assert( m_pPointerImpl->iRefCount >= 0 && "SmartPtr: MEMORY LEAK"  );
-				if( 0 == m_pPointerImpl->iRefCount  )
-				{
-					m_pPointerImpl->mt.unlock();
-					AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
-					delete m_pPointerImpl;
-					m_pPointerImpl = NULL;
-				}else
-					m_pPointerImpl->mt.unlock();
-			}
+		    DecreaseRef();
 			if( NULL != ( m_pPointerImpl = SmartPointer.m_pPointerImpl ) )
-			{
-				m_pPointerImpl->mt.lock();
-				++m_pPointerImpl->iRefCount;
-				m_pPointerImpl->mt.unlock();
-			}
+                IncreaseRef();
 		}
 		return *this;
 	}
 
 	SmartPtr& operator=( const SmartPtr< T, AllocationPolicy >& SmartPointer )
 	{
-		if( ( this != &SmartPointer ) && ( m_pPointerImpl != SmartPointer.m_pPointerImpl ) )
-		{
-			if( NULL != m_pPointerImpl )
-			{
-				m_pPointerImpl->mt.lock();
-				--m_pPointerImpl->iRefCount;
-				assert( m_pPointerImpl->iRefCount >= 0 && "SmartPtr: MEMORY LEAK"  );
-				if( 0 == m_pPointerImpl->iRefCount  )
-				{
-					m_pPointerImpl->mt.unlock();
-					AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
-					delete m_pPointerImpl;
-					m_pPointerImpl = NULL;
-				}else
-					m_pPointerImpl->mt.unlock();
-			}
-			if( NULL != ( m_pPointerImpl = SmartPointer.m_pPointerImpl ) )
-			{
-				m_pPointerImpl->mt.lock();
-				++m_pPointerImpl->iRefCount;
-				m_pPointerImpl->mt.unlock();
-			}
-		}
-		return *this;
+	    return operator=< T, AllocationPolicy >( SmartPointer );
 	}
 
 	T* operator->()const
@@ -177,6 +115,39 @@ public:
 	}
 
 	virtual ~SmartPtr()
+	{
+	    DecreaseRef();
+	}
+
+	T* get()const
+	{
+		if( m_pPointerImpl )
+			return m_pPointerImpl->pPointer;
+		else
+			return NULL;
+	}
+
+	void Release()
+	{
+	    DecreaseRef();
+	}
+
+    T& operator*()
+	{
+		return *m_pPointerImpl->pPointer;
+	}
+
+
+private:
+
+	//TODO:Можно избавиться от mt, используя Interlocked-функции
+	struct Ref{
+		pt::mutex mt;
+		int iRefCount;
+		T* pPointer;
+	};
+
+	void DecreaseRef()
 	{
 		if( NULL != m_pPointerImpl )
 		{
@@ -194,46 +165,11 @@ public:
 		}
 	}
 
-	T* get()const
+	void IncreaseRef()
 	{
-		if( m_pPointerImpl )
-			return m_pPointerImpl->pPointer;
-		else
-			return NULL;
+	    pt::scopelock lock( m_pPointerImpl->mt );
+		++m_pPointerImpl->iRefCount;
 	}
-
-	void Release()
-	{
-		if( NULL != m_pPointerImpl )
-		{
-			m_pPointerImpl->mt.lock();
-			--m_pPointerImpl->iRefCount;
-			assert( m_pPointerImpl->iRefCount >= 0 && "SmartPtr: MEMORY LEAK"  );
-			if( 0 == m_pPointerImpl->iRefCount  )
-			{
-				m_pPointerImpl->mt.unlock();
-				AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
-				delete m_pPointerImpl;
-			}else
-				m_pPointerImpl->mt.unlock();
-			m_pPointerImpl = NULL;
-		}
-	}
-
-    T& operator*()
-	{
-		return *m_pPointerImpl->pPointer;
-	}
-
-
-private:
-
-	//TODO:Можно избавиться от mt, используя Interlocked-функции
-	struct Ref{
-		pt::mutex mt;
-		int iRefCount;
-		T* pPointer;
-	};
 
 	Ref* m_pPointerImpl;
 };

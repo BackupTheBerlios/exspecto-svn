@@ -1,6 +1,8 @@
 #include "ping.h"
 #include "CLog.h"
+#ifdef WIN32
 #include "WinSock2.h"
+#endif
 #include "Socket.h"
 
 namespace Tools{

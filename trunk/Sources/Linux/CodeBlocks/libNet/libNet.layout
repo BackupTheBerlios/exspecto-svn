@@ -7,10 +7,10 @@
 	<File name="../../../Common/libNet/ClientSocket.h" open="0" top="0" tabpos="7">
 		<Cursor position="826" topLine="0" />
 	</File>
-	<File name="../../../Common/libNet/Packet.cpp" open="1" top="0" tabpos="2">
+	<File name="../../../Common/libNet/Packet.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="9377" topLine="243" />
 	</File>
-	<File name="../../../Common/libNet/Packet.h" open="1" top="0" tabpos="3">
+	<File name="../../../Common/libNet/Packet.h" open="0" top="0" tabpos="3">
 		<Cursor position="2260" topLine="61" />
 	</File>
 	<File name="../../../Common/libNet/ServerSocket.cpp" open="0" top="0" tabpos="4">
@@ -22,8 +22,8 @@
 	<File name="../../../Common/libNet/Socket.h" open="0" top="0" tabpos="2">
 		<Cursor position="759" topLine="0" />
 	</File>
-	<File name="../../../Common/libNet/ping.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="5296" topLine="139" />
+	<File name="../../../Common/libNet/ping.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="421" topLine="24" />
 	</File>
 	<File name="../../../Common/libNet/ping.h" open="0" top="0" tabpos="3">
 		<Cursor position="23" topLine="0" />
