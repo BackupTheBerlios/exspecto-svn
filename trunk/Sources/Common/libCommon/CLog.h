@@ -8,8 +8,9 @@
 #define _CLOG_H
 #include <string>
 #include "Singleton.hpp"
-#include "pasync.h"
+#ifdef WIN32
 #include "windows.h"
+#endif
 
 /*
  * Класс Log является Singleton-ом( см. паттерн проектирования Singleton )
@@ -61,7 +62,7 @@ private:
 	std::string m_strFileName;
 
 	//критическая секция на запись в файл
-	pt::mutex m_mutex;
+	CMutex m_mutex;
 
 	int m_iLogLevel;
 };

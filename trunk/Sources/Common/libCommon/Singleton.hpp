@@ -1,6 +1,6 @@
 #ifndef SINGLETON
 #define SINGLETON
-#include "pasync.h"
+#include "Mutex.h"
 
 template< class T >
 class CSingleton
@@ -9,8 +9,8 @@ public:
 
 	static T& instance()
 	{
-	    static pt::mutex mutex;
-	    pt::scopelock lock( mutex );
+	    static CMutex mutex;
+	    CLock lock( mutex );
 		static T instance;
 		return instance;
 	}

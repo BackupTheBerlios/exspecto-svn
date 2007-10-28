@@ -1,8 +1,8 @@
 #ifndef CSMARTPTR_H_
 #define CSMARTPTR_H_
 #include <map>
-#include "CLog.h"
 #include <assert.h>
+#include "Mutex.h"
 
 
 template< class T >
@@ -142,7 +142,7 @@ private:
 
 	//TODO:Можно избавиться от mt, используя Interlocked-функции
 	struct Ref{
-		pt::mutex mt;
+		CMutex mt;
 		int iRefCount;
 		T* pPointer;
 	};
@@ -151,23 +151,23 @@ private:
 	{
 		if( NULL != m_pPointerImpl )
 		{
-			m_pPointerImpl->mt.lock();
+			m_pPointerImpl->mt.Lock();
 			--m_pPointerImpl->iRefCount;
 			assert( m_pPointerImpl->iRefCount >= 0 && "SmartPtr: MEMORY LEAK"  );
 			if( 0 == m_pPointerImpl->iRefCount  )
 			{
-				m_pPointerImpl->mt.unlock();
+				m_pPointerImpl->mt.Unlock();
 				AllocationPolicy::Destroy( m_pPointerImpl->pPointer );
 				delete m_pPointerImpl;
 				m_pPointerImpl = NULL;
 			}else
-				m_pPointerImpl->mt.unlock();
+				m_pPointerImpl->mt.Unlock();
 		}
 	}
 
 	void IncreaseRef()
 	{
-	    pt::scopelock lock( m_pPointerImpl->mt );
+	    CLock lock( m_pPointerImpl->mt );
 		++m_pPointerImpl->iRefCount;
 	}
 

@@ -16,6 +16,7 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="../../../Common/libCommon" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -36,8 +37,20 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../../LinuxSpec/Event.cpp">
+			<Option virtualFolder="Src/" />
+		</Unit>
+		<Unit filename="../../LinuxSpec/Mutex.cpp">
+			<Option virtualFolder="Src/" />
+		</Unit>
 		<Unit filename="../../LinuxSpec/Os_Spec.h">
 			<Option virtualFolder="Hdr/" />
+		</Unit>
+		<Unit filename="../../LinuxSpec/Semaphore.cpp">
+			<Option virtualFolder="Src/" />
+		</Unit>
+		<Unit filename="../../LinuxSpec/Thread.cpp">
+			<Option virtualFolder="Src/" />
 		</Unit>
 		<Unit filename="../../LinuxSpec/linuxspec.cpp">
 			<Option virtualFolder="Src/" />

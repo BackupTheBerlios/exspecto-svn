@@ -45,6 +45,9 @@
 		<Unit filename="../../../Common/libCommon/CLog.h">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
+		<Unit filename="../../../Common/libCommon/Event.h">
+			<Option virtualFolder="Hdr/" />
+		</Unit>
 		<Unit filename="../../../Common/libCommon/Event.hpp">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
@@ -52,6 +55,12 @@
 			<Option virtualFolder="Src/" />
 		</Unit>
 		<Unit filename="../../../Common/libCommon/MemLeakDetector.h">
+			<Option virtualFolder="Hdr/" />
+		</Unit>
+		<Unit filename="../../../Common/libCommon/Mutex.h">
+			<Option virtualFolder="Hdr/" />
+		</Unit>
+		<Unit filename="../../../Common/libCommon/Semaphore.h">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
 		<Unit filename="../../../Common/libCommon/Semaphore.hpp">
@@ -67,6 +76,9 @@
 			<Option virtualFolder="Hdr/" />
 		</Unit>
 		<Unit filename="../../../Common/libCommon/SmartPtr.hpp">
+			<Option virtualFolder="Hdr/" />
+		</Unit>
+		<Unit filename="../../../Common/libCommon/Thread.h">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
 		<Unit filename="../../../Common/libCommon/ThreadsPool.cpp">
