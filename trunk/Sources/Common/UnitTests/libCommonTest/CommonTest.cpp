@@ -24,12 +24,11 @@ void CommonTest::tearDown()
 
 void CommonTest::testEvent()
 {
-	class TestThread: public pt::thread
+	class TestThread: public CThreadTask
 	{
 	public:
-		TestThread( CEvent* pEvent, bool* bflag ):pt::thread(false),m_pEvent(pEvent),m_pbFlag(bflag){}
-		virtual void cleanup(){}
-		virtual void execute()
+		TestThread( CEvent* pEvent, bool* bflag ):m_pEvent(pEvent),m_pbFlag(bflag){}
+		virtual void Execute( const CEvent& CancelEv )
 		{
 			m_pEvent->Wait();
 			*m_pbFlag = true;
@@ -42,10 +41,9 @@ void CommonTest::testEvent()
 	{
 		CEvent event;
 		bool bFlag = false;
-		TestThread thread( &event, &bFlag );
-		thread.start();
+		CThread thread( SmartPtr<CThreadTask>( new TestThread( &event, &bFlag ) ) );
 		event.Set();
-		pt::psleep(1000);
+		Sleep(1000);
 		CPPUNIT_ASSERT( bFlag );
 		CPPUNIT_ASSERT( !event.Wait(0) );
 		CPPUNIT_ASSERT( !event.Wait(0) );
@@ -57,9 +55,8 @@ void CommonTest::testEvent()
 	{
 		CEvent event( false, true );
 		bool bFlag = false;
-		TestThread thread( &event, &bFlag );
-		thread.start();
-		pt::psleep(1000);
+		CThread thread( SmartPtr<CThreadTask>( new TestThread( &event, &bFlag ) ) );
+		Sleep(1000);
 		CPPUNIT_ASSERT( bFlag );
 	}
 	{
