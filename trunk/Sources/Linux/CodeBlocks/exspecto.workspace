@@ -4,11 +4,9 @@
 		<Project filename="ptypes/ptypes.cbp" />
 		<Project filename="cppunit/cppunit.cbp" />
 		<Project filename="tinyxml/tinyxml.cbp" />
-		<Project filename="libLinuxSpecific/libLinuxSpecific.cbp" active="1" />
+		<Project filename="libLinuxSpecific/libLinuxSpecific.cbp" />
 		<Project filename="libCommon/libCommon.cbp" />
-		<Project filename="libCommonTest/libCommonTest.cbp">
-			<Depends filename="ptypes/ptypes.cbp" />
-			<Depends filename="cppunit/cppunit.cbp" />
+		<Project filename="libCommonTest/libCommonTest.cbp" active="1">
 			<Depends filename="libLinuxSpecific/libLinuxSpecific.cbp" />
 			<Depends filename="libCommon/libCommon.cbp" />
 		</Project>

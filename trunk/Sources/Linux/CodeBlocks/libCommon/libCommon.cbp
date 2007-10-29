@@ -48,9 +48,6 @@
 		<Unit filename="../../../Common/libCommon/Event.h">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
-		<Unit filename="../../../Common/libCommon/Event.hpp">
-			<Option virtualFolder="Hdr/" />
-		</Unit>
 		<Unit filename="../../../Common/libCommon/MemLeakDetector.cpp">
 			<Option virtualFolder="Src/" />
 		</Unit>
@@ -61,9 +58,6 @@
 			<Option virtualFolder="Hdr/" />
 		</Unit>
 		<Unit filename="../../../Common/libCommon/Semaphore.h">
-			<Option virtualFolder="Hdr/" />
-		</Unit>
-		<Unit filename="../../../Common/libCommon/Semaphore.hpp">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
 		<Unit filename="../../../Common/libCommon/SettingsContainer.cpp">
