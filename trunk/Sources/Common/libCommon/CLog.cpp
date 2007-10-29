@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <iostream>
-#include "SettingsContainer.h"
 #include "CLog.h"
+#include "SettingsContainer.h"
+#ifdef WIN32
 #include <windows.h>
+#endif
 #include "Os_Spec.h"
 #include "time.h"
 #include <sstream>
@@ -30,7 +32,7 @@ CLog::~CLog()
 
 void CLog::SetModuleName( const std::string& strModuleName )
 {
-	m_strFileName = strModuleName;	
+	m_strFileName = strModuleName;
 
 	time_t tTime;
 	time( &tTime );
@@ -47,7 +49,7 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 
 	FILE* fp;
 
-	m_mutex.enter();
+	m_mutex.Lock();
 
 	fp = fopen( m_strFileName.c_str(), "a+");
 
@@ -55,40 +57,40 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 	time( &tTime );
 	struct tm* lt = localtime( &tTime );
 	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d-%d	", lt->tm_mday, lt->tm_mon, lt->tm_year, lt->tm_hour, lt->tm_min, lt->tm_sec, iLevel );
-	va_list args;	
+	va_list args;
 	va_start(args, trace_text);
-	
+
 	vfprintf(fp, trace_text, args);
 	putc('\n', fp);
 	putc('\n', fp);
 
 	va_end(args);
 	fclose(fp);
-	m_mutex.leave();
+	m_mutex.Unlock();
 }
 
 void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
 {
 	//Если приоритет записи больше чем установленный - не выполняем никаких действий
 	if( iLevel > m_iLogLevel ) return;
-	
+
 	FILE* fp;
 
-	m_mutex.enter();
+	m_mutex.Lock();
 	fp = fopen( m_strFileName.c_str(), "a+");
 
 	time_t tTime;
 	time( &tTime );
 	struct tm* lt = localtime( &tTime );
 	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d-%d	", lt->tm_mday, lt->tm_mon, lt->tm_year, lt->tm_hour, lt->tm_min, lt->tm_sec, iLevel );
-    
+
 	va_list args;
 	va_start(args, strAbout);
-	
+
 	vfprintf(fp, strAbout, args);
 	putc('\n', fp);
 	putc('\n', fp);
-						
+
 	va_end(args);
 
 	//Запись дампа
@@ -105,9 +107,9 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 				else fprintf(fp, "%02X ", *p);
 		k++;
 	}
-	
+
 	k--;
-	
+
 	if (k)
 	{
 		int i=0;
@@ -116,10 +118,10 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 		fprintf(fp, "| %s\n", str);
 	}
 	else putc('\n', fp);
-	
-	m_mutex.leave();
-		
-	fclose(fp);	
+
+	m_mutex.Unlock();
+
+	fclose(fp);
 }
 
 void CLog::SetLoglevel( int iLoglevel )

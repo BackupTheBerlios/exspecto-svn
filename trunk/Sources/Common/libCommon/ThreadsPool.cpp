@@ -1,6 +1,7 @@
 #include "ThreadsPool.h"
 #include <sstream>
 #include "Os_Spec.h"
+#include "CLog.h"
 
 
 CThreadsPool::CThreadsPool( int iThreadsCount ):m_Cancel(false)
@@ -9,9 +10,8 @@ CThreadsPool::CThreadsPool( int iThreadsCount ):m_Cancel(false)
 {
 	for( int i = 0; i < iThreadsCount; i++ )
 	{
-		m_vecThreads.push_back( SmartPtr<WorkingThread>( new WorkingThread( this, i ) ) );
 		m_vecThreadsStates.push_back( SmartPtr<CEvent>( new CEvent(false,true) ) );
-		m_vecThreads[m_vecThreads.size()-1]->start();
+		m_vecThreads.push_back( SmartPtr<CThread>( new CThread( SmartPtr<CThreadTask>(new WorkingThreadTask(this, i))) ) );
 	}
 }
 
@@ -19,34 +19,20 @@ CThreadsPool::~CThreadsPool(void)
 {
 	CancelAllTasks();
 	m_Exit.Set();
-
-	//TODO:Здесь нужно ждать корректного завершения всех потоков,
-	//в этом случае все задачи успеют корректно завершиться и не
-	//будут обращаться к удаленным ресурсам
-	for( std::vector< SmartPtr<WorkingThread> >::iterator It = m_vecThreads.begin(); It != m_vecThreads.end(); It++ )
-	{
-		(*It)->signal();
-		for( int i = 0; i < 10; i++ )
-		{
-			if( (*It)->get_finished() )
-				break;
-			pt::psleep(100);
-		}
-	}
 }
 
 void CThreadsPool::AddTask( SmartPtr< CThreadTask > pTask )
 {
-	pt::scopelock lock( m_mtTasks );
+	CLock lock( m_mtTasks );
 	m_vecTasks.push_back( pTask );
 	Log::instance().Trace( 0, "%s: %d", __FUNCTION__, m_vecTasks.size() );
-	m_sem.post();
+	m_sem.Release();
 }
 
 SmartPtr< CThreadTask > CThreadsPool::GetTask()
 {
 	Log::instance().Trace( 0, "%s: 1", __FUNCTION__ );
-	pt::scopelock lock( m_mtTasks );
+	CLock lock( m_mtTasks );
 	Log::instance().Trace( 0, "CThreadsPool::GetTask: %d", m_vecTasks.size() );
 	SmartPtr< CThreadTask > pTask;
 	if( !m_vecTasks.empty() )
@@ -86,11 +72,11 @@ void CThreadsPool::LogStates()
 bool CThreadsPool::WaitAllComplete( CEvent& CancelEv )
 {
 	LogStates();
-	m_mtTasks.lock();
+	m_mtTasks.Lock();
 	if( !m_vecTasks.empty() )
 	{
         m_TasksEmpty.Reset();
-        m_mtTasks.unlock();
+        m_mtTasks.Unlock();
 		Log::instance().Trace( 0, "CThreadsPool::WaitAllComplete: Wait for empty" );
 
 		for(;;)
@@ -104,7 +90,7 @@ bool CThreadsPool::WaitAllComplete( CEvent& CancelEv )
 			}
 		}
 	}else
-		m_mtTasks.unlock();
+		m_mtTasks.Unlock();
 	Log::instance().Trace( 0, "CThreadsPool::WaitAllComplete: Wait for complete" );
 	for( std::vector< SmartPtr<CEvent> >::iterator It = m_vecThreadsStates.begin(); It != m_vecThreadsStates.end(); It++ )
 	{
@@ -125,32 +111,23 @@ bool CThreadsPool::WaitAllComplete( CEvent& CancelEv )
 
 void CThreadsPool::SetCompleted( int iThreadId, bool bCompleted )
 {
-	pt::scopelock lock( m_mtThreadsStates );
+	CLock lock( m_mtThreadsStates );
 	if( ( iThreadId >= 0 ) && ( iThreadId < (int)m_vecThreadsStates.size() ) )
 		bCompleted?m_vecThreadsStates[ iThreadId ]->Set():m_vecThreadsStates[ iThreadId ]->Reset();
 }
 
-void CThreadsPool::WorkingThread::execute()
+void CThreadsPool::WorkingThreadTask::Execute( const CEvent& CancelEvent )
 {
-	bool bSignaled = false;
 	for(;;)
 	{
 		for(;;)
 		{
-			if( get_signaled() )
-			{
-				bSignaled = true;
+		    if( m_pThis->m_Exit.TryWait() )
+                return;
+			if( m_pThis->m_sem.TryWait() )
 				break;
-			}
-
-			if( m_pThis->m_sem.trywait() )
-				break;
-            pt::psleep(100);
+            Sleep(100);
 		}
-		if( bSignaled )
-			break;
-
-
 		m_pThis->SetCompleted( m_iId, false );
 
 		SmartPtr< CThreadTask > pTask = m_pThis->GetTask();

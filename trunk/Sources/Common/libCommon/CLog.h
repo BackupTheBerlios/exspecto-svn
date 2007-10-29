@@ -10,6 +10,8 @@
 #include "Singleton.hpp"
 #ifdef WIN32
 #include "windows.h"
+#else
+#define BYTE unsigned char
 #endif
 
 /*
