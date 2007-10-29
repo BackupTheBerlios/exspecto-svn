@@ -187,11 +187,12 @@
 	<string>
 	"CDBProvider.h"
 
-1190624085 /home/unb/programming/Workspace/Exspecto/Sources/Common/libNet/Socket.h
+1193651681 /home/unb/programming/Workspace/Exspecto/Sources/Common/libNet/Socket.h
 	"Singleton.hpp"
 	<stdexcept>
 	"CLog.h"
 	"winsock2.h"
+	<errno.h>
 	<sys/types.h>
 	<sys/socket.h>
 	<netinet/in.h>
@@ -200,8 +201,8 @@
 	<arpa/inet.h>
 	"Os_Spec.h"
 
-1189452791 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/Singleton.hpp
-	"pasync.h"
+1193583109 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/Singleton.hpp
+	"Mutex.h"
 
 1190624085 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/ptypes/pasync.h
 	<windows.h>
@@ -211,7 +212,7 @@
 	"pport.h"
 	"ptypes.h"
 
-1189239925 /home/unb/programming/Workspace/Exspecto/Sources/Linux/LinuxSpec/windows.h
+1193651929 /home/unb/programming/Workspace/Exspecto/Sources/Linux/LinuxSpec/windows.h
 
 1189104745 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/ptypes/pport.h
 	<stdint.h>
@@ -221,13 +222,12 @@
 	"pport.h"
 	<string.h>
 
-1189452831 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/CLog.h
+1193606085 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/CLog.h
 	<string>
 	"Singleton.hpp"
-	"pasync.h"
 	"windows.h"
 
-1189531446 /home/unb/programming/Workspace/Exspecto/Sources/Linux/LinuxSpec/Os_Spec.h
+1193607246 /home/unb/programming/Workspace/Exspecto/Sources/Linux/LinuxSpec/Os_Spec.h
 	<string>
 	"time.h"
 
@@ -257,10 +257,10 @@
 	<sstream>
 	"tinystr.h"
 
-1189452971 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/SmartPtr.hpp
+1193583254 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/SmartPtr.hpp
 	<map>
-	"CLog.h"
 	<assert.h>
+	"Mutex.h"
 
 1189528447 /home/unb/programming/Workspace/Exspecto/Sources/Common/CommonFiles/CDBProvider.h
 	<stdio.h>
@@ -305,4 +305,7 @@
 	"Singleton.hpp"
 	<string>
 	<arpa/inet.h>
+
+1193583081 /home/unb/programming/Workspace/Exspecto/Sources/Common/libCommon/Mutex.h
+	<pthread.h>
 

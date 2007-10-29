@@ -122,10 +122,10 @@ void CThreadsPool::WorkingThreadTask::Execute( const CEvent& CancelEvent )
 	{
 		for(;;)
 		{
-		    if( m_pThis->m_Exit.TryWait() )
-                return;
-			if( m_pThis->m_sem.TryWait() )
-				break;
+            if( m_pThis->m_Exit.TryWait() )
+               	return;
+            if( m_pThis->m_sem.TryWait() )
+                break;
             Sleep(100);
 		}
 		m_pThis->SetCompleted( m_iId, false );

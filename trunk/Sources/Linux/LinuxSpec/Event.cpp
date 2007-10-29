@@ -5,8 +5,8 @@
 CEvent::CEvent( bool bAutoreset, bool bInitialState ):m_bAutoReset( bAutoreset )
                                                      ,m_bInitialState( bInitialState )
 {
-    if( m_bAutoReset && bInitialState || m_bAutoReset )
-			m_mtx.Lock();
+    if( !bInitialState )
+        Reset();
 }
 
 CEvent::~CEvent()
@@ -15,7 +15,6 @@ CEvent::~CEvent()
 
 void CEvent::Set()
 {
-    CLock lock( m_lockmtx );
     m_mtx.Unlock();
 }
 
