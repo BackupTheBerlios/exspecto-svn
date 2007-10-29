@@ -16,6 +16,7 @@
 #define socklen_t int
 #define ioctl ioctlsocket
 #else
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
