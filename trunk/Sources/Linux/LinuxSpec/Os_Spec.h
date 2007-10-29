@@ -10,4 +10,6 @@ int stricmp( const char* c1, const char* c2 );
 
 int WSAGetLastError();
 
+void Sleep( unsigned int iTime );
+
 #endif /*LINUXSPEC_H_*/

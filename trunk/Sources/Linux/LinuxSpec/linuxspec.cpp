@@ -32,3 +32,8 @@ int WSAGetLastError()
 {
     return errno;
 }
+
+void Sleep( unsigned int iTime )
+{
+    usleep( iTime*1000 );
+}
