@@ -3,7 +3,7 @@
 
 #include "SmartPtr.hpp"
 #include "CTask.h"
-#include "Event.hpp"
+#include "Event.h"
 #include <deque>
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -16,22 +16,26 @@ public:
 
 	CTaskHandler();
 	virtual ~CTaskHandler();
-	
+
 	void AddTask( SmartPtr< CTask > pTask );
 
 private:
 	CTaskHandler( const CTaskHandler& );
 	CTaskHandler& operator=( const CTaskHandler& );
 
-	static unsigned _stdcall fnProcessThread( void* );
-	
-    HANDLE m_hProcessThread;
-	
-	CEvent m_CloseEv, m_CancelOpEv, m_TaskAddedEv;
-	
+	class CProcessThreadTask: public CThreadTask
+	{
+    public:
+        virtual void Execute( const CEvent& CancelEv );
+	};
+
+	CThread m_ProcessThread;
+
+	CEvent m_CancelOpEv, m_TaskAddedEv;
+
 	std::deque< SmartPtr< CTask > > m_deqTasks;
-	
-	CCriticalSection m_csTasks, m_csCurState;
+
+	CMutex m_mtxTasks, m_mtxCurState;
 };
 
 

@@ -9,7 +9,7 @@ class CThreadTask
 public:
 	virtual ~CThreadTask(){};
 
-	virtual void Execute( const CEvent& CancelEvent ) = 0;
+	virtual void Execute( CEvent& CancelEvent ) = 0;
 
 };
 
@@ -17,6 +17,7 @@ class CThread
 {
 public:
     CThread( SmartPtr<CThreadTask> pTask, bool bAutoStart = true ):m_pTask( pTask )
+                                                                  ,m_bWorking(true)
     {
         if( bAutoStart )
             Start();
@@ -25,8 +26,10 @@ public:
     ~CThread();
 
     void Start();
+
     void Stop();
 
+    bool IsWorking(){ return m_bWorking; }
 
 private:
     CThread( const CThread& );
@@ -35,6 +38,8 @@ private:
     SmartPtr<CThreadTask> m_pTask;
 
     CEvent m_StopEv;
+
+    bool m_bWorking;
 
 #ifdef WIN32
 #else

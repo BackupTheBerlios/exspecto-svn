@@ -1,12 +1,14 @@
  //------------------------------------------------------------------------------------//
-//Этот файл является частью проекта Exspecto 2006г.									  
-//Module: CAgent class																  
+//Этот файл является частью проекта Exspecto 2006г.
+//Module: CAgent class
 //Author: Parshin Dmitry
 //Description: Класс, реализующий функции Агента
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
 #include "CAgent.h"
+#ifdef WIN32
 #include <process.h>
+#endif
 #include "ServerHandler.h"
 
 //Описание типов параметров
@@ -24,32 +26,26 @@ static char* pAgentParamTypes[] = {
 //-----------------------------------------------------CAgent------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CAgent::CAgent():m_bStarted( false )
+CAgent::CAgent():m_bStarted( false ),m_ListenThread( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) )
 {
 	//Инициализация вспомогательных компонентов
 	int iLogLevel;
 	Settings::instance().SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
-	Log::instance().SetLoglevel( iLogLevel );	
+	Log::instance().SetLoglevel( iLogLevel );
 
 	Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress );
 	m_pMsgSock = SmartPtr< CServerSocket >( new CServerSocket() );
-	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThreadProc, this, 0, NULL );
+
 	//Если поток не закрылся в течении 2 с - инициализация прошла успешно
-	if( WAIT_TIMEOUT == WaitForSingleObject( m_hListenThread, 2000 ) )
-		m_bStarted = true;
+	Sleep(2000);
+    m_bStarted = m_ListenThread.IsWorking();
 }
 
 CAgent::~CAgent(void)
 {
 	try{
-		m_CloseEvent.Set();
-	
 		m_pMsgSock->Close();
-		Log::instance().Trace( 90, "CAgent::~CAgent: Ожидание закрытия потока прослушивания" );
-		WaitForSingleObject( m_hListenThread, 10000 );
-			
-		CloseHandle( m_hListenThread );
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 10," CAgent::~CAgent: Возникло исключение: %s", e.what() );
@@ -59,38 +55,35 @@ CAgent::~CAgent(void)
 	}
 }
 
-
 //Поток ожидания входящих соединений
-unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
+void CAgent::CListenThreadTask::Execute( CEvent& CancelEv )
 {
 	try{
-		CAgent* pThis = (CAgent*)pParameter;
-		
 		SmartPtr< CSocket > client_sock;
-	
+
 		CServerSocket::structAddr adr;
 
 		int iEventPort;
-		Settings::instance().GetParam( SCHEDULER_EVENT_PORT, iEventPort );	
+		Settings::instance().GetParam( SCHEDULER_EVENT_PORT, iEventPort );
 		Log::instance().Trace( 90, "CAgent:: Запуск потока ожидания входящих соединений" );
 	    //связываем серверный сокет с локальным адресом
 		int iListenPort;
 		Settings::instance().GetParam( LISTEN_PORT, iListenPort );
-		pThis->m_pMsgSock->Bind( iListenPort );
+		m_pAgent->m_pMsgSock->Bind( iListenPort );
 		//переводим сокет в режим прослушивания
-		pThis->m_pMsgSock->Listen();
+		m_pAgent->m_pMsgSock->Listen();
 		//Ожидаем входящее соединение и обрабатываем его
-		while( NULL != ( client_sock = pThis->m_pMsgSock->Accept( adr ) ).get() )
+		while( NULL != ( client_sock = m_pAgent->m_pMsgSock->Accept( adr ) ).get() )
 		{
-			if( WAIT_OBJECT_0 == WaitForSingleObject( pThis->m_CloseEvent, 0 ) )
-				break;
+		    if( CancelEv.TryWait() )
+                break;
 			Log::instance().Trace( 51, "CAgent::ListenThread: Входящее соединение с адреса: %s", adr.strAddr.c_str() );
 			//принимаем соединения только от заданного сервера сканирования
-			if( pThis->m_strSchedulerAddress == adr.strAddr ) 
+			if( m_pAgent->m_strSchedulerAddress == adr.strAddr )
 			{
-				pThis->m_pEventSock = SmartPtr< CClientSocket >( new CClientSocket() );
-				CServerHandler Handler( client_sock, pThis->m_pEventSock, pThis->m_strSchedulerAddress, iEventPort );
-				pThis->m_vecConnections.push_back( SmartPtr< CConnectionHandler >( new CConnectionHandler( Handler ) ) );
+				m_pAgent->m_pEventSock = SmartPtr< CClientSocket >( new CClientSocket() );
+				CServerHandler Handler( client_sock, m_pAgent->m_pEventSock, m_pAgent->m_strSchedulerAddress, iEventPort );
+				m_pAgent->m_vecConnections.push_back( SmartPtr< CConnectionHandler >( new CConnectionHandler( Handler ) ) );
 			}else
 				Log::instance().Trace( 50, "CAgent::ListenThread: Входящее соединение с адреса: %s. Игнорируем", adr.strAddr.c_str() );
 		}
@@ -102,5 +95,5 @@ unsigned _stdcall CAgent::fnListenThreadProc(  void* pParameter )
 		Log::instance().Trace( 10," CAgent::ListenThread: Возникло неизвестное исключение" );
 	}
 	Log::instance().Trace( 50, "CAgent::ListenThread: Завершение потока ожидания входящих сообщений" );
-	return 0;
 }
+

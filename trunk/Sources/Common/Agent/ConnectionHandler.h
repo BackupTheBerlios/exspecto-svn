@@ -2,7 +2,7 @@
 #define CONNECTIONHANDLER_H_
 
 #include "ServerHandler.h"
-#include "Event.hpp"
+#include "Event.h"
 #include "MessageParser.h"
 #include "TaskHandler.h"
 //-----------------------------------------------------------------------------------------------------------------
@@ -14,25 +14,33 @@ class CConnectionHandler
 public:
 
 	CConnectionHandler( CServerHandler& Handler );
-	
+
 	~CConnectionHandler();
 
 private:
-	
+
 	CConnectionHandler( const CConnectionHandler& );
 	CConnectionHandler& operator=( const CConnectionHandler& );
 
+	class CListenThreadTask: public CThreadTask
+	{
+    public:
 
-	CEvent m_CloseEv;
-	
-	HANDLE m_hListenThread;
-	
-	static unsigned _stdcall fnListenThread( void* );
-	
+        CListenThreadTask( CConnectionHandler* pHandler ):m_pHandler( pHandler ){}
+
+        virtual void Execute( const CEvent& CancelEv );
+
+    private:
+
+        CConnectionHandler* m_pHandler;
+	};
+
+	CThread m_ListenThread;
+
 	CServerHandler m_ServerHandler;
-	
+
 	CTaskHandler m_TaskHandler;
-	
+
 	CMessageParser m_MessageParser;
 };
 

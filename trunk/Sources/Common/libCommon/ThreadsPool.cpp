@@ -116,7 +116,7 @@ void CThreadsPool::SetCompleted( int iThreadId, bool bCompleted )
 		bCompleted?m_vecThreadsStates[ iThreadId ]->Set():m_vecThreadsStates[ iThreadId ]->Reset();
 }
 
-void CThreadsPool::WorkingThreadTask::Execute( const CEvent& CancelEvent )
+void CThreadsPool::WorkingThreadTask::Execute( CEvent& CancelEvent )
 {
 	for(;;)
 	{

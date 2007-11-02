@@ -9,7 +9,7 @@
 
 #include "ServerSocket.h"
 #include "ClientSocket.h"
-#include "packet.h"
+#include "Packet.h"
 #include "CScanner.h"
 #include <set>
 
@@ -18,8 +18,7 @@
 #include <deque>
 #include <string>
 #include "SmartPtr.hpp"
-#include "CriticalSection.hpp"
-#include "Event.hpp" 
+#include "Event.h"
 #include "CTask.h"
 #include "ServerHandler.h"
 #include "ConnectionHandler.h"
@@ -33,9 +32,9 @@
 class CAgent
 {
 public:
-	
+
 	CAgent();
-	
+
 	~CAgent(void);
 
 	bool IsStarted(){ return m_bStarted; }
@@ -48,23 +47,26 @@ private:
 	bool m_bStarted;
 
 	std::vector< SmartPtr< CConnectionHandler > > m_vecConnections;
-	
+
 	SmartPtr< CServerSocket > m_pMsgSock;
-	
+
 	SmartPtr< CClientSocket > m_pEventSock;
-	
+
 	//Адрес планировщика
 	std::string m_strSchedulerAddress;
 
-	//Событие закрытия
-	CEvent m_CloseEvent;
-	
-	//Дескриптор потока ожидания соединений
-	HANDLE m_hListenThread;
-		
-	//Поток ожидания входящих соединений
-	static unsigned _stdcall fnListenThreadProc(  void* pParameter );
+	class CListenThreadTask: public CThreadTask
+	{
+    public:
 
+        CListenThreadTask( CAgent* pAgent ):m_pAgent( pAgent ){}
+
+        virtual void Execute( CEvent& CancelEv );
+    private:
+
+        CAgent* m_pAgent;
+	};
+	CThread m_ListenThread;
 };
 
 #endif

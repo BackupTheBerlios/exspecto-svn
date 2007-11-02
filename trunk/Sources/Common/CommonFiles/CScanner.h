@@ -2,14 +2,15 @@
 #define CSCANNER_H_
 #include "CDBProvider.h"
 
+
 class CScanner
 {
 public:
 	CScanner(){};
 	virtual ~CScanner(){};
-		
+
 	virtual void Scan( IN std::string strAddress, OUT filesStr& ResList, HANDLE hCancelEvent ) = 0;
-	
+
 	virtual const char* GetProtocolName() = 0;
 
 };

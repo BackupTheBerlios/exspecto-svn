@@ -23,7 +23,10 @@ void CThread::Stop()
 void* CThread::ThreadFunc( void* param )
 {
     CThread* pThis = (CThread*)param;
+    pThis->m_bWorking = true;
     if( NULL != pThis->m_pTask.get() )
         pThis->m_pTask->Execute( pThis->m_StopEv );
+    pThis->m_bWorking = false;
     return NULL;
 }
+

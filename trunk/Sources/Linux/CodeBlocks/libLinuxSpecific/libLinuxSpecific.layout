@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../../LinuxSpec/Event.cpp" open="1" top="0" tabpos="4">
-		<Cursor position="491" topLine="6" />
+	<File name="../../LinuxSpec/Event.cpp" open="0" top="0" tabpos="4">
+		<Cursor position="518" topLine="20" />
 	</File>
-	<File name="../../LinuxSpec/Mutex.cpp" open="1" top="1" tabpos="5">
-		<Cursor position="1107" topLine="22" />
+	<File name="../../LinuxSpec/Mutex.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="428" topLine="12" />
 	</File>
-	<File name="../../LinuxSpec/Os_Spec.h" open="1" top="0" tabpos="2">
-		<Cursor position="181" topLine="0" />
+	<File name="../../LinuxSpec/Os_Spec.h" open="0" top="0" tabpos="2">
+		<Cursor position="240" topLine="0" />
 	</File>
 	<File name="../../LinuxSpec/Semaphore.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="../../LinuxSpec/Thread.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="79" topLine="0" />
+	<File name="../../LinuxSpec/Thread.cpp" open="0" top="0" tabpos="6">
+		<Cursor position="615" topLine="1" />
 	</File>
 	<File name="../../LinuxSpec/linuxspec.cpp" open="0" top="0" tabpos="7">
 		<Cursor position="633" topLine="6" />
 	</File>
-	<File name="../../LinuxSpec/windows.h" open="0" top="0" tabpos="1">
-		<Cursor position="39" topLine="0" />
+	<File name="../../LinuxSpec/windows.h" open="0" top="0" tabpos="5">
+		<Cursor position="118" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

@@ -2,7 +2,7 @@
 #define CTASK_H_
 
 #include "ServerHandler.h"
-#include "Event.hpp"
+#include "Event.h"
 #include "MessageParser.h"
 
 #include "PluginContainer.h"
@@ -14,65 +14,65 @@
 class CTask
 {
 public:
-	
+
 	CTask( CServerHandler& Handler ):m_ServerHandler( Handler )
 	{};
-	
+
 	virtual ~CTask()
 	{}
-	
+
 	virtual bool Immidiate() = 0;
-	
+
 	virtual void Execute( CEvent& CancelEv ) = 0;
-	
+
 	virtual void Load( CInPacket& Msg ) = 0;
-/*	
+/*
 	void Cancel()
 	{
 		Log::instance().Trace( 80, "CTask::Cancel: Отмена операции" );
 		m_CancelEv.Set();
 	};
-*/	
+*/
 	virtual std::string GetDescription() = 0;
-	
+
 protected:
 
 	CTask( const CTask& );
 	CTask& operator=( const CTask& );
 
 	CServerHandler m_ServerHandler;
-	
+
 	static std::string m_CurState;
-	
-	static CCriticalSection m_csCurState; 	
-	
+
+	static CMutex m_mtxCurState;
+
 	//Адрес,имя проотокола,хранилище
 	static std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > m_mapStorages;
 
 	typedef std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > >::iterator StoragesIt;
 
-	static CCriticalSection m_csStorages;
-	
+	static CMutex m_mtxStorages;
+
 	//static CEvent m_CancelEv;
-	
+
 };
 
 class CGetStatus: public CTask
 {
 public:
-	
+
 	CGetStatus( CServerHandler& Handler ):CTask( Handler )
 	{};
-	
+
 	virtual bool Immidiate();
-	
+
 	virtual void Execute( CEvent& CancelEv ){};
-	
+
 	virtual void Load( CInPacket& Msg ){};
-	
+
 	virtual std::string GetDescription()
 	{
-		return "Получение статуса агента"; 
+		return "Получение статуса агента";
 	};
 
 };
@@ -82,20 +82,20 @@ public:
 class CStopScan: public CTask
 {
 public:
-	
+
 	CStopScan( CServerHandler& Handler ):CTask( Handler ){};
-	
+
 	virtual bool Immidiate();
-	
+
 	virtual void Execute( CEvent& CancelEv ){};
-	
+
 	virtual void Load( CInPacket& Msg ){};
 
 	virtual std::string GetDescription()
 	{
-		return "Останов сканирования"; 
+		return "Останов сканирования";
 	};
-	
+
 };
 
 
@@ -103,20 +103,20 @@ public:
 class CGetData: public CTask
 {
 public:
-	
+
 	CGetData( CServerHandler& Handler ):CTask( Handler )
 									   ,m_iPacketSize(0)
 	{};
-	
+
 	virtual bool Immidiate();
-	
+
 	virtual void Execute( CEvent& CancelEv ){};
-	
+
 	virtual void Load( CInPacket& Msg );
 
 	virtual std::string GetDescription()
 	{
-		return "Получение данных"; 
+		return "Получение данных";
 	};
 private:
 
@@ -137,13 +137,13 @@ public:
 
 	private:
 
-		static void StorageFunc( const char* strAddress, const char* strProtocolName, const char* strFileName, __int64 FileSize, DWORD lFileTime, DWORD hFileTime );
+		static void StorageFunc( const char* strAddress, const char* strProtocolName, const char* strFileName, long long FileSize, int lFileTime, int hFileTime );
 
 		std::string m_strAddr;
 
 		ScanFunc m_pScanner;
 
-		CCriticalSection m_csStore;
+		CMutex m_mtxStore;
 	};
 
 	class CAvailabilityScanTask: public CThreadTask
@@ -193,30 +193,30 @@ public:
 	{
 		m_strDescription = "Сканирование адресов: ";
 	};
-	
+
 	virtual bool Immidiate();
-	
+
 	virtual void Execute( CEvent& CancelEv );
-	
+
 	virtual void Load( CInPacket& Msg );
-	
+
 	virtual std::string GetDescription()
 	{
-		return m_strDescription; 
+		return m_strDescription;
 	};
-	
+
 private:
 
 	std::string m_strDescription;
 
 	std::vector< std::string > m_vecAddresses;
-	
+
 	//Контейнер плагинов
 	static PluginContainer m_PluginContainer;
-	
+
 	//Тип итератор для манипуляций с контейнером плагинов
 	typedef PluginContainer::iterator PluginIterator;
-	
+
 };
 
 

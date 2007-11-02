@@ -8,19 +8,15 @@
 
 CConnectionHandler::CConnectionHandler( CServerHandler& Handler ):m_ServerHandler( Handler )
 													 			 ,m_MessageParser( Handler )
+                                                                 ,m_ListenThread( SmartPtr<CListenThreadTask( this ) )
 {
-	m_hListenThread = (HANDLE)_beginthreadex( 0, 0, fnListenThread, this, 0, NULL );
-}	
-					
+}
+
 CConnectionHandler::~CConnectionHandler()
 {
 	try{
 		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Закрытие соединения с %s", m_ServerHandler.GetServerAddress().c_str() );
-		m_CloseEv.Set();
 		m_ServerHandler.CloseSession();
-		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Ожидание закрытия потока прослушивания" );
-		WaitForSingleObject( m_hListenThread, 10000 );
-		CloseHandle( m_hListenThread );
 		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Уничтожение" );
 	}catch( std::exception& e )
 	{
@@ -28,28 +24,26 @@ CConnectionHandler::~CConnectionHandler()
 	}catch(...)
 	{
 		Log::instance().Trace( 10," CAgent::ListenThread: Возникло неизвестное исключение" );
-	}		
+	}
 }
 
-unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
+void CConnectionHandler::CListenThreadTask::Execute( const CEvent& CancelEv )
 {
-	CConnectionHandler* pThis = (CConnectionHandler*)param;
 	CInPacket Msg;
 
 	try{
-		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск потока ожидания входящих сообщений c адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
+		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск потока ожидания входящих сообщений c адреса %s", m_pHandler->m_ServerHandler.GetServerAddress().c_str() );
 		while( true )
 		{
-			pThis->m_ServerHandler.Receive( Msg );
+			m_pHandler->m_ServerHandler.Receive( Msg );
 			Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Получен пакет" );
 			//Задаем данные для разбора входящего пакета
-			SmartPtr< CTask > pTask = pThis->m_MessageParser.Parse( Msg );
-			pThis->m_TaskHandler.AddTask( pTask );
+			SmartPtr< CTask > pTask = m_pHandler->m_MessageParser.Parse( Msg );
+			m_pHandler->m_TaskHandler.AddTask( pTask );
 		}
-		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", pThis->m_ServerHandler.GetServerAddress().c_str() );
+		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", m_pHandler->m_ServerHandler.GetServerAddress().c_str() );
 	}catch( SocketErr& e )
 	{
-		//pThis->m_ServerHandler.CloseSession();
 		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Ошибка связи: %s", e.what() );
 	}catch( std::exception& e )
 	{
@@ -59,5 +53,6 @@ unsigned _stdcall CConnectionHandler::fnListenThread( void* param )
 		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло неизвестное исключение" );
 	}
 	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие" );
-	return 0;	
 }
+
+

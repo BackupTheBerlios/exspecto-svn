@@ -3,5 +3,8 @@
 
 //TODO:
 //typedef unsigned char BYTE;
+#define IN
+#define OUT
+#define HANDLE int
 
 #endif

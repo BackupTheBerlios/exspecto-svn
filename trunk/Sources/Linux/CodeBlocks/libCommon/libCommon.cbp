@@ -17,7 +17,6 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="../../../Common/CommonFiles" />
-					<Add directory="../../../Common/CommonFiles/ptypes" />
 					<Add directory="../../LinuxSpec" />
 				</Compiler>
 			</Target>

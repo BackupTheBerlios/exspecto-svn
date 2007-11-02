@@ -14,24 +14,24 @@ class CServerHandler
 public:
 
 	CServerHandler( SmartPtr< CSocket > pMsgSocket, SmartPtr< CClientSocket > pEventSocket, const std::string& strServerAddress, int iEventPort );
-	
+
 	virtual ~CServerHandler();
-	
+
 	void SendEvent( COutPacket& Event );
-	
+
 	void SendMsg( COutPacket& Msg, bool bEnd = true );
-	
+
 	void Receive( CInPacket& Msg );
-	
+
 	std::string GetServerAddress();
-	
+
 	void CloseSession();
 
 	CServerHandler( const CServerHandler& Handler )
 	{
 		*this = Handler;
 	};
-	
+
 	CServerHandler& operator=( const CServerHandler& Handler )
 	{
 		if( this != &Handler )
@@ -45,18 +45,16 @@ public:
 		return *this;
 	};
 
-	
+
 private:
 
 	SmartPtr< CSocket > m_pMsgSocket;
-	
+
 	SmartPtr< CClientSocket > m_pEventSocket;
-	
+
 	std::string m_strAddress;
-	
+
 	int m_iEventPort;
-	
-	static CCriticalSection m_csEventSocket;
 
 	//Приемный буфер
 	std::vector<BYTE> m_vecRecvBuf;

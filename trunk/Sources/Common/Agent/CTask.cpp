@@ -6,10 +6,10 @@
 #define MAX_PACKET_SIZE  2097152
 
 std::string CTask::m_CurState = IDLING;
-CCriticalSection CTask::m_csCurState;
+CMutex CTask::m_mtxCurState;
 //CEvent CTask::m_CancelEv(false);
 PluginContainer CStartScan::m_PluginContainer;
-CCriticalSection CTask::m_csStorages;
+CMutex CTask::m_mtxStorages;
 std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > CTask::m_mapStorages;
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -18,13 +18,12 @@ std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > CTask::
 
 bool CGetStatus::Immidiate()
 {
-	m_csCurState.Enter();
-		COutPacket Msg;
-		Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
-		Msg.PutField( AGENT_STATUS, m_CurState );
-		m_ServerHandler.SendMsg( Msg );
-		Log::instance().Trace( 90, "CGetStatus:Immidiate: Отправлен ответ: %s", Msg.ToString().c_str() );
-	m_csCurState.Leave();
+    CLock lock( m_mtxCurState );
+	COutPacket Msg;
+	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
+	Msg.PutField( AGENT_STATUS, m_CurState );
+	m_ServerHandler.SendMsg( Msg );
+	Log::instance().Trace( 90, "CGetStatus:Immidiate: Отправлен ответ: %s", Msg.ToString().c_str() );
 	return true;
 }
 namespace
@@ -111,8 +110,8 @@ void CStartScan::Load( CInPacket& Msg )
 		m_strDescription += strAddress;
 		m_strDescription += " ";
 	}while( Msg.GetNextAddress( strAddress ) );
-}	
-	
+}
+
 bool CStartScan::Immidiate()
 {
 	COutPacket Msg;
@@ -126,9 +125,9 @@ void CStartScan::Execute( CEvent& CancelEv )
 {
 	//TODO:проверять состояние перед началом сканирования
 	Log::instance().Trace( 90, "CStartScan: Поступил запрос на начало сканирования" );
-	m_csCurState.Enter();
-		m_CurState = SCANNING;	
-	m_csCurState.Leave();
+	m_mtxCurState.Lock();
+		m_CurState = SCANNING;
+	m_mtxCurState.Unlock();
 
 	m_mapStorages.clear();
 
@@ -205,7 +204,7 @@ void CStartScan::Execute( CEvent& CancelEv )
 			//Создаем временное хранилище для данных сканирования
 			m_mapStorages[ *AddrIt ][ PlugIt->first ] = SmartPtr< CTempStorage >( new CTempStorage( vecHostNames.empty()?"":vecHostNames[ std::distance( m_vecAddresses.begin(), AddrIt ) ], *AddrIt, std::string( PlugIt->first ) ) );
 			pool.AddTask( vecThreadTasks.back() );
-			
+
 		}
 		if( WAIT_OBJECT_0 == WaitForSingleObject( CancelEv, 0 ) )
 		{
@@ -223,9 +222,9 @@ void CStartScan::Execute( CEvent& CancelEv )
 	Event.PutField( EVENT_ID, SCAN_COMPLETE );
 	Log::instance().Trace( 99, "CStartScan::Execute: Отправляем событие окончания сканирования" );
 	m_ServerHandler.SendEvent( Event );
-	m_csCurState.Enter();
+	m_mtxCurState.Lock();
 		m_CurState = IDLING;
-	m_csCurState.Leave();
+	m_mtxCurState.Unlock();
 }
 namespace
 {
@@ -242,7 +241,7 @@ namespace
 bool CStopScan::Immidiate()
 {
 	Log::instance().Trace( 90, "CStopScan: Поступил запрос на отмену сканирования" );
-	m_csCurState.Enter();
+	m_mtxCurState.Lock();
 		if( SCANNING == m_CurState )
 		{
 			Log::instance().Trace( 90, "CStopScan: Отменяем текущее сканирование" );
@@ -250,7 +249,7 @@ bool CStopScan::Immidiate()
 			//Cancel();
 		}else
 			Log::instance().Trace( 90, "CStopScan: В данный момент не находится в состоянии сканирования" );
-	m_csCurState.Leave();
+	m_mtxCurState.Unlock();
 	COutPacket Msg;
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	m_ServerHandler.SendMsg( Msg );
@@ -277,7 +276,7 @@ void CGetData::Load( CInPacket& Msg )
 bool CGetData::Immidiate()
 {
 	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
-	
+
 	COutPacket Msg;
 	hostRec TmpHost;
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
@@ -294,7 +293,7 @@ bool CGetData::Immidiate()
 				It->second.erase( ProtoIt++ );
 			}else
 				ProtoIt++;
-			
+
 		}
 		if( It->second.empty() )
 			m_mapStorages.erase( It++ );

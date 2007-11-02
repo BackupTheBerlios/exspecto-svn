@@ -36,7 +36,7 @@ private:
 	{
 	public:
 		WorkingThreadTask( CThreadsPool* pThis, int iId ):m_pThis(pThis),m_iId(iId){}
-		virtual void Execute( const CEvent& CancelEvent );
+		virtual void Execute( CEvent& CancelEvent );
 
 	private:
 		CThreadsPool* m_pThis;

@@ -1,13 +1,15 @@
 #include "precomp.h"
+#include "precomp.h"
+#include "precomp.h"
 #include "ServerHandler.h"
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CServerHandler------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CServerHandler::CServerHandler( SmartPtr< CSocket > pMsgSocket, 
-								SmartPtr< CClientSocket > pEventSocket, 
-								const std::string& strServerAddress, 
+CServerHandler::CServerHandler( SmartPtr< CSocket > pMsgSocket,
+								SmartPtr< CClientSocket > pEventSocket,
+								const std::string& strServerAddress,
 								int iEventPort ):m_pMsgSocket( pMsgSocket )
 												,m_pEventSocket( pEventSocket )
 												,m_strAddress( strServerAddress )
@@ -15,11 +17,11 @@ CServerHandler::CServerHandler( SmartPtr< CSocket > pMsgSocket,
 {
 	m_vecRecvBuf.resize( RECEIVE_BUF_START_SIZE );
 }
-	
+
 CServerHandler::~CServerHandler()
 {
 }
-	
+
 void CServerHandler::SendEvent( COutPacket& Event )
 {
 	if( !m_pEventSocket->IsConnected() )
@@ -29,7 +31,7 @@ void CServerHandler::SendEvent( COutPacket& Event )
 	}
 	*m_pEventSocket << Event;
 }
-	
+
 void CServerHandler::SendMsg( COutPacket& Msg, bool bEnd )
 {
 	Log::instance().Trace( 200, "CServerHandler::SendMsg: Отправляем сообщение: %s", Msg.ToString().c_str() );
@@ -59,9 +61,9 @@ void CServerHandler::Receive( CInPacket& Msg )
 		//Если получили только маркер конца
 		}else if ( ( iCount == (int)CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ 0 ], (int)CInPacket::GetEndStamp().size() ) ) )
 			break;
-		
+
 		vecPacketBuf.insert( vecPacketBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
-		
+
 		//Увеличиваем размер буфера при необходимости
 		if( (iCount == ( (int)m_vecRecvBuf.size() ) ) )
 			if( (m_vecRecvBuf.size()<<1) <= RECEIVE_BUF_MAX_SIZE )
