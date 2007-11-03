@@ -65,6 +65,9 @@
 		<Unit filename="../../../Common/libCommon/SettingsContainer.h">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
+		<Unit filename="../../../Common/libCommon/SharedLib.h">
+			<Option virtualFolder="Hdr/" />
+		</Unit>
 		<Unit filename="../../../Common/libCommon/Singleton.hpp">
 			<Option virtualFolder="Hdr/" />
 		</Unit>

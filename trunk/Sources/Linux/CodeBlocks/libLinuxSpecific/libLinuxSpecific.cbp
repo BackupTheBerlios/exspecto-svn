@@ -49,6 +49,9 @@
 		<Unit filename="../../LinuxSpec/Semaphore.cpp">
 			<Option virtualFolder="Src/" />
 		</Unit>
+		<Unit filename="../../LinuxSpec/SharedLib.cpp">
+			<Option virtualFolder="Src/" />
+		</Unit>
 		<Unit filename="../../LinuxSpec/Thread.cpp">
 			<Option virtualFolder="Src/" />
 		</Unit>

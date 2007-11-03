@@ -3,7 +3,7 @@
 	<Workspace title="Workspace">
 		<Project filename="cppunit/cppunit.cbp" />
 		<Project filename="tinyxml/tinyxml.cbp" />
-		<Project filename="libLinuxSpecific/libLinuxSpecific.cbp" />
+		<Project filename="libLinuxSpecific/libLinuxSpecific.cbp" active="1" />
 		<Project filename="libCommon/libCommon.cbp" />
 		<Project filename="libCommonTest/libCommonTest.cbp">
 			<Depends filename="libLinuxSpecific/libLinuxSpecific.cbp" />
@@ -17,7 +17,7 @@
 			<Depends filename="libCommon/libCommon.cbp" />
 			<Depends filename="libNet/libNet.cbp" />
 		</Project>
-		<Project filename="Agent/Agent.cbp" active="1">
+		<Project filename="Agent/Agent.cbp">
 			<Depends filename="libLinuxSpecific/libLinuxSpecific.cbp" />
 			<Depends filename="libCommon/libCommon.cbp" />
 			<Depends filename="libNet/libNet.cbp" />
