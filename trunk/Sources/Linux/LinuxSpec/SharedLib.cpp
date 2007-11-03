@@ -1,10 +1,11 @@
 #include "SharedLib.h"
 
-CSharedLib::~CSharedLib()
+bool CSharedLib::Load( const std::string& strFileName )
 {
+    return false;
 }
 
-bool CSharedLib::Load( const std::string& strFileName )
+bool CSharedLib::Close()
 {
     return false;
 }

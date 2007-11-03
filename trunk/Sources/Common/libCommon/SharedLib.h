@@ -7,11 +7,13 @@ class CSharedLib
 {
 public:
 
-    ~CSharedLib();
+    ~CSharedLib(){ Close(); }
 
     bool Load( const std::string& strFileName );
 
     void* GetSymbol( const std::string& strSymbolName );
+
+    bool Close();
 
 private:
 
