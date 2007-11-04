@@ -6,15 +6,12 @@
 //---------------------------------------------CTaskHandler--------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CTaskHandler::CTaskHandler():m_CloseEv(false)
-                            ,m_ProcessThread( SmartPtr<CThreadTask>( new CProcessThreadTask ) )
+CTaskHandler::CTaskHandler():m_ProcessThread( SmartPtr<CThreadTask>( new CProcessThreadTask ) )
 {
 }
 
 CTaskHandler::~CTaskHandler()
 {
-	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Закрытие обработчика заданий" );
-	m_CloseEv.Set();
 	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Закрытие обработчика команд" );
 }
 
@@ -30,7 +27,7 @@ void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
 	}
 }
 
-void CTaskHandler::CProcessThreadTask::Execute( const CEvent& CancelEv )
+void CTaskHandler::CProcessThreadTask::Execute( CEvent& CancelEv )
 {
 	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Запуск потока обработчика команд" );
 	CTaskHandler* pThis = (CTaskHandler*)param;

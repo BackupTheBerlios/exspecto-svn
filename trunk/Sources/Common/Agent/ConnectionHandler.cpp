@@ -1,6 +1,5 @@
 #include "precomp.h"
 #include "ConnectionHandler.h"
-#include <process.h>
 
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CConnectionHandler--------------------------------------------------
@@ -8,7 +7,7 @@
 
 CConnectionHandler::CConnectionHandler( CServerHandler& Handler ):m_ServerHandler( Handler )
 													 			 ,m_MessageParser( Handler )
-                                                                 ,m_ListenThread( SmartPtr<CListenThreadTask( this ) )
+                                                                 ,m_ListenThread( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) )
 {
 }
 
@@ -27,7 +26,7 @@ CConnectionHandler::~CConnectionHandler()
 	}
 }
 
-void CConnectionHandler::CListenThreadTask::Execute( const CEvent& CancelEv )
+void CConnectionHandler::CListenThreadTask::Execute( CEvent& CancelEv )
 {
 	CInPacket Msg;
 

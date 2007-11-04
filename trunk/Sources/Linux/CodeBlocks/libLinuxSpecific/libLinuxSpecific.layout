@@ -2,7 +2,7 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="../../LinuxSpec/Event.cpp" open="0" top="0" tabpos="4">
-		<Cursor position="518" topLine="20" />
+		<Cursor position="518" topLine="13" />
 	</File>
 	<File name="../../LinuxSpec/Mutex.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="428" topLine="12" />
@@ -13,13 +13,16 @@
 	<File name="../../LinuxSpec/Semaphore.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="../../LinuxSpec/Thread.cpp" open="1" top="0" tabpos="2">
+	<File name="../../LinuxSpec/SharedLib.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="393" topLine="0" />
+	</File>
+	<File name="../../LinuxSpec/Thread.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="615" topLine="0" />
 	</File>
 	<File name="../../LinuxSpec/linuxspec.cpp" open="0" top="0" tabpos="7">
 		<Cursor position="633" topLine="6" />
 	</File>
 	<File name="../../LinuxSpec/windows.h" open="0" top="0" tabpos="5">
-		<Cursor position="118" topLine="0" />
+		<Cursor position="238" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

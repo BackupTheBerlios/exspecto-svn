@@ -7,6 +7,10 @@ class CSharedLib
 {
 public:
 
+    CSharedLib( const std::string& strFileName ){ Load( strFileName ); }
+
+    CSharedLib(){}
+
     ~CSharedLib(){ Close(); }
 
     bool Load( const std::string& strFileName );
@@ -16,6 +20,9 @@ public:
     bool Close();
 
 private:
+
+    CSharedLib( const CSharedLib& );
+    CSharedLib& operator=( const CSharedLib& );
 
 #ifdef WIN32
 

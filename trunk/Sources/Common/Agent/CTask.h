@@ -133,7 +133,7 @@ public:
 		CScanThreadTask( const std::string& strAddr, ScanFunc pScanner );
 		virtual ~CScanThreadTask(){};
 
-		virtual void Execute( const CEvent& CancelEvent );
+		virtual void Execute( CEvent& CancelEvent );
 
 	private:
 
@@ -154,7 +154,7 @@ public:
 
 		virtual ~CAvailabilityScanTask(){};
 
-		virtual void Execute( const CEvent& CancelEvent );
+		virtual void Execute( CEvent& CancelEvent );
 
 		bool IsAvailable(){ return m_bResult; }
 
@@ -175,7 +175,7 @@ public:
 
 		virtual ~CResolveTask(){};
 
-		virtual void Execute( const CEvent& CancelEvent );
+		virtual void Execute( CEvent& CancelEvent );
 
 		std::string GetHostName(){ return m_strHostName; }
 

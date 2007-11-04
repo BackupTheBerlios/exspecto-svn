@@ -1,17 +1,18 @@
 #include "SharedLib.h"
+#include <dlfcn.h>
 
 bool CSharedLib::Load( const std::string& strFileName )
 {
-    return false;
+    return ( NULL == ( m_pLib = dlopen( strFileName.c_str(), RTLD_LAZY ) ) )?false:true;
 }
 
 bool CSharedLib::Close()
 {
-    return false;
+    return ( 0 == dlclose( m_pLib ) )?true:false;
 }
 
 void* CSharedLib::GetSymbol( const std::string& strSymbolName )
 {
-    return NULL;
+    return dlsym( m_pLib, strSymbolName.c_str() );
 }
 

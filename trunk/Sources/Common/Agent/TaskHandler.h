@@ -26,7 +26,7 @@ private:
 	class CProcessThreadTask: public CThreadTask
 	{
     public:
-        virtual void Execute( const CEvent& CancelEv );
+        virtual void Execute( CEvent& CancelEv );
 	};
 
 	CThread m_ProcessThread;

@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "MessageParser.h"
 #include "CTask.h"
+#include "ping.h"
 
 //Максимальный размер пакета с данными для посылки 2MB
 #define MAX_PACKET_SIZE  2097152
@@ -38,7 +39,7 @@ namespace
 //-----------------------------------------------------------------------------------------------------------------
 //---------------------------------------------CStartScan----------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
+void CStartScan::CAvailabilityScanTask::Execute( CEvent& CancelEvent )
 {
 	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
 	m_bResult = Tools::PingHelper::instance().Ping( m_strAddr, 3000, 1 );
@@ -46,7 +47,7 @@ void CStartScan::CAvailabilityScanTask::Execute( const CEvent& CancelEvent )
 }
 
 
-void CStartScan::CResolveTask::Execute( const CEvent& CancelEvent )
+void CStartScan::CResolveTask::Execute( CEvent& CancelEvent )
 {
 	Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
 	hostent* res;
@@ -55,10 +56,11 @@ void CStartScan::CResolveTask::Execute( const CEvent& CancelEvent )
 		m_strHostName = res->h_name;
 }
 
-void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
+void CStartScan::CScanThreadTask::Execute( CEvent& CancelEvent )
 {
 	try{
-		m_pScanner( m_strAddr.c_str(), CStartScan::CScanThreadTask::StorageFunc, CancelEvent );
+	    //TODO: разобраться с отменой
+		m_pScanner( m_strAddr.c_str(), CStartScan::CScanThreadTask::StorageFunc, 0 );
 	}catch( std::exception& e )
 	{
 		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: Исключение: %s", e.what() );
@@ -71,9 +73,9 @@ void CStartScan::CScanThreadTask::Execute( const CEvent& CancelEvent )
 void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 											 , const char* strProtocolName
 											 , const char* strFileName
-											 , __int64 FileSize
-											 , DWORD lFileTime
-											 , DWORD hFileTime )
+											 , long long FileSize
+											 , int lFileTime
+											 , int hFileTime )
 {
 	StoragesIt It;
 	if( ( m_mapStorages.end() == ( It = m_mapStorages.find( strAddress ) ) )
@@ -197,8 +199,9 @@ void CStartScan::Execute( CEvent& CancelEv )
 	{
 		for( PluginIterator PlugIt = m_PluginContainer.begin(); PlugIt != m_PluginContainer.end(); PlugIt++ )
 		{
-			if( WAIT_OBJECT_0 == WaitForSingleObject( CancelEv, 0 ) )
-				break;
+		    if( CancelEv.TryWait() )
+                break;
+
 			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), PlugIt->first.c_str() );
 			vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, PlugIt->second ) );
 			//Создаем временное хранилище для данных сканирования
@@ -206,7 +209,7 @@ void CStartScan::Execute( CEvent& CancelEv )
 			pool.AddTask( vecThreadTasks.back() );
 
 		}
-		if( WAIT_OBJECT_0 == WaitForSingleObject( CancelEv, 0 ) )
+		if( CancelEv.TryWait() )
 		{
 			Log::instance().Trace( 90, "CStartScan: Сканирование отменено" );
 			//Сбрасываем событие отмены

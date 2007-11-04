@@ -22,13 +22,19 @@ private:
 	CConnectionHandler( const CConnectionHandler& );
 	CConnectionHandler& operator=( const CConnectionHandler& );
 
+	CServerHandler m_ServerHandler;
+
+	CTaskHandler m_TaskHandler;
+
+	CMessageParser m_MessageParser;
+
 	class CListenThreadTask: public CThreadTask
 	{
     public:
 
         CListenThreadTask( CConnectionHandler* pHandler ):m_pHandler( pHandler ){}
 
-        virtual void Execute( const CEvent& CancelEv );
+        virtual void Execute( CEvent& CancelEv );
 
     private:
 
@@ -37,11 +43,6 @@ private:
 
 	CThread m_ListenThread;
 
-	CServerHandler m_ServerHandler;
-
-	CTaskHandler m_TaskHandler;
-
-	CMessageParser m_MessageParser;
 };
 
 

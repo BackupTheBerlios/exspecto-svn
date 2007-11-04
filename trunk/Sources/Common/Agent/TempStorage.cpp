@@ -1,4 +1,4 @@
-#include "tempstorage.h"
+#include "TempStorage.h"
 
 CTempStorage::CTempStorage( const std::string& strHostName, const std::string& strHostAddr, const std::string& strProtoName )
 :m_strHostName( strHostName )
@@ -108,7 +108,7 @@ unsigned int CTempStorage::GetSize()
 	m_sFile.seekp( 0, std::ios_base::end );
 	long lSize = m_sFile.tellp();
 	m_sFile.close();
-	return lSize;  
+	return lSize;
 }
 
 bool CTempStorage::IsEof()
@@ -119,5 +119,5 @@ bool CTempStorage::IsEof()
 	m_sFile.seekg( 0, std::ios_base::end );
 	bool bRes = ( m_ReadPos >= m_sFile.tellg() )?true:false;
 	m_sFile.close();
-	return bRes;  
+	return bRes;
 }

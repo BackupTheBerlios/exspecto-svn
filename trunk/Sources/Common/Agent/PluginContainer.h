@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 #include "PluginInterface.h"
+#include "SharedLib.h"
+#include "SmartPtr.hpp"
 
 class PluginContainer
 {
@@ -21,35 +23,35 @@ public:
 		PluginLoadErr( const std::string& strErr )throw():std::runtime_error( strErr ){};
 		virtual ~PluginLoadErr()throw(){};
 	};
-	
+
 	PluginContainer();
 	virtual ~PluginContainer();
-	
+
 	//Тип итератора для манипуляций с содержимым контейнера
 	typedef std::map< std::string, ScanFunc >::iterator iterator;
 
-	//Возвращает итератор первого элемента контейнера	
+	//Возвращает итератор первого элемента контейнера
 	iterator begin()
 	{
 		return m_mapScanners.begin();
 	}
-	
-	//Возвращает итератор следующего за последним элемента контейнера	
+
+	//Возвращает итератор следующего за последним элемента контейнера
 	iterator end()
 	{
 		return m_mapScanners.end();
 	}
-	
+
 	//Возвращает кол-во элементов контейнера
 	int count()
-	{	
+	{
 		return m_mapScanners.size();
-	}	
-private:	
+	}
+private:
 	PluginContainer( const PluginContainer& );
 	PluginContainer& operator=( const PluginContainer& );
 
-	std::vector< HMODULE > m_vecLibraries;
+	std::vector< SmartPtr<CSharedLib> > m_vecLibraries;
 
 	std::map< std::string, ScanFunc > m_mapScanners;
 
