@@ -4,11 +4,14 @@
 	<File name="../../LinuxSpec/Event.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="518" topLine="13" />
 	</File>
+	<File name="../../LinuxSpec/FileSearch.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="498" topLine="0" />
+	</File>
 	<File name="../../LinuxSpec/Mutex.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="428" topLine="12" />
 	</File>
-	<File name="../../LinuxSpec/Os_Spec.h" open="0" top="0" tabpos="2">
-		<Cursor position="240" topLine="0" />
+	<File name="../../LinuxSpec/Os_Spec.h" open="1" top="0" tabpos="8">
+		<Cursor position="20" topLine="0" />
 	</File>
 	<File name="../../LinuxSpec/Semaphore.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="0" />
