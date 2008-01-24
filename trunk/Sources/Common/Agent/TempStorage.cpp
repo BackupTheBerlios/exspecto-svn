@@ -1,18 +1,33 @@
 #include "TempStorage.h"
 
+#ifndef WIN32
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <errno.h>
+#endif
+
+
 CTempStorage::CTempStorage( const std::string& strHostName, const std::string& strHostAddr, const std::string& strProtoName )
 :m_strHostName( strHostName )
 ,m_strHostAddr( strHostAddr )
 ,m_bOpenedForWrite( false )
 {
+#ifdef WIN32
 	CreateDirectory( "temp", NULL );
+#else
+    ::mkdir( "temp", 0700 );
+#endif
 	m_strFileName = "temp\\" + strProtoName + strHostAddr;
 }
 
 CTempStorage::~CTempStorage(void)
 {
 	Clear();
+#ifdef WIN32
 	RemoveDirectory( "temp" );
+#else
+    rmdir( "temp" );
+#endif
 }
 
 void CTempStorage::PutRecord( const fileStr& File )
@@ -86,8 +101,13 @@ void CTempStorage::Open( bool bRead )
 void CTempStorage::Clear()
 {
 	//Если файл создавался - удаляем его
+#ifdef WIN32
 	if( m_bOpenedForWrite && !DeleteFile( m_strFileName.c_str() ) )
 		Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s, LastError = %d", m_strFileName.c_str(), GetLastError() );
+#else
+	if( m_bOpenedForWrite && 0 != remove( m_strFileName.c_str() ) )
+		Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s, LastError = %d", m_strFileName.c_str(), errno );
+#endif
 	m_bOpenedForWrite = false;
 }
 

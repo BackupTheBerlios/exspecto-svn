@@ -40,6 +40,9 @@
 		<Unit filename="../../LinuxSpec/Event.cpp">
 			<Option virtualFolder="Src/" />
 		</Unit>
+		<Unit filename="../../LinuxSpec/FileSearch.cpp">
+			<Option virtualFolder="Src/" />
+		</Unit>
 		<Unit filename="../../LinuxSpec/Mutex.cpp">
 			<Option virtualFolder="Src/" />
 		</Unit>

@@ -47,6 +47,9 @@
 		<Unit filename="../../../Common/libCommon/Event.h">
 			<Option virtualFolder="Hdr/" />
 		</Unit>
+		<Unit filename="../../../Common/libCommon/FileSearch.h">
+			<Option virtualFolder="Hdr/" />
+		</Unit>
 		<Unit filename="../../../Common/libCommon/MemLeakDetector.cpp">
 			<Option virtualFolder="Src/" />
 		</Unit>

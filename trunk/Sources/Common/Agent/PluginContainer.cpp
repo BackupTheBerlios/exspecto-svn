@@ -6,12 +6,10 @@
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
 #include "PluginContainer.h"
+#include "FileSearch.h"
 
 PluginContainer::PluginContainer()
 {
-	WIN32_FIND_DATA FindData;
-	HANDLE hFindFile;
-	HINSTANCE hLib;
 	int iScannersCount = 0;
 	std::string strPluginPath = PLUGIN_PATH;
 	std::string strPluginFileName;
@@ -20,39 +18,38 @@ PluginContainer::PluginContainer()
 	strPluginPath += "\\*.dll";
 	Log::instance().Trace( 90, "PluginLoadStrategy: Загружаем плагины, путь для поиска: %s", strPluginPath.c_str() );
 	//Находим все dll в папке с plugin-ами
-	if( INVALID_HANDLE_VALUE == ( hFindFile = ::FindFirstFile( strPluginPath.c_str(), &FindData ) ) )
-		throw PluginLoadErr( "PluginContainer:Не найдено ни одного плагина" );
-	do
+	FileSearch fs;
+	std::vector<std::string> vecPluginFiles = fs.GetFiles( strPluginPath );
+	for( std::vector<std::string>::iterator It = vecPluginFiles.begin(); It != vecPluginFiles.end(); It++ )
 	{
 		strPluginFileName = PLUGIN_PATH;
 		strPluginFileName += "\\";
-		strPluginFileName += FindData.cFileName;
+		strPluginFileName += *It;
 		SmartPtr<CSharedLib> pLib = SmartPtr<CSharedLib>( new CSharedLib() );
 		if( !pLib->Load( strPluginFileName ) )
 		{
-			Log::instance().Trace( 50, "PluginContainer: %s не является библиотекой", FindData.cFileName );
+			Log::instance().Trace( 50, "PluginContainer: %s не является библиотекой", It->c_str() );
 			continue;
 		}
 		if( NULL == ( pScanFunc = ( ScanFunc )pLib->GetSymbol( "Scan" ) ) )
 		{
-			Log::instance().Trace( 50, "PluginContainer: не удалось получить адрес функции Scan из библиотеки %s", FindData.cFileName );
+			Log::instance().Trace( 50, "PluginContainer: не удалось получить адрес функции Scan из библиотеки %s", It->c_str() );
 			continue;
 		}
  		if( NULL == ( pGetProtoName = ( GetProtoNameFunc )pLib->GetSymbol( "GetProtocolName" ) ) )
  		{
-			Log::instance().Trace( 50, "PluginContainer: не удалось получить адрес функции GetProtocolName из библиотеки %s", FindData.cFileName );
+			Log::instance().Trace( 50, "PluginContainer: не удалось получить адрес функции GetProtocolName из библиотеки %s", It->c_str() );
 			continue;
  		}
 		//Заполняем массив m_mapLibraries для дальнейшей корректной выгрузки dll
 		m_vecLibraries.push_back( pLib );
 
 		m_mapScanners[ pGetProtoName() ] = pScanFunc;
-		Log::instance().Trace( 90, "PluginContainer: Загружаем библиотеку %s с плагином %s", FindData.cFileName, pGetProtoName() );
+		Log::instance().Trace( 90, "PluginContainer: Загружаем библиотеку %s с плагином %s", It->c_str(), pGetProtoName() );
 		iScannersCount++;
-	}while( ::FindNextFile( hFindFile, &FindData ) );
-	FindClose( hFindFile );
+	}
 	if( 0 == iScannersCount )
-		throw PluginLoadErr( "Не найдено ни одного плагина" );
+		throw PluginLoadErr( "PluginContainer:Не найдено ни одного плагина" );
 	Log::instance().Trace( 90, "PluginContainer: всего загружено плагинов: %d", iScannersCount );
 }
 

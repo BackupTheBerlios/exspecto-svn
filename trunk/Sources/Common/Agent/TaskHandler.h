@@ -26,7 +26,15 @@ private:
 	class CProcessThreadTask: public CThreadTask
 	{
     public:
+
+        CProcessThreadTask( CTaskHandler* pThis ):m_pThis( pThis )
+        {}
+
         virtual void Execute( CEvent& CancelEv );
+
+    private:
+
+        CTaskHandler* m_pThis;
 	};
 
 	CThread m_ProcessThread;

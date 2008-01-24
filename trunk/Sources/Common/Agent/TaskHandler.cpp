@@ -6,7 +6,7 @@
 //---------------------------------------------CTaskHandler--------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CTaskHandler::CTaskHandler():m_ProcessThread( SmartPtr<CThreadTask>( new CProcessThreadTask ) )
+CTaskHandler::CTaskHandler():m_ProcessThread( SmartPtr<CThreadTask>( new CProcessThreadTask(this) ) )
 {
 }
 
@@ -30,32 +30,37 @@ void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
 void CTaskHandler::CProcessThreadTask::Execute( CEvent& CancelEv )
 {
 	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Запуск потока обработчика команд" );
-	CTaskHandler* pThis = (CTaskHandler*)param;
 	SmartPtr< CTask > pTask;
-	DWORD dwRes;
 	try{
 		for(;;)
 		{
-			HANDLE hEvents[] = { CancelEv, pThis->m_TaskAddedEv };
+            bool bCanceled = false;
+            for(;;)
+            {
+                if( m_pThis->m_TaskAddedEv.Wait(0) )
+                    break;
+                if( CancelEv.Wait(100) )
+                {
+                    bCanceled = true;
+                    break;
+                }
+            }
 
-			if( WAIT_OBJECT_0 == ( dwRes = WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, FALSE, INFINITE ) ) )
-				break;
-			else if( dwRes != ( WAIT_OBJECT_0 + 1 ) )
-				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: Внутрення ошибка!" );
+            if( bCanceled )
+                break;
 
-
-			pThis->m_mtxTasks.Lock();
-				if( pThis->m_deqTasks.size() != 0 )
+			m_pThis->m_mtxTasks.Lock();
+				if( m_pThis->m_deqTasks.size() != 0 )
 				{
-					pTask = pThis->m_deqTasks.front();
-					pThis->m_deqTasks.pop_front();
+					pTask = m_pThis->m_deqTasks.front();
+					m_pThis->m_deqTasks.pop_front();
 				}
-			pThis->m_mtxTasks.Unlock();
+			m_pThis->m_mtxTasks.Unlock();
 
 			if( pTask.get() )
 			{
 				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Выполнение задания: %s", pTask->GetDescription().c_str() );
-				pTask->Execute( pThis->m_CloseEv );
+				pTask->Execute( CancelEv );
 				pTask.Release();
 			}
 		}
@@ -67,10 +72,8 @@ void CTaskHandler::CProcessThreadTask::Execute( CEvent& CancelEv )
 		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло неизвестное исключение" );
 	}*/
 	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Завершение потока обработчика команд" );
-	return 0;
-
 }
-
+/*
 unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 {
 	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Запуск потока обработчика команд" );
@@ -110,7 +113,8 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 	{
 		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло неизвестное исключение" );
 	}*/
-	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Завершение потока обработчика команд" );
+/*	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Завершение потока обработчика команд" );
 	return 0;
 }
 
+*/
