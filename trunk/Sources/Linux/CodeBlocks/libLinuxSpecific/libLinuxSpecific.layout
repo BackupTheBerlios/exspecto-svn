@@ -10,7 +10,7 @@
 	<File name="../../LinuxSpec/Mutex.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="428" topLine="12" />
 	</File>
-	<File name="../../LinuxSpec/Os_Spec.h" open="1" top="0" tabpos="8">
+	<File name="../../LinuxSpec/Os_Spec.h" open="1" top="0" tabpos="1">
 		<Cursor position="20" topLine="0" />
 	</File>
 	<File name="../../LinuxSpec/Semaphore.cpp" open="0" top="0" tabpos="1">
