@@ -1,33 +1,22 @@
 #include "precomp.h"
-#include "dbproviderfactory.h"
+#include "DbProviderFactory.h"
 
 
 CDbProviderFactory::CDbProviderFactory(void):m_pDbInstance( NULL )
 {
-	Log::instance().Trace( 10, "CDbProviderFactory::CDbProviderFactor: Загрузка провайдера БД" );
+	Log::instance().Trace( 10, "CDbProviderFactory::CDbProviderFactor: њфЁ·њфЁРњфЁУњфЁањфЁгњфЁЧњфЁЪњфЁР њфЁЯњфЁањфЁЮњфЁТњфЁРњфЁЩњфЁФњфЁХњфЁањфЁР њфЁ±њфЁґ" );
 	std::string strLibName;
 	Settings::instance().GetParam( DB_PROV_NAME, strLibName );
-	if( NULL == ( m_hLib = LoadLibrary( strLibName.c_str() ) ) )
-		throw std::runtime_error( "Не удалось загрузить библиотеку-провайдер БД: " + strLibName );
+	m_pLib = SmartPtr<CSharedLib>( new CSharedLib() );
+	if( !m_pLib->Load( strLibName.c_str() ) )
+		throw std::runtime_error( "њфЁЅњфЁХ њфЁгњфЁФњфЁРњфЁЫњфЁЮњфЁбњфЁм њфЁЧњфЁРњфЁУњфЁањфЁгњфЁЧњфЁШњфЁвњфЁм њфЁСњфЁШњфЁСњфЁЫњфЁШњфЁЮњфЁвњфЁХњфЁЪњфЁг-њфЁЯњфЁањфЁЮњфЁТњфЁРњфЁЩњфЁФњфЁХњфЁа њфЁ±њфЁґ: " + strLibName );
 
-	typedef void*(__stdcall*RP)(void);
+	typedef void*(*RP)(void);
 	RP pFunc;
-	if( NULL == ( pFunc = ( (RP)GetProcAddress( m_hLib, "RegisterPlugin" ) ) ) )
-	{
-		FreeLibrary( m_hLib );
-		throw std::runtime_error( "Не удалось получить адрес функции RegisterPlugin в библиотеке-провайдере БД: " +strLibName );
-	}
+	if( NULL == ( pFunc = ( (RP)m_pLib->GetSymbol( "RegisterPlugin" ) ) ) )
+		throw std::runtime_error( "њфЁЅњфЁХ њфЁгњфЁФњфЁРњфЁЫњфЁЮњфЁбњфЁм њфЁЯњфЁЮњфЁЫњфЁгњфЁзњфЁШњфЁвњфЁм њфЁРњфЁФњфЁањфЁХњфЁб њфЁдњфЁгњфЁЭњфЁЪњфЁжњфЁШњфЁШ RegisterPlugin њфЁТ њфЁСњфЁШњфЁСњфЁЫњфЁШњфЁЮњфЁвњфЁХњфЁЪњфЁХ-њфЁЯњфЁањфЁЮњфЁТњфЁРњфЁЩњфЁФњфЁХњфЁањфЁХ њфЁ±њфЁґ: " +strLibName );
 	if( NULL == ( m_pDbInstance = (CDBProvider*)pFunc() ) )
-	{
-		FreeLibrary( m_hLib );
-		throw std::runtime_error( "Не удалось получить класс провайдера БД из библиотеки: " +strLibName );
-	}
-		
-}
-
-CDbProviderFactory::~CDbProviderFactory(void)
-{
-	FreeLibrary( m_hLib );
+		throw std::runtime_error( "њфЁЅњфЁХ њфЁгњфЁФњфЁРњфЁЫњфЁЮњфЁбњфЁм њфЁЯњфЁЮњфЁЫњфЁгњфЁзњфЁШњфЁвњфЁм њфЁЪњфЁЫњфЁРњфЁбњфЁб њфЁЯњфЁањфЁЮњфЁТњфЁРњфЁЩњфЁФњфЁХњфЁањфЁР њфЁ±њфЁґ њфЁШњфЁЧ њфЁСњфЁШњфЁСњфЁЫњфЁШњфЁЮњфЁвњфЁХњфЁЪњфЁШ: " +strLibName );
 }
 
 CDBProvider* CDbProviderFactory::GetProviderInstance()

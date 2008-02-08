@@ -1,14 +1,16 @@
 #ifndef _CDBPROVFACTORY
 #define _CDBPROVFACTORY
 
-#include "CDBProvider.h"
-#include "Singleton.hpp"
+#include <CDBProvider.h>
+#include <Singleton.hpp>
+#include <SharedLib.h>
+#include <SmartPtr.hpp>
 
 class CDbProviderFactory
 {
 public:
 	CDbProviderFactory(void);
-	virtual ~CDbProviderFactory(void);
+	virtual ~CDbProviderFactory(void){};
 
 	CDBProvider* GetProviderInstance();
 
@@ -17,7 +19,7 @@ private:
 	CDbProviderFactory( const CDbProviderFactory& );
 	CDbProviderFactory& operator=( const CDbProviderFactory& );
 
-	HMODULE m_hLib;
+    SmartPtr<CSharedLib> m_pLib;
 
 	CDBProvider* m_pDbInstance;
 };

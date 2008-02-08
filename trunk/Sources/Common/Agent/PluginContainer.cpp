@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------------//
-//Этот файл является частью проекта Exspecto 2006г.
+//њфЁНњфЁвњфЁЮњфЁв њфЁдњфЁРњфЁЩњфЁЫ њфЁпњфЁТњфЁЫњфЁпњфЁХњфЁвњфЁбњфЁп њфЁзњфЁРњфЁбњфЁвњфЁмњфЁо њфЁЯњфЁањфЁЮњфЁХњфЁЪњфЁвњфЁР Exspecto 2006њфЁУ.
 //Module: Plugin load strategy
 //Author: Parshin Dmitry
-//Description: Класс, описывающий стратегию загрузки плагинов в класс Container
+//Description: њфЁєњфЁЫњфЁРњфЁбњфЁб, њфЁЮњфЁЯњфЁШњфЁбњфЁлњфЁТњфЁРњфЁоњфЁйњфЁШњфЁЩ њфЁбњфЁвњфЁањфЁРњфЁвњфЁХњфЁУњфЁШњфЁо њфЁЧњфЁРњфЁУњфЁањфЁгњфЁЧњфЁЪњфЁШ њфЁЯњфЁЫњфЁРњфЁУњфЁШњфЁЭњфЁЮњфЁТ њфЁТ њфЁЪњфЁЫњфЁРњфЁбњфЁб Container
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
 #include "PluginContainer.h"
@@ -16,8 +16,8 @@ PluginContainer::PluginContainer()
 	ScanFunc pScanFunc;
 	GetProtoNameFunc pGetProtoName;
 	strPluginPath += "\\*.dll";
-	Log::instance().Trace( 90, "PluginLoadStrategy: Загружаем плагины, путь для поиска: %s", strPluginPath.c_str() );
-	//Находим все dll в папке с plugin-ами
+	Log::instance().Trace( 90, "PluginLoadStrategy: њфЁ·њфЁРњфЁУњфЁањфЁгњфЁЦњфЁРњфЁХњфЁЬ њфЁЯњфЁЫњфЁРњфЁУњфЁШњфЁЭњфЁл, њфЁЯњфЁгњфЁвњфЁм њфЁФњфЁЫњфЁп њфЁЯњфЁЮњфЁШњфЁбњфЁЪњфЁР: %s", strPluginPath.c_str() );
+	//њфЁЅњфЁРњфЁењфЁЮњфЁФњфЁШњфЁЬ њфЁТњфЁбњфЁХ dll њфЁТ њфЁЯњфЁРњфЁЯњфЁЪњфЁХ њфЁб plugin-њфЁРњфЁЬњфЁШ
 	FileSearch fs;
 	std::vector<std::string> vecPluginFiles = fs.GetFiles( strPluginPath );
 	for( std::vector<std::string>::iterator It = vecPluginFiles.begin(); It != vecPluginFiles.end(); It++ )
@@ -28,32 +28,32 @@ PluginContainer::PluginContainer()
 		SmartPtr<CSharedLib> pLib = SmartPtr<CSharedLib>( new CSharedLib() );
 		if( !pLib->Load( strPluginFileName ) )
 		{
-			Log::instance().Trace( 50, "PluginContainer: %s не является библиотекой", It->c_str() );
+			Log::instance().Trace( 50, "PluginContainer: %s њфЁЭњфЁХ њфЁпњфЁТњфЁЫњфЁпњфЁХњфЁвњфЁбњфЁп њфЁСњфЁШњфЁСњфЁЫњфЁШњфЁЮњфЁвњфЁХњфЁЪњфЁЮњфЁЩ", It->c_str() );
 			continue;
 		}
 		if( NULL == ( pScanFunc = ( ScanFunc )pLib->GetSymbol( "Scan" ) ) )
 		{
-			Log::instance().Trace( 50, "PluginContainer: не удалось получить адрес функции Scan из библиотеки %s", It->c_str() );
+			Log::instance().Trace( 50, "PluginContainer: њфЁЭњфЁХ њфЁгњфЁФњфЁРњфЁЫњфЁЮњфЁбњфЁм њфЁЯњфЁЮњфЁЫњфЁгњфЁзњфЁШњфЁвњфЁм њфЁРњфЁФњфЁањфЁХњфЁб њфЁдњфЁгњфЁЭњфЁЪњфЁжњфЁШњфЁШ Scan њфЁШњфЁЧ њфЁСњфЁШњфЁСњфЁЫњфЁШњфЁЮњфЁвњфЁХњфЁЪњфЁШ %s", It->c_str() );
 			continue;
 		}
  		if( NULL == ( pGetProtoName = ( GetProtoNameFunc )pLib->GetSymbol( "GetProtocolName" ) ) )
  		{
-			Log::instance().Trace( 50, "PluginContainer: не удалось получить адрес функции GetProtocolName из библиотеки %s", It->c_str() );
+			Log::instance().Trace( 50, "PluginContainer: њфЁЭњфЁХ њфЁгњфЁФњфЁРњфЁЫњфЁЮњфЁбњфЁм њфЁЯњфЁЮњфЁЫњфЁгњфЁзњфЁШњфЁвњфЁм њфЁРњфЁФњфЁањфЁХњфЁб њфЁдњфЁгњфЁЭњфЁЪњфЁжњфЁШњфЁШ GetProtocolName њфЁШњфЁЧ њфЁСњфЁШњфЁСњфЁЫњфЁШњфЁЮњфЁвњфЁХњфЁЪњфЁШ %s", It->c_str() );
 			continue;
  		}
-		//Заполняем массив m_mapLibraries для дальнейшей корректной выгрузки dll
+		//њфЁ·њфЁРњфЁЯњфЁЮњфЁЫњфЁЭњфЁпњфЁХњфЁЬ њфЁЬњфЁРњфЁбњфЁбњфЁШњфЁТ m_mapLibraries њфЁФњфЁЫњфЁп њфЁФњфЁРњфЁЫњфЁмњфЁЭњфЁХњфЁЩњфЁињфЁХњфЁЩ њфЁЪњфЁЮњфЁањфЁањфЁХњфЁЪњфЁвњфЁЭњфЁЮњфЁЩ њфЁТњфЁлњфЁУњфЁањфЁгњфЁЧњфЁЪњфЁШ dll
 		m_vecLibraries.push_back( pLib );
 
 		m_mapScanners[ pGetProtoName() ] = pScanFunc;
-		Log::instance().Trace( 90, "PluginContainer: Загружаем библиотеку %s с плагином %s", It->c_str(), pGetProtoName() );
+		Log::instance().Trace( 90, "PluginContainer: њфЁ·њфЁРњфЁУњфЁањфЁгњфЁЦњфЁРњфЁХњфЁЬ њфЁСњфЁШњфЁСњфЁЫњфЁШњфЁЮњфЁвњфЁХњфЁЪњфЁг %s њфЁб њфЁЯњфЁЫњфЁРњфЁУњфЁШњфЁЭњфЁЮњфЁЬ %s", It->c_str(), pGetProtoName() );
 		iScannersCount++;
 	}
 	if( 0 == iScannersCount )
-		throw PluginLoadErr( "PluginContainer:Не найдено ни одного плагина" );
-	Log::instance().Trace( 90, "PluginContainer: всего загружено плагинов: %d", iScannersCount );
+		throw PluginLoadErr( "PluginContainer:њфЁЅњфЁХ њфЁЭњфЁРњфЁЩњфЁФњфЁХњфЁЭњфЁЮ њфЁЭњфЁШ њфЁЮњфЁФњфЁЭњфЁЮњфЁУњфЁЮ њфЁЯњфЁЫњфЁРњфЁУњфЁШњфЁЭњфЁР" );
+	Log::instance().Trace( 90, "PluginContainer: њфЁТњфЁбњфЁХњфЁУњфЁЮ њфЁЧњфЁРњфЁУњфЁањфЁгњфЁЦњфЁХњфЁЭњфЁЮ њфЁЯњфЁЫњфЁРњфЁУњфЁШњфЁЭњфЁЮњфЁТ: %d", iScannersCount );
 }
 
 PluginContainer::~PluginContainer()
 {
-	Log::instance().Trace( 90, "PluginContainer: Уничтожение" );
+	Log::instance().Trace( 90, "PluginContainer: њфЁГњфЁЭњфЁШњфЁзњфЁвњфЁЮњфЁЦњфЁХњфЁЭњфЁШњфЁХ" );
 }

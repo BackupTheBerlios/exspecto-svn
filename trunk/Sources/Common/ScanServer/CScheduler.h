@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------------------------//
-//Этот файл является частью проекта Exspecto 2006г.
+//њфЁНњфЁвњфЁЮњфЁв њфЁдњфЁРњфЁЩњфЁЫ њфЁпњфЁТњфЁЫњфЁпњфЁХњфЁвњфЁбњфЁп њфЁзњфЁРњфЁбњфЁвњфЁмњфЁо њфЁЯњфЁањфЁЮњфЁХњфЁЪњфЁвњфЁР Exspecto 2006њфЁУ.
 //Module: CScheduler class
 //Author: Parshin Dmitry
-//Description: Класс, реализующий функции планировщика
+//Description: њфЁєњфЁЫњфЁРњфЁбњфЁб, њфЁањфЁХњфЁРњфЁЫњфЁШњфЁЧњфЁгњфЁоњфЁйњфЁШњфЁЩ њфЁдњфЁгњфЁЭњфЁЪњфЁжњфЁШњфЁШ њфЁЯњфЁЫњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁйњфЁШњфЁЪњфЁР
 //-------------------------------------------------------------------------------------//
 
 #ifndef CSCHEDULER_H_
@@ -12,16 +12,16 @@
 #include "CStartTrigger.h"
 #include "AgentsLoadStrategy.h"
 #include "SmartPtr.hpp"
-#include "Event.hpp"
+#include "Event.h"
 #include "ThreadsPool.h"
 
 
 
-//Предварительное обьявление класса CStartTrigger
+//њфЁїњфЁањфЁХњфЁФњфЁТњфЁРњфЁањфЁШњфЁвњфЁХњфЁЫњфЁмњфЁЭњфЁЮњфЁХ њфЁЮњфЁСњфЁмњфЁпњфЁТњфЁЫњфЁХњфЁЭњфЁШњфЁХ њфЁЪњфЁЫњфЁРњфЁбњфЁбњфЁР CStartTrigger
 class CStartTrigger;
 
-//Класс, описывающий интерфейс для функции обратного вызова OnStartScanEvent,
-//вызываемой в CScheduler при срабатывании триггера CStartTrigger
+//њфЁєњфЁЫњфЁРњфЁбњфЁб, њфЁЮњфЁЯњфЁШњфЁбњфЁлњфЁТњфЁРњфЁоњфЁйњфЁШњфЁЩ њфЁШњфЁЭњфЁвњфЁХњфЁањфЁдњфЁХњфЁЩњфЁб њфЁФњфЁЫњфЁп њфЁдњфЁгњфЁЭњфЁЪњфЁжњфЁШњфЁШ њфЁЮњфЁСњфЁањфЁРњфЁвњфЁЭњфЁЮњфЁУњфЁЮ њфЁТњфЁлњфЁЧњфЁЮњфЁТњфЁР OnStartScanEvent,
+//њфЁТњфЁлњфЁЧњфЁлњфЁТњфЁРњфЁХњфЁЬњфЁЮњфЁЩ њфЁТ CScheduler њфЁЯњфЁањфЁШ њфЁбњфЁањфЁРњфЁСњфЁРњфЁвњфЁлњфЁТњфЁРњфЁЭњфЁШњфЁШ њфЁвњфЁањфЁШњфЁУњфЁУњфЁХњфЁањфЁР CStartTrigger
 class CStartScanEventInterface
 {
 public:
@@ -35,7 +35,7 @@ public:
 	CScheduler(void);
 	virtual ~CScheduler(void);
 
-	//Метод вызывается триггером при срабатывании
+	//њфЁјњфЁХњфЁвњфЁЮњфЁФ њфЁТњфЁлњфЁЧњфЁлњфЁТњфЁРњфЁХњфЁвњфЁбњфЁп њфЁвњфЁањфЁШњфЁУњфЁУњфЁХњфЁањфЁЮњфЁЬ њфЁЯњфЁањфЁШ њфЁбњфЁањфЁРњфЁСњфЁРњфЁвњфЁлњфЁТњфЁРњфЁЭњфЁШњфЁШ
 	virtual void OnStartScan();
 
 	bool IsStarted(){ return m_bStarted; }
@@ -46,18 +46,31 @@ private:
 
 	bool m_bStarted;
 
-	//Контейнер, содержащий обьекты управления агентами, загружаемые стратегией AgentsLoadStrategy
+	//њфЁєњфЁЮњфЁЭњфЁвњфЁХњфЁЩњфЁЭњфЁХњфЁа, њфЁбњфЁЮњфЁФњфЁХњфЁањфЁЦњфЁРњфЁйњфЁШњфЁЩ њфЁЮњфЁСњфЁмњфЁХњфЁЪњфЁвњфЁл њфЁгњфЁЯњфЁањфЁРњфЁТњфЁЫњфЁХњфЁЭњфЁШњфЁп њфЁРњфЁУњфЁХњфЁЭњфЁвњфЁРњфЁЬњфЁШ, њфЁЧњфЁРњфЁУњфЁањфЁгњфЁЦњфЁРњфЁХњфЁЬњфЁлњфЁХ њфЁбњфЁвњфЁањфЁРњфЁвњфЁХњфЁУњфЁШњфЁХњфЁЩ AgentsLoadStrategy
 	std::map< std::string, SmartPtr< CAgentHandler > > m_mapAgentsContainer;
-	CCriticalSection m_csAgentsContainer;
+	CMutex m_mtxAgentsContainer;
 	
-	//Триггер, срабатывающий при необходимости начать сканирование
+	//њфЁВњфЁањфЁШњфЁУњфЁУњфЁХњфЁа, њфЁбњфЁањфЁРњфЁСњфЁРњфЁвњфЁлњфЁТњфЁРњфЁоњфЁйњфЁШњфЁЩ њфЁЯњфЁањфЁШ њфЁЭњфЁХњфЁЮњфЁСњфЁењфЁЮњфЁФњфЁШњфЁЬњфЁЮњфЁбњфЁвњфЁШ њфЁЭњфЁРњфЁзњфЁРњфЁвњфЁм њфЁбњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁХ
 	std::auto_ptr< CStartTrigger > m_pTrigger;
 
-	static unsigned _stdcall fnListenThreadProc(  void* pParameter );
+	class CListenThreadTask: public CThreadTask
+	{
+	public:
+
+	CListenThreadTask( CScheduler* pScheduler ):
+	  m_pScheduler( pScheduler )
+	  {};
+		  
+	  virtual void Execute( CEvent& CancelEv );
+
+	private:
+		  
+	  CScheduler* m_pScheduler;
+	};
+
+	CThread m_ListenThread;
 
 	CEvent m_CloseEv;
-	
-	HANDLE m_hListenThread;
 	
 	CServerSocket m_EventSock;
 

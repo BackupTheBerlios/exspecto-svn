@@ -9,8 +9,11 @@
 #include <map>
 #include <list>
 #include <iostream>
+
+#ifdef WIN32
 #include <tchar.h>
 #include <process.h>
+#endif
 
 #include "MemLeakDetector.h"
 #include "CLog.h"

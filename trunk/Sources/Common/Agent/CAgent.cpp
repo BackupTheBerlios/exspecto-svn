@@ -1,17 +1,14 @@
  //------------------------------------------------------------------------------------//
-//Этот файл является частью проекта Exspecto 2006г.
+//њфЁНњфЁвњфЁЮњфЁв њфЁдњфЁРњфЁЩњфЁЫ њфЁпњфЁТњфЁЫњфЁпњфЁХњфЁвњфЁбњфЁп њфЁзњфЁРњфЁбњфЁвњфЁмњфЁо њфЁЯњфЁањфЁЮњфЁХњфЁЪњфЁвњфЁР Exspecto 2006њфЁУ.
 //Module: CAgent class
 //Author: Parshin Dmitry
-//Description: Класс, реализующий функции Агента
+//Description: њфЁєњфЁЫњфЁРњфЁбњфЁб, њфЁањфЁХњфЁРњфЁЫњфЁШњфЁЧњфЁгњфЁоњфЁйњфЁШњфЁЩ њфЁдњфЁгњфЁЭњфЁЪњфЁжњфЁШњфЁШ њфЁ°њфЁУњфЁХњфЁЭњфЁвњфЁР
 //-------------------------------------------------------------------------------------//
 #include "precomp.h"
 #include "CAgent.h"
-#ifdef WIN32
-#include <process.h>
-#endif
 #include "ServerHandler.h"
 
-//Описание типов параметров
+//њфЁѕњфЁЯњфЁШњфЁбњфЁРњфЁЭњфЁШњфЁХ њфЁвњфЁШњфЁЯњфЁЮњфЁТ њфЁЯњфЁРњфЁањфЁРњфЁЬњфЁХњфЁвњфЁањфЁЮњфЁТ
 static char* pAgentParamTypes[] = {
 	SCHEDULER_ADDRESS, "string",
 	LOG_LEVEL,	"int",
@@ -28,7 +25,7 @@ static char* pAgentParamTypes[] = {
 
 CAgent::CAgent():m_bStarted( false ),m_ListenThread( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) )
 {
-	//Инициализация вспомогательных компонентов
+	//њфЁёњфЁЭњфЁШњфЁжњфЁШњфЁРњфЁЫњфЁШњфЁЧњфЁРњфЁжњфЁШњфЁп њфЁТњфЁбњфЁЯњфЁЮњфЁЬњфЁЮњфЁУњфЁРњфЁвњфЁХњфЁЫњфЁмњфЁЭњфЁлњфЁе њфЁЪњфЁЮњфЁЬњфЁЯњфЁЮњфЁЭњфЁХњфЁЭњфЁвњфЁЮњфЁТ
 	int iLogLevel;
 	Settings::instance().SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
 	Settings::instance().GetParam( LOG_LEVEL, iLogLevel );
@@ -37,7 +34,7 @@ CAgent::CAgent():m_bStarted( false ),m_ListenThread( SmartPtr<CThreadTask>( new 
 	Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress );
 	m_pMsgSock = SmartPtr< CServerSocket >( new CServerSocket() );
 
-	//Если поток не закрылся в течении 2 с - инициализация прошла успешно
+	//њфЁµњфЁбњфЁЫњфЁШ њфЁЯњфЁЮњфЁвњфЁЮњфЁЪ њфЁЭњфЁХ њфЁЧњфЁРњфЁЪњфЁањфЁлњфЁЫњфЁбњфЁп њфЁТ њфЁвњфЁХњфЁзњфЁХњфЁЭњфЁШњфЁШ 2 њфЁб - њфЁШњфЁЭњфЁШњфЁжњфЁШњфЁРњфЁЫњфЁШњфЁЧњфЁРњфЁжњфЁШњфЁп њфЁЯњфЁањфЁЮњфЁињфЁЫњфЁР њфЁгњфЁбњфЁЯњфЁХњфЁињфЁЭњфЁЮ
 	Sleep(2000);
     m_bStarted = m_ListenThread.IsWorking();
 }
@@ -48,14 +45,14 @@ CAgent::~CAgent(void)
 		m_pMsgSock->Close();
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CAgent::~CAgent: Возникло исключение: %s", e.what() );
+		Log::instance().Trace( 10," CAgent::~CAgent: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ: %s", e.what() );
 	}catch(...)
 	{
-		Log::instance().Trace( 10," CAgent::ListenThread: Возникло неизвестное исключение" );
+		Log::instance().Trace( 10," CAgent::ListenThread: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ" );
 	}
 }
 
-//Поток ожидания входящих соединений
+//њфЁїњфЁЮњфЁвњфЁЮњфЁЪ њфЁЮњфЁЦњфЁШњфЁФњфЁРњфЁЭњфЁШњфЁп њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁШњфЁе њфЁбњфЁЮњфЁХњфЁФњфЁШњфЁЭњфЁХњфЁЭњфЁШњфЁЩ
 void CAgent::CListenThreadTask::Execute( CEvent& CancelEv )
 {
 	try{
@@ -65,35 +62,35 @@ void CAgent::CListenThreadTask::Execute( CEvent& CancelEv )
 
 		int iEventPort;
 		Settings::instance().GetParam( SCHEDULER_EVENT_PORT, iEventPort );
-		Log::instance().Trace( 90, "CAgent:: Запуск потока ожидания входящих соединений" );
-	    //связываем серверный сокет с локальным адресом
+		Log::instance().Trace( 90, "CAgent:: њфЁ·њфЁРњфЁЯњфЁгњфЁбњфЁЪ њфЁЯњфЁЮњфЁвњфЁЮњфЁЪњфЁР њфЁЮњфЁЦњфЁШњфЁФњфЁРњфЁЭњфЁШњфЁп њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁШњфЁе њфЁбњфЁЮњфЁХњфЁФњфЁШњфЁЭњфЁХњфЁЭњфЁШњфЁЩ" );
+	    //њфЁбњфЁТњфЁпњфЁЧњфЁлњфЁТњфЁРњфЁХњфЁЬ њфЁбњфЁХњфЁањфЁТњфЁХњфЁањфЁЭњфЁлњфЁЩ њфЁбњфЁЮњфЁЪњфЁХњфЁв њфЁб њфЁЫњфЁЮњфЁЪњфЁРњфЁЫњфЁмњфЁЭњфЁлњфЁЬ њфЁРњфЁФњфЁањфЁХњфЁбњфЁЮњфЁЬ
 		int iListenPort;
 		Settings::instance().GetParam( LISTEN_PORT, iListenPort );
 		m_pAgent->m_pMsgSock->Bind( iListenPort );
-		//переводим сокет в режим прослушивания
+		//њфЁЯњфЁХњфЁањфЁХњфЁТњфЁЮњфЁФњфЁШњфЁЬ њфЁбњфЁЮњфЁЪњфЁХњфЁв њфЁТ њфЁањфЁХњфЁЦњфЁШњфЁЬ њфЁЯњфЁањфЁЮњфЁбњфЁЫњфЁгњфЁињфЁШњфЁТњфЁРњфЁЭњфЁШњфЁп
 		m_pAgent->m_pMsgSock->Listen();
-		//Ожидаем входящее соединение и обрабатываем его
+		//њфЁѕњфЁЦњфЁШњфЁФњфЁРњфЁХњфЁЬ њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁХњфЁХ њфЁбњфЁЮњфЁХњфЁФњфЁШњфЁЭњфЁХњфЁЭњфЁШњфЁХ њфЁШ њфЁЮњфЁСњфЁањфЁРњфЁСњфЁРњфЁвњфЁлњфЁТњфЁРњфЁХњфЁЬ њфЁХњфЁУњфЁЮ
 		while( NULL != ( client_sock = m_pAgent->m_pMsgSock->Accept( adr ) ).get() )
 		{
 		    if( CancelEv.TryWait() )
                 break;
-			Log::instance().Trace( 51, "CAgent::ListenThread: Входящее соединение с адреса: %s", adr.strAddr.c_str() );
-			//принимаем соединения только от заданного сервера сканирования
+			Log::instance().Trace( 51, "CAgent::ListenThread: њфЁІњфЁењфЁЮњфЁФњфЁпњфЁйњфЁХњфЁХ њфЁбњфЁЮњфЁХњфЁФњфЁШњфЁЭњфЁХњфЁЭњфЁШњфЁХ њфЁб њфЁРњфЁФњфЁањфЁХњфЁбњфЁР: %s", adr.strAddr.c_str() );
+			//њфЁЯњфЁањфЁШњфЁЭњфЁШњфЁЬњфЁРњфЁХњфЁЬ њфЁбњфЁЮњфЁХњфЁФњфЁШњфЁЭњфЁХњфЁЭњфЁШњфЁп њфЁвњфЁЮњфЁЫњфЁмњфЁЪњфЁЮ њфЁЮњфЁв њфЁЧњфЁРњфЁФњфЁРњфЁЭњфЁЭњфЁЮњфЁУњфЁЮ њфЁбњфЁХњфЁањфЁТњфЁХњфЁањфЁР њфЁбњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁп
 			if( m_pAgent->m_strSchedulerAddress == adr.strAddr )
 			{
 				m_pAgent->m_pEventSock = SmartPtr< CClientSocket >( new CClientSocket() );
 				CServerHandler Handler( client_sock, m_pAgent->m_pEventSock, m_pAgent->m_strSchedulerAddress, iEventPort );
 				m_pAgent->m_vecConnections.push_back( SmartPtr< CConnectionHandler >( new CConnectionHandler( Handler ) ) );
 			}else
-				Log::instance().Trace( 50, "CAgent::ListenThread: Входящее соединение с адреса: %s. Игнорируем", adr.strAddr.c_str() );
+				Log::instance().Trace( 50, "CAgent::ListenThread: њфЁІњфЁењфЁЮњфЁФњфЁпњфЁйњфЁХњфЁХ њфЁбњфЁЮњфЁХњфЁФњфЁШњфЁЭњфЁХњфЁЭњфЁШњфЁХ њфЁб њфЁРњфЁФњфЁањфЁХњфЁбњфЁР: %s. њфЁёњфЁУњфЁЭњфЁЮњфЁањфЁШњфЁањфЁгњфЁХњфЁЬ", adr.strAddr.c_str() );
 		}
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CAgent::ListenThread: Возникло исключение: %s", e.what() );
+		Log::instance().Trace( 10," CAgent::ListenThread: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ: %s", e.what() );
 	}catch( ... )
 	{
-		Log::instance().Trace( 10," CAgent::ListenThread: Возникло неизвестное исключение" );
+		Log::instance().Trace( 10," CAgent::ListenThread: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ" );
 	}
-	Log::instance().Trace( 50, "CAgent::ListenThread: Завершение потока ожидания входящих сообщений" );
+	Log::instance().Trace( 50, "CAgent::ListenThread: њфЁ·њфЁРњфЁТњфЁХњфЁањфЁињфЁХњфЁЭњфЁШњфЁХ њфЁЯњфЁЮњфЁвњфЁЮњфЁЪњфЁР њфЁЮњфЁЦњфЁШњфЁФњфЁРњфЁЭњфЁШњфЁп њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁШњфЁе њфЁбњфЁЮњфЁЮњфЁСњфЁйњфЁХњфЁЭњфЁШњфЁЩ" );
 }
 

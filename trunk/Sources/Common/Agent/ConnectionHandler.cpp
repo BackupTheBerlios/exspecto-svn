@@ -14,15 +14,15 @@ CConnectionHandler::CConnectionHandler( CServerHandler& Handler ):m_ServerHandle
 CConnectionHandler::~CConnectionHandler()
 {
 	try{
-		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Закрытие соединения с %s", m_ServerHandler.GetServerAddress().c_str() );
+		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: њфЁ·њфЁРњфЁЪњфЁањфЁлњфЁвњфЁШњфЁХ њфЁбњфЁЮњфЁХњфЁФњфЁШњфЁЭњфЁХњфЁЭњфЁШњфЁп њфЁб %s", m_ServerHandler.GetServerAddress().c_str() );
 		m_ServerHandler.CloseSession();
-		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: Уничтожение" );
+		Log::instance().Trace( 90, "CConnectionHandler::~CConnectionHandler: њфЁГњфЁЭњфЁШњфЁзњфЁвњфЁЮњфЁЦњфЁХњфЁЭњфЁШњфЁХ" );
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CAgent::~CAgent: Возникло исключение: %s", e.what() );
+		Log::instance().Trace( 10," CAgent::~CAgent: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ: %s", e.what() );
 	}catch(...)
 	{
-		Log::instance().Trace( 10," CAgent::ListenThread: Возникло неизвестное исключение" );
+		Log::instance().Trace( 10," CAgent::ListenThread: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ" );
 	}
 }
 
@@ -31,27 +31,27 @@ void CConnectionHandler::CListenThreadTask::Execute( CEvent& CancelEv )
 	CInPacket Msg;
 
 	try{
-		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Запуск потока ожидания входящих сообщений c адреса %s", m_pHandler->m_ServerHandler.GetServerAddress().c_str() );
+		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: њфЁ·њфЁРњфЁЯњфЁгњфЁбњфЁЪ њфЁЯњфЁЮњфЁвњфЁЮњфЁЪњфЁР њфЁЮњфЁЦњфЁШњфЁФњфЁРњфЁЭњфЁШњфЁп њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁШњфЁе њфЁбњфЁЮњфЁЮњфЁСњфЁйњфЁХњфЁЭњфЁШњфЁЩ c њфЁРњфЁФњфЁањфЁХњфЁбњфЁР %s", m_pHandler->m_ServerHandler.GetServerAddress().c_str() );
 		while( true )
 		{
 			m_pHandler->m_ServerHandler.Receive( Msg );
-			Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Получен пакет" );
-			//Задаем данные для разбора входящего пакета
+			Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: њфЁїњфЁЮњфЁЫњфЁгњфЁзњфЁХњфЁЭ њфЁЯњфЁРњфЁЪњфЁХњфЁв" );
+			//њфЁ·њфЁРњфЁФњфЁРњфЁХњфЁЬ њфЁФњфЁРњфЁЭњфЁЭњфЁлњфЁХ њфЁФњфЁЫњфЁп њфЁањфЁРњфЁЧњфЁСњфЁЮњфЁањфЁР њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁХњфЁУњфЁЮ њфЁЯњфЁРњфЁЪњфЁХњфЁвњфЁР
 			SmartPtr< CTask > pTask = m_pHandler->m_MessageParser.Parse( Msg );
 			m_pHandler->m_TaskHandler.AddTask( pTask );
 		}
-		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие потока ожидания входящих сообщений с адреса %s", m_pHandler->m_ServerHandler.GetServerAddress().c_str() );
+		Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: њфЁ·њфЁРњфЁЪњфЁањфЁлњфЁвњфЁШњфЁХ њфЁЯњфЁЮњфЁвњфЁЮњфЁЪњфЁР њфЁЮњфЁЦњфЁШњфЁФњфЁРњфЁЭњфЁШњфЁп њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁШњфЁе њфЁбњфЁЮњфЁЮњфЁСњфЁйњфЁХњфЁЭњфЁШњфЁЩ њфЁб њфЁРњфЁФњфЁањфЁХњфЁбњфЁР %s", m_pHandler->m_ServerHandler.GetServerAddress().c_str() );
 	}catch( SocketErr& e )
 	{
-		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Ошибка связи: %s", e.what() );
+		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР њфЁбњфЁТњфЁпњфЁЧњфЁШ: %s", e.what() );
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло исключение: %s", e.what() );
+		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ: %s", e.what() );
 	}catch( ... )
 	{
-		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: Возникло неизвестное исключение" );
+		Log::instance().Trace( 10," CConnectionHandler::fnListenThread: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ" );
 	}
-	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: Закрытие" );
+	Log::instance().Trace( 90, "CConnectionHandler::fnListenThread: њфЁ·њфЁРњфЁЪњфЁањфЁлњфЁвњфЁШњфЁХ" );
 }
 
 
