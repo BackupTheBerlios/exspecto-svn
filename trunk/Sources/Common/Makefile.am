@@ -1,1 +1,1 @@
-SUBDIRS=tinyxml libCommon libNet Agent
+SUBDIRS=tinyxml libCommon libNet Agent ScanServer

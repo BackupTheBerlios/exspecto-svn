@@ -8,6 +8,7 @@ AC_CONFIG_FILES([Makefile\
 				 Common/libCommon/Makefile\
 				 Common/libNet/Makefile\
 				 Common/Agent/Makefile\
+				 Common/ScanServer/Makefile\
 				 Linux/Makefile\
 				 Linux/LinuxSpec/Makefile\
 				 ])
