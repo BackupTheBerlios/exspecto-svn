@@ -1,1 +1,1 @@
-SUBDIRS = Common Linux
+SUBDIRS = Linux Common
