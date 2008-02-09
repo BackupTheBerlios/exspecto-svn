@@ -56,7 +56,6 @@ private:
 
 	int m_iEventPort;
 
-	//œô¨¿œô¨àœô¨Øœô¨Õœô¨Üœô¨Ýœô¨ëœô¨Ù œô¨Ñœô¨ãœô¨äœô¨Õœô¨à
 	std::vector<BYTE> m_vecRecvBuf;
 
 };

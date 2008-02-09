@@ -48,7 +48,6 @@ private:
 
 	std::istream::pos_type m_ReadPos;
 
-	//œô¨áœô¨ãœô¨âœô¨Ø - œô¨äœô¨Ûœô¨Ðœô¨Ó œô¨áœô¨Þœô¨×œô¨Ôœô¨Ðœô¨Ýœô¨Øœô¨ï œô¨äœô¨Ðœô¨Ùœô¨Ûœô¨Ð
 	bool m_bOpenedForWrite;
 };
 
