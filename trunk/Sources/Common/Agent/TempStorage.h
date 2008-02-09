@@ -1,4 +1,4 @@
-ï»¿#ifndef _TEMP_STORAGE
+#ifndef _TEMP_STORAGE
 #define _TEMP_STORAGE
 #include <fstream>
 #include "SmartPtr.hpp"
@@ -48,7 +48,7 @@ private:
 
 	std::istream::pos_type m_ReadPos;
 
-	//ÑÑƒÑ‚Ð¸ - Ñ„Ð»Ð°Ð³ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ñ„Ð°Ð¹Ð»Ð°
+	//œô¨áœô¨ãœô¨âœô¨Ø - œô¨äœô¨Ûœô¨Ðœô¨Ó œô¨áœô¨Þœô¨×œô¨Ôœô¨Ðœô¨Ýœô¨Øœô¨ï œô¨äœô¨Ðœô¨Ùœô¨Ûœô¨Ð
 	bool m_bOpenedForWrite;
 };
 

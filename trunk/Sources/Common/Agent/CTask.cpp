@@ -1,9 +1,9 @@
-ï»¿#include "precomp.h"
+#include "precomp.h"
 #include "MessageParser.h"
 #include "CTask.h"
 #include "ping.h"
 
-//ĞœĞ°ĞºÑĞ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ñ€Ğ°Ğ·Ğ¼ĞµÑ€ Ğ¿Ğ°ĞºĞµÑ‚Ğ° Ñ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğ¼Ğ¸ Ğ´Ğ»Ñ Ğ¿Ğ¾ÑÑ‹Ğ»ĞºĞ¸ 2MB
+//œô¨¼œô¨Ğœô¨Úœô¨áœô¨Øœô¨Üœô¨Ğœô¨Ûœô¨ìœô¨İœô¨ëœô¨Ù œô¨àœô¨Ğœô¨×œô¨Üœô¨Õœô¨à œô¨ßœô¨Ğœô¨Úœô¨Õœô¨âœô¨Ğ œô¨á œô¨Ôœô¨Ğœô¨İœô¨İœô¨ëœô¨Üœô¨Ø œô¨Ôœô¨Ûœô¨ï œô¨ßœô¨Şœô¨áœô¨ëœô¨Ûœô¨Úœô¨Ø 2MB
 #define MAX_PACKET_SIZE  2097152
 
 std::string CTask::m_CurState = IDLING;
@@ -24,7 +24,7 @@ bool CGetStatus::Immidiate()
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	Msg.PutField( AGENT_STATUS, m_CurState );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CGetStatus:Immidiate: ĞÑ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½ Ğ¾Ñ‚Ğ²ĞµÑ‚: %s", Msg.ToString().c_str() );
+	Log::instance().Trace( 90, "CGetStatus:Immidiate: œô¨¾œô¨âœô¨ßœô¨àœô¨Ğœô¨Òœô¨Ûœô¨Õœô¨İ œô¨Şœô¨âœô¨Òœô¨Õœô¨â: %s", Msg.ToString().c_str() );
 	return true;
 }
 namespace
@@ -59,14 +59,14 @@ void CStartScan::CResolveTask::Execute( CEvent& CancelEvent )
 void CStartScan::CScanThreadTask::Execute( CEvent& CancelEvent )
 {
 	try{
-	    //TODO: Ñ€Ğ°Ğ·Ğ¾Ğ±Ñ€Ğ°Ñ‚ÑŒÑÑ Ñ Ğ¾Ñ‚Ğ¼ĞµĞ½Ğ¾Ğ¹
+	    //TODO: œô¨àœô¨Ğœô¨×œô¨Şœô¨Ñœô¨àœô¨Ğœô¨âœô¨ìœô¨áœô¨ï œô¨á œô¨Şœô¨âœô¨Üœô¨Õœô¨İœô¨Şœô¨Ù
 		m_pScanner( m_strAddr.c_str(), CStartScan::CScanThreadTask::StorageFunc, 0 );
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: Ğ˜ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ: %s", e.what() );
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: œô¨¸œô¨áœô¨Úœô¨Ûœô¨îœô¨çœô¨Õœô¨İœô¨Øœô¨Õ: %s", e.what() );
 	}catch( ... )
 	{
-		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: ĞĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ğ¾Ğµ ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ" );
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: œô¨½œô¨Õœô¨Øœô¨×œô¨Òœô¨Õœô¨áœô¨âœô¨İœô¨Şœô¨Õ œô¨áœô¨Úœô¨Ûœô¨îœô¨çœô¨Õœô¨İœô¨Øœô¨Õ" );
 	}
 }
 
@@ -81,10 +81,10 @@ void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 	if( ( m_mapStorages.end() == ( It = m_mapStorages.find( strAddress ) ) )
 		|| ( It->second.end() == It->second.find( strProtocolName ) ) )
 	{
-		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::StorageFunc: ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ñ…Ñ€Ğ°Ğ½Ğ¸Ğ»Ğ¸Ñ‰Ğµ Ğ´Ğ»Ñ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ…, Ğ°Ğ´Ñ€ĞµÑ: %s, Ğ¿Ñ€Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ»: %s", strAddress, strProtocolName );
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::StorageFunc: œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨åœô¨àœô¨Ğœô¨İœô¨Øœô¨Ûœô¨Øœô¨éœô¨Õ œô¨Ôœô¨Ûœô¨ï œô¨Ôœô¨Ğœô¨İœô¨İœô¨ëœô¨å, œô¨Ğœô¨Ôœô¨àœô¨Õœô¨á: %s, œô¨ßœô¨àœô¨Şœô¨âœô¨Şœô¨Úœô¨Şœô¨Û: %s", strAddress, strProtocolName );
 		return;
 	}
-	//TODO: Ğ¿ĞµÑ€ĞµĞ´ĞµĞ»Ğ°Ñ‚ÑŒ Ğ¸Ğ½Ñ‚ĞµÑ€Ñ„ĞµĞ¹Ñ StorageFunc, Ñ‡Ñ‚Ğ¾Ğ±Ñ‹ Ğ¾Ğ½ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ğ» FileStr
+	//TODO: œô¨ßœô¨Õœô¨àœô¨Õœô¨Ôœô¨Õœô¨Ûœô¨Ğœô¨âœô¨ì œô¨Øœô¨İœô¨âœô¨Õœô¨àœô¨äœô¨Õœô¨Ùœô¨á StorageFunc, œô¨çœô¨âœô¨Şœô¨Ñœô¨ë œô¨Şœô¨İ œô¨Øœô¨áœô¨ßœô¨Şœô¨Ûœô¨ìœô¨×œô¨Şœô¨Òœô¨Ğœô¨Û FileStr
 	fileStr File;
 	File.FileSize = FileSize;
 	File.FileName = strFileName;
@@ -119,14 +119,14 @@ bool CStartScan::Immidiate()
 	COutPacket Msg;
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CStartScan:Immidiate: ĞÑ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½ Ğ¾Ñ‚Ğ²ĞµÑ‚" );
+	Log::instance().Trace( 90, "CStartScan:Immidiate: œô¨¾œô¨âœô¨ßœô¨àœô¨Ğœô¨Òœô¨Ûœô¨Õœô¨İ œô¨Şœô¨âœô¨Òœô¨Õœô¨â" );
 	return false;
 }
 
 void CStartScan::Execute( CEvent& CancelEv )
 {
-	//TODO:Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑÑ‚ÑŒ ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ğµ Ğ¿ĞµÑ€ĞµĞ´ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾Ğ¼ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ
-	Log::instance().Trace( 90, "CStartScan: ĞŸĞ¾ÑÑ‚ÑƒĞ¿Ğ¸Ğ» Ğ·Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ½Ğ° Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ" );
+	//TODO:œô¨ßœô¨àœô¨Şœô¨Òœô¨Õœô¨àœô¨ïœô¨âœô¨ì œô¨áœô¨Şœô¨áœô¨âœô¨Şœô¨ïœô¨İœô¨Øœô¨Õ œô¨ßœô¨Õœô¨àœô¨Õœô¨Ô œô¨İœô¨Ğœô¨çœô¨Ğœô¨Ûœô¨Şœô¨Ü œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï
+	Log::instance().Trace( 90, "CStartScan: œô¨¿œô¨Şœô¨áœô¨âœô¨ãœô¨ßœô¨Øœô¨Û œô¨×œô¨Ğœô¨ßœô¨àœô¨Şœô¨á œô¨İœô¨Ğ œô¨İœô¨Ğœô¨çœô¨Ğœô¨Ûœô¨Ş œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï" );
 	m_mtxCurState.Lock();
 		m_CurState = SCANNING;
 	m_mtxCurState.Unlock();
@@ -135,15 +135,15 @@ void CStartScan::Execute( CEvent& CancelEv )
 
 	int iThreadsCount;
 	Settings::instance().GetParam( SCAN_THREADS_COUNT, iThreadsCount );
-	Log::instance().Trace( 10, "CStartScan::Execute: Ğ˜Ğ½Ğ¸Ñ†Ğ¸Ğ°Ğ»Ğ¸Ğ·Ğ¸Ñ€ÑƒĞµĞ¼ Ğ¿ÑƒĞ» Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ², ĞºĞ¾Ğ»-Ğ²Ğ¾ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ²: %d", iThreadsCount );
+	Log::instance().Trace( 10, "CStartScan::Execute: œô¨¸œô¨İœô¨Øœô¨æœô¨Øœô¨Ğœô¨Ûœô¨Øœô¨×œô¨Øœô¨àœô¨ãœô¨Õœô¨Ü œô¨ßœô¨ãœô¨Û œô¨ßœô¨Şœô¨âœô¨Şœô¨Úœô¨Şœô¨Ò, œô¨Úœô¨Şœô¨Û-œô¨Òœô¨Ş œô¨ßœô¨Şœô¨âœô¨Şœô¨Úœô¨Şœô¨Ò: %d", iThreadsCount );
 	CThreadsPool pool( iThreadsCount );
 
-	//ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ¾ÑÑ‚ÑŒ Ñ…Ğ¾ÑÑ‚Ğ¾Ğ²
+	//œô¨¿œô¨àœô¨Şœô¨Òœô¨Õœô¨àœô¨ïœô¨Õœô¨Ü œô¨Ôœô¨Şœô¨áœô¨âœô¨ãœô¨ßœô¨İœô¨Şœô¨áœô¨âœô¨ì œô¨åœô¨Şœô¨áœô¨âœô¨Şœô¨Ò
 	bool bPingOn;
 	Settings::instance().GetParam( PING_ON, bPingOn );
 	if( bPingOn )
 	{
-		Log::instance().Trace( 10, "CStartScan::Execute: ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ¾ÑÑ‚ÑŒ Ñ…Ğ¾ÑÑ‚Ğ¾Ğ², ĞºĞ¾Ğ»-Ğ²Ğ¾ Ñ…Ğ¾ÑÑ‚Ğ¾Ğ²: %d", m_vecAddresses.size() );
+		Log::instance().Trace( 10, "CStartScan::Execute: œô¨¿œô¨àœô¨Şœô¨Òœô¨Õœô¨àœô¨ïœô¨Õœô¨Ü œô¨Ôœô¨Şœô¨áœô¨âœô¨ãœô¨ßœô¨İœô¨Şœô¨áœô¨âœô¨ì œô¨åœô¨Şœô¨áœô¨âœô¨Şœô¨Ò, œô¨Úœô¨Şœô¨Û-œô¨Òœô¨Ş œô¨åœô¨Şœô¨áœô¨âœô¨Şœô¨Ò: %d", m_vecAddresses.size() );
 		std::vector< SmartPtr< CAvailabilityScanTask > > vecAvailTasks;
 		for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
 		{
@@ -162,17 +162,17 @@ void CStartScan::Execute( CEvent& CancelEv )
 			if( (*It)->IsAvailable() )
 				m_vecAddresses.push_back( (*It)->GetAddress() );
 			else
-				Log::instance().Trace( 10, "CScheduler::OnStartScan: Ğ¥Ğ¾ÑÑ‚ %s Ğ½Ğµ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿ĞµĞ½. Ğ˜ÑĞºĞ»ÑÑ‡Ğ°ĞµĞ¼ Ğ¸Ğ· ÑĞ¿Ğ¸ÑĞºĞ° Ñ‚ĞµĞºÑƒÑ‰ĞµĞ³Ğ¾ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ", (*It)->GetAddress().c_str() );
+				Log::instance().Trace( 10, "CScheduler::OnStartScan: œô¨Åœô¨Şœô¨áœô¨â %s œô¨İœô¨Õ œô¨Ôœô¨Şœô¨áœô¨âœô¨ãœô¨ßœô¨Õœô¨İ. œô¨¸œô¨áœô¨Úœô¨Ûœô¨îœô¨çœô¨Ğœô¨Õœô¨Ü œô¨Øœô¨× œô¨áœô¨ßœô¨Øœô¨áœô¨Úœô¨Ğ œô¨âœô¨Õœô¨Úœô¨ãœô¨éœô¨Õœô¨Óœô¨Ş œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï", (*It)->GetAddress().c_str() );
 		}
-		Log::instance().Trace( 10, "CStartScan::Execute: ĞŸÑ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ·Ğ°ĞºĞ¾Ğ½Ñ‡ĞµĞ½Ğ°" );
+		Log::instance().Trace( 10, "CStartScan::Execute: œô¨¿œô¨àœô¨Şœô¨Òœô¨Õœô¨àœô¨Úœô¨Ğ œô¨Ôœô¨Şœô¨áœô¨âœô¨ãœô¨ßœô¨İœô¨Şœô¨áœô¨âœô¨Ø œô¨×œô¨Ğœô¨Úœô¨Şœô¨İœô¨çœô¨Õœô¨İœô¨Ğ" );
 	}
-	//ĞŸĞ¾Ğ»ÑƒÑ‡Ğ°ĞµĞ¼ Ğ¸Ğ¼ĞµĞ½Ğ° Ñ…Ğ¾ÑÑ‚Ğ¾Ğ² Ğ¿Ğ¾ Ğ°Ğ´Ñ€ĞµÑĞ°Ğ¼
+	//œô¨¿œô¨Şœô¨Ûœô¨ãœô¨çœô¨Ğœô¨Õœô¨Ü œô¨Øœô¨Üœô¨Õœô¨İœô¨Ğ œô¨åœô¨Şœô¨áœô¨âœô¨Şœô¨Ò œô¨ßœô¨Ş œô¨Ğœô¨Ôœô¨àœô¨Õœô¨áœô¨Ğœô¨Ü
 	bool bResolveOn;
     Settings::instance().GetParam( RESOLVE_HOST, bResolveOn );
 	std::vector< std::string > vecHostNames;
 	if( bResolveOn )
 	{
-		Log::instance().Trace( 10, "%s: ĞŸĞ¾Ğ»ÑƒÑ‡Ğ°ĞµĞ¼ Ğ¸Ğ¼ĞµĞ½Ğ° Ñ…Ğ¾ÑÑ‚Ğ¾Ğ²", __FUNCTION__ );
+		Log::instance().Trace( 10, "%s: œô¨¿œô¨Şœô¨Ûœô¨ãœô¨çœô¨Ğœô¨Õœô¨Ü œô¨Øœô¨Üœô¨Õœô¨İœô¨Ğ œô¨åœô¨Şœô¨áœô¨âœô¨Şœô¨Ò", __FUNCTION__ );
 		std::vector< SmartPtr< CResolveTask > > vecResolveTasks;
 		for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
 		{
@@ -186,14 +186,14 @@ void CStartScan::Execute( CEvent& CancelEv )
 		}
 		for( std::vector< SmartPtr< CResolveTask > >::iterator It = vecResolveTasks.begin(); It != vecResolveTasks.end(); It++ )
 		{
-			Log::instance().Trace( 5, "%s: Ğ˜Ğ¼Ñ Ñ…Ğ¾ÑÑ‚Ğ° Ñ Ğ°Ğ´Ñ€ĞµÑĞ¾Ğ¼ %s: %s", __FUNCTION__, m_vecAddresses[ std::distance( vecResolveTasks.begin(), It ) ].c_str(), (*It)->GetHostName().c_str() );
+			Log::instance().Trace( 5, "%s: œô¨¸œô¨Üœô¨ï œô¨åœô¨Şœô¨áœô¨âœô¨Ğ œô¨á œô¨Ğœô¨Ôœô¨àœô¨Õœô¨áœô¨Şœô¨Ü %s: %s", __FUNCTION__, m_vecAddresses[ std::distance( vecResolveTasks.begin(), It ) ].c_str(), (*It)->GetHostName().c_str() );
 			vecHostNames.push_back( (*It)->GetHostName() );
 		}
-		Log::instance().Trace( 10, "CStartScan::Execute: ĞŸĞ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ğµ Ğ¸Ğ¼ĞµĞ½ Ñ…Ğ¾ÑÑ‚Ğ¾Ğ² Ğ¾ĞºĞ¾Ğ½Ñ‡ĞµĞ½Ğ¾" );
+		Log::instance().Trace( 10, "CStartScan::Execute: œô¨¿œô¨Şœô¨Ûœô¨ãœô¨çœô¨Õœô¨İœô¨Øœô¨Õ œô¨Øœô¨Üœô¨Õœô¨İ œô¨åœô¨Şœô¨áœô¨âœô¨Şœô¨Ò œô¨Şœô¨Úœô¨Şœô¨İœô¨çœô¨Õœô¨İœô¨Ş" );
 	}
 
 	std::vector< SmartPtr< CScanThreadTask > > vecThreadTasks;
-	Log::instance().Trace( 12, "CStartScan::Execute: Ğ’ÑĞµĞ³Ğ¾ Ğ°Ğ´Ñ€ĞµÑĞ¾Ğ² Ğ´Ğ»Ñ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ: %d", m_vecAddresses.size() );
+	Log::instance().Trace( 12, "CStartScan::Execute: œô¨²œô¨áœô¨Õœô¨Óœô¨Ş œô¨Ğœô¨Ôœô¨àœô¨Õœô¨áœô¨Şœô¨Ò œô¨Ôœô¨Ûœô¨ï œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï: %d", m_vecAddresses.size() );
 
 	for( std::vector< std::string >::iterator AddrIt = m_vecAddresses.begin(); AddrIt != m_vecAddresses.end(); AddrIt++ )
 	{
@@ -202,17 +202,17 @@ void CStartScan::Execute( CEvent& CancelEv )
 		    if( CancelEv.TryWait() )
                 break;
 
-			Log::instance().Trace( 80, "CStartScan: Ğ”Ğ¾Ğ±Ğ°Ğ²Ğ»ÑĞµĞ¼ Ğ·Ğ°Ğ´Ğ°Ñ‡Ñƒ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ²Ğ°Ğ½Ğ¸Ñ Ğ°Ğ´Ñ€ĞµÑĞ° %s Ñ Ğ¿Ğ¾Ğ¼Ğ¾Ñ‰ÑŒÑ Ğ¿Ğ»Ğ°Ğ³Ğ¸Ğ½Ğ° %s", AddrIt->c_str(), PlugIt->first.c_str() );
+			Log::instance().Trace( 80, "CStartScan: œô¨´œô¨Şœô¨Ñœô¨Ğœô¨Òœô¨Ûœô¨ïœô¨Õœô¨Ü œô¨×œô¨Ğœô¨Ôœô¨Ğœô¨çœô¨ã œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨Ğœô¨Ôœô¨àœô¨Õœô¨áœô¨Ğ %s œô¨á œô¨ßœô¨Şœô¨Üœô¨Şœô¨éœô¨ìœô¨î œô¨ßœô¨Ûœô¨Ğœô¨Óœô¨Øœô¨İœô¨Ğ %s", AddrIt->c_str(), PlugIt->first.c_str() );
 			vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, PlugIt->second ) );
-			//Ğ¡Ğ¾Ğ·Ğ´Ğ°ĞµĞ¼ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ½Ğ¾Ğµ Ñ…Ñ€Ğ°Ğ½Ğ¸Ğ»Ğ¸Ñ‰Ğµ Ğ´Ğ»Ñ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ… ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ
+			//œô¨Áœô¨Şœô¨×œô¨Ôœô¨Ğœô¨Õœô¨Ü œô¨Òœô¨àœô¨Õœô¨Üœô¨Õœô¨İœô¨İœô¨Şœô¨Õ œô¨åœô¨àœô¨Ğœô¨İœô¨Øœô¨Ûœô¨Øœô¨éœô¨Õ œô¨Ôœô¨Ûœô¨ï œô¨Ôœô¨Ğœô¨İœô¨İœô¨ëœô¨å œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï
 			m_mapStorages[ *AddrIt ][ PlugIt->first ] = SmartPtr< CTempStorage >( new CTempStorage( vecHostNames.empty()?"":vecHostNames[ std::distance( m_vecAddresses.begin(), AddrIt ) ], *AddrIt, std::string( PlugIt->first ) ) );
 			pool.AddTask( vecThreadTasks.back() );
 
 		}
 		if( CancelEv.TryWait() )
 		{
-			Log::instance().Trace( 90, "CStartScan: Ğ¡ĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¾Ñ‚Ğ¼ĞµĞ½ĞµĞ½Ğ¾" );
-			//Ğ¡Ğ±Ñ€Ğ°ÑÑ‹Ğ²Ğ°ĞµĞ¼ ÑĞ¾Ğ±Ñ‹Ñ‚Ğ¸Ğµ Ğ¾Ñ‚Ğ¼ĞµĞ½Ñ‹
+			Log::instance().Trace( 90, "CStartScan: œô¨Áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨Õ œô¨Şœô¨âœô¨Üœô¨Õœô¨İœô¨Õœô¨İœô¨Ş" );
+			//œô¨Áœô¨Ñœô¨àœô¨Ğœô¨áœô¨ëœô¨Òœô¨Ğœô¨Õœô¨Ü œô¨áœô¨Şœô¨Ñœô¨ëœô¨âœô¨Øœô¨Õ œô¨Şœô¨âœô¨Üœô¨Õœô¨İœô¨ë
             //m_CancelEv.Reset();
 			pool.CancelAllTasks();
 			break;
@@ -220,10 +220,10 @@ void CStartScan::Execute( CEvent& CancelEv )
 	}
 	if( !pool.WaitAllComplete( CancelEv ) ){};
 //		pool.CancelAllTasks();
-	Log::instance().Trace( 99, "CStartScan::Execute: Ğ¡ĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ·Ğ°ĞºĞ¾Ğ½Ñ‡ĞµĞ½Ğ¾" );
+	Log::instance().Trace( 99, "CStartScan::Execute: œô¨Áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨Õ œô¨×œô¨Ğœô¨Úœô¨Şœô¨İœô¨çœô¨Õœô¨İœô¨Ş" );
 	COutPacket Event;
 	Event.PutField( EVENT_ID, SCAN_COMPLETE );
-	Log::instance().Trace( 99, "CStartScan::Execute: ĞÑ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ÑĞµĞ¼ ÑĞ¾Ğ±Ñ‹Ñ‚Ğ¸Ğµ Ğ¾ĞºĞ¾Ğ½Ñ‡Ğ°Ğ½Ğ¸Ñ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ" );
+	Log::instance().Trace( 99, "CStartScan::Execute: œô¨¾œô¨âœô¨ßœô¨àœô¨Ğœô¨Òœô¨Ûœô¨ïœô¨Õœô¨Ü œô¨áœô¨Şœô¨Ñœô¨ëœô¨âœô¨Øœô¨Õ œô¨Şœô¨Úœô¨Şœô¨İœô¨çœô¨Ğœô¨İœô¨Øœô¨ï œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï" );
 	m_ServerHandler.SendEvent( Event );
 	m_mtxCurState.Lock();
 		m_CurState = IDLING;
@@ -243,20 +243,20 @@ namespace
 
 bool CStopScan::Immidiate()
 {
-	Log::instance().Trace( 90, "CStopScan: ĞŸĞ¾ÑÑ‚ÑƒĞ¿Ğ¸Ğ» Ğ·Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ½Ğ° Ğ¾Ñ‚Ğ¼ĞµĞ½Ñƒ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ" );
+	Log::instance().Trace( 90, "CStopScan: œô¨¿œô¨Şœô¨áœô¨âœô¨ãœô¨ßœô¨Øœô¨Û œô¨×œô¨Ğœô¨ßœô¨àœô¨Şœô¨á œô¨İœô¨Ğ œô¨Şœô¨âœô¨Üœô¨Õœô¨İœô¨ã œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï" );
 	m_mtxCurState.Lock();
 		if( SCANNING == m_CurState )
 		{
-			Log::instance().Trace( 90, "CStopScan: ĞÑ‚Ğ¼ĞµĞ½ÑĞµĞ¼ Ñ‚ĞµĞºÑƒÑ‰ĞµĞµ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ" );
-			//TODO:StopScan Ğ½Ğµ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°ĞµÑ‚
+			Log::instance().Trace( 90, "CStopScan: œô¨¾œô¨âœô¨Üœô¨Õœô¨İœô¨ïœô¨Õœô¨Ü œô¨âœô¨Õœô¨Úœô¨ãœô¨éœô¨Õœô¨Õ œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨Õ" );
+			//TODO:StopScan œô¨İœô¨Õ œô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨Ğœô¨Õœô¨â
 			//Cancel();
 		}else
-			Log::instance().Trace( 90, "CStopScan: Ğ’ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¼Ğ¾Ğ¼ĞµĞ½Ñ‚ Ğ½Ğµ Ğ½Ğ°Ñ…Ğ¾Ğ´Ğ¸Ñ‚ÑÑ Ğ² ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ğ¸ ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ" );
+			Log::instance().Trace( 90, "CStopScan: œô¨² œô¨Ôœô¨Ğœô¨İœô¨İœô¨ëœô¨Ù œô¨Üœô¨Şœô¨Üœô¨Õœô¨İœô¨â œô¨İœô¨Õ œô¨İœô¨Ğœô¨åœô¨Şœô¨Ôœô¨Øœô¨âœô¨áœô¨ï œô¨Ò œô¨áœô¨Şœô¨áœô¨âœô¨Şœô¨ïœô¨İœô¨Øœô¨Ø œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï" );
 	m_mtxCurState.Unlock();
 	COutPacket Msg;
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CStopScan:Immidiate: ĞÑ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½ Ğ¾Ñ‚Ğ²ĞµÑ‚: %s", Msg.ToString().c_str() );
+	Log::instance().Trace( 90, "CStopScan:Immidiate: œô¨¾œô¨âœô¨ßœô¨àœô¨Ğœô¨Òœô¨Ûœô¨Õœô¨İ œô¨Şœô¨âœô¨Òœô¨Õœô¨â: %s", Msg.ToString().c_str() );
 	return true;
 }
 namespace
@@ -278,7 +278,7 @@ void CGetData::Load( CInPacket& Msg )
 
 bool CGetData::Immidiate()
 {
-	Log::instance().Trace( 90, "CGetData: ĞŸĞ¾ÑÑ‚ÑƒĞ¿Ğ¸Ğ» Ğ·Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ½Ğ° Ğ¿Ğ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ…" );
+	Log::instance().Trace( 90, "CGetData: œô¨¿œô¨Şœô¨áœô¨âœô¨ãœô¨ßœô¨Øœô¨Û œô¨×œô¨Ğœô¨ßœô¨àœô¨Şœô¨á œô¨İœô¨Ğ œô¨ßœô¨Şœô¨Ûœô¨ãœô¨çœô¨Õœô¨İœô¨Øœô¨Õ œô¨Ôœô¨Ğœô¨İœô¨İœô¨ëœô¨å" );
 
 	COutPacket Msg;
 	hostRec TmpHost;
@@ -310,7 +310,7 @@ bool CGetData::Immidiate()
 	else
 		Msg.PutField( FILES_LEFT, "true" );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CGetData: Ğ”Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ñ‹" );
+	Log::instance().Trace( 90, "CGetData: œô¨´œô¨Ğœô¨İœô¨İœô¨ëœô¨Õ œô¨Şœô¨âœô¨ßœô¨àœô¨Ğœô¨Òœô¨Ûœô¨Õœô¨İœô¨ë" );
 	m_mapStorages.clear();
 	return true;
 }

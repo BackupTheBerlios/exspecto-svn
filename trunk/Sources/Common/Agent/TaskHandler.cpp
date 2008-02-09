@@ -1,4 +1,4 @@
-ï»¿#include "precomp.h"
+#include "precomp.h"
 #include "Socket.h"
 #include "TaskHandler.h"
 
@@ -12,16 +12,16 @@ CTaskHandler::CTaskHandler():m_ProcessThread( SmartPtr<CThreadTask>( new CProces
 
 CTaskHandler::~CTaskHandler()
 {
-	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Ğ—Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¸Ğµ Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºĞ° ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´" );
+	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: œô¨·œô¨Ğœô¨Úœô¨àœô¨ëœô¨âœô¨Øœô¨Õ œô¨Şœô¨Ñœô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨çœô¨Øœô¨Úœô¨Ğ œô¨Úœô¨Şœô¨Üœô¨Ğœô¨İœô¨Ô" );
 }
 
 void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
 {
-	Log::instance().Trace( 95, "CTaskHandler::AddTask: Ğ”Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ·Ğ°Ğ´Ğ°Ğ½Ğ¸Ñ: %s", pTask->GetDescription().c_str() );
+	Log::instance().Trace( 95, "CTaskHandler::AddTask: œô¨´œô¨Şœô¨Ñœô¨Ğœô¨Òœô¨Ûœô¨Õœô¨İœô¨Øœô¨Õ œô¨×œô¨Ğœô¨Ôœô¨Ğœô¨İœô¨Øœô¨ï: %s", pTask->GetDescription().c_str() );
 	CLock lock( m_mtxTasks );
 	if( !pTask->Immidiate() )
 	{
-		Log::instance().Trace( 95, "CTaskHandler::AddTask: Ğ—Ğ°Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²Ğ»ĞµĞ½Ğ½Ğ¾ Ğ² Ğ¾Ñ‡ĞµÑ€ĞµĞ´ÑŒ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ" );
+		Log::instance().Trace( 95, "CTaskHandler::AddTask: œô¨·œô¨Ğœô¨Ôœô¨Ğœô¨İœô¨Øœô¨Õ œô¨ßœô¨Şœô¨áœô¨âœô¨Ğœô¨Òœô¨Ûœô¨Õœô¨İœô¨İœô¨Ş œô¨Ò œô¨Şœô¨çœô¨Õœô¨àœô¨Õœô¨Ôœô¨ì œô¨Òœô¨ëœô¨ßœô¨Şœô¨Ûœô¨İœô¨Õœô¨İœô¨Øœô¨ï" );
 		m_deqTasks.push_back( pTask );
 		m_TaskAddedEv.Set();
 	}
@@ -29,7 +29,7 @@ void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
 
 void CTaskHandler::CProcessThreadTask::Execute( CEvent& CancelEv )
 {
-	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Ğ—Ğ°Ğ¿ÑƒÑĞº Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ° Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºĞ° ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´" );
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: œô¨·œô¨Ğœô¨ßœô¨ãœô¨áœô¨Ú œô¨ßœô¨Şœô¨âœô¨Şœô¨Úœô¨Ğ œô¨Şœô¨Ñœô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨çœô¨Øœô¨Úœô¨Ğ œô¨Úœô¨Şœô¨Üœô¨Ğœô¨İœô¨Ô" );
 	SmartPtr< CTask > pTask;
 	try{
 		for(;;)
@@ -59,24 +59,24 @@ void CTaskHandler::CProcessThreadTask::Execute( CEvent& CancelEv )
 
 			if( pTask.get() )
 			{
-				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Ğ’Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ Ğ·Ğ°Ğ´Ğ°Ğ½Ğ¸Ñ: %s", pTask->GetDescription().c_str() );
+				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: œô¨²œô¨ëœô¨ßœô¨Şœô¨Ûœô¨İœô¨Õœô¨İœô¨Øœô¨Õ œô¨×œô¨Ğœô¨Ôœô¨Ğœô¨İœô¨Øœô¨ï: %s", pTask->GetDescription().c_str() );
 				pTask->Execute( CancelEv );
 				pTask.Release();
 			}
 		}
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Ğ’Ğ¾Ğ·Ğ½Ğ¸ĞºĞ»Ğ¾ Ğ¸ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ: %s", e.what() );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: œô¨²œô¨Şœô¨×œô¨İœô¨Øœô¨Úœô¨Ûœô¨Ş œô¨Øœô¨áœô¨Úœô¨Ûœô¨îœô¨çœô¨Õœô¨İœô¨Øœô¨Õ: %s", e.what() );
 	}/*catch( ... )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Ğ’Ğ¾Ğ·Ğ½Ğ¸ĞºĞ»Ğ¾ Ğ½ĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ğ¾Ğµ Ğ¸ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ" );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: œô¨²œô¨Şœô¨×œô¨İœô¨Øœô¨Úœô¨Ûœô¨Ş œô¨İœô¨Õœô¨Øœô¨×œô¨Òœô¨Õœô¨áœô¨âœô¨İœô¨Şœô¨Õ œô¨Øœô¨áœô¨Úœô¨Ûœô¨îœô¨çœô¨Õœô¨İœô¨Øœô¨Õ" );
 	}*/
-	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Ğ—Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ° Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºĞ° ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´" );
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: œô¨·œô¨Ğœô¨Òœô¨Õœô¨àœô¨èœô¨Õœô¨İœô¨Øœô¨Õ œô¨ßœô¨Şœô¨âœô¨Şœô¨Úœô¨Ğ œô¨Şœô¨Ñœô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨çœô¨Øœô¨Úœô¨Ğ œô¨Úœô¨Şœô¨Üœô¨Ğœô¨İœô¨Ô" );
 }
 /*
 unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 {
-	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Ğ—Ğ°Ğ¿ÑƒÑĞº Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ° Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºĞ° ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´" );
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: œô¨·œô¨Ğœô¨ßœô¨ãœô¨áœô¨Ú œô¨ßœô¨Şœô¨âœô¨Şœô¨Úœô¨Ğ œô¨Şœô¨Ñœô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨çœô¨Øœô¨Úœô¨Ğ œô¨Úœô¨Şœô¨Üœô¨Ğœô¨İœô¨Ô" );
 	CTaskHandler* pThis = (CTaskHandler*)param;
 	SmartPtr< CTask > pTask;
 	DWORD dwRes;
@@ -88,7 +88,7 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 			if( WAIT_OBJECT_0 == ( dwRes = WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, FALSE, INFINITE ) ) )
 				break;
 			else if( dwRes != ( WAIT_OBJECT_0 + 1 ) )
-				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: Ğ’Ğ½ÑƒÑ‚Ñ€ĞµĞ½Ğ½Ñ Ğ¾ÑˆĞ¸Ğ±ĞºĞ°!" );
+				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: œô¨²œô¨İœô¨ãœô¨âœô¨àœô¨Õœô¨İœô¨İœô¨ï œô¨Şœô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ!" );
 
 
 			pThis->m_mtxTasks.Lock();
@@ -101,19 +101,19 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 
 			if( pTask.get() )
 			{
-				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Ğ’Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ Ğ·Ğ°Ğ´Ğ°Ğ½Ğ¸Ñ: %s", pTask->GetDescription().c_str() );
+				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: œô¨²œô¨ëœô¨ßœô¨Şœô¨Ûœô¨İœô¨Õœô¨İœô¨Øœô¨Õ œô¨×œô¨Ğœô¨Ôœô¨Ğœô¨İœô¨Øœô¨ï: %s", pTask->GetDescription().c_str() );
 				pTask->Execute( pThis->m_CloseEv );
 				pTask.Release();
 			}
 		}
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Ğ’Ğ¾Ğ·Ğ½Ğ¸ĞºĞ»Ğ¾ Ğ¸ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ: %s", e.what() );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: œô¨²œô¨Şœô¨×œô¨İœô¨Øœô¨Úœô¨Ûœô¨Ş œô¨Øœô¨áœô¨Úœô¨Ûœô¨îœô¨çœô¨Õœô¨İœô¨Øœô¨Õ: %s", e.what() );
 	}/*catch( ... )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Ğ’Ğ¾Ğ·Ğ½Ğ¸ĞºĞ»Ğ¾ Ğ½ĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ğ¾Ğµ Ğ¸ÑĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ" );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: œô¨²œô¨Şœô¨×œô¨İœô¨Øœô¨Úœô¨Ûœô¨Ş œô¨İœô¨Õœô¨Øœô¨×œô¨Òœô¨Õœô¨áœô¨âœô¨İœô¨Şœô¨Õ œô¨Øœô¨áœô¨Úœô¨Ûœô¨îœô¨çœô¨Õœô¨İœô¨Øœô¨Õ" );
 	}*/
-/*	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Ğ—Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğµ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ° Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºĞ° ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´" );
+/*	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: œô¨·œô¨Ğœô¨Òœô¨Õœô¨àœô¨èœô¨Õœô¨İœô¨Øœô¨Õ œô¨ßœô¨Şœô¨âœô¨Şœô¨Úœô¨Ğ œô¨Şœô¨Ñœô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨çœô¨Øœô¨Úœô¨Ğ œô¨Úœô¨Şœô¨Üœô¨Ğœô¨İœô¨Ô" );
 	return 0;
 }
 

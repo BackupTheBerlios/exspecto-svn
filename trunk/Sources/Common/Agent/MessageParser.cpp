@@ -1,4 +1,4 @@
-ï»¿#include "precomp.h"
+#include "precomp.h"
 #include "MessageParser.h"
 #include "CTask.h"
 
@@ -11,11 +11,11 @@ CMessageParser::CreateTaskCallBack CMessageParser::GetRegisterCreator( std::stri
 	static std::map< std::string, CreateTaskCallBack > m_mapCreators;
 	if( NULL != fnCreator )
 	{
-		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Ğ—Ğ°Ñ€ĞµĞ³Ğ¸ÑÑ‚Ñ€Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½ Ñ‚Ğ¸Ğ¿ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğ¹ %s", strTaskId.c_str() );
+		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: œô¨·œô¨Ğœô¨àœô¨Õœô¨Óœô¨Øœô¨áœô¨âœô¨àœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İ œô¨âœô¨Øœô¨ß œô¨áœô¨Şœô¨Şœô¨Ñœô¨éœô¨Õœô¨İœô¨Øœô¨Ù %s", strTaskId.c_str() );
 		m_mapCreators[ strTaskId ] = fnCreator;
 	}else if( m_mapCreators.find( strTaskId ) != m_mapCreators.end() )
 	{
-		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: Ğ—Ğ°Ğ¿Ñ€Ğ¾ÑˆĞµĞ½ Ñ‚Ğ¸Ğ¿ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğ¹ %s", strTaskId.c_str() );
+		Log::instance().Trace( 95, "CMessageParser::GetRegisterCreator: œô¨·œô¨Ğœô¨ßœô¨àœô¨Şœô¨èœô¨Õœô¨İ œô¨âœô¨Øœô¨ß œô¨áœô¨Şœô¨Şœô¨Ñœô¨éœô¨Õœô¨İœô¨Øœô¨Ù %s", strTaskId.c_str() );
 		return m_mapCreators[ strTaskId ];
 	}
 	return NULL;
@@ -23,7 +23,7 @@ CMessageParser::CreateTaskCallBack CMessageParser::GetRegisterCreator( std::stri
 
 SmartPtr< CTask > CMessageParser::Parse( CInPacket& Message )
 {
-	Log::instance().Trace( 95, "CMessageParser::Parse: ĞĞ±Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞ° Ğ²Ñ…Ğ¾Ğ´ÑÑ‰ĞµĞ³Ğ¾ Ğ¿Ğ°ĞºĞµÑ‚Ğ°" );
+	Log::instance().Trace( 95, "CMessageParser::Parse: œô¨¾œô¨Ñœô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨Úœô¨Ğ œô¨Òœô¨åœô¨Şœô¨Ôœô¨ïœô¨éœô¨Õœô¨Óœô¨Ş œô¨ßœô¨Ğœô¨Úœô¨Õœô¨âœô¨Ğ" );
 	SmartPtr< CTask > pTask;
 	std::string strCommandId;
 	Message.GetField( COMMAND_ID, strCommandId );
@@ -33,6 +33,6 @@ SmartPtr< CTask > CMessageParser::Parse( CInPacket& Message )
 		pTask = fnCreator( m_ServerHandler );
 		pTask->Load( Message );
 	}else
-		Log::instance().Trace( 95, "CMessageParser::Parse: ĞĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹Ğ¹ Ñ‚Ğ¸Ğ¿ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ: %s", strCommandId.c_str() );
+		Log::instance().Trace( 95, "CMessageParser::Parse: œô¨½œô¨Õœô¨Øœô¨×œô¨Òœô¨Õœô¨áœô¨âœô¨İœô¨ëœô¨Ù œô¨âœô¨Øœô¨ß œô¨áœô¨Şœô¨Şœô¨Ñœô¨éœô¨Õœô¨İœô¨Øœô¨ï: %s", strCommandId.c_str() );
 	return pTask;
 }

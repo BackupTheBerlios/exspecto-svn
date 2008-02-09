@@ -1,4 +1,4 @@
-ï»¿#ifndef CTASK_H_
+#ifndef CTASK_H_
 #define CTASK_H_
 
 #include "ServerHandler.h"
@@ -29,7 +29,7 @@ public:
 /*
 	void Cancel()
 	{
-		Log::instance().Trace( 80, "CTask::Cancel: ĞÑ‚Ğ¼ĞµĞ½Ğ° Ğ¾Ğ¿ĞµÑ€Ğ°Ñ†Ğ¸Ğ¸" );
+		Log::instance().Trace( 80, "CTask::Cancel: œô¨¾œô¨âœô¨Üœô¨Õœô¨İœô¨Ğ œô¨Şœô¨ßœô¨Õœô¨àœô¨Ğœô¨æœô¨Øœô¨Ø" );
 		m_CancelEv.Set();
 	};
 */
@@ -46,7 +46,7 @@ protected:
 
 	static CMutex m_mtxCurState;
 
-	//ĞĞ´Ñ€ĞµÑ,Ğ¸Ğ¼Ñ Ğ¿Ñ€Ğ¾Ğ¾Ñ‚Ğ¾ĞºĞ¾Ğ»Ğ°,Ñ…Ñ€Ğ°Ğ½Ğ¸Ğ»Ğ¸Ñ‰Ğµ
+	//œô¨°œô¨Ôœô¨àœô¨Õœô¨á,œô¨Øœô¨Üœô¨ï œô¨ßœô¨àœô¨Şœô¨Şœô¨âœô¨Şœô¨Úœô¨Şœô¨Ûœô¨Ğ,œô¨åœô¨àœô¨Ğœô¨İœô¨Øœô¨Ûœô¨Øœô¨éœô¨Õ
 	static std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > m_mapStorages;
 
 	typedef std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > >::iterator StoragesIt;
@@ -72,7 +72,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "ĞŸĞ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ğµ ÑÑ‚Ğ°Ñ‚ÑƒÑĞ° Ğ°Ğ³ĞµĞ½Ñ‚Ğ°";
+		return "œô¨¿œô¨Şœô¨Ûœô¨ãœô¨çœô¨Õœô¨İœô¨Øœô¨Õ œô¨áœô¨âœô¨Ğœô¨âœô¨ãœô¨áœô¨Ğ œô¨Ğœô¨Óœô¨Õœô¨İœô¨âœô¨Ğ";
 	};
 
 };
@@ -93,7 +93,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "ĞÑÑ‚Ğ°Ğ½Ğ¾Ğ² ÑĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ";
+		return "œô¨¾œô¨áœô¨âœô¨Ğœô¨İœô¨Şœô¨Ò œô¨áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï";
 	};
 
 };
@@ -116,7 +116,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "ĞŸĞ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ…";
+		return "œô¨¿œô¨Şœô¨Ûœô¨ãœô¨çœô¨Õœô¨İœô¨Øœô¨Õ œô¨Ôœô¨Ğœô¨İœô¨İœô¨ëœô¨å";
 	};
 private:
 
@@ -191,7 +191,7 @@ public:
 
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
 	{
-		m_strDescription = "Ğ¡ĞºĞ°Ğ½Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ°Ğ´Ñ€ĞµÑĞ¾Ğ²: ";
+		m_strDescription = "œô¨Áœô¨Úœô¨Ğœô¨İœô¨Øœô¨àœô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨Õ œô¨Ğœô¨Ôœô¨àœô¨Õœô¨áœô¨Şœô¨Ò: ";
 	};
 
 	virtual bool Immidiate();
@@ -211,10 +211,10 @@ private:
 
 	std::vector< std::string > m_vecAddresses;
 
-	//ĞšĞ¾Ğ½Ñ‚ĞµĞ¹Ğ½ĞµÑ€ Ğ¿Ğ»Ğ°Ğ³Ğ¸Ğ½Ğ¾Ğ²
+	//œô¨ºœô¨Şœô¨İœô¨âœô¨Õœô¨Ùœô¨İœô¨Õœô¨à œô¨ßœô¨Ûœô¨Ğœô¨Óœô¨Øœô¨İœô¨Şœô¨Ò
 	static PluginContainer m_PluginContainer;
 
-	//Ğ¢Ğ¸Ğ¿ Ğ¸Ñ‚ĞµÑ€Ğ°Ñ‚Ğ¾Ñ€ Ğ´Ğ»Ñ Ğ¼Ğ°Ğ½Ğ¸Ğ¿ÑƒĞ»ÑÑ†Ğ¸Ğ¹ Ñ ĞºĞ¾Ğ½Ñ‚ĞµĞ¹Ğ½ĞµÑ€Ğ¾Ğ¼ Ğ¿Ğ»Ğ°Ğ³Ğ¸Ğ½Ğ¾Ğ²
+	//œô¨Âœô¨Øœô¨ß œô¨Øœô¨âœô¨Õœô¨àœô¨Ğœô¨âœô¨Şœô¨à œô¨Ôœô¨Ûœô¨ï œô¨Üœô¨Ğœô¨İœô¨Øœô¨ßœô¨ãœô¨Ûœô¨ïœô¨æœô¨Øœô¨Ù œô¨á œô¨Úœô¨Şœô¨İœô¨âœô¨Õœô¨Ùœô¨İœô¨Õœô¨àœô¨Şœô¨Ü œô¨ßœô¨Ûœô¨Ğœô¨Óœô¨Øœô¨İœô¨Şœô¨Ò
 	typedef PluginContainer::iterator PluginIterator;
 
 };

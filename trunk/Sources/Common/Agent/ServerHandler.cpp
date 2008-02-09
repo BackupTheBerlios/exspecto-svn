@@ -1,4 +1,4 @@
-ï»¿#include "precomp.h"
+#include "precomp.h"
 #include "precomp.h"
 #include "precomp.h"
 #include "ServerHandler.h"
@@ -26,7 +26,7 @@ void CServerHandler::SendEvent( COutPacket& Event )
 {
 	if( !m_pEventSocket->IsConnected() )
 	{
-		Log::instance().Trace( 99, "CServerHandler::SendEvent: ĞŸĞ¾Ğ´Ğ½Ğ¸Ğ¼Ğ°ĞµĞ¼ ĞºĞ°Ğ½Ğ°Ğ» Ğ´Ğ»Ñ Ğ¿Ğ¾ÑÑ‹Ğ»ĞºĞ¸ ÑĞ¾Ğ±Ñ‹Ñ‚Ğ¸Ñ" );
+		Log::instance().Trace( 99, "CServerHandler::SendEvent: œô¨¿œô¨Şœô¨Ôœô¨İœô¨Øœô¨Üœô¨Ğœô¨Õœô¨Ü œô¨Úœô¨Ğœô¨İœô¨Ğœô¨Û œô¨Ôœô¨Ûœô¨ï œô¨ßœô¨Şœô¨áœô¨ëœô¨Ûœô¨Úœô¨Ø œô¨áœô¨Şœô¨Ñœô¨ëœô¨âœô¨Øœô¨ï" );
 		m_pEventSocket->Connect( m_strAddress, m_iEventPort );
 	}
 	*m_pEventSocket << Event;
@@ -34,7 +34,7 @@ void CServerHandler::SendEvent( COutPacket& Event )
 
 void CServerHandler::SendMsg( COutPacket& Msg, bool bEnd )
 {
-	Log::instance().Trace( 200, "CServerHandler::SendMsg: ĞÑ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ÑĞµĞ¼ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ: %s", Msg.ToString().c_str() );
+	Log::instance().Trace( 200, "CServerHandler::SendMsg: œô¨¾œô¨âœô¨ßœô¨àœô¨Ğœô¨Òœô¨Ûœô¨ïœô¨Õœô¨Ü œô¨áœô¨Şœô¨Şœô¨Ñœô¨éœô¨Õœô¨İœô¨Øœô¨Õ: %s", Msg.ToString().c_str() );
 	*m_pMsgSocket << Msg;
 }
 
@@ -49,28 +49,28 @@ void CServerHandler::Receive( CInPacket& Msg )
 	int iCount;
 	bool bEnd = false;
 	std::vector< BYTE > vecPacketBuf;
-	//ĞŸĞ¾Ğ»ÑƒÑ‡Ğ°ĞµĞ¼ Ğ¾Ñ‚Ğ²ĞµÑ‚ Ğ½Ğ° ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ
+	//œô¨¿œô¨Şœô¨Ûœô¨ãœô¨çœô¨Ğœô¨Õœô¨Ü œô¨Şœô¨âœô¨Òœô¨Õœô¨â œô¨İœô¨Ğ œô¨áœô¨Şœô¨Şœô¨Ñœô¨éœô¨Õœô¨İœô¨Øœô¨Õ
 	while( !bEnd && ( iCount = m_pMsgSocket->Receive( &m_vecRecvBuf[0], (int)m_vecRecvBuf.size() ) ) > 0 )
 	{
-		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[0], iCount, "%s: ĞŸÑ€Ğ¸Ğ½ÑÑ‚Ñ‹ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ:", __FUNCTION__ );
-		//ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼ Ğ½Ğ° ĞºĞ¾Ğ½ĞµÑ† Ğ¿Ğ°ĞºĞµÑ‚Ğ°
+		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[0], iCount, "%s: œô¨¿œô¨àœô¨Øœô¨İœô¨ïœô¨âœô¨ë œô¨Ôœô¨Ğœô¨İœô¨İœô¨ëœô¨Õ:", __FUNCTION__ );
+		//œô¨¿œô¨àœô¨Şœô¨Òœô¨Õœô¨àœô¨ïœô¨Õœô¨Ü œô¨İœô¨Ğ œô¨Úœô¨Şœô¨İœô¨Õœô¨æ œô¨ßœô¨Ğœô¨Úœô¨Õœô¨âœô¨Ğ
 		if( ( iCount > (int)CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ iCount - CInPacket::GetEndStamp().size() ], CInPacket::GetEndStamp().size() ) ) )
 		{
 			iCount -= CInPacket::GetEndStamp().size();
 			bEnd = true;
-		//Ğ•ÑĞ»Ğ¸ Ğ¿Ğ¾Ğ»ÑƒÑ‡Ğ¸Ğ»Ğ¸ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ¼Ğ°Ñ€ĞºĞµÑ€ ĞºĞ¾Ğ½Ñ†Ğ°
+		//œô¨µœô¨áœô¨Ûœô¨Ø œô¨ßœô¨Şœô¨Ûœô¨ãœô¨çœô¨Øœô¨Ûœô¨Ø œô¨âœô¨Şœô¨Ûœô¨ìœô¨Úœô¨Ş œô¨Üœô¨Ğœô¨àœô¨Úœô¨Õœô¨à œô¨Úœô¨Şœô¨İœô¨æœô¨Ğ
 		}else if ( ( iCount == (int)CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ 0 ], (int)CInPacket::GetEndStamp().size() ) ) )
 			break;
 
 		vecPacketBuf.insert( vecPacketBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
 
-		//Ğ£Ğ²ĞµĞ»Ğ¸Ñ‡Ğ¸Ğ²Ğ°ĞµĞ¼ Ñ€Ğ°Ğ·Ğ¼ĞµÑ€ Ğ±ÑƒÑ„ĞµÑ€Ğ° Ğ¿Ñ€Ğ¸ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸
+		//œô¨Ãœô¨Òœô¨Õœô¨Ûœô¨Øœô¨çœô¨Øœô¨Òœô¨Ğœô¨Õœô¨Ü œô¨àœô¨Ğœô¨×œô¨Üœô¨Õœô¨à œô¨Ñœô¨ãœô¨äœô¨Õœô¨àœô¨Ğ œô¨ßœô¨àœô¨Ø œô¨İœô¨Õœô¨Şœô¨Ñœô¨åœô¨Şœô¨Ôœô¨Øœô¨Üœô¨Şœô¨áœô¨âœô¨Ø
 		if( (iCount == ( (int)m_vecRecvBuf.size() ) ) )
 			if( (m_vecRecvBuf.size()<<1) <= RECEIVE_BUF_MAX_SIZE )
 				m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
 			else if( m_vecRecvBuf.size() < RECEIVE_BUF_MAX_SIZE )
 				m_vecRecvBuf.resize( RECEIVE_BUF_MAX_SIZE );
-		Log::instance().Trace( 80, "%s: Ğ Ğ°Ğ·Ğ¼ĞµÑ€ Ğ¿Ñ€Ğ¸ĞµĞ¼Ğ½Ğ¾Ğ³Ğ¾ Ğ±ÑƒÑ„ĞµÑ€Ğ°: %d", __FUNCTION__, m_vecRecvBuf.size() );
+		Log::instance().Trace( 80, "%s: œô¨Àœô¨Ğœô¨×œô¨Üœô¨Õœô¨à œô¨ßœô¨àœô¨Øœô¨Õœô¨Üœô¨İœô¨Şœô¨Óœô¨Ş œô¨Ñœô¨ãœô¨äœô¨Õœô¨àœô¨Ğ: %d", __FUNCTION__, m_vecRecvBuf.size() );
 	}
 	if( 0 == iCount )
 		//TODO:
@@ -83,7 +83,7 @@ std::string CServerHandler::GetServerAddress()
 	if( m_pMsgSocket->IsConnected() )
 		return m_pMsgSocket->GetRemoteHost().strAddr;
 	else
-		return "Ğ¡Ğ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ğµ Ñ€Ğ°Ğ·Ğ¾Ñ€Ğ²Ğ°Ğ½Ğ¾";
+		return "œô¨Áœô¨Şœô¨Õœô¨Ôœô¨Øœô¨İœô¨Õœô¨İœô¨Øœô¨Õ œô¨àœô¨Ğœô¨×œô¨Şœô¨àœô¨Òœô¨Ğœô¨İœô¨Ş";
 }
 
 void CServerHandler::CloseSession()

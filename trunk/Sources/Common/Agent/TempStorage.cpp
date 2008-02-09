@@ -1,4 +1,4 @@
-ï»¿#include "TempStorage.h"
+#include "TempStorage.h"
 
 #ifndef WIN32
 #include <sys/stat.h>
@@ -82,7 +82,7 @@ void CTempStorage::Open( bool bRead )
 		if( !m_sFile.is_open() )
 		{
 			std::string strTmp = m_strFileName;
-			strTmp += " Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¾Ñ‚ĞºÑ€Ñ‹Ñ‚ÑŒ Ñ„Ğ°Ğ¹Ğ» Ğ´Ğ»Ñ Ñ‡Ñ‚ĞµĞ½Ğ¸Ñ";
+			strTmp += " œô¨İœô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨Şœô¨âœô¨Úœô¨àœô¨ëœô¨âœô¨ì œô¨äœô¨Ğœô¨Ùœô¨Û œô¨Ôœô¨Ûœô¨ï œô¨çœô¨âœô¨Õœô¨İœô¨Øœô¨ï";
 			throw TempStorageErr( strTmp );
 		}
 	}else
@@ -91,7 +91,7 @@ void CTempStorage::Open( bool bRead )
 		if( !m_sFile.is_open() )
 		{
 			std::string strTmp = m_strFileName;
-			strTmp += " Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¾Ñ‚ĞºÑ€Ñ‹Ñ‚ÑŒ Ñ„Ğ°Ğ¹Ğ» Ğ´Ğ»Ñ Ğ·Ğ°Ğ¿Ğ¸ÑĞ¸";
+			strTmp += " œô¨İœô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨Şœô¨âœô¨Úœô¨àœô¨ëœô¨âœô¨ì œô¨äœô¨Ğœô¨Ùœô¨Û œô¨Ôœô¨Ûœô¨ï œô¨×œô¨Ğœô¨ßœô¨Øœô¨áœô¨Ø";
 			throw TempStorageErr( strTmp );
 		}
 		m_bOpenedForWrite = true;
@@ -100,13 +100,13 @@ void CTempStorage::Open( bool bRead )
 
 void CTempStorage::Clear()
 {
-	//Ğ•ÑĞ»Ğ¸ Ñ„Ğ°Ğ¹Ğ» ÑĞ¾Ğ·Ğ´Ğ°Ğ²Ğ°Ğ»ÑÑ - ÑƒĞ´Ğ°Ğ»ÑĞµĞ¼ ĞµĞ³Ğ¾
+	//œô¨µœô¨áœô¨Ûœô¨Ø œô¨äœô¨Ğœô¨Ùœô¨Û œô¨áœô¨Şœô¨×œô¨Ôœô¨Ğœô¨Òœô¨Ğœô¨Ûœô¨áœô¨ï - œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨ïœô¨Õœô¨Ü œô¨Õœô¨Óœô¨Ş
 #ifdef WIN32
 	if( m_bOpenedForWrite && !DeleteFile( m_strFileName.c_str() ) )
-		Log::instance().Trace( 100, "CTempStorage::Clear: Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑƒĞ´Ğ°Ğ»Ğ¸Ñ‚ÑŒ Ñ„Ğ°Ğ¹Ğ» %s, LastError = %d", m_strFileName.c_str(), GetLastError() );
+		Log::instance().Trace( 100, "CTempStorage::Clear: œô¨İœô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Øœô¨âœô¨ì œô¨äœô¨Ğœô¨Ùœô¨Û %s, LastError = %d", m_strFileName.c_str(), GetLastError() );
 #else
 	if( m_bOpenedForWrite && 0 != remove( m_strFileName.c_str() ) )
-		Log::instance().Trace( 100, "CTempStorage::Clear: Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑƒĞ´Ğ°Ğ»Ğ¸Ñ‚ÑŒ Ñ„Ğ°Ğ¹Ğ» %s, LastError = %d", m_strFileName.c_str(), errno );
+		Log::instance().Trace( 100, "CTempStorage::Clear: œô¨İœô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Øœô¨âœô¨ì œô¨äœô¨Ğœô¨Ùœô¨Û %s, LastError = %d", m_strFileName.c_str(), errno );
 #endif
 	m_bOpenedForWrite = false;
 }

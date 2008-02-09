@@ -1,31 +1,31 @@
-ï»¿//-------------------------------------------------------------------------------------//
-//Ð­Ñ‚Ð¾Ñ‚ Ñ„Ð°Ð¹Ð» ÑÐ²Ð»ÑÐµÑ‚ÑÑ Ñ‡Ð°ÑÑ‚ÑŒÑŽ Ð¿Ñ€Ð¾ÐµÐºÑ‚Ð° Exspecto 2006Ð³.
+//-------------------------------------------------------------------------------------//
+//œô¨Íœô¨âœô¨Þœô¨â œô¨äœô¨Ðœô¨Ùœô¨Û œô¨ïœô¨Òœô¨Ûœô¨ïœô¨Õœô¨âœô¨áœô¨ï œô¨çœô¨Ðœô¨áœô¨âœô¨ìœô¨î œô¨ßœô¨àœô¨Þœô¨Õœô¨Úœô¨âœô¨Ð Exspecto 2006œô¨Ó.
 //Module: Memory leak detection routines
 //Author: Parshin Dmitry
-//Description: ÐžÐ¿ÐµÑ€Ð°Ñ†Ð¸Ð¸, Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ñ‹Ðµ Ð´Ð»Ñ Ð¿Ð¾Ð¸ÑÐºÐ° ÑƒÑ‚ÐµÑ‡ÐµÐº Ð¿Ð°Ð¼ÑÑ‚Ð¸
+//Description: œô¨¾œô¨ßœô¨Õœô¨àœô¨Ðœô¨æœô¨Øœô¨Ø, œô¨Ýœô¨Õœô¨Þœô¨Ñœô¨åœô¨Þœô¨Ôœô¨Øœô¨Üœô¨ëœô¨Õ œô¨Ôœô¨Ûœô¨ï œô¨ßœô¨Þœô¨Øœô¨áœô¨Úœô¨Ð œô¨ãœô¨âœô¨Õœô¨çœô¨Õœô¨Ú œô¨ßœô¨Ðœô¨Üœô¨ïœô¨âœô¨Ø
 //-------------------------------------------------------------------------------------//
 #ifndef MEMLEAKDETECTOR_H_
 #define MEMLEAKDETECTOR_H_
 /*
-//ÐœÐ¾Ð´ÑƒÐ»ÑŒ Ð±ÑƒÐ´ÐµÑ‚ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð² Ð¾Ñ‚Ð»Ð°Ð´Ð¾Ñ‡Ð½Ð¾Ð¹ Ð²ÐµÑ€ÑÐ¸Ð¸ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹
+//œô¨¼œô¨Þœô¨Ôœô¨ãœô¨Ûœô¨ì œô¨Ñœô¨ãœô¨Ôœô¨Õœô¨â œô¨Øœô¨áœô¨ßœô¨Þœô¨Ûœô¨ìœô¨×œô¨Þœô¨Òœô¨Ðœô¨Ý œô¨âœô¨Þœô¨Ûœô¨ìœô¨Úœô¨Þ œô¨Ò œô¨Þœô¨âœô¨Ûœô¨Ðœô¨Ôœô¨Þœô¨çœô¨Ýœô¨Þœô¨Ù œô¨Òœô¨Õœô¨àœô¨áœô¨Øœô¨Ø œô¨ßœô¨àœô¨Þœô¨Óœô¨àœô¨Ðœô¨Üœô¨Üœô¨ë
 #ifndef NDEBUG
 
 #include <new>
 #include <map>
 #include <string>
-//ÐŸÐ¾Ð´ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Ð»Ð¾Ð³ÐµÑ€ Ð·Ð´ÐµÑÑŒ,Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð½Ðµ Ð·Ð°Ð¼ÐµÐ½ÑÑ‚ÑŒ Ð² Ð½ÐµÐ¼ Ð¾Ð¿ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ñ‹ new Ð¸ delete
+//œô¨¿œô¨Þœô¨Ôœô¨Úœô¨Ûœô¨îœô¨çœô¨Ðœô¨Õœô¨Ü œô¨Ûœô¨Þœô¨Óœô¨Õœô¨à œô¨×œô¨Ôœô¨Õœô¨áœô¨ì,œô¨çœô¨âœô¨Þœô¨Ñœô¨ë œô¨Ýœô¨Õ œô¨×œô¨Ðœô¨Üœô¨Õœô¨Ýœô¨ïœô¨âœô¨ì œô¨Ò œô¨Ýœô¨Õœô¨Ü œô¨Þœô¨ßœô¨Õœô¨àœô¨Ðœô¨âœô¨Þœô¨àœô¨ë new œô¨Ø delete
 #include "CLog.h"
 
 
 
-//ÐŸÐµÑ€ÐµÐ³Ñ€ÑƒÐ¶Ð°ÐµÐ¼ Ð¾Ð¿ÐµÑ€Ð°Ñ‚Ð¾Ñ€ new Ð² Ð³Ð»Ð¾Ð±Ð°Ð»ÑŒÐ½Ð¾Ð¼ Ð¿Ñ€Ð¾ÑÑ‚Ñ€Ð°Ð½ÑÑ‚Ð²Ðµ Ð¸Ð¼ÐµÐ½, Ð´Ð¾Ð¿Ð¾Ð»Ð½ÑÐµÐ¼ ÐµÐ³Ð¾ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð°Ð¼Ð¸
-//strFile - Ð¸Ð¼Ñ Ñ„Ð°Ð¹Ð»Ð°
-//iLine - Ð½Ð¾Ð¼ÐµÑ€ ÑÑ‚Ñ€Ð¾ÐºÐ¸
-//strFuncName - Ð¸Ð¼Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ 
+//œô¨¿œô¨Õœô¨àœô¨Õœô¨Óœô¨àœô¨ãœô¨Öœô¨Ðœô¨Õœô¨Ü œô¨Þœô¨ßœô¨Õœô¨àœô¨Ðœô¨âœô¨Þœô¨à new œô¨Ò œô¨Óœô¨Ûœô¨Þœô¨Ñœô¨Ðœô¨Ûœô¨ìœô¨Ýœô¨Þœô¨Ü œô¨ßœô¨àœô¨Þœô¨áœô¨âœô¨àœô¨Ðœô¨Ýœô¨áœô¨âœô¨Òœô¨Õ œô¨Øœô¨Üœô¨Õœô¨Ý, œô¨Ôœô¨Þœô¨ßœô¨Þœô¨Ûœô¨Ýœô¨ïœô¨Õœô¨Ü œô¨Õœô¨Óœô¨Þ œô¨ßœô¨Ðœô¨àœô¨Ðœô¨Üœô¨Õœô¨âœô¨àœô¨Ðœô¨Üœô¨Ø
+//strFile - œô¨Øœô¨Üœô¨ï œô¨äœô¨Ðœô¨Ùœô¨Ûœô¨Ð
+//iLine - œô¨Ýœô¨Þœô¨Üœô¨Õœô¨à œô¨áœô¨âœô¨àœô¨Þœô¨Úœô¨Ø
+//strFuncName - œô¨Øœô¨Üœô¨ï œô¨äœô¨ãœô¨Ýœô¨Úœô¨æœô¨Øœô¨Ø 
 void* operator new( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc );
 void* operator new[]( size_t size, const char* strFile, int iLine, const char* strFuncName )throw( std::bad_alloc );
 
-//ÐŸÐµÑ€ÐµÐ³Ñ€ÑƒÐ¶Ð°ÐµÐ¼ Ð´Ð²Ðµ Ð²ÐµÑ€ÑÐ¸Ð¸ Ð¾Ð¿ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ð° delete
+//œô¨¿œô¨Õœô¨àœô¨Õœô¨Óœô¨àœô¨ãœô¨Öœô¨Ðœô¨Õœô¨Ü œô¨Ôœô¨Òœô¨Õ œô¨Òœô¨Õœô¨àœô¨áœô¨Øœô¨Ø œô¨Þœô¨ßœô¨Õœô¨àœô¨Ðœô¨âœô¨Þœô¨àœô¨Ð delete
 //void operator delete( void* address, const char* strFile, int iLine, const char* strFuncName )throw();
 void operator delete( void* address )throw();
 
@@ -34,13 +34,13 @@ void operator delete[]( void* address )throw();
 void operator delete[]( void *address , size_t bytes );
 
 
-//Ð¾Ð±ÑŒÑÐ²Ð»ÑÐµÐ¼ Ð¼Ð°ÐºÑ€Ð¾Ñ new Ñ Ð´Ð¾Ð¿Ð¾Ð»Ð½Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ñ‹Ð¼Ð¸ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð°Ð¼Ð¸, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒÑÐºÐ¸Ð¹ ÐºÐ¾Ð´ Ð½Ðµ Ð¸Ð·Ð¼ÐµÐ½ÑÐ»ÑÑ
+//œô¨Þœô¨Ñœô¨ìœô¨ïœô¨Òœô¨Ûœô¨ïœô¨Õœô¨Ü œô¨Üœô¨Ðœô¨Úœô¨àœô¨Þœô¨á new œô¨á œô¨Ôœô¨Þœô¨ßœô¨Þœô¨Ûœô¨Ýœô¨Øœô¨âœô¨Õœô¨Ûœô¨ìœô¨Ýœô¨ëœô¨Üœô¨Ø œô¨ßœô¨Ðœô¨àœô¨Ðœô¨Üœô¨Õœô¨âœô¨àœô¨Ðœô¨Üœô¨Ø, œô¨çœô¨âœô¨Þœô¨Ñœô¨ë œô¨ßœô¨Þœô¨Ûœô¨ìœô¨×œô¨Þœô¨Òœô¨Ðœô¨âœô¨Õœô¨Ûœô¨ìœô¨áœô¨Úœô¨Øœô¨Ù œô¨Úœô¨Þœô¨Ô œô¨Ýœô¨Õ œô¨Øœô¨×œô¨Üœô¨Õœô¨Ýœô¨ïœô¨Ûœô¨áœô¨ï
 #define new new(__FILE__, __LINE__, __FUNCTION__ )
 
       
 #endif
 */
-//Ð­Ñ‚Ð¾Ð¹ Ñ„ÑƒÐ½ÐºÑ†Ð¸ÐµÐ¹ Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ð¼ Ð²ÑÐµ Ð½Ðµ ÑƒÐ´Ð°Ð»ÐµÐ½Ð½Ñ‹Ðµ ÑƒÑ‡Ð°ÑÑ‚ÐºÐ¸ Ð¿Ð°Ð¼ÑÑ‚Ð¸ Ð½Ð° Ð¼Ð¾Ð¼ÐµÐ½Ñ‚ Ð²Ñ‹Ð·Ð¾Ð²Ð°
+//œô¨Íœô¨âœô¨Þœô¨Ù œô¨äœô¨ãœô¨Ýœô¨Úœô¨æœô¨Øœô¨Õœô¨Ù œô¨Òœô¨ëœô¨Òœô¨Þœô¨Ôœô¨Øœô¨Ü œô¨Òœô¨áœô¨Õ œô¨Ýœô¨Õ œô¨ãœô¨Ôœô¨Ðœô¨Ûœô¨Õœô¨Ýœô¨Ýœô¨ëœô¨Õ œô¨ãœô¨çœô¨Ðœô¨áœô¨âœô¨Úœô¨Ø œô¨ßœô¨Ðœô¨Üœô¨ïœô¨âœô¨Ø œô¨Ýœô¨Ð œô¨Üœô¨Þœô¨Üœô¨Õœô¨Ýœô¨â œô¨Òœô¨ëœô¨×œô¨Þœô¨Òœô¨Ð
 void DumpMemLeaks();
 
 #endif /*MEMLEAKDETECTOR_H_*/

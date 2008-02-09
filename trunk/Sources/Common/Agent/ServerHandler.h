@@ -1,4 +1,4 @@
-ï»¿#ifndef SERVERHANDLER_H_
+#ifndef SERVERHANDLER_H_
 #define SERVERHANDLER_H_
 
 #include "ClientSocket.h"
@@ -56,7 +56,7 @@ private:
 
 	int m_iEventPort;
 
-	//ÐŸÑ€Ð¸ÐµÐ¼Ð½Ñ‹Ð¹ Ð±ÑƒÑ„ÐµÑ€
+	//œô¨¿œô¨àœô¨Øœô¨Õœô¨Üœô¨Ýœô¨ëœô¨Ù œô¨Ñœô¨ãœô¨äœô¨Õœô¨à
 	std::vector<BYTE> m_vecRecvBuf;
 
 };

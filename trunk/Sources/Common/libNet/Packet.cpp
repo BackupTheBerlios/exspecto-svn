@@ -1,8 +1,8 @@
-ï»¿//-------------------------------------------------------------------------------------
-//Ğ­Ñ‚Ğ¾Ñ‚ Ñ„Ğ°Ğ¹Ğ» ÑĞ²Ğ»ÑĞµÑ‚ÑÑ Ñ‡Ğ°ÑÑ‚ÑŒÑ Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ° Exspecto 2006Ğ³.
+//-------------------------------------------------------------------------------------
+//œô¨Íœô¨âœô¨Şœô¨â œô¨äœô¨Ğœô¨Ùœô¨Û œô¨ïœô¨Òœô¨Ûœô¨ïœô¨Õœô¨âœô¨áœô¨ï œô¨çœô¨Ğœô¨áœô¨âœô¨ìœô¨î œô¨ßœô¨àœô¨Şœô¨Õœô¨Úœô¨âœô¨Ğ Exspecto 2006œô¨Ó.
 //Module: CPacket class
 //Author: Parshin Dmitry
-//Description: ĞšĞ»Ğ°ÑÑ, Ñ€ĞµĞ°Ğ»Ğ¸Ğ·ÑƒÑÑ‰Ğ¸Ğ¹ Ñ„ÑƒĞ½ĞºÑ†Ğ¸Ğ¸ Ğ´Ğ»Ñ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ñ Ğ¿Ğ°ĞºĞµÑ‚Ğ°Ğ¼Ğ¸ (Ğ¿Ğ°Ñ€ÑĞ¸Ğ½Ğ³ Ğ¸ Ğ¿Ğ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²ĞºĞ°)
+//Description: œô¨ºœô¨Ûœô¨Ğœô¨áœô¨á, œô¨àœô¨Õœô¨Ğœô¨Ûœô¨Øœô¨×œô¨ãœô¨îœô¨éœô¨Øœô¨Ù œô¨äœô¨ãœô¨İœô¨Úœô¨æœô¨Øœô¨Ø œô¨Ôœô¨Ûœô¨ï œô¨àœô¨Ğœô¨Ñœô¨Şœô¨âœô¨ë œô¨á œô¨ßœô¨Ğœô¨Úœô¨Õœô¨âœô¨Ğœô¨Üœô¨Ø (œô¨ßœô¨Ğœô¨àœô¨áœô¨Øœô¨İœô¨Ó œô¨Ø œô¨ßœô¨Şœô¨Ôœô¨Óœô¨Şœô¨âœô¨Şœô¨Òœô¨Úœô¨Ğ)
 //-------------------------------------------------------------------------------------
 #include "Packet.h"
 #include "precomp.h"
@@ -25,8 +25,8 @@ CInPacket::CInPacket( BYTE* pbBuf, int iSize ):m_pXmlDoc( new TiXmlDocument() )
 	std::string strPacket( pbBuf, pbBuf+iSize );
 	if( ( NULL == m_pXmlDoc->Parse( strPacket.c_str() ) ) || ( NULL == ( m_pXmlRoot = m_pXmlDoc->RootElement() ) ) )
 	{
-		Log::instance().Trace( 1, "CInPacket::CInPacket: Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ğ³Ñ€ÑƒĞ·Ğ¸Ñ‚ÑŒ xml Ğ¿Ğ°ĞºĞµÑ‚: %s", strPacket.c_str() );
-		std::string strErr = "ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ñ€Ğ°Ğ·Ğ¾Ğ±Ñ€Ğ°Ñ‚ÑŒ Ğ²Ñ…Ğ¾Ğ´ÑÑ‰Ğ¸Ğ¹ xml-Ğ¿Ğ°ĞºĞµÑ‚: ";
+		Log::instance().Trace( 1, "CInPacket::CInPacket: œô¨İœô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨×œô¨Ğœô¨Óœô¨àœô¨ãœô¨×œô¨Øœô¨âœô¨ì xml œô¨ßœô¨Ğœô¨Úœô¨Õœô¨â: %s", strPacket.c_str() );
+		std::string strErr = "œô¨½œô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨àœô¨Ğœô¨×œô¨Şœô¨Ñœô¨àœô¨Ğœô¨âœô¨ì œô¨Òœô¨åœô¨Şœô¨Ôœô¨ïœô¨éœô¨Øœô¨Ù xml-œô¨ßœô¨Ğœô¨Úœô¨Õœô¨â: ";
 		strErr += m_pXmlDoc->ErrorDesc();
 		throw PacketErr( strErr );
 	}
@@ -43,8 +43,8 @@ bool CInPacket::Load( BYTE* pbBuf, int iSize )
 	std::string strPacket( pbBuf, pbBuf+iSize );
 	if( ( NULL == m_pXmlDoc->Parse( strPacket.c_str() ) ) || ( NULL == ( m_pXmlRoot = m_pXmlDoc->RootElement() ) ) )
 	{
-		Log::instance().Trace( 1, "CInPacket::Load: Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ğ³Ñ€ÑƒĞ·Ğ¸Ñ‚ÑŒ xml Ğ¿Ğ°ĞºĞµÑ‚: %s", strPacket.c_str() );
-		std::string strErr = "ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ñ€Ğ°Ğ·Ğ¾Ğ±Ñ€Ğ°Ñ‚ÑŒ Ğ²Ñ…Ğ¾Ğ´ÑÑ‰Ğ¸Ğ¹ xml-Ğ¿Ğ°ĞºĞµÑ‚: ";
+		Log::instance().Trace( 1, "CInPacket::Load: œô¨İœô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨×œô¨Ğœô¨Óœô¨àœô¨ãœô¨×œô¨Øœô¨âœô¨ì xml œô¨ßœô¨Ğœô¨Úœô¨Õœô¨â: %s", strPacket.c_str() );
+		std::string strErr = "œô¨½œô¨Õ œô¨ãœô¨Ôœô¨Ğœô¨Ûœô¨Şœô¨áœô¨ì œô¨àœô¨Ğœô¨×œô¨Şœô¨Ñœô¨àœô¨Ğœô¨âœô¨ì œô¨Òœô¨åœô¨Şœô¨Ôœô¨ïœô¨éœô¨Øœô¨Ù xml-œô¨ßœô¨Ğœô¨Úœô¨Õœô¨â: ";
 		strErr += m_pXmlDoc->ErrorDesc();
 		std::stringstream ss;
 		ss << " Row: " << m_pXmlDoc->ErrorRow() << " Col: " << m_pXmlDoc->ErrorCol();
@@ -73,8 +73,8 @@ void CInPacket::GetFirstAddress( std::string& strAddress )
 	m_pAddrElement = m_pXmlRoot->FirstChildElement( HOST_ADDR );
 	if( NULL == m_pAddrElement )
 	{
-		Log::instance().Trace( 1, "%s: ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ %s Ğ»Ğ¸Ğ±Ğ¾ Ğ¾Ğ½Ğ¾ Ğ½Ğµ Ğ¸Ğ¼ĞµĞµÑ‚ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ñ… Ğ°Ñ‚Ñ€Ğ¸Ğ±ÑƒÑ‚Ğ¾Ğ²", __FUNCTION__, HOST_ADDR );
-		throw PacketErr( "ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ" );
+		Log::instance().Trace( 1, "%s: œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ %s œô¨Ûœô¨Øœô¨Ñœô¨Ş œô¨Şœô¨İœô¨Ş œô¨İœô¨Õ œô¨Øœô¨Üœô¨Õœô¨Õœô¨â œô¨İœô¨Õœô¨Şœô¨Ñœô¨åœô¨Şœô¨Ôœô¨Øœô¨Üœô¨ëœô¨å œô¨Ğœô¨âœô¨àœô¨Øœô¨Ñœô¨ãœô¨âœô¨Şœô¨Ò", __FUNCTION__, HOST_ADDR );
+		throw PacketErr( "œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ" );
 	}
 	strAddress = m_pAddrElement->GetText();
 }
@@ -83,7 +83,7 @@ bool CInPacket::GetNextAddress( std::string& strAddress )
 {
 	if( NULL == m_pAddrElement )
 	{
-		Log::instance().Trace( 1, "%s: Ğ—Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ° Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ†Ğ¸Ğ¸ Ğ¾Ğ± Ğ°Ğ´Ñ€ĞµÑĞ°Ñ… Ğ½Ğµ Ğ±Ñ‹Ğ»Ğ° Ğ½Ğ°Ñ‡Ğ°Ñ‚Ğ°", __FUNCTION__ );
+		Log::instance().Trace( 1, "%s: œô¨·œô¨Ğœô¨Óœô¨àœô¨ãœô¨×œô¨Úœô¨Ğ œô¨Øœô¨İœô¨äœô¨Şœô¨àœô¨Üœô¨Ğœô¨æœô¨Øœô¨Ø œô¨Şœô¨Ñ œô¨Ğœô¨Ôœô¨àœô¨Õœô¨áœô¨Ğœô¨å œô¨İœô¨Õ œô¨Ñœô¨ëœô¨Ûœô¨Ğ œô¨İœô¨Ğœô¨çœô¨Ğœô¨âœô¨Ğ", __FUNCTION__ );
 		return false;
 	}
 	if( NULL == ( m_pAddrElement = m_pAddrElement->NextSiblingElement( HOST_ADDR ) ) )
@@ -99,8 +99,8 @@ void CInPacket::GetFirstHostRec( hostRec& Host )
 {
 	if( NULL == ( m_pHostElement = m_pXmlRoot->FirstChildElement( HOST_TAG ) ) )
 	{
-		Log::instance().Trace( 1, "%s: ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ %s Ğ»Ğ¸Ğ±Ğ¾ Ğ¾Ğ½Ğ¾ Ğ½Ğµ Ğ¸Ğ¼ĞµĞµÑ‚ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ñ… Ğ°Ñ‚Ñ€Ğ¸Ğ±ÑƒÑ‚Ğ¾Ğ²", __FUNCTION__, HOST_TAG );
-		throw PacketErr( "ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ" );
+		Log::instance().Trace( 1, "%s: œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ %s œô¨Ûœô¨Øœô¨Ñœô¨Ş œô¨Şœô¨İœô¨Ş œô¨İœô¨Õ œô¨Øœô¨Üœô¨Õœô¨Õœô¨â œô¨İœô¨Õœô¨Şœô¨Ñœô¨åœô¨Şœô¨Ôœô¨Øœô¨Üœô¨ëœô¨å œô¨Ğœô¨âœô¨àœô¨Øœô¨Ñœô¨ãœô¨âœô¨Şœô¨Ò", __FUNCTION__, HOST_TAG );
+		throw PacketErr( "œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ" );
 	}
 	GetHostRec( Host );
 }
@@ -109,8 +109,8 @@ void CInPacket::GetHostRec( hostRec& Host )
 {
 	if( NULL == m_pHostElement->Attribute( HOST_NAME ) || NULL == m_pHostElement->Attribute( HOST_ADDR ) )
 	{
-		Log::instance().Trace( 1, "%s: ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ %s Ğ»Ğ¸Ğ±Ğ¾ Ğ¾Ğ½Ğ¾ Ğ½Ğµ Ğ¸Ğ¼ĞµĞµÑ‚ Ğ½ĞµĞ¾Ğ±Ñ…Ğ¾Ğ´Ğ¸Ğ¼Ñ‹Ñ… Ğ°Ñ‚Ñ€Ğ¸Ğ±ÑƒÑ‚Ğ¾Ğ²", __FUNCTION__, HOST_TAG );
-		throw PacketErr( "ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ" );
+		Log::instance().Trace( 1, "%s: œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ %s œô¨Ûœô¨Øœô¨Ñœô¨Ş œô¨Şœô¨İœô¨Ş œô¨İœô¨Õ œô¨Øœô¨Üœô¨Õœô¨Õœô¨â œô¨İœô¨Õœô¨Şœô¨Ñœô¨åœô¨Şœô¨Ôœô¨Øœô¨Üœô¨ëœô¨å œô¨Ğœô¨âœô¨àœô¨Øœô¨Ñœô¨ãœô¨âœô¨Şœô¨Ò", __FUNCTION__, HOST_TAG );
+		throw PacketErr( "œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ" );
 	}
 	Host.HostName = m_pHostElement->Attribute( HOST_NAME );
 	Host.IPNum = m_pHostElement->Attribute( HOST_ADDR );
@@ -130,7 +130,7 @@ bool CInPacket::GetNextHostRec( hostRec& Host )
 {
 	if( NULL == m_pHostElement )
 	{
-		Log::instance().Trace( 1, "%s: Ğ—Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ° Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ†Ğ¸Ğ¸ Ğ¾ Ñ„Ğ°Ğ¹Ğ»Ğ°Ñ… Ğ½Ğµ Ğ±Ñ‹Ğ»Ğ° Ğ½Ğ°Ñ‡Ğ°Ñ‚Ğ° ", __FUNCTION__ );
+		Log::instance().Trace( 1, "%s: œô¨·œô¨Ğœô¨Óœô¨àœô¨ãœô¨×œô¨Úœô¨Ğ œô¨Øœô¨İœô¨äœô¨Şœô¨àœô¨Üœô¨Ğœô¨æœô¨Øœô¨Ø œô¨Ş œô¨äœô¨Ğœô¨Ùœô¨Ûœô¨Ğœô¨å œô¨İœô¨Õ œô¨Ñœô¨ëœô¨Ûœô¨Ğ œô¨İœô¨Ğœô¨çœô¨Ğœô¨âœô¨Ğ ", __FUNCTION__ );
 		return false;
 	}
 	if( NULL == ( m_pHostElement = m_pHostElement->NextSiblingElement( HOST_TAG ) ) )
@@ -155,14 +155,14 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName,
 {
 	if( NULL == pParentElem )
 	{
-		Log::instance().Trace( 1, "%s: ĞŸĞ°ĞºĞµÑ‚ Ğ´Ğ»Ñ Ñ€Ğ°Ğ·Ğ±Ğ¾Ñ€Ğ° Ğ½Ğµ Ğ±Ñ‹Ğ» Ğ·Ğ°Ğ³Ñ€ÑƒĞ¶ĞµĞ½", __FUNCTION__ );
-		throw PacketErr( "ĞŸĞ°ĞºĞµÑ‚ Ğ´Ğ»Ñ Ñ€Ğ°Ğ·Ğ±Ğ¾Ñ€Ğ° Ğ½Ğµ Ğ±Ñ‹Ğ» Ğ·Ğ°Ğ³Ñ€ÑƒĞ¶ĞµĞ½" );
+		Log::instance().Trace( 1, "%s: œô¨¿œô¨Ğœô¨Úœô¨Õœô¨â œô¨Ôœô¨Ûœô¨ï œô¨àœô¨Ğœô¨×œô¨Ñœô¨Şœô¨àœô¨Ğ œô¨İœô¨Õ œô¨Ñœô¨ëœô¨Û œô¨×œô¨Ğœô¨Óœô¨àœô¨ãœô¨Öœô¨Õœô¨İ", __FUNCTION__ );
+		throw PacketErr( "œô¨¿œô¨Ğœô¨Úœô¨Õœô¨â œô¨Ôœô¨Ûœô¨ï œô¨àœô¨Ğœô¨×œô¨Ñœô¨Şœô¨àœô¨Ğ œô¨İœô¨Õ œô¨Ñœô¨ëœô¨Û œô¨×œô¨Ğœô¨Óœô¨àœô¨ãœô¨Öœô¨Õœô¨İ" );
 	}
 	TiXmlElement* pTmp = pParentElem->FirstChildElement( strName );
 	if( NULL == pTmp )
 	{
-		Log::instance().Trace( 1, "%s: ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ %s", __FUNCTION__, strName.c_str() );
-		throw PacketErr( "ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»Ğµ" );
+		Log::instance().Trace( 1, "%s: œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ %s", __FUNCTION__, strName.c_str() );
+		throw PacketErr( "œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İœô¨Ş œô¨ßœô¨Şœô¨Ûœô¨Õ" );
 	}
 	strValue = pTmp->GetText();
 }
@@ -173,8 +173,8 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 	GetField( pParentElem, strName, strTmp );
 	if( ( 0 == ( iValue = atoi( strTmp.c_str() ) ) ) && ( "0" != strTmp ) )
 	{
-		Log::instance().Trace( 1, "%s: ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ %s = %s Ğ² Ñ†ĞµĞ»Ğ¾Ğµ Ñ‡Ğ¸ÑĞ»Ğ¾", __FUNCTION__, strName.c_str(), strTmp.c_str() );
-		throw PacketErr( "ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ" );
+		Log::instance().Trace( 1, "%s: œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï %s = %s œô¨Ò œô¨æœô¨Õœô¨Ûœô¨Şœô¨Õ œô¨çœô¨Øœô¨áœô¨Ûœô¨Ş", __FUNCTION__, strName.c_str(), strTmp.c_str() );
+		throw PacketErr( "œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï" );
 	}
 }
 
@@ -184,8 +184,8 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 	GetField( pParentElem, strName, strTmp );
 	if( ( 0 == ( iValue = atoll( strTmp.c_str() ) ) ) && ( "0" != strTmp ) )
 	{
-		Log::instance().Trace( 1, "%s: ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ %s = %s Ğ² Ñ†ĞµĞ»Ğ¾Ğµ 64 Ğ±Ğ¸Ñ‚Ğ¾Ğ²Ğ¾Ğµ Ñ‡Ğ¸ÑĞ»Ğ¾", __FUNCTION__, strName.c_str(), strTmp.c_str() );
-		throw PacketErr( "ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ" );
+		Log::instance().Trace( 1, "%s: œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï %s = %s œô¨Ò œô¨æœô¨Õœô¨Ûœô¨Şœô¨Õ 64 œô¨Ñœô¨Øœô¨âœô¨Şœô¨Òœô¨Şœô¨Õ œô¨çœô¨Øœô¨áœô¨Ûœô¨Ş", __FUNCTION__, strName.c_str(), strTmp.c_str() );
+		throw PacketErr( "œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï" );
 	}
 }
 
@@ -199,8 +199,8 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 		bValue = false;
 	else
 	{
-		Log::instance().Trace( 1, "%s: ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ %s = %s Ğ±ÑƒĞ»ĞµĞ²ÑĞºĞ¾Ğµ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ", __FUNCTION__, strName.c_str(), strVal.c_str() );
-		throw PacketErr( "ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ" );
+		Log::instance().Trace( 1, "%s: œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï %s = %s œô¨Ñœô¨ãœô¨Ûœô¨Õœô¨Òœô¨áœô¨Úœô¨Şœô¨Õ œô¨×œô¨İœô¨Ğœô¨çœô¨Õœô¨İœô¨Øœô¨Õ", __FUNCTION__, strName.c_str(), strVal.c_str() );
+		throw PacketErr( "œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï" );
 	}
 }
 
@@ -208,11 +208,11 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 {
 	std::string strVal;
 	GetField( pParentElem, strName, strVal );
-	//ĞŸĞ¾Ğ»Ğµ Ğ²Ñ€ĞµĞ¼ĞµĞ½Ğ¸ Ğ¿ĞµÑ€ĞµĞ´Ğ°ĞµÑ‚ÑÑ Ğ² Ğ²Ğ¸Ğ´Ğµ Ğ¿Ğ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸ Ğ±Ğ°Ğ¹Ñ‚
+	//œô¨¿œô¨Şœô¨Ûœô¨Õ œô¨Òœô¨àœô¨Õœô¨Üœô¨Õœô¨İœô¨Ø œô¨ßœô¨Õœô¨àœô¨Õœô¨Ôœô¨Ğœô¨Õœô¨âœô¨áœô¨ï œô¨Ò œô¨Òœô¨Øœô¨Ôœô¨Õ œô¨ßœô¨Şœô¨áœô¨Ûœô¨Õœô¨Ôœô¨Şœô¨Òœô¨Ğœô¨âœô¨Õœô¨Ûœô¨ìœô¨İœô¨Şœô¨áœô¨âœô¨Ø œô¨Ñœô¨Ğœô¨Ùœô¨â
 	if( sizeof( time_t )*2 != strVal.size() )
 	{
-		Log::instance().Trace( 1, "%s: ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ %s = %s Ğ² Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ Ñ‚Ğ¸Ğ¿Ğ° time_t", __FUNCTION__, strName.c_str(), strVal.c_str() );
-		throw PacketErr( "ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»Ñ" );
+		Log::instance().Trace( 1, "%s: œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï %s = %s œô¨Ò œô¨×œô¨İœô¨Ğœô¨çœô¨Õœô¨İœô¨Øœô¨Õ œô¨âœô¨Øœô¨ßœô¨Ğ time_t", __FUNCTION__, strName.c_str(), strVal.c_str() );
+		throw PacketErr( "œô¨¾œô¨èœô¨Øœô¨Ñœô¨Úœô¨Ğ œô¨ßœô¨àœô¨Õœô¨Şœô¨Ñœô¨àœô¨Ğœô¨×œô¨Şœô¨Òœô¨Ğœô¨İœô¨Øœô¨ï œô¨ßœô¨Şœô¨Ûœô¨ï" );
 	}
 	tValue = StrToTimet( strVal );
 }
@@ -286,7 +286,7 @@ void COutPacket::PutHostRec( const hostRec& Host, const std::string& strProtoNam
 	strTmp += "</";strTmp += HOST_TAG;strTmp += ">\r\n";
 	size_t Pos;
 	if( std::string::npos == ( Pos = m_strPacket.find( "</packet>" ) ) )
-		throw PacketErr( "ĞĞµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ°ÑÑ‰Ğ¸Ğ¹ Ñ‚ĞµĞ³ </packet>" );
+		throw PacketErr( "œô¨½œô¨Õ œô¨İœô¨Ğœô¨Ùœô¨Ôœô¨Õœô¨İ œô¨×œô¨Ğœô¨Òœô¨Õœô¨àœô¨èœô¨Ğœô¨îœô¨éœô¨Øœô¨Ù œô¨âœô¨Õœô¨Ó </packet>" );
 	m_strPacket.insert( Pos, strTmp );
 }
 
