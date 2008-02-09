@@ -13,14 +13,14 @@
 			time( &iTm );}
 		else{ iTm = iTime;}
 		nt = gmtime( &iTm );
-		//Log::instance().Trace( 180, "%d :: помещение штампа даты [%li] в буфер.", __LINE__, iTm );
+		//Log::instance().Trace( 180, "%d :: њфЁЯњфЁЮњфЁЬњфЁХњфЁйњфЁХњфЁЭњфЁШњфЁХ њфЁињфЁвњфЁРњфЁЬњфЁЯњфЁР њфЁФњфЁРњфЁвњфЁл [%li] њфЁТ њфЁСњфЁгњфЁдњфЁХњфЁа.", __LINE__, iTm );
 		if(NULL==nt)
 		{
-			//Log::instance().Trace( 10,"[ERROR] CDBProvider::GetTimeStr: Некорректное значение аргумента: %li", iTm );
+			//Log::instance().Trace( 10,"[ERROR] CDBProvider::GetTimeStr: њфЁЅњфЁХњфЁЪњфЁЮњфЁањфЁањфЁХњфЁЪњфЁвњфЁЭњфЁЮњфЁХ њфЁЧњфЁЭњфЁРњфЁзњфЁХњфЁЭњфЁШњфЁХ њфЁРњфЁањфЁУњфЁгњфЁЬњфЁХњфЁЭњфЁвњфЁР: %li", iTm );
 			iTm=0;
 			if( (nt = gmtime( &iTm )) == NULL )
 			{
-				//Log::instance().Trace( 5,"%d [ERROR] CDBProvider::GetTimeStr: Ошибка вызова стандартной функции", __LINE__ );
+				//Log::instance().Trace( 5,"%d [ERROR] CDBProvider::GetTimeStr: њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР њфЁТњфЁлњфЁЧњфЁЮњфЁТњфЁР њфЁбњфЁвњфЁРњфЁЭњфЁФњфЁРњфЁањфЁвњфЁЭњфЁЮњфЁЩ њфЁдњфЁгњфЁЭњфЁЪњфЁжњфЁШњфЁШ", __LINE__ );
 				throw;
 			}
 		}
@@ -28,11 +28,11 @@
 						nt->tm_hour, nt->tm_min, nt->tm_sec);
 	}catch( std::exception& e )
 	{
-		//Log::instance().Trace( 5,"CDBProvider::GetTimeStr: Возникло исключение: %s", e.what() );
+		//Log::instance().Trace( 5,"CDBProvider::GetTimeStr: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ: %s", e.what() );
 		throw;
 	}catch(...)
 	{
-		//Log::instance().Trace( 5,"CDBProvider::GetTimeStr: Возникло неизвестное исключение" );
+		//Log::instance().Trace( 5,"CDBProvider::GetTimeStr: њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ" );
 		throw;
 	}
 	return strRes;
@@ -41,6 +41,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // 
+ /*
 time_t Tools::ConvertFileTimeToUTC(DWORD lFTime, DWORD hFTime)
 {
 try
@@ -55,7 +56,7 @@ try
 	
 	if(!FileTimeToSystemTime(&ftWin, &stWin))
 	{
-		//Log::instance().Trace( 10,"[ERROR] %s: Некорректное значение аргументов: %i, %i", __FUNCTION__, lFTime, hFTime );
+		//Log::instance().Trace( 10,"[ERROR] %s: њфЁЅњфЁХњфЁЪњфЁЮњфЁањфЁањфЁХњфЁЪњфЁвњфЁЭњфЁЮњфЁХ њфЁЧњфЁЭњфЁРњфЁзњфЁХњфЁЭњфЁШњфЁХ њфЁРњфЁањфЁУњфЁгњфЁЬњфЁХњфЁЭњфЁвњфЁЮњфЁТ: %i, %i", __FUNCTION__, lFTime, hFTime );
 		return 0;			
 	}
 	nt.tm_hour = stWin.wHour;
@@ -69,7 +70,7 @@ try
 	nt.tm_isdst = 0;
 	if( (iTm = mktime(&nt)) <= 0 )
 	{
-		//Log::instance().Trace( 10,"[ERROR] %s: Некорректное значение аргументов: %i, %i", __FUNCTION__, lFTime, hFTime );
+		//Log::instance().Trace( 10,"[ERROR] %s: њфЁЅњфЁХњфЁЪњфЁЮњфЁањфЁањфЁХњфЁЪњфЁвњфЁЭњфЁЮњфЁХ њфЁЧњфЁЭњфЁРњфЁзњфЁХњфЁЭњфЁШњфЁХ њфЁРњфЁањфЁУњфЁгњфЁЬњфЁХњфЁЭњфЁвњфЁЮњфЁТ: %i, %i", __FUNCTION__, lFTime, hFTime );
 		time( &iTm );
 		pnt = gmtime( &iTm );
 		iTm = mktime(pnt);
@@ -84,7 +85,7 @@ try
 	throw CPrvException(e, 0, __FUNCTION__);
 }catch(...)
 {
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	throw CPrvException("њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ", 0, __FUNCTION__);
 }
 
 } 
@@ -99,15 +100,16 @@ time_t Tools::ConvertFileTimeToUTC(const fileDate& aDate)
 		return ConvertFileTimeToUTC(aDate.lFileTime, aDate.hFileTime);
 	}	else return aDate.UTS;
 }
+*/
 //-----------------------------------------------------------------------------
 
 ///////////////////////////////////////////////////////////////////////////////
 // Split(string & text, string & separators, list<string> & words)
-// Разбивает имя файла на идиомы
-// text        строка, разбиваемая на слова
-// separators  символы разделители
-// words       список слов изъятых из строки
-// varsep      список символов состоящая из последовательно входящих разделитетей
+// њфЁАњфЁРњфЁЧњфЁСњфЁШњфЁТњфЁРњфЁХњфЁв њфЁШњфЁЬњфЁп њфЁдњфЁРњфЁЩњфЁЫњфЁР њфЁЭњфЁР њфЁШњфЁФњфЁШњфЁЮњфЁЬњфЁл
+// text        њфЁбњфЁвњфЁањфЁЮњфЁЪњфЁР, њфЁањфЁРњфЁЧњфЁСњфЁШњфЁТњфЁРњфЁХњфЁЬњфЁРњфЁп њфЁЭњфЁР њфЁбњфЁЫњфЁЮњфЁТњфЁР
+// separators  њфЁбњфЁШњфЁЬњфЁТњфЁЮњфЁЫњфЁл њфЁањфЁРњфЁЧњфЁФњфЁХњфЁЫњфЁШњфЁвњфЁХњфЁЫњфЁШ
+// words       њфЁбњфЁЯњфЁШњфЁбњфЁЮњфЁЪ њфЁбњфЁЫњфЁЮњфЁТ њфЁШњфЁЧњфЁкњфЁпњфЁвњфЁлњфЁе њфЁШњфЁЧ њфЁбњфЁвњфЁањфЁЮњфЁЪњфЁШ
+// varsep      њфЁбњфЁЯњфЁШњфЁбњфЁЮњфЁЪ њфЁбњфЁШњфЁЬњфЁТњфЁЮњфЁЫњфЁЮњфЁТ њфЁбњфЁЮњфЁбњфЁвњфЁЮњфЁпњфЁйњфЁРњфЁп њфЁШњфЁЧ њфЁЯњфЁЮњфЁбњфЁЫњфЁХњфЁФњфЁЮњфЁТњфЁРњфЁвњфЁХњфЁЫњфЁмњфЁЭњфЁЮ њфЁТњфЁењфЁЮњфЁФњфЁпњфЁйњфЁШњфЁе њфЁањфЁРњфЁЧњфЁФњфЁХњфЁЫњфЁШњфЁвњфЁХњфЁвњфЁХњфЁЩ
 void Tools::Split(string &text, string separators, list<string> &words)
 {
 	//Log::instance().Trace( 120, "%s [enter]", __FUNCTION__ );
@@ -126,7 +128,7 @@ try
 //    	if ((stop < 0) || (stop > n)) stop = n;
 //    	if (&varsep != NULL)
 //    	{
-//    		if (stop == 0) varsep.push_back("#0#") // Перед первым словом нет символов сепараторов
+//    		if (stop == 0) varsep.push_back("#0#") // њфЁїњфЁХњфЁањфЁХњфЁФ њфЁЯњфЁХњфЁањфЁТњфЁлњфЁЬ њфЁбњфЁЫњфЁЮњфЁТњфЁЮњфЁЬ њфЁЭњфЁХњфЁв њфЁбњфЁШњфЁЬњфЁТњфЁЮњфЁЫњфЁЮњфЁТ њфЁбњфЁХњфЁЯњфЁРњфЁањфЁРњфЁвњфЁЮњфЁањфЁЮњфЁТ
 //    		else varsep.push_back(text.substr(start, stop - start));
 //    	}
 //		start = stop;
@@ -144,7 +146,7 @@ try
 	throw CPrvException(e, 0, __FUNCTION__);
 }catch(...)
 {
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	throw CPrvException("њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ", 0, __FUNCTION__);
 }
 	//Log::instance().Trace( 120, "%s [exit]", __FUNCTION__ );
 }
@@ -190,7 +192,7 @@ try
 	throw CPrvException(e, 0, __FUNCTION__);
 }catch(...)
 {
-	throw CPrvException("Возникло неизвестное исключение", 0, __FUNCTION__);
+	throw CPrvException("њфЁІњфЁЮњфЁЧњфЁЭњфЁШњфЁЪњфЁЫњфЁЮ њфЁЭњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁЮњфЁХ њфЁШњфЁбњфЁЪњфЁЫњфЁоњфЁзњфЁХњфЁЭњфЁШњфЁХ", 0, __FUNCTION__);
 }
 
 }

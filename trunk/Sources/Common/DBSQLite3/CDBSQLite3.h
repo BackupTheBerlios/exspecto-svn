@@ -15,26 +15,26 @@ class CDBSQLitProvider: public CDBProvider
 public:
 	CDBSQLitProvider();
 	virtual ~CDBSQLitProvider();
-	void __stdcall AddFiles(hostRec &aRec);
-	bool __stdcall Search(const string& aText, map<string,bool> &aParams, hostRecords &Result);
-	void __stdcall EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false);
-	time_t __stdcall GetRefDateHost(const string& aHostName, const string& aIPnum);
-  char* __stdcall GetNamePlugin();
-  bool __stdcall RefreshDB();
+	void  AddFiles(hostRec &aRec);
+	bool  Search(const string& aText, map<string,bool> &aParams, hostRecords &Result);
+	void  EraseHost(const string& aHostName, const string& aIPnum, time_t aDate, bool aOnlyFiles=false);
+	time_t GetRefDateHost(const string& aHostName, const string& aIPnum);
+	char*  GetNamePlugin();
+	bool  RefreshDB();
 //  void __stdcall StartIndexing(map<string,bool> &aParams);
-	int __stdcall GetProvError(string& mes);
+	int  GetProvError(string& mes);
 private:
 	CppSQLite3DB db;
 	bool FAutoIndex;
 	bool FIndexed;
 	string FErrMsg;
 	int FErrCode;
-	bool __fastcall Find(const string& aText, map<string,bool> &aParams, list<int> &Result);
-	void __fastcall AddWord(int aID, const string& aPath);
-	void __fastcall AddWordInTable(int aID, list<string> &words, bool IsPath);
-  void __fastcall SetAutoIndex(bool aVal);
-  bool __fastcall IsAutoIndex();
-	void __fastcall SetLastError(int aCode, const string& aMes);
+	bool  Find(const string& aText, map<string,bool> &aParams, list<int> &Result);
+	void  AddWord(int aID, const string& aPath);
+	void  AddWordInTable(int aID, list<string> &words, bool IsPath);
+	void  SetAutoIndex(bool aVal);
+	bool  IsAutoIndex();
+	void  SetLastError(int aCode, const string& aMes);
 }; 
 
 class CExcerpts

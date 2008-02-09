@@ -34,9 +34,9 @@ try{
 	strAns.insert( strAns.begin(), chAns.begin(), chAns.end() );
 	
 }catch( std::exception& e ){
-	Log::instance().Trace( 0, "ReceiveAns Ошибка %s ", e.what() );
+	Log::instance().Trace( 0, "ReceiveAns њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР %s ", e.what() );
 }catch( ... ){
-	Log::instance().Trace( 0, "ReceiveAns Неизвестная ошибка");
+	Log::instance().Trace( 0, "ReceiveAns њфЁЅњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁРњфЁп њфЁЮњфЁињфЁШњфЁСњфЁЪњфЁР");
 }
 
 	return( strAns );
@@ -105,9 +105,9 @@ try{
 	}
 	
 }catch( std::exception& e ){
-	Log::instance().Trace( 0, "FTP::ReceiveAnsLIST: Ошибка во время сканирования адреса %s: %s", strAddress, e.what() );
+	Log::instance().Trace( 0, "FTP::ReceiveAnsLIST: њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР њфЁТњфЁЮ њфЁТњфЁањфЁХњфЁЬњфЁп њфЁбњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁп њфЁРњфЁФњфЁањфЁХњфЁбњфЁР %s: %s", strAddress, e.what() );
 }catch( ... ){
-	Log::instance().Trace( 0, "FTP::ReceiveAnsLIST: Неизвестная ошибка во время сканирования адреса %s", strAddress );
+	Log::instance().Trace( 0, "FTP::ReceiveAnsLIST: њфЁЅњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁРњфЁп њфЁЮњфЁињфЁШњфЁСњфЁЪњфЁР њфЁТњфЁЮ њфЁТњфЁањфЁХњфЁЬњфЁп њфЁбњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁп њфЁРњфЁФњфЁањфЁХњфЁбњфЁР %s", strAddress );
 }	
 }
 
@@ -138,8 +138,8 @@ try{
 	}
 	
 }
-catch( std::exception& e ){ Log::instance().Trace( 0, "FTP::SendCommand: Ошибка %s",e.what() ); }
-catch( ... ){ Log::instance().Trace( 0, "FTP::SendCommand: Неизвестная ошибка" ); }
+catch( std::exception& e ){ Log::instance().Trace( 0, "FTP::SendCommand: њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР %s",e.what() ); }
+catch( ... ){ Log::instance().Trace( 0, "FTP::SendCommand: њфЁЅњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁРњфЁп њфЁЮњфЁињфЁШњфЁСњфЁЪњфЁР" ); }
 	
 	return 0;
 }
@@ -156,10 +156,10 @@ try{
 
 		try{ ctrl_sock.Connect(strAddress, 21);
 		}catch(...){
-			Log::instance().Trace( 0, "FTP::Scan: %s:21 - не доступен.", strAddress );
+			Log::instance().Trace( 0, "FTP::Scan: %s:21 - њфЁЭњфЁХ њфЁФњфЁЮњфЁбњфЁвњфЁгњфЁЯњфЁХњфЁЭ.", strAddress );
 			return 0;
 		}
-		Log::instance().Trace( 0, "FTP::Scan: %s:21 - доступен. Сканирование начато.", strAddress );
+		Log::instance().Trace( 0, "FTP::Scan: %s:21 - њфЁФњфЁЮњфЁбњфЁвњфЁгњфЁЯњфЁХњфЁЭ. њфЁБњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁХ њфЁЭњфЁРњфЁзњфЁРњфЁвњфЁЮ.", strAddress );
 				
 		ReceiveAns( ctrl_sock );
 		
@@ -188,32 +188,32 @@ try{
 			
 		unsigned int Last_k = 0;
 	
-		// пока есть каталоги для обработки	
+		// њфЁЯњфЁЮњфЁЪњфЁР њфЁХњфЁбњфЁвњфЁм њфЁЪњфЁРњфЁвњфЁРњфЁЫњфЁЮњфЁУњфЁШ њфЁФњфЁЫњфЁп њфЁЮњфЁСњфЁањфЁРњфЁСњфЁЮњфЁвњфЁЪњфЁШ	
 		while ( DIR.size() ){
-			// ищем очередной каталог с ItemLevel
+			// њфЁШњфЁйњфЁХњфЁЬ њфЁЮњфЁзњфЁХњфЁањфЁХњфЁФњфЁЭњфЁЮњфЁЩ њфЁЪњфЁРњфЁвњфЁРњфЁЫњфЁЮњфЁУ њфЁб ItemLevel
 			for ( k = Last_k; k < (unsigned int)Level.size(); k++)
 				if ( Level[k] == ItemLevel) break;
 			
 			while ( DIR.size() ){
 				
 				if ( k != (unsigned int)Level.size() ) break;
-					// достигнут последний каталог в списке
-					// или нет каталога с ItemLevel
+					// њфЁФњфЁЮњфЁбњфЁвњфЁШњфЁУњфЁЭњфЁгњфЁв њфЁЯњфЁЮњфЁбњфЁЫњфЁХњфЁФњфЁЭњфЁШњфЁЩ њфЁЪњфЁРњфЁвњфЁРњфЁЫњфЁЮњфЁУ њфЁТ њфЁбњфЁЯњфЁШњфЁбњфЁЪњфЁХ
+					// њфЁШњфЁЫњфЁШ њфЁЭњфЁХњфЁв њфЁЪњфЁРњфЁвњфЁРњфЁЫњфЁЮњфЁУњфЁР њфЁб ItemLevel
 					
-					// ищем первый с конца НЕОБРАБОТАННЫЙ каталог
+					// њфЁШњфЁйњфЁХњфЁЬ њфЁЯњфЁХњфЁањфЁТњфЁлњфЁЩ њфЁб њфЁЪњфЁЮњфЁЭњфЁжњфЁР њфЁЅњфЁµњфЁѕњфЁ±њфЁАњфЁ°њфЁ±њфЁѕњфЁВњфЁ°њфЁЅњфЁЅњфЁЛњфЁ№ њфЁЪњфЁРњфЁвњфЁРњфЁЫњфЁЮњфЁУ
 					for ( k-- ; k >= 0; k-- )
 						if ( Flag[k] == false) break;
-					// выходим из текущего, так что оказываемся 
-					// на 1 уровень выше НЕОБРАБОТАННОГО каталога
+					// њфЁТњфЁлњфЁењфЁЮњфЁФњфЁШњфЁЬ њфЁШњфЁЧ њфЁвњфЁХњфЁЪњфЁгњфЁйњфЁХњфЁУњфЁЮ, њфЁвњфЁРњфЁЪ њфЁзњфЁвњфЁЮ њфЁЮњфЁЪњфЁРњфЁЧњфЁлњфЁТњфЁРњфЁХњфЁЬњфЁбњфЁп 
+					// њфЁЭњфЁР 1 њфЁгњфЁањфЁЮњфЁТњфЁХњфЁЭњфЁм њфЁТњфЁлњфЁињфЁХ њфЁЅњфЁµњфЁѕњфЁ±њфЁАњфЁ°њфЁ±њфЁѕњфЁВњфЁ°њфЁЅњфЁЅњфЁѕњфЁіњфЁѕ њфЁЪњфЁРњфЁвњфЁРњфЁЫњфЁЮњфЁУњфЁР
 					while ( Level[k] < ItemLevel ){
 						CommandCWD = strCommand[4]+ "..";
 						SendCommand (CommandCWD, ctrl_sock);
 						ReceiveAns( ctrl_sock );
-						// уменьшаем уровень вложенности
+						// њфЁгњфЁЬњфЁХњфЁЭњфЁмњфЁињфЁРњфЁХњфЁЬ њфЁгњфЁањфЁЮњфЁТњфЁХњфЁЭњфЁм њфЁТњфЁЫњфЁЮњфЁЦњфЁХњфЁЭњфЁЭњфЁЮњфЁбњфЁвњфЁШ
 						ItemLevel--;
 					}
-					// всё что ниже первого с конца НЕОБРАБОТАННОГО каталога
-					// уже обработано. Следавательно, удаляем!
+					// њфЁТњфЁбњфЁс њфЁзњфЁвњфЁЮ њфЁЭњфЁШњфЁЦњфЁХ њфЁЯњфЁХњфЁањфЁТњфЁЮњфЁУњфЁЮ њфЁб њфЁЪњфЁЮњфЁЭњфЁжњфЁР њфЁЅњфЁµњфЁѕњфЁ±њфЁАњфЁ°њфЁ±њфЁѕњфЁВњфЁ°њфЁЅњфЁЅњфЁѕњфЁіњфЁѕ њфЁЪњфЁРњфЁвњфЁРњфЁЫњфЁЮњфЁУњфЁР
+					// њфЁгњфЁЦњфЁХ њфЁЮњфЁСњфЁањфЁРњфЁСњфЁЮњфЁвњфЁРњфЁЭњфЁЮ. њфЁБњфЁЫњфЁХњфЁФњфЁРњфЁТњфЁРњфЁвњфЁХњфЁЫњфЁмњфЁЭњфЁЮ, њфЁгњфЁФњфЁРњфЁЫњфЁпњфЁХњфЁЬ!
 					if ( k != DIR.size()){
 						DIR.erase(DIR.begin() + k+1, DIR.end());
 						Flag.erase(Flag.begin() + k+1, Flag.end());
@@ -245,19 +245,20 @@ try{
 			}
 		}
 	
-		Log::instance().Trace( 0, "FTP::Scan: %s:21 Сканирование закончено.", strAddress );
+		Log::instance().Trace( 0, "FTP::Scan: %s:21 њфЁБњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁХ њфЁЧњфЁРњфЁЪњфЁЮњфЁЭњфЁзњфЁХњфЁЭњфЁЮ.", strAddress );
 		SendCommand (strCommand[7], ctrl_sock);
 		return true;
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 0, "FTP::Scan: Ошибка во время сканирования адреса %s: %s", strAddress, e.what() );
+		Log::instance().Trace( 0, "FTP::Scan: њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР њфЁТњфЁЮ њфЁТњфЁањфЁХњфЁЬњфЁп њфЁбњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁп њфЁРњфЁФњфЁањфЁХњфЁбњфЁР %s: %s", strAddress, e.what() );
 	}catch( ... )
 	{
-		Log::instance().Trace( 0, "FTP::Scan: Неизвестная ошибка во время сканирования адреса %s", strAddress );
+		Log::instance().Trace( 0, "FTP::Scan: њфЁЅњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁРњфЁп њфЁЮњфЁињфЁШњфЁСњфЁЪњфЁР њфЁТњфЁЮ њфЁТњфЁањфЁХњфЁЬњфЁп њфЁбњфЁЪњфЁРњфЁЭњфЁШњфЁањфЁЮњфЁТњфЁРњфЁЭњфЁШњфЁп њфЁРњфЁФњфЁањфЁХњфЁбњфЁР %s", strAddress );
 	}
 	return false;
 }
 
+#ifdef WIN32
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
                        LPVOID lpReserved
@@ -269,21 +270,39 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 			Log::instance().SetModuleName( MOD_NAME );
 		}catch( std::exception& e)
 		{
-			Log::instance().Trace( 0, "DllMain: Ошибка: %s", e.what() );
-			return false;
+			Log::instance().Trace( 0, "DllMain: њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР: %s", e.what() );
+			return;
 		}catch( ... )
 		{
-			Log::instance().Trace( 0, "DllMain: Неизвестная шибка" );
-			return false;
+			Log::instance().Trace( 0, "DllMain: њфЁЅњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁРњфЁп њфЁињфЁШњфЁСњфЁЪњфЁР" );
+			return;
 		}
 	}
 	if( DLL_PROCESS_DETACH == ul_reason_for_call )
 	{
 		DumpMemLeaks();
 	}
-    return true;
+}
+#else
+void _init()
+{
+  try{	
+	Log::instance().SetModuleName( MOD_NAME );
+  }catch( std::exception& e)
+	{
+	  Log::instance().Trace( 0, "DllMain: њфЁѕњфЁињфЁШњфЁСњфЁЪњфЁР: %s", e.what() );
+	  return;
+	}catch( ... )
+	{
+	  Log::instance().Trace( 0, "DllMain: њфЁЅњфЁХњфЁШњфЁЧњфЁТњфЁХњфЁбњфЁвњфЁЭњфЁРњфЁп њфЁињфЁШњфЁСњфЁЪњфЁР" );
+	  return;
+	}
 }
 
-
+void _fini()
+{
+  DumpMemLeaks();
+}
+#endif
 
 

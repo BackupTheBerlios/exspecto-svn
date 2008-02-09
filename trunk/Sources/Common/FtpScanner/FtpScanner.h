@@ -1,7 +1,11 @@
 #include "PluginInterface.h"
 
 #define MOD_NAME "Ftp"
+#ifdef WIN32
 #define DllExport __declspec( dllexport )
+#else
+#define DllExport
+#endif
 
 extern "C" 
 {

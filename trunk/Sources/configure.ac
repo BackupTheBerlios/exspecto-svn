@@ -9,6 +9,8 @@ AC_CONFIG_FILES([Makefile\
 				 Common/libNet/Makefile\
 				 Common/Agent/Makefile\
 				 Common/ScanServer/Makefile\
+				 Common/FtpScanner/Makefile\
+				 Common/DBSQLite3/Makefile\
 				 Linux/Makefile\
 				 Linux/LinuxSpec/Makefile\
 				 ])
