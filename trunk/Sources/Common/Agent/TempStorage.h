@@ -1,4 +1,4 @@
-#ifndef _TEMP_STORAGE
+п»ї#ifndef _TEMP_STORAGE
 #define _TEMP_STORAGE
 #include <fstream>
 #include "SmartPtr.hpp"
@@ -48,7 +48,7 @@ private:
 
 	std::istream::pos_type m_ReadPos;
 
-	//сути - флаг создания файла
+	//СЃСѓС‚Рё - С„Р»Р°Рі СЃРѕР·РґР°РЅРёСЏ С„Р°Р№Р»Р°
 	bool m_bOpenedForWrite;
 };
 

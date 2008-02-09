@@ -1,4 +1,4 @@
-#ifndef CTASK_H_
+п»ї#ifndef CTASK_H_
 #define CTASK_H_
 
 #include "ServerHandler.h"
@@ -29,7 +29,7 @@ public:
 /*
 	void Cancel()
 	{
-		Log::instance().Trace( 80, "CTask::Cancel: Отмена операции" );
+		Log::instance().Trace( 80, "CTask::Cancel: РћС‚РјРµРЅР° РѕРїРµСЂР°С†РёРё" );
 		m_CancelEv.Set();
 	};
 */
@@ -46,7 +46,7 @@ protected:
 
 	static CMutex m_mtxCurState;
 
-	//Адрес,имя проотокола,хранилище
+	//РђРґСЂРµСЃ,РёРјСЏ РїСЂРѕРѕС‚РѕРєРѕР»Р°,С…СЂР°РЅРёР»РёС‰Рµ
 	static std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > m_mapStorages;
 
 	typedef std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > >::iterator StoragesIt;
@@ -72,7 +72,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "Получение статуса агента";
+		return "РџРѕР»СѓС‡РµРЅРёРµ СЃС‚Р°С‚СѓСЃР° Р°РіРµРЅС‚Р°";
 	};
 
 };
@@ -93,7 +93,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "Останов сканирования";
+		return "РћСЃС‚Р°РЅРѕРІ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ";
 	};
 
 };
@@ -116,7 +116,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "Получение данных";
+		return "РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С…";
 	};
 private:
 
@@ -191,7 +191,7 @@ public:
 
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
 	{
-		m_strDescription = "Сканирование адресов: ";
+		m_strDescription = "РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ Р°РґСЂРµСЃРѕРІ: ";
 	};
 
 	virtual bool Immidiate();
@@ -211,10 +211,10 @@ private:
 
 	std::vector< std::string > m_vecAddresses;
 
-	//Контейнер плагинов
+	//РљРѕРЅС‚РµР№РЅРµСЂ РїР»Р°РіРёРЅРѕРІ
 	static PluginContainer m_PluginContainer;
 
-	//Тип итератор для манипуляций с контейнером плагинов
+	//РўРёРї РёС‚РµСЂР°С‚РѕСЂ РґР»СЏ РјР°РЅРёРїСѓР»СЏС†РёР№ СЃ РєРѕРЅС‚РµР№РЅРµСЂРѕРј РїР»Р°РіРёРЅРѕРІ
 	typedef PluginContainer::iterator PluginIterator;
 
 };

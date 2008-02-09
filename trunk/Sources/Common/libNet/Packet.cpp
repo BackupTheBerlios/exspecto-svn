@@ -1,8 +1,8 @@
-//-------------------------------------------------------------------------------------
-//Этот файл является частью проекта Exspecto 2006г.
+п»ї//-------------------------------------------------------------------------------------
+//Р­С‚РѕС‚ С„Р°Р№Р» СЏРІР»СЏРµС‚СЃСЏ С‡Р°СЃС‚СЊСЋ РїСЂРѕРµРєС‚Р° Exspecto 2006Рі.
 //Module: CPacket class
 //Author: Parshin Dmitry
-//Description: Класс, реализующий функции для работы с пакетами (парсинг и подготовка)
+//Description: РљР»Р°СЃСЃ, СЂРµР°Р»РёР·СѓСЋС‰РёР№ С„СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїР°РєРµС‚Р°РјРё (РїР°СЂСЃРёРЅРі Рё РїРѕРґРіРѕС‚РѕРІРєР°)
 //-------------------------------------------------------------------------------------
 #include "Packet.h"
 #include "precomp.h"
@@ -25,8 +25,8 @@ CInPacket::CInPacket( BYTE* pbBuf, int iSize ):m_pXmlDoc( new TiXmlDocument() )
 	std::string strPacket( pbBuf, pbBuf+iSize );
 	if( ( NULL == m_pXmlDoc->Parse( strPacket.c_str() ) ) || ( NULL == ( m_pXmlRoot = m_pXmlDoc->RootElement() ) ) )
 	{
-		Log::instance().Trace( 1, "CInPacket::CInPacket: не удалось загрузить xml пакет: %s", strPacket.c_str() );
-		std::string strErr = "Не удалось разобрать входящий xml-пакет: ";
+		Log::instance().Trace( 1, "CInPacket::CInPacket: РЅРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ xml РїР°РєРµС‚: %s", strPacket.c_str() );
+		std::string strErr = "РќРµ СѓРґР°Р»РѕСЃСЊ СЂР°Р·РѕР±СЂР°С‚СЊ РІС…РѕРґСЏС‰РёР№ xml-РїР°РєРµС‚: ";
 		strErr += m_pXmlDoc->ErrorDesc();
 		throw PacketErr( strErr );
 	}
@@ -43,8 +43,8 @@ bool CInPacket::Load( BYTE* pbBuf, int iSize )
 	std::string strPacket( pbBuf, pbBuf+iSize );
 	if( ( NULL == m_pXmlDoc->Parse( strPacket.c_str() ) ) || ( NULL == ( m_pXmlRoot = m_pXmlDoc->RootElement() ) ) )
 	{
-		Log::instance().Trace( 1, "CInPacket::Load: не удалось загрузить xml пакет: %s", strPacket.c_str() );
-		std::string strErr = "Не удалось разобрать входящий xml-пакет: ";
+		Log::instance().Trace( 1, "CInPacket::Load: РЅРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ xml РїР°РєРµС‚: %s", strPacket.c_str() );
+		std::string strErr = "РќРµ СѓРґР°Р»РѕСЃСЊ СЂР°Р·РѕР±СЂР°С‚СЊ РІС…РѕРґСЏС‰РёР№ xml-РїР°РєРµС‚: ";
 		strErr += m_pXmlDoc->ErrorDesc();
 		std::stringstream ss;
 		ss << " Row: " << m_pXmlDoc->ErrorRow() << " Col: " << m_pXmlDoc->ErrorCol();
@@ -73,8 +73,8 @@ void CInPacket::GetFirstAddress( std::string& strAddress )
 	m_pAddrElement = m_pXmlRoot->FirstChildElement( HOST_ADDR );
 	if( NULL == m_pAddrElement )
 	{
-		Log::instance().Trace( 1, "%s: Не найдено поле %s либо оно не имеет необходимых атрибутов", __FUNCTION__, HOST_ADDR );
-		throw PacketErr( "Не найдено поле" );
+		Log::instance().Trace( 1, "%s: РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ %s Р»РёР±Рѕ РѕРЅРѕ РЅРµ РёРјРµРµС‚ РЅРµРѕР±С…РѕРґРёРјС‹С… Р°С‚СЂРёР±СѓС‚РѕРІ", __FUNCTION__, HOST_ADDR );
+		throw PacketErr( "РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ" );
 	}
 	strAddress = m_pAddrElement->GetText();
 }
@@ -83,7 +83,7 @@ bool CInPacket::GetNextAddress( std::string& strAddress )
 {
 	if( NULL == m_pAddrElement )
 	{
-		Log::instance().Trace( 1, "%s: Загрузка информации об адресах не была начата", __FUNCTION__ );
+		Log::instance().Trace( 1, "%s: Р—Р°РіСЂСѓР·РєР° РёРЅС„РѕСЂРјР°С†РёРё РѕР± Р°РґСЂРµСЃР°С… РЅРµ Р±С‹Р»Р° РЅР°С‡Р°С‚Р°", __FUNCTION__ );
 		return false;
 	}
 	if( NULL == ( m_pAddrElement = m_pAddrElement->NextSiblingElement( HOST_ADDR ) ) )
@@ -99,8 +99,8 @@ void CInPacket::GetFirstHostRec( hostRec& Host )
 {
 	if( NULL == ( m_pHostElement = m_pXmlRoot->FirstChildElement( HOST_TAG ) ) )
 	{
-		Log::instance().Trace( 1, "%s: Не найдено поле %s либо оно не имеет необходимых атрибутов", __FUNCTION__, HOST_TAG );
-		throw PacketErr( "Не найдено поле" );
+		Log::instance().Trace( 1, "%s: РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ %s Р»РёР±Рѕ РѕРЅРѕ РЅРµ РёРјРµРµС‚ РЅРµРѕР±С…РѕРґРёРјС‹С… Р°С‚СЂРёР±СѓС‚РѕРІ", __FUNCTION__, HOST_TAG );
+		throw PacketErr( "РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ" );
 	}
 	GetHostRec( Host );
 }
@@ -109,8 +109,8 @@ void CInPacket::GetHostRec( hostRec& Host )
 {
 	if( NULL == m_pHostElement->Attribute( HOST_NAME ) || NULL == m_pHostElement->Attribute( HOST_ADDR ) )
 	{
-		Log::instance().Trace( 1, "%s: Не найдено поле %s либо оно не имеет необходимых атрибутов", __FUNCTION__, HOST_TAG );
-		throw PacketErr( "Не найдено поле" );
+		Log::instance().Trace( 1, "%s: РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ %s Р»РёР±Рѕ РѕРЅРѕ РЅРµ РёРјРµРµС‚ РЅРµРѕР±С…РѕРґРёРјС‹С… Р°С‚СЂРёР±СѓС‚РѕРІ", __FUNCTION__, HOST_TAG );
+		throw PacketErr( "РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ" );
 	}
 	Host.HostName = m_pHostElement->Attribute( HOST_NAME );
 	Host.IPNum = m_pHostElement->Attribute( HOST_ADDR );
@@ -130,7 +130,7 @@ bool CInPacket::GetNextHostRec( hostRec& Host )
 {
 	if( NULL == m_pHostElement )
 	{
-		Log::instance().Trace( 1, "%s: Загрузка информации о файлах не была начата ", __FUNCTION__ );
+		Log::instance().Trace( 1, "%s: Р—Р°РіСЂСѓР·РєР° РёРЅС„РѕСЂРјР°С†РёРё Рѕ С„Р°Р№Р»Р°С… РЅРµ Р±С‹Р»Р° РЅР°С‡Р°С‚Р° ", __FUNCTION__ );
 		return false;
 	}
 	if( NULL == ( m_pHostElement = m_pHostElement->NextSiblingElement( HOST_TAG ) ) )
@@ -155,14 +155,14 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName,
 {
 	if( NULL == pParentElem )
 	{
-		Log::instance().Trace( 1, "%s: Пакет для разбора не был загружен", __FUNCTION__ );
-		throw PacketErr( "Пакет для разбора не был загружен" );
+		Log::instance().Trace( 1, "%s: РџР°РєРµС‚ РґР»СЏ СЂР°Р·Р±РѕСЂР° РЅРµ Р±С‹Р» Р·Р°РіСЂСѓР¶РµРЅ", __FUNCTION__ );
+		throw PacketErr( "РџР°РєРµС‚ РґР»СЏ СЂР°Р·Р±РѕСЂР° РЅРµ Р±С‹Р» Р·Р°РіСЂСѓР¶РµРЅ" );
 	}
 	TiXmlElement* pTmp = pParentElem->FirstChildElement( strName );
 	if( NULL == pTmp )
 	{
-		Log::instance().Trace( 1, "%s: Не найдено поле %s", __FUNCTION__, strName.c_str() );
-		throw PacketErr( "Не найдено поле" );
+		Log::instance().Trace( 1, "%s: РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ %s", __FUNCTION__, strName.c_str() );
+		throw PacketErr( "РќРµ РЅР°Р№РґРµРЅРѕ РїРѕР»Рµ" );
 	}
 	strValue = pTmp->GetText();
 }
@@ -173,8 +173,8 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 	GetField( pParentElem, strName, strTmp );
 	if( ( 0 == ( iValue = atoi( strTmp.c_str() ) ) ) && ( "0" != strTmp ) )
 	{
-		Log::instance().Trace( 1, "%s: Ошибка преобразования поля %s = %s в целое число", __FUNCTION__, strName.c_str(), strTmp.c_str() );
-		throw PacketErr( "Ошибка преобразования поля" );
+		Log::instance().Trace( 1, "%s: РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ %s = %s РІ С†РµР»РѕРµ С‡РёСЃР»Рѕ", __FUNCTION__, strName.c_str(), strTmp.c_str() );
+		throw PacketErr( "РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ" );
 	}
 }
 
@@ -184,8 +184,8 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 	GetField( pParentElem, strName, strTmp );
 	if( ( 0 == ( iValue = atoll( strTmp.c_str() ) ) ) && ( "0" != strTmp ) )
 	{
-		Log::instance().Trace( 1, "%s: Ошибка преобразования поля %s = %s в целое 64 битовое число", __FUNCTION__, strName.c_str(), strTmp.c_str() );
-		throw PacketErr( "Ошибка преобразования поля" );
+		Log::instance().Trace( 1, "%s: РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ %s = %s РІ С†РµР»РѕРµ 64 Р±РёС‚РѕРІРѕРµ С‡РёСЃР»Рѕ", __FUNCTION__, strName.c_str(), strTmp.c_str() );
+		throw PacketErr( "РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ" );
 	}
 }
 
@@ -199,8 +199,8 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 		bValue = false;
 	else
 	{
-		Log::instance().Trace( 1, "%s: Ошибка преобразования поля %s = %s булевское значение", __FUNCTION__, strName.c_str(), strVal.c_str() );
-		throw PacketErr( "Ошибка преобразования поля" );
+		Log::instance().Trace( 1, "%s: РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ %s = %s Р±СѓР»РµРІСЃРєРѕРµ Р·РЅР°С‡РµРЅРёРµ", __FUNCTION__, strName.c_str(), strVal.c_str() );
+		throw PacketErr( "РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ" );
 	}
 }
 
@@ -208,11 +208,11 @@ void CInPacket::GetField( TiXmlElement* pParentElem, const std::string& strName 
 {
 	std::string strVal;
 	GetField( pParentElem, strName, strVal );
-	//Поле времени передается в виде последовательности байт
+	//РџРѕР»Рµ РІСЂРµРјРµРЅРё РїРµСЂРµРґР°РµС‚СЃСЏ РІ РІРёРґРµ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё Р±Р°Р№С‚
 	if( sizeof( time_t )*2 != strVal.size() )
 	{
-		Log::instance().Trace( 1, "%s: Ошибка преобразования поля %s = %s в значение типа time_t", __FUNCTION__, strName.c_str(), strVal.c_str() );
-		throw PacketErr( "Ошибка преобразования поля" );
+		Log::instance().Trace( 1, "%s: РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ %s = %s РІ Р·РЅР°С‡РµРЅРёРµ С‚РёРїР° time_t", __FUNCTION__, strName.c_str(), strVal.c_str() );
+		throw PacketErr( "РћС€РёР±РєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РїРѕР»СЏ" );
 	}
 	tValue = StrToTimet( strVal );
 }
@@ -286,7 +286,7 @@ void COutPacket::PutHostRec( const hostRec& Host, const std::string& strProtoNam
 	strTmp += "</";strTmp += HOST_TAG;strTmp += ">\r\n";
 	size_t Pos;
 	if( std::string::npos == ( Pos = m_strPacket.find( "</packet>" ) ) )
-		throw PacketErr( "Не найден завершающий тег </packet>" );
+		throw PacketErr( "РќРµ РЅР°Р№РґРµРЅ Р·Р°РІРµСЂС€Р°СЋС‰РёР№ С‚РµРі </packet>" );
 	m_strPacket.insert( Pos, strTmp );
 }
 

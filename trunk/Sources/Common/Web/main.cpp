@@ -1,4 +1,4 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h>
@@ -38,16 +38,16 @@ int FErrorCode = 0;
 string TmpBuf1;
 string TmpBuf2;
 
-void SetVars(); //Заполняет ассоциативный массив значениями полученными из формы
-string $(const string& aName); //Возвращает значения переменной
-bool IsSet(const string& aName); //Проверяет наличие переменной
-void ConvChars(string& aStr); // Конвертирует полученную строку в ANSI
-void Spliter(const string& aStr); // Разбивает строку полученную из формы на переменные и добавляет их в ассоциативный массив
-void CrFormSq(string& aBuf); // Возвращет строку содержащую HTML код формы запроса
-void CrMenu(string& aBuf); // Возвращет строку содержащую HTML код меню
-void CrMainForm(string& aBuf); // Возвращет строку содержащую HTML шаблон документа состоящий из 2-х контейнеров, для меню и для формы
-void LoadFilter(); // Загружает из строки установок список фильтров для поиска
-void CrResult(string& aBuf); // Возвращает строку с результатами поиска
+void SetVars(); //Р—Р°РїРѕР»РЅСЏРµС‚ Р°СЃСЃРѕС†РёР°С‚РёРІРЅС‹Р№ РјР°СЃСЃРёРІ Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕР»СѓС‡РµРЅРЅС‹РјРё РёР· С„РѕСЂРјС‹
+string $(const string& aName); //Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёСЏ РїРµСЂРµРјРµРЅРЅРѕР№
+bool IsSet(const string& aName); //РџСЂРѕРІРµСЂСЏРµС‚ РЅР°Р»РёС‡РёРµ РїРµСЂРµРјРµРЅРЅРѕР№
+void ConvChars(string& aStr); // РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ РїРѕР»СѓС‡РµРЅРЅСѓСЋ СЃС‚СЂРѕРєСѓ РІ ANSI
+void Spliter(const string& aStr); // Р Р°Р·Р±РёРІР°РµС‚ СЃС‚СЂРѕРєСѓ РїРѕР»СѓС‡РµРЅРЅСѓСЋ РёР· С„РѕСЂРјС‹ РЅР° РїРµСЂРµРјРµРЅРЅС‹Рµ Рё РґРѕР±Р°РІР»СЏРµС‚ РёС… РІ Р°СЃСЃРѕС†РёР°С‚РёРІРЅС‹Р№ РјР°СЃСЃРёРІ
+void CrFormSq(string& aBuf); // Р’РѕР·РІСЂР°С‰РµС‚ СЃС‚СЂРѕРєСѓ СЃРѕРґРµСЂР¶Р°С‰СѓСЋ HTML РєРѕРґ С„РѕСЂРјС‹ Р·Р°РїСЂРѕСЃР°
+void CrMenu(string& aBuf); // Р’РѕР·РІСЂР°С‰РµС‚ СЃС‚СЂРѕРєСѓ СЃРѕРґРµСЂР¶Р°С‰СѓСЋ HTML РєРѕРґ РјРµРЅСЋ
+void CrMainForm(string& aBuf); // Р’РѕР·РІСЂР°С‰РµС‚ СЃС‚СЂРѕРєСѓ СЃРѕРґРµСЂР¶Р°С‰СѓСЋ HTML С€Р°Р±Р»РѕРЅ РґРѕРєСѓРјРµРЅС‚Р° СЃРѕСЃС‚РѕСЏС‰РёР№ РёР· 2-С… РєРѕРЅС‚РµР№РЅРµСЂРѕРІ, РґР»СЏ РјРµРЅСЋ Рё РґР»СЏ С„РѕСЂРјС‹
+void LoadFilter(); // Р—Р°РіСЂСѓР¶Р°РµС‚ РёР· СЃС‚СЂРѕРєРё СѓСЃС‚Р°РЅРѕРІРѕРє СЃРїРёСЃРѕРє С„РёР»СЊС‚СЂРѕРІ РґР»СЏ РїРѕРёСЃРєР°
+void CrResult(string& aBuf); // Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂРѕРєСѓ СЃ СЂРµР·СѓР»СЊС‚Р°С‚Р°РјРё РїРѕРёСЃРєР°
 
 bool TemplateLoad(const string& aFileName, string& aText);
 void TemplateAssignVars(string& aCode, const TStrParams& aArr);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[], char *envp[])
 {
 	int iLogLevel;
   string sFormat, sMenu, sCount;
-	//Инициализация установок и логера
+	//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СѓСЃС‚Р°РЅРѕРІРѕРє Рё Р»РѕРіРµСЂР°
 	try
 	{
 		Log::instance().SetModuleName( "Web" );
@@ -105,9 +105,9 @@ int main(int argc, char *argv[], char *envp[])
 //		CrResult(sCount);
 ///////////////////////////////////////////////////////////////////////////////
 		Log::instance().Trace( 150, "%s::Debug information::Exit function CrResult", __FUNCTION__ );
-		sCount+="<div><p align=\"center\">Система распределеного поиска<br /><a href=\"http:\\\\exspecto.berlios.de\">exspecto.berlios.de</a></p></div>";
+		sCount+="<div><p align=\"center\">РЎРёСЃС‚РµРјР° СЂР°СЃРїСЂРµРґРµР»РµРЅРѕРіРѕ РїРѕРёСЃРєР°<br /><a href=\"http:\\\\exspecto.berlios.de\">exspecto.berlios.de</a></p></div>";
 /*
-		sCount+="<p>Аргументов ";
+		sCount+="<p>РђСЂРіСѓРјРµРЅС‚РѕРІ ";
 		sCount+=itoa(argc,tmp,10);
 		sCount+="\n";
 		for(i = 0; i<argc; i++)
@@ -119,7 +119,7 @@ int main(int argc, char *argv[], char *envp[])
 			sCount+="\n";
 		}
 		i=0;
-		sCount+="<p>Строка окружения:";
+		sCount+="<p>РЎС‚СЂРѕРєР° РѕРєСЂСѓР¶РµРЅРёСЏ:";
 		while(envp[i]!=NULL)
 		{
 			sCount+="<br>[";
@@ -129,7 +129,7 @@ int main(int argc, char *argv[], char *envp[])
 			sCount+="\n";
 			i++;
 		}
-		sCount+="<p>Буфер: ";
+		sCount+="<p>Р‘СѓС„РµСЂ: ";
 		sCount+=TmpBuf1;
 		sCount+="<br />";
 		sCount+=TmpBuf2;
@@ -202,7 +202,7 @@ void CrResult(string& aBuf)
 		if( NULL == ( ProvFn = (ProvType *)::GetProcAddress( hLib, "RegisterPlugin" ) ) )
 		{
 			FErrorCode = GetLastError();
-			FErrorText = "не удалось получить адрес функции RegisterPlugin из библиотеки DBSQLite";
+			FErrorText = "РЅРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ Р°РґСЂРµСЃ С„СѓРЅРєС†РёРё RegisterPlugin РёР· Р±РёР±Р»РёРѕС‚РµРєРё DBSQLite";
 			ErrStr(10);
 			::FreeLibrary( hLib );
 			hLib=NULL;
@@ -213,7 +213,7 @@ void CrResult(string& aBuf)
 		if(db == NULL)
 		{
 			FErrorCode = -1;
-			FErrorText = "не удалось получить адресс класса провайдера из библиотеки DBSQLite";
+			FErrorText = "РЅРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ Р°РґСЂРµСЃСЃ РєР»Р°СЃСЃР° РїСЂРѕРІР°Р№РґРµСЂР° РёР· Р±РёР±Р»РёРѕС‚РµРєРё DBSQLite";
 			ErrStr(10);
 			throw;
 		}
@@ -237,7 +237,7 @@ void CrResult(string& aBuf)
 					}
 			}
 		}//*/
-	  aParams["IndexFind"]= false; // Отключение поиска по таблице индексированых слов
+	  aParams["IndexFind"]= false; // РћС‚РєР»СЋС‡РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ С‚Р°Р±Р»РёС†Рµ РёРЅРґРµРєСЃРёСЂРѕРІР°РЅС‹С… СЃР»РѕРІ
 
 		Log::instance().Trace( 190, "%s::DEBUG::Plugin name: %s", __FUNCTION__, db->GetNamePlugin() );
 		for(int k = 0; k < 50; k++)
@@ -246,7 +246,7 @@ void CrResult(string& aBuf)
 			bResult = db->Search($(QUERY_TEXT), aParams, rec);
 			Log::instance().Trace( 150, "%s:: Test by error", __FUNCTION__ );
 			i=db->GetProvError(tstr);
-			Log::instance().Trace( 180, "%s:: Проверка кода ошибки", __FUNCTION__ );
+			Log::instance().Trace( 180, "%s:: РџСЂРѕРІРµСЂРєР° РєРѕРґР° РѕС€РёР±РєРё", __FUNCTION__ );
 			if( i != RESULT_OK )
 			{
 				FErrorCode = i;
@@ -293,13 +293,13 @@ void CrResult(string& aBuf)
 				Log::instance().Trace( 200, "%s::DEBUG::TemplateFill:%s", __FUNCTION__, tstr.c_str() );
 			}
 			aBuf+=tstr;//*/
-		}else{aBuf+="Ничего не найдено.";}
+		}else{aBuf+="РќРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.";}
 //*/		
 	}catch(...){
 		if(!FErrorCode)
 			FErrorCode = -1;
 		if(FErrorText.empty())
-			FErrorText = "Произошла ошибка, дальнейшее выполнение скрипта невозможно. Оббратитесь к админестрации для устранения ошибки.";
+			FErrorText = "РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°, РґР°Р»СЊРЅРµР№С€РµРµ РІС‹РїРѕР»РЅРµРЅРёРµ СЃРєСЂРёРїС‚Р° РЅРµРІРѕР·РјРѕР¶РЅРѕ. РћР±Р±СЂР°С‚РёС‚РµСЃСЊ Рє Р°РґРјРёРЅРµСЃС‚СЂР°С†РёРё РґР»СЏ СѓСЃС‚СЂР°РЅРµРЅРёСЏ РѕС€РёР±РєРё.";
 		ErrStr(10);
 		throw;
 	}
@@ -468,7 +468,7 @@ void SetVars()
 	Log::instance().Trace( 100, "%s [exit]", __FUNCTION__ );
 }
 
-// Функция изменяет передаваемую строку
+// Р¤СѓРЅРєС†РёСЏ РёР·РјРµРЅСЏРµС‚ РїРµСЂРµРґР°РІР°РµРјСѓСЋ СЃС‚СЂРѕРєСѓ
 void ConvChars(string& aStr) 
 {
 	Log::instance().Trace( 100, "%s [enter]", __FUNCTION__ );
@@ -553,8 +553,8 @@ void CrMenu(string& aBuf)
 	string templ;
 	if(!TemplateLoad("Menu.tpl", templ))
 	{
-		Log::instance().Trace( 50, "%s::Невозможно загрузить шаблон Menu.tpl. Отображение формы меню недоступно.", __FUNCTION__ );
-		aBuf += "Невозможно загрузить шаблон Menu.tpl. Отображение формы меню недоступно.";
+		Log::instance().Trace( 50, "%s::РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ С€Р°Р±Р»РѕРЅ Menu.tpl. РћС‚РѕР±СЂР°Р¶РµРЅРёРµ С„РѕСЂРјС‹ РјРµРЅСЋ РЅРµРґРѕСЃС‚СѓРїРЅРѕ.", __FUNCTION__ );
+		aBuf += "РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ С€Р°Р±Р»РѕРЅ Menu.tpl. РћС‚РѕР±СЂР°Р¶РµРЅРёРµ С„РѕСЂРјС‹ РјРµРЅСЋ РЅРµРґРѕСЃС‚СѓРїРЅРѕ.";
 		return;
 	}
 	aBuf+= templ;
@@ -573,8 +573,8 @@ void CrFormSq(string& aBuf)
 	
 	if(!TemplateLoad("Query.tpl", templ))
 	{
-		Log::instance().Trace( 50, "%s::Невозможно загрузить шаблон Query.tpl. Отображение формы запроса недоступно.", __FUNCTION__ );
-		aBuf += "Невозможно загрузить шаблон Query.tpl. Отображение формы запроса недоступно.";
+		Log::instance().Trace( 50, "%s::РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ С€Р°Р±Р»РѕРЅ Query.tpl. РћС‚РѕР±СЂР°Р¶РµРЅРёРµ С„РѕСЂРјС‹ Р·Р°РїСЂРѕСЃР° РЅРµРґРѕСЃС‚СѓРїРЅРѕ.", __FUNCTION__ );
+		aBuf += "РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ С€Р°Р±Р»РѕРЅ Query.tpl. РћС‚РѕР±СЂР°Р¶РµРЅРёРµ С„РѕСЂРјС‹ Р·Р°РїСЂРѕСЃР° РЅРµРґРѕСЃС‚СѓРїРЅРѕ.";
 		return;
 	}
 	Log::instance().Trace( 200, "%s::DEBUG::Template:%s", __FUNCTION__, templ.c_str() );
@@ -676,7 +676,7 @@ void CrMainForm(string& aBuf)
 	aBuf= "Content-Type: text/html\r\n\r\n";
 	if(!TemplateLoad("Main.tpl", templ))
 	{
-		Log::instance().Trace( 50, "%s::Шаблон Main.tpl ненайден... Дальнейшая работа не возможна!", __FUNCTION__ );
+		Log::instance().Trace( 50, "%s::РЁР°Р±Р»РѕРЅ Main.tpl РЅРµРЅР°Р№РґРµРЅ... Р”Р°Р»СЊРЅРµР№С€Р°СЏ СЂР°Р±РѕС‚Р° РЅРµ РІРѕР·РјРѕР¶РЅР°!", __FUNCTION__ );
 		aBuf+="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
 		aBuf+="<html xmlns=\"http://www.w3.org/1999/xhtml\">";
 		aBuf+="<head>";
@@ -685,7 +685,7 @@ void CrMainForm(string& aBuf)
 		aBuf+="</head>";
 
 		aBuf+="<body>";
-		aBuf+="Шаблон Main.tpl ненайден... Дальнейшая работа не возможна!";
+		aBuf+="РЁР°Р±Р»РѕРЅ Main.tpl РЅРµРЅР°Р№РґРµРЅ... Р”Р°Р»СЊРЅРµР№С€Р°СЏ СЂР°Р±РѕС‚Р° РЅРµ РІРѕР·РјРѕР¶РЅР°!";
 		aBuf+="</body>";
 		aBuf+="</html>";
 	}else aBuf+=templ;

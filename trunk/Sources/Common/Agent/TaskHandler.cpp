@@ -1,4 +1,4 @@
-#include "precomp.h"
+п»ї#include "precomp.h"
 #include "Socket.h"
 #include "TaskHandler.h"
 
@@ -12,16 +12,16 @@ CTaskHandler::CTaskHandler():m_ProcessThread( SmartPtr<CThreadTask>( new CProces
 
 CTaskHandler::~CTaskHandler()
 {
-	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Закрытие обработчика команд" );
+	Log::instance().Trace( 95, "CTaskHandler::~CTaskHandler: Р—Р°РєСЂС‹С‚РёРµ РѕР±СЂР°Р±РѕС‚С‡РёРєР° РєРѕРјР°РЅРґ" );
 }
 
 void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
 {
-	Log::instance().Trace( 95, "CTaskHandler::AddTask: Добавление задания: %s", pTask->GetDescription().c_str() );
+	Log::instance().Trace( 95, "CTaskHandler::AddTask: Р”РѕР±Р°РІР»РµРЅРёРµ Р·Р°РґР°РЅРёСЏ: %s", pTask->GetDescription().c_str() );
 	CLock lock( m_mtxTasks );
 	if( !pTask->Immidiate() )
 	{
-		Log::instance().Trace( 95, "CTaskHandler::AddTask: Задание поставленно в очередь выполнения" );
+		Log::instance().Trace( 95, "CTaskHandler::AddTask: Р—Р°РґР°РЅРёРµ РїРѕСЃС‚Р°РІР»РµРЅРЅРѕ РІ РѕС‡РµСЂРµРґСЊ РІС‹РїРѕР»РЅРµРЅРёСЏ" );
 		m_deqTasks.push_back( pTask );
 		m_TaskAddedEv.Set();
 	}
@@ -29,7 +29,7 @@ void CTaskHandler::AddTask( SmartPtr< CTask > pTask )
 
 void CTaskHandler::CProcessThreadTask::Execute( CEvent& CancelEv )
 {
-	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Запуск потока обработчика команд" );
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Р—Р°РїСѓСЃРє РїРѕС‚РѕРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєР° РєРѕРјР°РЅРґ" );
 	SmartPtr< CTask > pTask;
 	try{
 		for(;;)
@@ -59,24 +59,24 @@ void CTaskHandler::CProcessThreadTask::Execute( CEvent& CancelEv )
 
 			if( pTask.get() )
 			{
-				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Выполнение задания: %s", pTask->GetDescription().c_str() );
+				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Р’С‹РїРѕР»РЅРµРЅРёРµ Р·Р°РґР°РЅРёСЏ: %s", pTask->GetDescription().c_str() );
 				pTask->Execute( CancelEv );
 				pTask.Release();
 			}
 		}
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло исключение: %s", e.what() );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Р’РѕР·РЅРёРєР»Рѕ РёСЃРєР»СЋС‡РµРЅРёРµ: %s", e.what() );
 	}/*catch( ... )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло неизвестное исключение" );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Р’РѕР·РЅРёРєР»Рѕ РЅРµРёР·РІРµСЃС‚РЅРѕРµ РёСЃРєР»СЋС‡РµРЅРёРµ" );
 	}*/
-	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Завершение потока обработчика команд" );
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Р—Р°РІРµСЂС€РµРЅРёРµ РїРѕС‚РѕРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєР° РєРѕРјР°РЅРґ" );
 }
 /*
 unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 {
-	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Запуск потока обработчика команд" );
+	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Р—Р°РїСѓСЃРє РїРѕС‚РѕРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєР° РєРѕРјР°РЅРґ" );
 	CTaskHandler* pThis = (CTaskHandler*)param;
 	SmartPtr< CTask > pTask;
 	DWORD dwRes;
@@ -88,7 +88,7 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 			if( WAIT_OBJECT_0 == ( dwRes = WaitForMultipleObjects( sizeof( hEvents )/sizeof( hEvents[0] ), hEvents, FALSE, INFINITE ) ) )
 				break;
 			else if( dwRes != ( WAIT_OBJECT_0 + 1 ) )
-				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: Внутрення ошибка!" );
+				Log::instance().Trace( 10, "CTaskHandler::fnProcessThread: Р’РЅСѓС‚СЂРµРЅРЅСЏ РѕС€РёР±РєР°!" );
 
 
 			pThis->m_mtxTasks.Lock();
@@ -101,19 +101,19 @@ unsigned _stdcall CTaskHandler::fnProcessThread( void* param )
 
 			if( pTask.get() )
 			{
-				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Выполнение задания: %s", pTask->GetDescription().c_str() );
+				Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Р’С‹РїРѕР»РЅРµРЅРёРµ Р·Р°РґР°РЅРёСЏ: %s", pTask->GetDescription().c_str() );
 				pTask->Execute( pThis->m_CloseEv );
 				pTask.Release();
 			}
 		}
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло исключение: %s", e.what() );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Р’РѕР·РЅРёРєР»Рѕ РёСЃРєР»СЋС‡РµРЅРёРµ: %s", e.what() );
 	}/*catch( ... )
 	{
-		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Возникло неизвестное исключение" );
+		Log::instance().Trace( 10," CTaskHandler::fnProcessThread: Р’РѕР·РЅРёРєР»Рѕ РЅРµРёР·РІРµСЃС‚РЅРѕРµ РёСЃРєР»СЋС‡РµРЅРёРµ" );
 	}*/
-/*	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Завершение потока обработчика команд" );
+/*	Log::instance().Trace( 95, "CTaskHandler::fnProcessThread: Р—Р°РІРµСЂС€РµРЅРёРµ РїРѕС‚РѕРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєР° РєРѕРјР°РЅРґ" );
 	return 0;
 }
 

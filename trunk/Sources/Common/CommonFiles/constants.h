@@ -1,17 +1,17 @@
-//------------------------------------------------------------------------------------//
-//Этот файл является частью проекта Exspecto 2006г.
+п»ї//------------------------------------------------------------------------------------//
+//Р­С‚РѕС‚ С„Р°Р№Р» СЏРІР»СЏРµС‚СЃСЏ С‡Р°СЃС‚СЊСЋ РїСЂРѕРµРєС‚Р° Exspecto 2006Рі.
 //Module: enumCommands type
 //Author: Parshin Dmitry
-//Description: Константы, используемые во всем проекте
+//Description: РљРѕРЅСЃС‚Р°РЅС‚С‹, РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РІРѕ РІСЃРµРј РїСЂРѕРµРєС‚Рµ
 //-------------------------------------------------------------------------------------//
 
 #define PLUGIN_PATH	"Plugins"
-//Размер приемного буфера(сокетов)
+//Р Р°Р·РјРµСЂ РїСЂРёРµРјРЅРѕРіРѕ Р±СѓС„РµСЂР°(СЃРѕРєРµС‚РѕРІ)
 #define RECEIVE_BUF_START_SIZE 255
 #define RECEIVE_BUF_MAX_SIZE 25000000
 
 
-//Константы протокола обмена Планировщика и агента
+//РљРѕРЅСЃС‚Р°РЅС‚С‹ РїСЂРѕС‚РѕРєРѕР»Р° РѕР±РјРµРЅР° РџР»Р°РЅРёСЂРѕРІС‰РёРєР° Рё Р°РіРµРЅС‚Р°
 #define COMMAND_ID "commandid"
 #define EVENT_ID "eventid"
 #define FILES_COUNT "RecordsCount"
@@ -28,26 +28,26 @@
 #define FILE_SIZE "filesize"
 #define FILE_PATH "filepath"
 
-//События
+//РЎРѕР±С‹С‚РёСЏ
 #define SCAN_COMPLETE "ScanComplete"
 
-//Команды
+//РљРѕРјР°РЅРґС‹
 #define GET_STATUS "GetStatus"
 #define START_SCAN "StartScan"
 #define GET_DATA "GetData"
 #define STOP_SCAN "StopScan"
 
-//Ответы Агента
+//РћС‚РІРµС‚С‹ РђРіРµРЅС‚Р°
 #define AGENT_RESP_OK "Ok"
 #define AGENT_RESP_INPUT_DATA_ERR "InputError"
 #define AGENT_RESP_PROC_ERR "ProcessingError"
 
-//Состояния Агента
+//РЎРѕСЃС‚РѕСЏРЅРёСЏ РђРіРµРЅС‚Р°
 #define IDLING "Idling"
 #define SCANNING "Scanning"
 #define SENDING_DATA "SendingData"
 
-//Имен параметров в файле Settings.ini
+//РРјРµРЅ РїР°СЂР°РјРµС‚СЂРѕРІ РІ С„Р°Р№Р»Рµ Settings.ini
 #define TIMER_VALUE	"TimerValue"
 #define LOG_LEVEL	"LogLevel"
 #define SCHEDULER_ADDRESS "SchedulerAddress"

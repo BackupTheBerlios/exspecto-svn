@@ -1,4 +1,4 @@
-#ifndef SERVERHANDLER_H_
+п»ї#ifndef SERVERHANDLER_H_
 #define SERVERHANDLER_H_
 
 #include "ClientSocket.h"
@@ -56,7 +56,7 @@ private:
 
 	int m_iEventPort;
 
-	//Приемный буфер
+	//РџСЂРёРµРјРЅС‹Р№ Р±СѓС„РµСЂ
 	std::vector<BYTE> m_vecRecvBuf;
 
 };

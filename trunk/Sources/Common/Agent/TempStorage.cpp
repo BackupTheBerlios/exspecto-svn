@@ -1,4 +1,4 @@
-#include "TempStorage.h"
+п»ї#include "TempStorage.h"
 
 #ifndef WIN32
 #include <sys/stat.h>
@@ -82,7 +82,7 @@ void CTempStorage::Open( bool bRead )
 		if( !m_sFile.is_open() )
 		{
 			std::string strTmp = m_strFileName;
-			strTmp += " не удалось открыть файл для чтения";
+			strTmp += " РЅРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» РґР»СЏ С‡С‚РµРЅРёСЏ";
 			throw TempStorageErr( strTmp );
 		}
 	}else
@@ -91,7 +91,7 @@ void CTempStorage::Open( bool bRead )
 		if( !m_sFile.is_open() )
 		{
 			std::string strTmp = m_strFileName;
-			strTmp += " не удалось открыть файл для записи";
+			strTmp += " РЅРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё";
 			throw TempStorageErr( strTmp );
 		}
 		m_bOpenedForWrite = true;
@@ -100,13 +100,13 @@ void CTempStorage::Open( bool bRead )
 
 void CTempStorage::Clear()
 {
-	//Если файл создавался - удаляем его
+	//Р•СЃР»Рё С„Р°Р№Р» СЃРѕР·РґР°РІР°Р»СЃСЏ - СѓРґР°Р»СЏРµРј РµРіРѕ
 #ifdef WIN32
 	if( m_bOpenedForWrite && !DeleteFile( m_strFileName.c_str() ) )
-		Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s, LastError = %d", m_strFileName.c_str(), GetLastError() );
+		Log::instance().Trace( 100, "CTempStorage::Clear: РЅРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ С„Р°Р№Р» %s, LastError = %d", m_strFileName.c_str(), GetLastError() );
 #else
 	if( m_bOpenedForWrite && 0 != remove( m_strFileName.c_str() ) )
-		Log::instance().Trace( 100, "CTempStorage::Clear: не удалось удалить файл %s, LastError = %d", m_strFileName.c_str(), errno );
+		Log::instance().Trace( 100, "CTempStorage::Clear: РЅРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ С„Р°Р№Р» %s, LastError = %d", m_strFileName.c_str(), errno );
 #endif
 	m_bOpenedForWrite = false;
 }

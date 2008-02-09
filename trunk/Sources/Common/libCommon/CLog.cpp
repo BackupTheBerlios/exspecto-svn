@@ -1,4 +1,4 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <stdarg.h>
 #include <iostream>
 #include "CLog.h"
@@ -12,7 +12,7 @@
 
 CLog::CLog():m_iLogLevel(100)
 {
-	//Получаем имя файла текущего процесса и составляем из него имя файла журнала
+	//РџРѕР»СѓС‡Р°РµРј РёРјСЏ С„Р°Р№Р»Р° С‚РµРєСѓС‰РµРіРѕ РїСЂРѕС†РµСЃСЃР° Рё СЃРѕСЃС‚Р°РІР»СЏРµРј РёР· РЅРµРіРѕ РёРјСЏ С„Р°Р№Р»Р° Р¶СѓСЂРЅР°Р»Р°
 	m_strFileName = get_basepath();
 
 	int iPointPos = (int)m_strFileName.find_first_of( '.' );
@@ -44,7 +44,7 @@ void CLog::SetModuleName( const std::string& strModuleName )
 
 void CLog::Trace(int iLevel, char* trace_text, ...)
 {
-	//Если приоритет записи больше чем установленный - не выполняем никаких действий
+	//Р•СЃР»Рё РїСЂРёРѕСЂРёС‚РµС‚ Р·Р°РїРёСЃРё Р±РѕР»СЊС€Рµ С‡РµРј СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Р№ - РЅРµ РІС‹РїРѕР»РЅСЏРµРј РЅРёРєР°РєРёС… РґРµР№СЃС‚РІРёР№
 	if( iLevel > m_iLogLevel ) return;
 
 	FILE* fp;
@@ -71,7 +71,7 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 
 void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
 {
-	//Если приоритет записи больше чем установленный - не выполняем никаких действий
+	//Р•СЃР»Рё РїСЂРёРѕСЂРёС‚РµС‚ Р·Р°РїРёСЃРё Р±РѕР»СЊС€Рµ С‡РµРј СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Р№ - РЅРµ РІС‹РїРѕР»РЅСЏРµРј РЅРёРєР°РєРёС… РґРµР№СЃС‚РІРёР№
 	if( iLevel > m_iLogLevel ) return;
 
 	FILE* fp;
@@ -93,7 +93,7 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 
 	va_end(args);
 
-	//Запись дампа
+	//Р—Р°РїРёСЃСЊ РґР°РјРїР°
 	char str[17];
 	BYTE *p;
 	int k = 1;

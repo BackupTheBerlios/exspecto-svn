@@ -1,4 +1,4 @@
-#include "precomp.h"
+п»ї#include "precomp.h"
 #include "CScheduler.h"
 #include "TrayManagement.h"
 
@@ -10,9 +10,9 @@ HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 TCHAR szMenuName[MAX_LOADSTRING];			// the main window class name
-//Сообщение поступающее от иконки в трее
+//РЎРѕРѕР±С‰РµРЅРёРµ РїРѕСЃС‚СѓРїР°СЋС‰РµРµ РѕС‚ РёРєРѕРЅРєРё РІ С‚СЂРµРµ
 #define TRAY_ICON_MSG	WM_USER+1
-//Идентификатор команды нажатия на пункт Exit в меню иконки
+//РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјР°РЅРґС‹ РЅР°Р¶Р°С‚РёСЏ РЅР° РїСѓРЅРєС‚ Exit РІ РјРµРЅСЋ РёРєРѕРЅРєРё
 #define IDM_EXIT	1
 
 // Forward declarations of functions included in this code module:
@@ -23,17 +23,17 @@ LRESULT CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 CScheduler* pScheduler;
 
-//Обработчик сообщений от иконки в трее
+//РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕРѕР±С‰РµРЅРёР№ РѕС‚ РёРєРѕРЅРєРё РІ С‚СЂРµРµ
 void OnTrayIcon( HWND hWnd, WPARAM wParam, LPARAM lParam )
 {
-	// Идентификатор иконки
+	// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РёРєРѕРЅРєРё
 		switch( wParam ) {
 			case 0:
 			{
-				// Тип нотификации
+				// РўРёРї РЅРѕС‚РёС„РёРєР°С†РёРё
 				switch( lParam ) {
 					
-					// Поднимаем popup-меню, при помощи которого можно управлять работой сервиса
+					// РџРѕРґРЅРёРјР°РµРј popup-РјРµРЅСЋ, РїСЂРё РїРѕРјРѕС‰Рё РєРѕС‚РѕСЂРѕРіРѕ РјРѕР¶РЅРѕ СѓРїСЂР°РІР»СЏС‚СЊ СЂР°Р±РѕС‚РѕР№ СЃРµСЂРІРёСЃР°
 					case WM_RBUTTONDOWN:
 					{
 						HMENU hMenu = CreatePopupMenu();
@@ -120,8 +120,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	{
 		return FALSE;
 	}
-  // Если окно создано успешно - поднимаем иконку в область системного трэя
-   // и регистрируем callback-сообщения на себя
+  // Р•СЃР»Рё РѕРєРЅРѕ СЃРѕР·РґР°РЅРѕ СѓСЃРїРµС€РЅРѕ - РїРѕРґРЅРёРјР°РµРј РёРєРѕРЅРєСѓ РІ РѕР±Р»Р°СЃС‚СЊ СЃРёСЃС‚РµРјРЅРѕРіРѕ С‚СЂСЌСЏ
+   // Рё СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј callback-СЃРѕРѕР±С‰РµРЅРёСЏ РЅР° СЃРµР±СЏ
 	TaskBarAddIcon(
 		   hWnd,
 		   0,
@@ -136,10 +136,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 			return FALSE;
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 0, "InitInstance: Возникло исключение при инициализации: %s", e.what() );
+		Log::instance().Trace( 0, "InitInstance: Р’РѕР·РЅРёРєР»Рѕ РёСЃРєР»СЋС‡РµРЅРёРµ РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё: %s", e.what() );
 	}catch( ... )
 	{
-		Log::instance().Trace( 0, "InitInstance: Возникло неизвестное исключение при инициализации" );
+		Log::instance().Trace( 0, "InitInstance: Р’РѕР·РЅРёРєР»Рѕ РЅРµРёР·РІРµСЃС‚РЅРѕРµ РёСЃРєР»СЋС‡РµРЅРёРµ РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё" );
 	}
    	return TRUE;
 }
@@ -154,7 +154,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		delete pScheduler;
 		DumpMemLeaks();
-		// Разрушаем иконку, помещённую в системный трэй
+		// Р Р°Р·СЂСѓС€Р°РµРј РёРєРѕРЅРєСѓ, РїРѕРјРµС‰С‘РЅРЅСѓСЋ РІ СЃРёСЃС‚РµРјРЅС‹Р№ С‚СЂСЌР№
 		TaskBarDeleteIcon( hWnd, 0 );
 		PostQuitMessage(0);
 		break;

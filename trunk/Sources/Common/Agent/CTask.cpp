@@ -1,9 +1,9 @@
-#include "precomp.h"
+п»ї#include "precomp.h"
 #include "MessageParser.h"
 #include "CTask.h"
 #include "ping.h"
 
-//Максимальный размер пакета с данными для посылки 2MB
+//РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ РїР°РєРµС‚Р° СЃ РґР°РЅРЅС‹РјРё РґР»СЏ РїРѕСЃС‹Р»РєРё 2MB
 #define MAX_PACKET_SIZE  2097152
 
 std::string CTask::m_CurState = IDLING;
@@ -24,7 +24,7 @@ bool CGetStatus::Immidiate()
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	Msg.PutField( AGENT_STATUS, m_CurState );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CGetStatus:Immidiate: Отправлен ответ: %s", Msg.ToString().c_str() );
+	Log::instance().Trace( 90, "CGetStatus:Immidiate: РћС‚РїСЂР°РІР»РµРЅ РѕС‚РІРµС‚: %s", Msg.ToString().c_str() );
 	return true;
 }
 namespace
@@ -59,14 +59,14 @@ void CStartScan::CResolveTask::Execute( CEvent& CancelEvent )
 void CStartScan::CScanThreadTask::Execute( CEvent& CancelEvent )
 {
 	try{
-	    //TODO: разобраться с отменой
+	    //TODO: СЂР°Р·РѕР±СЂР°С‚СЊСЃСЏ СЃ РѕС‚РјРµРЅРѕР№
 		m_pScanner( m_strAddr.c_str(), CStartScan::CScanThreadTask::StorageFunc, 0 );
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: Исключение: %s", e.what() );
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: РСЃРєР»СЋС‡РµРЅРёРµ: %s", e.what() );
 	}catch( ... )
 	{
-		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: Неизвестное сключение" );
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::Execute: РќРµРёР·РІРµСЃС‚РЅРѕРµ СЃРєР»СЋС‡РµРЅРёРµ" );
 	}
 }
 
@@ -81,10 +81,10 @@ void CStartScan::CScanThreadTask::StorageFunc( const char* strAddress
 	if( ( m_mapStorages.end() == ( It = m_mapStorages.find( strAddress ) ) )
 		|| ( It->second.end() == It->second.find( strProtocolName ) ) )
 	{
-		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::StorageFunc: Не найдено хранилище для данных, адрес: %s, протокол: %s", strAddress, strProtocolName );
+		Log::instance().Trace( 0, "CStartScan::CScanThreadTask::StorageFunc: РќРµ РЅР°Р№РґРµРЅРѕ С…СЂР°РЅРёР»РёС‰Рµ РґР»СЏ РґР°РЅРЅС‹С…, Р°РґСЂРµСЃ: %s, РїСЂРѕС‚РѕРєРѕР»: %s", strAddress, strProtocolName );
 		return;
 	}
-	//TODO: переделать интерфейс StorageFunc, чтобы он использовал FileStr
+	//TODO: РїРµСЂРµРґРµР»Р°С‚СЊ РёРЅС‚РµСЂС„РµР№СЃ StorageFunc, С‡С‚РѕР±С‹ РѕРЅ РёСЃРїРѕР»СЊР·РѕРІР°Р» FileStr
 	fileStr File;
 	File.FileSize = FileSize;
 	File.FileName = strFileName;
@@ -119,14 +119,14 @@ bool CStartScan::Immidiate()
 	COutPacket Msg;
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CStartScan:Immidiate: Отправлен ответ" );
+	Log::instance().Trace( 90, "CStartScan:Immidiate: РћС‚РїСЂР°РІР»РµРЅ РѕС‚РІРµС‚" );
 	return false;
 }
 
 void CStartScan::Execute( CEvent& CancelEv )
 {
-	//TODO:проверять состояние перед началом сканирования
-	Log::instance().Trace( 90, "CStartScan: Поступил запрос на начало сканирования" );
+	//TODO:РїСЂРѕРІРµСЂСЏС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ РїРµСЂРµРґ РЅР°С‡Р°Р»РѕРј СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ
+	Log::instance().Trace( 90, "CStartScan: РџРѕСЃС‚СѓРїРёР» Р·Р°РїСЂРѕСЃ РЅР° РЅР°С‡Р°Р»Рѕ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ" );
 	m_mtxCurState.Lock();
 		m_CurState = SCANNING;
 	m_mtxCurState.Unlock();
@@ -135,15 +135,15 @@ void CStartScan::Execute( CEvent& CancelEv )
 
 	int iThreadsCount;
 	Settings::instance().GetParam( SCAN_THREADS_COUNT, iThreadsCount );
-	Log::instance().Trace( 10, "CStartScan::Execute: Инициализируем пул потоков, кол-во потоков: %d", iThreadsCount );
+	Log::instance().Trace( 10, "CStartScan::Execute: РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїСѓР» РїРѕС‚РѕРєРѕРІ, РєРѕР»-РІРѕ РїРѕС‚РѕРєРѕРІ: %d", iThreadsCount );
 	CThreadsPool pool( iThreadsCount );
 
-	//Проверяем доступность хостов
+	//РџСЂРѕРІРµСЂСЏРµРј РґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ С…РѕСЃС‚РѕРІ
 	bool bPingOn;
 	Settings::instance().GetParam( PING_ON, bPingOn );
 	if( bPingOn )
 	{
-		Log::instance().Trace( 10, "CStartScan::Execute: Проверяем доступность хостов, кол-во хостов: %d", m_vecAddresses.size() );
+		Log::instance().Trace( 10, "CStartScan::Execute: РџСЂРѕРІРµСЂСЏРµРј РґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ С…РѕСЃС‚РѕРІ, РєРѕР»-РІРѕ С…РѕСЃС‚РѕРІ: %d", m_vecAddresses.size() );
 		std::vector< SmartPtr< CAvailabilityScanTask > > vecAvailTasks;
 		for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
 		{
@@ -162,17 +162,17 @@ void CStartScan::Execute( CEvent& CancelEv )
 			if( (*It)->IsAvailable() )
 				m_vecAddresses.push_back( (*It)->GetAddress() );
 			else
-				Log::instance().Trace( 10, "CScheduler::OnStartScan: Хост %s не доступен. Исключаем из списка текущего сканирования", (*It)->GetAddress().c_str() );
+				Log::instance().Trace( 10, "CScheduler::OnStartScan: РҐРѕСЃС‚ %s РЅРµ РґРѕСЃС‚СѓРїРµРЅ. РСЃРєР»СЋС‡Р°РµРј РёР· СЃРїРёСЃРєР° С‚РµРєСѓС‰РµРіРѕ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ", (*It)->GetAddress().c_str() );
 		}
-		Log::instance().Trace( 10, "CStartScan::Execute: Проверка доступности закончена" );
+		Log::instance().Trace( 10, "CStartScan::Execute: РџСЂРѕРІРµСЂРєР° РґРѕСЃС‚СѓРїРЅРѕСЃС‚Рё Р·Р°РєРѕРЅС‡РµРЅР°" );
 	}
-	//Получаем имена хостов по адресам
+	//РџРѕР»СѓС‡Р°РµРј РёРјРµРЅР° С…РѕСЃС‚РѕРІ РїРѕ Р°РґСЂРµСЃР°Рј
 	bool bResolveOn;
     Settings::instance().GetParam( RESOLVE_HOST, bResolveOn );
 	std::vector< std::string > vecHostNames;
 	if( bResolveOn )
 	{
-		Log::instance().Trace( 10, "%s: Получаем имена хостов", __FUNCTION__ );
+		Log::instance().Trace( 10, "%s: РџРѕР»СѓС‡Р°РµРј РёРјРµРЅР° С…РѕСЃС‚РѕРІ", __FUNCTION__ );
 		std::vector< SmartPtr< CResolveTask > > vecResolveTasks;
 		for( std::vector< std::string >::iterator It = m_vecAddresses.begin(); It != m_vecAddresses.end(); It++ )
 		{
@@ -186,14 +186,14 @@ void CStartScan::Execute( CEvent& CancelEv )
 		}
 		for( std::vector< SmartPtr< CResolveTask > >::iterator It = vecResolveTasks.begin(); It != vecResolveTasks.end(); It++ )
 		{
-			Log::instance().Trace( 5, "%s: Имя хоста с адресом %s: %s", __FUNCTION__, m_vecAddresses[ std::distance( vecResolveTasks.begin(), It ) ].c_str(), (*It)->GetHostName().c_str() );
+			Log::instance().Trace( 5, "%s: РРјСЏ С…РѕСЃС‚Р° СЃ Р°РґСЂРµСЃРѕРј %s: %s", __FUNCTION__, m_vecAddresses[ std::distance( vecResolveTasks.begin(), It ) ].c_str(), (*It)->GetHostName().c_str() );
 			vecHostNames.push_back( (*It)->GetHostName() );
 		}
-		Log::instance().Trace( 10, "CStartScan::Execute: Получение имен хостов окончено" );
+		Log::instance().Trace( 10, "CStartScan::Execute: РџРѕР»СѓС‡РµРЅРёРµ РёРјРµРЅ С…РѕСЃС‚РѕРІ РѕРєРѕРЅС‡РµРЅРѕ" );
 	}
 
 	std::vector< SmartPtr< CScanThreadTask > > vecThreadTasks;
-	Log::instance().Trace( 12, "CStartScan::Execute: Всего адресов для сканирования: %d", m_vecAddresses.size() );
+	Log::instance().Trace( 12, "CStartScan::Execute: Р’СЃРµРіРѕ Р°РґСЂРµСЃРѕРІ РґР»СЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ: %d", m_vecAddresses.size() );
 
 	for( std::vector< std::string >::iterator AddrIt = m_vecAddresses.begin(); AddrIt != m_vecAddresses.end(); AddrIt++ )
 	{
@@ -202,17 +202,17 @@ void CStartScan::Execute( CEvent& CancelEv )
 		    if( CancelEv.TryWait() )
                 break;
 
-			Log::instance().Trace( 80, "CStartScan: Добавляем задачу сканирвания адреса %s с помощью плагина %s", AddrIt->c_str(), PlugIt->first.c_str() );
+			Log::instance().Trace( 80, "CStartScan: Р”РѕР±Р°РІР»СЏРµРј Р·Р°РґР°С‡Сѓ СЃРєР°РЅРёСЂРІР°РЅРёСЏ Р°РґСЂРµСЃР° %s СЃ РїРѕРјРѕС‰СЊСЋ РїР»Р°РіРёРЅР° %s", AddrIt->c_str(), PlugIt->first.c_str() );
 			vecThreadTasks.push_back( new CScanThreadTask( *AddrIt, PlugIt->second ) );
-			//Создаем временное хранилище для данных сканирования
+			//РЎРѕР·РґР°РµРј РІСЂРµРјРµРЅРЅРѕРµ С…СЂР°РЅРёР»РёС‰Рµ РґР»СЏ РґР°РЅРЅС‹С… СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ
 			m_mapStorages[ *AddrIt ][ PlugIt->first ] = SmartPtr< CTempStorage >( new CTempStorage( vecHostNames.empty()?"":vecHostNames[ std::distance( m_vecAddresses.begin(), AddrIt ) ], *AddrIt, std::string( PlugIt->first ) ) );
 			pool.AddTask( vecThreadTasks.back() );
 
 		}
 		if( CancelEv.TryWait() )
 		{
-			Log::instance().Trace( 90, "CStartScan: Сканирование отменено" );
-			//Сбрасываем событие отмены
+			Log::instance().Trace( 90, "CStartScan: РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ РѕС‚РјРµРЅРµРЅРѕ" );
+			//РЎР±СЂР°СЃС‹РІР°РµРј СЃРѕР±С‹С‚РёРµ РѕС‚РјРµРЅС‹
             //m_CancelEv.Reset();
 			pool.CancelAllTasks();
 			break;
@@ -220,10 +220,10 @@ void CStartScan::Execute( CEvent& CancelEv )
 	}
 	if( !pool.WaitAllComplete( CancelEv ) ){};
 //		pool.CancelAllTasks();
-	Log::instance().Trace( 99, "CStartScan::Execute: Сканирование закончено" );
+	Log::instance().Trace( 99, "CStartScan::Execute: РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ Р·Р°РєРѕРЅС‡РµРЅРѕ" );
 	COutPacket Event;
 	Event.PutField( EVENT_ID, SCAN_COMPLETE );
-	Log::instance().Trace( 99, "CStartScan::Execute: Отправляем событие окончания сканирования" );
+	Log::instance().Trace( 99, "CStartScan::Execute: РћС‚РїСЂР°РІР»СЏРµРј СЃРѕР±С‹С‚РёРµ РѕРєРѕРЅС‡Р°РЅРёСЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ" );
 	m_ServerHandler.SendEvent( Event );
 	m_mtxCurState.Lock();
 		m_CurState = IDLING;
@@ -243,20 +243,20 @@ namespace
 
 bool CStopScan::Immidiate()
 {
-	Log::instance().Trace( 90, "CStopScan: Поступил запрос на отмену сканирования" );
+	Log::instance().Trace( 90, "CStopScan: РџРѕСЃС‚СѓРїРёР» Р·Р°РїСЂРѕСЃ РЅР° РѕС‚РјРµРЅСѓ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ" );
 	m_mtxCurState.Lock();
 		if( SCANNING == m_CurState )
 		{
-			Log::instance().Trace( 90, "CStopScan: Отменяем текущее сканирование" );
-			//TODO:StopScan не работает
+			Log::instance().Trace( 90, "CStopScan: РћС‚РјРµРЅСЏРµРј С‚РµРєСѓС‰РµРµ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ" );
+			//TODO:StopScan РЅРµ СЂР°Р±РѕС‚Р°РµС‚
 			//Cancel();
 		}else
-			Log::instance().Trace( 90, "CStopScan: В данный момент не находится в состоянии сканирования" );
+			Log::instance().Trace( 90, "CStopScan: Р’ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РЅРµ РЅР°С…РѕРґРёС‚СЃСЏ РІ СЃРѕСЃС‚РѕСЏРЅРёРё СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ" );
 	m_mtxCurState.Unlock();
 	COutPacket Msg;
 	Msg.PutField( COMMAND_STAT, AGENT_RESP_OK );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CStopScan:Immidiate: Отправлен ответ: %s", Msg.ToString().c_str() );
+	Log::instance().Trace( 90, "CStopScan:Immidiate: РћС‚РїСЂР°РІР»РµРЅ РѕС‚РІРµС‚: %s", Msg.ToString().c_str() );
 	return true;
 }
 namespace
@@ -278,7 +278,7 @@ void CGetData::Load( CInPacket& Msg )
 
 bool CGetData::Immidiate()
 {
-	Log::instance().Trace( 90, "CGetData: Поступил запрос на получение данных" );
+	Log::instance().Trace( 90, "CGetData: РџРѕСЃС‚СѓРїРёР» Р·Р°РїСЂРѕСЃ РЅР° РїРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С…" );
 
 	COutPacket Msg;
 	hostRec TmpHost;
@@ -310,7 +310,7 @@ bool CGetData::Immidiate()
 	else
 		Msg.PutField( FILES_LEFT, "true" );
 	m_ServerHandler.SendMsg( Msg );
-	Log::instance().Trace( 90, "CGetData: Данные отправлены" );
+	Log::instance().Trace( 90, "CGetData: Р”Р°РЅРЅС‹Рµ РѕС‚РїСЂР°РІР»РµРЅС‹" );
 	m_mapStorages.clear();
 	return true;
 }

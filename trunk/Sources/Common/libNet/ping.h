@@ -1,4 +1,4 @@
-#ifndef PING_H_INCLUDED
+п»ї#ifndef PING_H_INCLUDED
 #define PING_H_INCLUDED
 
 #include "Singleton.hpp"
@@ -17,8 +17,8 @@ namespace Tools{
 		CPingHelper();
 		~CPingHelper();
 
-		//реализована через вызовы icmp.dll, если использовать RAW сокеты  - понадобятся админские права
-		//а пока работает и без них
+		//СЂРµР°Р»РёР·РѕРІР°РЅР° С‡РµСЂРµР· РІС‹Р·РѕРІС‹ icmp.dll, РµСЃР»Рё РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ RAW СЃРѕРєРµС‚С‹  - РїРѕРЅР°РґРѕР±СЏС‚СЃСЏ Р°РґРјРёРЅСЃРєРёРµ РїСЂР°РІР°
+		//Р° РїРѕРєР° СЂР°Р±РѕС‚Р°РµС‚ Рё Р±РµР· РЅРёС…
 		bool Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount );
 
 	private:

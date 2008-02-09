@@ -1,4 +1,4 @@
-#include "precomp.h"
+п»ї#include "precomp.h"
 #include "precomp.h"
 #include "precomp.h"
 #include "ServerHandler.h"
@@ -26,7 +26,7 @@ void CServerHandler::SendEvent( COutPacket& Event )
 {
 	if( !m_pEventSocket->IsConnected() )
 	{
-		Log::instance().Trace( 99, "CServerHandler::SendEvent: Поднимаем канал для посылки события" );
+		Log::instance().Trace( 99, "CServerHandler::SendEvent: РџРѕРґРЅРёРјР°РµРј РєР°РЅР°Р» РґР»СЏ РїРѕСЃС‹Р»РєРё СЃРѕР±С‹С‚РёСЏ" );
 		m_pEventSocket->Connect( m_strAddress, m_iEventPort );
 	}
 	*m_pEventSocket << Event;
@@ -34,7 +34,7 @@ void CServerHandler::SendEvent( COutPacket& Event )
 
 void CServerHandler::SendMsg( COutPacket& Msg, bool bEnd )
 {
-	Log::instance().Trace( 200, "CServerHandler::SendMsg: Отправляем сообщение: %s", Msg.ToString().c_str() );
+	Log::instance().Trace( 200, "CServerHandler::SendMsg: РћС‚РїСЂР°РІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ: %s", Msg.ToString().c_str() );
 	*m_pMsgSocket << Msg;
 }
 
@@ -49,28 +49,28 @@ void CServerHandler::Receive( CInPacket& Msg )
 	int iCount;
 	bool bEnd = false;
 	std::vector< BYTE > vecPacketBuf;
-	//Получаем ответ на сообщение
+	//РџРѕР»СѓС‡Р°РµРј РѕС‚РІРµС‚ РЅР° СЃРѕРѕР±С‰РµРЅРёРµ
 	while( !bEnd && ( iCount = m_pMsgSocket->Receive( &m_vecRecvBuf[0], (int)m_vecRecvBuf.size() ) ) > 0 )
 	{
-		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[0], iCount, "%s: Приняты данные:", __FUNCTION__ );
-		//Проверяем на конец пакета
+		Log::instance().Dump( 200, (BYTE*)&m_vecRecvBuf[0], iCount, "%s: РџСЂРёРЅСЏС‚С‹ РґР°РЅРЅС‹Рµ:", __FUNCTION__ );
+		//РџСЂРѕРІРµСЂСЏРµРј РЅР° РєРѕРЅРµС† РїР°РєРµС‚Р°
 		if( ( iCount > (int)CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ iCount - CInPacket::GetEndStamp().size() ], CInPacket::GetEndStamp().size() ) ) )
 		{
 			iCount -= CInPacket::GetEndStamp().size();
 			bEnd = true;
-		//Если получили только маркер конца
+		//Р•СЃР»Рё РїРѕР»СѓС‡РёР»Рё С‚РѕР»СЊРєРѕ РјР°СЂРєРµСЂ РєРѕРЅС†Р°
 		}else if ( ( iCount == (int)CInPacket::GetEndStamp().size() ) && ( 0 == memcmp( &CInPacket::GetEndStamp()[0], &m_vecRecvBuf[ 0 ], (int)CInPacket::GetEndStamp().size() ) ) )
 			break;
 
 		vecPacketBuf.insert( vecPacketBuf.end(), m_vecRecvBuf.begin(), m_vecRecvBuf.begin() + iCount );
 
-		//Увеличиваем размер буфера при необходимости
+		//РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ Р±СѓС„РµСЂР° РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё
 		if( (iCount == ( (int)m_vecRecvBuf.size() ) ) )
 			if( (m_vecRecvBuf.size()<<1) <= RECEIVE_BUF_MAX_SIZE )
 				m_vecRecvBuf.resize( m_vecRecvBuf.size()<<1 );
 			else if( m_vecRecvBuf.size() < RECEIVE_BUF_MAX_SIZE )
 				m_vecRecvBuf.resize( RECEIVE_BUF_MAX_SIZE );
-		Log::instance().Trace( 80, "%s: Размер приемного буфера: %d", __FUNCTION__, m_vecRecvBuf.size() );
+		Log::instance().Trace( 80, "%s: Р Р°Р·РјРµСЂ РїСЂРёРµРјРЅРѕРіРѕ Р±СѓС„РµСЂР°: %d", __FUNCTION__, m_vecRecvBuf.size() );
 	}
 	if( 0 == iCount )
 		//TODO:
@@ -83,7 +83,7 @@ std::string CServerHandler::GetServerAddress()
 	if( m_pMsgSocket->IsConnected() )
 		return m_pMsgSocket->GetRemoteHost().strAddr;
 	else
-		return "Соединение разорвано";
+		return "РЎРѕРµРґРёРЅРµРЅРёРµ СЂР°Р·РѕСЂРІР°РЅРѕ";
 }
 
 void CServerHandler::CloseSession()

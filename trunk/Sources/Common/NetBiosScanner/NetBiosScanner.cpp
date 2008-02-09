@@ -1,4 +1,4 @@
-#include "NetBiosScanner.h"
+п»ї#include "NetBiosScanner.h"
 #include "MemLeakDetector.h"
 #include "SettingsContainer.h"
 #ifdef _MSC_VER
@@ -12,7 +12,7 @@ DllExport const char* GetProtocolName()
 	return str;
 }
 
-//Удаляет IP-адрес из пути
+//РЈРґР°Р»СЏРµС‚ IP-Р°РґСЂРµСЃ РёР· РїСѓС‚Рё
 std::string RemoveIp( const std::string& ResPath )
 {
 	std::string::size_type sSlashPos;
@@ -24,13 +24,13 @@ std::string RemoveIp( const std::string& ResPath )
 	return ResPath;
 }
 
-//Рекурсивная функция, перебирающая все вложенные папки/файлы
+//Р РµРєСѓСЂСЃРёРІРЅР°СЏ С„СѓРЅРєС†РёСЏ, РїРµСЂРµР±РёСЂР°СЋС‰Р°СЏ РІСЃРµ РІР»РѕР¶РµРЅРЅС‹Рµ РїР°РїРєРё/С„Р°Р№Р»С‹
 void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN StoreDataFunc pStoreFunc, HANDLE hCancelEvent )
 {
-	//Если задание отменили - завершаем выполнение
+	//Р•СЃР»Рё Р·Р°РґР°РЅРёРµ РѕС‚РјРµРЅРёР»Рё - Р·Р°РІРµСЂС€Р°РµРј РІС‹РїРѕР»РЅРµРЅРёРµ
 	if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
 	{
-		Log::instance().Trace( 10, "EnumFiles: Сканирование отменено" );
+		Log::instance().Trace( 10, "EnumFiles: РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ РѕС‚РјРµРЅРµРЅРѕ" );
 		return;
 	}
 	WIN32_FIND_DATA FindFileData;
@@ -38,7 +38,7 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 	std::string strFileName;
 	if( INVALID_HANDLE_VALUE != ( hFile = ::FindFirstFile( strSharePath, &FindFileData ) ) )
 	{
-		//не выводим в результат записи вида . и ..
+		//РЅРµ РІС‹РІРѕРґРёРј РІ СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РїРёСЃРё РІРёРґР° . Рё ..
 		if( ( 0 != strcmp( ".", FindFileData.cFileName ) ) )
 		{
 			strFileName.append( strSharePath, strSharePath + strlen( strSharePath ) - 3 );
@@ -53,10 +53,10 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 		{
 			if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
 			{
-				Log::instance().Trace( 10, "EnumFiles: Сканирование отменено" );
+				Log::instance().Trace( 10, "EnumFiles: РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ РѕС‚РјРµРЅРµРЅРѕ" );
 				break;
 			}
-			//не выводим в результат записи вида . и ..
+			//РЅРµ РІС‹РІРѕРґРёРј РІ СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РїРёСЃРё РІРёРґР° . Рё ..
 			if( 0 != strcmp( ".", FindFileData.cFileName ) && 0 != strcmp( "..", FindFileData.cFileName ) )
 			{
 				strFileName.clear();
@@ -69,10 +69,10 @@ void EnumFiles( IN const char* strAddress, IN const char* strSharePath, IN Store
 							, FindFileData.ftLastWriteTime.dwLowDateTime
 							, FindFileData.ftLastWriteTime.dwHighDateTime );
 
-				Log::instance().Trace( 100, "CNetBiosScanner::EnumFiles: Добавляем ресурс: %s", strFileName.c_str() ); 
+				Log::instance().Trace( 100, "CNetBiosScanner::EnumFiles: Р”РѕР±Р°РІР»СЏРµРј СЂРµСЃСѓСЂСЃ: %s", strFileName.c_str() ); 
 				strFileName += "\\";
 				strFileName += "*.*";
-				//Рекурсивно проводим поиск во вложенных папках
+				//Р РµРєСѓСЂСЃРёРІРЅРѕ РїСЂРѕРІРѕРґРёРј РїРѕРёСЃРє РІРѕ РІР»РѕР¶РµРЅРЅС‹С… РїР°РїРєР°С…
 				EnumFiles( strAddress, strFileName.c_str(), pStoreFunc, hCancelEvent );
 			}
 		}
@@ -90,22 +90,22 @@ DllExport bool Scan( IN const char* strAddress, IN StoreDataFunc pStoreFunc, IN 
 		DWORD handle = 0;
 		DWORD res;
 		char strTmpShareName[255], strTmpSharePath[10240];
-		Log::instance().Trace( 80, "NetBios: Начинаем сканирование адреса %s", strAddress );
-		//Переводим имя сервера в Unicode,т.к. WIN NET API понимает только Unicode
+		Log::instance().Trace( 80, "NetBios: РќР°С‡РёРЅР°РµРј СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ Р°РґСЂРµСЃР° %s", strAddress );
+		//РџРµСЂРµРІРѕРґРёРј РёРјСЏ СЃРµСЂРІРµСЂР° РІ Unicode,С‚.Рє. WIN NET API РїРѕРЅРёРјР°РµС‚ С‚РѕР»СЊРєРѕ Unicode
 		::MultiByteToWideChar( CP_UTF8, 0, strAddress, (int)strlen( strAddress ) + 1, serv, 1024 );
 		do
 		{
 			if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
 			{
-				Log::instance().Trace( 10, "NetBios: Сканирование отменено" );
+				Log::instance().Trace( 10, "NetBios: РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ РѕС‚РјРµРЅРµРЅРѕ" );
 				break;
 			}
 			
-			//Получаем список расшаренных ресурсов на serv
+			//РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє СЂР°СЃС€Р°СЂРµРЅРЅС‹С… СЂРµСЃСѓСЂСЃРѕРІ РЅР° serv
 			res = ::NetShareEnum( serv, 0, &buf, MAX_PREFERRED_LENGTH, &p1, &p2, &handle );
 			if( ERROR_SUCCESS != res && ERROR_MORE_DATA != res )
 			{
-				Log::instance().Trace( 10, "NetBios: Не удалось просканировать хост: %s, код ошибки: %d", strAddress, res );
+				Log::instance().Trace( 10, "NetBios: РќРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕСЃРєР°РЅРёСЂРѕРІР°С‚СЊ С…РѕСЃС‚: %s, РєРѕРґ РѕС€РёР±РєРё: %d", strAddress, res );
 				return true;
 			}
 			SHARE_INFO_0* inf =  (SHARE_INFO_0*)buf;
@@ -113,29 +113,29 @@ DllExport bool Scan( IN const char* strAddress, IN StoreDataFunc pStoreFunc, IN 
 			{
 				int buflen = ::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, 0, 0, 0, 0);
 				::WideCharToMultiByte( 1251, 0, (WCHAR*)( inf + i )->shi0_netname, -1, strTmpShareName, buflen, 0, 0 );
-				//исключаем скрытые шары
+				//РёСЃРєР»СЋС‡Р°РµРј СЃРєСЂС‹С‚С‹Рµ С€Р°СЂС‹
 				if( strTmpShareName[ buflen - 2 ] != '$' )
 				{
 					sprintf( strTmpSharePath, "\\\\%s\\%s\\*.*", strAddress, strTmpShareName );
-					//получаем список файлов
+					//РїРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє С„Р°Р№Р»РѕРІ
 					EnumFiles( strAddress, strTmpSharePath, pStoreFunc, hCancelEvent );
 					if( WAIT_OBJECT_0 == WaitForSingleObject( hCancelEvent, 0 ) )
 					{
-						Log::instance().Trace( 10, "EnumFiles: Сканирование отменено" );
+						Log::instance().Trace( 10, "EnumFiles: РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ РѕС‚РјРµРЅРµРЅРѕ" );
 						break; 
 					}
 				}
 			}
 			::NetApiBufferFree( buf );
 		}while( res == ERROR_MORE_DATA );
-		Log::instance().Trace( 10, "NetBios: Завершение сканирования адреса %s", strAddress );
+		Log::instance().Trace( 10, "NetBios: Р—Р°РІРµСЂС€РµРЅРёРµ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ Р°РґСЂРµСЃР° %s", strAddress );
 		return true;
 	}catch( std::exception& e )
 	{
-		Log::instance().Trace( 0, "NetBios::Scan: Ошибка во время сканирования адреса %s: %s", strAddress, e.what() );
+		Log::instance().Trace( 0, "NetBios::Scan: РћС€РёР±РєР° РІРѕ РІСЂРµРјСЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ Р°РґСЂРµСЃР° %s: %s", strAddress, e.what() );
 	}catch( ... )
 	{
-		Log::instance().Trace( 0, "NetBios::Scan: Неизвестная ошибка во время сканирования адреса %s", strAddress );
+		Log::instance().Trace( 0, "NetBios::Scan: РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР° РІРѕ РІСЂРµРјСЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ Р°РґСЂРµСЃР° %s", strAddress );
 	}
 	return false;
 }
@@ -148,7 +148,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	if( DLL_PROCESS_ATTACH == ul_reason_for_call )
 	{
 		try{
-			//Инициализируем вспомогательные службы
+			//РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ СЃР»СѓР¶Р±С‹
 			int iLogLevel;	
 			Log::instance().SetModuleName( MOD_NAME );
 			Settings::instance().SetModule( MOD_NAME, pNetBiosParamTypes, sizeof( pNetBiosParamTypes )/sizeof( pNetBiosParamTypes[0] ) );
@@ -156,11 +156,11 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 			Log::instance().SetLoglevel( iLogLevel );
 		}catch( std::exception& e)
 		{
-			Log::instance().Trace( 0, "DllMain: Ошибка: %s", e.what() );
+			Log::instance().Trace( 0, "DllMain: РћС€РёР±РєР°: %s", e.what() );
 			return FALSE;
 		}catch( ... )
 		{
-			Log::instance().Trace( 0, "DllMain: Неизвестная шибка" );
+			Log::instance().Trace( 0, "DllMain: РќРµРёР·РІРµСЃС‚РЅР°СЏ С€РёР±РєР°" );
 			return FALSE;
 		}
 	}

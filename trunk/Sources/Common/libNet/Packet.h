@@ -1,8 +1,8 @@
-//-------------------------------------------------------------------------------------
-//Этот файл является частью проекта Exspecto 2006г.
+п»ї//-------------------------------------------------------------------------------------
+//Р­С‚РѕС‚ С„Р°Р№Р» СЏРІР»СЏРµС‚СЃСЏ С‡Р°СЃС‚СЊСЋ РїСЂРѕРµРєС‚Р° Exspecto 2006Рі.
 //Module: CPacket class
 //Author: Parshin Dmitry
-//Description: Класс, реализующий функции для работы с пакетами (парсинг и подготовка)
+//Description: РљР»Р°СЃСЃ, СЂРµР°Р»РёР·СѓСЋС‰РёР№ С„СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїР°РєРµС‚Р°РјРё (РїР°СЂСЃРёРЅРі Рё РїРѕРґРіРѕС‚РѕРІРєР°)
 //-------------------------------------------------------------------------------------
 #ifndef PACKET_H_
 #define PACKET_H_
@@ -15,7 +15,7 @@
 #include <string>
 #include "CDBProvider.h"
 
-//Классы исключений, генерируемыз CPacket
+//РљР»Р°СЃСЃС‹ РёСЃРєР»СЋС‡РµРЅРёР№, РіРµРЅРµСЂРёСЂСѓРµРјС‹Р· CPacket
 class PacketErr: public std::runtime_error
 {
 public:
@@ -73,8 +73,8 @@ private:
 
 	time_t StrToTimet( const std::string& str );
 
-    //TODO:можно и без указателя но в линуксе почему то падает-в отладчике два раза
-    //вызывается деструктор TiXmlDocument
+    //TODO:РјРѕР¶РЅРѕ Рё Р±РµР· СѓРєР°Р·Р°С‚РµР»СЏ РЅРѕ РІ Р»РёРЅСѓРєСЃРµ РїРѕС‡РµРјСѓ С‚Рѕ РїР°РґР°РµС‚-РІ РѕС‚Р»Р°РґС‡РёРєРµ РґРІР° СЂР°Р·Р°
+    //РІС‹Р·С‹РІР°РµС‚СЃСЏ РґРµСЃС‚СЂСѓРєС‚РѕСЂ TiXmlDocument
 	std::auto_ptr<TiXmlDocument> m_pXmlDoc;
 
 	TiXmlElement* m_pXmlRoot;
@@ -96,7 +96,7 @@ public:
 
 	void PutField( const std::string& strName, int iValue );
 
-	//TODO: Имя протокола strProtoName должно быть в структуре hostRec
+	//TODO: РРјСЏ РїСЂРѕС‚РѕРєРѕР»Р° strProtoName РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РІ СЃС‚СЂСѓРєС‚СѓСЂРµ hostRec
 	void PutHostRec( const hostRec& Host, const std::string& strProtoName );
 
 	std::string ToString(){ return m_strPacket; }
@@ -111,8 +111,8 @@ private:
 	std::string m_strPacket;
 };
 
-//Отправить пакет в сокет
-//Синтаксис: CSocket sock;CPacket packet; sock << packet;
+//РћС‚РїСЂР°РІРёС‚СЊ РїР°РєРµС‚ РІ СЃРѕРєРµС‚
+//РЎРёРЅС‚Р°РєСЃРёСЃ: CSocket sock;CPacket packet; sock << packet;
 COutPacket& operator <<( CSocket& sock, COutPacket& packet );
 
 
