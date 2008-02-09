@@ -140,7 +140,6 @@ public:
 
 private:
 
-	//TODO:Можно избавиться от mt, используя Interlocked-функции
 	struct Ref{
 		CMutex mt;
 		int iRefCount;

@@ -29,7 +29,7 @@ public:
 /*
 	void Cancel()
 	{
-		Log::instance().Trace( 80, "CTask::Cancel: œô¨¾œô¨âœô¨Üœô¨Õœô¨Ýœô¨Ð œô¨Þœô¨ßœô¨Õœô¨àœô¨Ðœô¨æœô¨Øœô¨Ø" );
+		Log::instance().Trace( 80, "%s: ", __FUNCTION__ );
 		m_CancelEv.Set();
 	};
 */
@@ -46,7 +46,6 @@ protected:
 
 	static CMutex m_mtxCurState;
 
-	//œô¨°œô¨Ôœô¨àœô¨Õœô¨á,œô¨Øœô¨Üœô¨ï œô¨ßœô¨àœô¨Þœô¨Þœô¨âœô¨Þœô¨Úœô¨Þœô¨Ûœô¨Ð,œô¨åœô¨àœô¨Ðœô¨Ýœô¨Øœô¨Ûœô¨Øœô¨éœô¨Õ
 	static std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > > m_mapStorages;
 
 	typedef std::map< std::string, std::map< std::string, SmartPtr<CTempStorage> > >::iterator StoragesIt;
@@ -72,7 +71,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "œô¨¿œô¨Þœô¨Ûœô¨ãœô¨çœô¨Õœô¨Ýœô¨Øœô¨Õ œô¨áœô¨âœô¨Ðœô¨âœô¨ãœô¨áœô¨Ð œô¨Ðœô¨Óœô¨Õœô¨Ýœô¨âœô¨Ð";
+		return "Get agent status";
 	};
 
 };
@@ -93,7 +92,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "œô¨¾œô¨áœô¨âœô¨Ðœô¨Ýœô¨Þœô¨Ò œô¨áœô¨Úœô¨Ðœô¨Ýœô¨Øœô¨àœô¨Þœô¨Òœô¨Ðœô¨Ýœô¨Øœô¨ï";
+		return "Stop scan process";
 	};
 
 };
@@ -116,7 +115,7 @@ public:
 
 	virtual std::string GetDescription()
 	{
-		return "œô¨¿œô¨Þœô¨Ûœô¨ãœô¨çœô¨Õœô¨Ýœô¨Øœô¨Õ œô¨Ôœô¨Ðœô¨Ýœô¨Ýœô¨ëœô¨å";
+		return "Get scan result";
 	};
 private:
 
@@ -191,7 +190,7 @@ public:
 
 	CStartScan( CServerHandler& Handler ):CTask( Handler )
 	{
-		m_strDescription = "œô¨Áœô¨Úœô¨Ðœô¨Ýœô¨Øœô¨àœô¨Þœô¨Òœô¨Ðœô¨Ýœô¨Øœô¨Õ œô¨Ðœô¨Ôœô¨àœô¨Õœô¨áœô¨Þœô¨Ò: ";
+		m_strDescription = "œô¨úœô¨äœô¨¡œô¨±œô¨úœô¨äœô¨¡œô¨Êœô¨úœô¨äœô¨¡œô¨Àœô¨úœô¨äœô¨¡œô¨Íœô¨úœô¨äœô¨¡œô¨Èœô¨úœô¨äœô¨¡œô¨Ðœô¨úœô¨äœô¨¡œô¨Îœô¨úœô¨äœô¨¡œô¨Âœô¨úœô¨äœô¨¡œô¨Àœô¨úœô¨äœô¨¡œô¨Íœô¨úœô¨äœô¨¡œô¨Èœô¨úœô¨äœô¨¡œô¨Å œô¨úœô¨äœô¨¡œô¨Àœô¨úœô¨äœô¨¡œô¨Äœô¨úœô¨äœô¨¡œô¨Ðœô¨úœô¨äœô¨¡œô¨Åœô¨úœô¨äœô¨¡œô¨Ñœô¨úœô¨äœô¨¡œô¨Îœô¨úœô¨äœô¨¡œô¨Â: ";
 	};
 
 	virtual bool Immidiate();
@@ -211,10 +210,8 @@ private:
 
 	std::vector< std::string > m_vecAddresses;
 
-	//œô¨ºœô¨Þœô¨Ýœô¨âœô¨Õœô¨Ùœô¨Ýœô¨Õœô¨à œô¨ßœô¨Ûœô¨Ðœô¨Óœô¨Øœô¨Ýœô¨Þœô¨Ò
 	static PluginContainer m_PluginContainer;
 
-	//œô¨Âœô¨Øœô¨ß œô¨Øœô¨âœô¨Õœô¨àœô¨Ðœô¨âœô¨Þœô¨à œô¨Ôœô¨Ûœô¨ï œô¨Üœô¨Ðœô¨Ýœô¨Øœô¨ßœô¨ãœô¨Ûœô¨ïœô¨æœô¨Øœô¨Ù œô¨á œô¨Úœô¨Þœô¨Ýœô¨âœô¨Õœô¨Ùœô¨Ýœô¨Õœô¨àœô¨Þœô¨Ü œô¨ßœô¨Ûœô¨Ðœô¨Óœô¨Øœô¨Ýœô¨Þœô¨Ò
 	typedef PluginContainer::iterator PluginIterator;
 
 };

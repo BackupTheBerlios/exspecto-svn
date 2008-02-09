@@ -3,7 +3,16 @@
 
 bool CSharedLib::Load( const std::string& strFileName )
 {
-    return ( NULL == ( m_pLib = dlopen( strFileName.c_str(), RTLD_LAZY ) ) )?false:true;
+  /*  std::string strTmp;
+  bool bRes = ( NULL == ( m_pLib = dlopen( strFileName.c_str(), RTLD_LAZY ) ) )?false:true;
+  if( !bRes )
+	{
+	  char cTmp[10240];
+	  strcpy( cTmp, dlerror() );
+	  strTmp = cTmp;
+	}
+  */
+  return ( NULL == ( m_pLib = dlopen( strFileName.c_str(), RTLD_LAZY ) ) )?false:true;
 }
 
 bool CSharedLib::Close()

@@ -1,8 +1,7 @@
-﻿//------------------------------------------------------------------------------------//
-//Этот файл является частью проекта Exspecto 2006г.
+//------------------------------------------------------------------------------------//
 //Module: Agents load strategy
 //Author: Parshin Dmitry
-//Description: Класс, описывающий стратегию загрузки Агентов в класс Container
+//Description:
 //-------------------------------------------------------------------------------------//
 
 #ifndef AGENTSLOADSTRATEGY_H_
@@ -19,7 +18,6 @@ private:
 	AgentsLoadStrategy( const AgentsLoadStrategy& );
 	AgentsLoadStrategy& operator=( const AgentsLoadStrategy& );
 
-	//Вектор указателей на созданные в процессе загрузки классы для дальнейшего их удаления
 	std::vector< CAgentHandler* > m_ReleseCont;
 };
 
