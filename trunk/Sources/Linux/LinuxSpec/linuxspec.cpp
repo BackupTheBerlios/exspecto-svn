@@ -17,8 +17,6 @@ std::string get_basepath()
 	{
 		proc[ch] = 0;
 		path = proc;
-		std::string::size_type t = path.find_last_of("/");
-		path = path.substr(0,t);
 	}
 	return path;
 }
