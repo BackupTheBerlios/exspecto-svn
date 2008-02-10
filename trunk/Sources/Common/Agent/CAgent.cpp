@@ -55,7 +55,7 @@ void CAgent::CListenThreadTask::Execute( CEvent& CancelEv )
 {
   try
 	{
-	  Log::instance().Trace( 90, "%s", __FUNCTION__ );
+	  Log::instance().Trace( 90, "CAgent::%s", __FUNCTION__ );
 
 	  SmartPtr< CSocket > client_sock;
 
