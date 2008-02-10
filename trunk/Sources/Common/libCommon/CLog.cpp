@@ -12,17 +12,21 @@
 
 CLog::CLog():m_iLogLevel(100)
 {
-	//œô¨¿œô¨Þœô¨Ûœô¨ãœô¨çœô¨Ðœô¨Õœô¨Ü œô¨Øœô¨Üœô¨ï œô¨äœô¨Ðœô¨Ùœô¨Ûœô¨Ð œô¨âœô¨Õœô¨Úœô¨ãœô¨éœô¨Õœô¨Óœô¨Þ œô¨ßœô¨àœô¨Þœô¨æœô¨Õœô¨áœô¨áœô¨Ð œô¨Ø œô¨áœô¨Þœô¨áœô¨âœô¨Ðœô¨Òœô¨Ûœô¨ïœô¨Õœô¨Ü œô¨Øœô¨× œô¨Ýœô¨Õœô¨Óœô¨Þ œô¨Øœô¨Üœô¨ï œô¨äœô¨Ðœô¨Ùœô¨Ûœô¨Ð œô¨Öœô¨ãœô¨àœô¨Ýœô¨Ðœô¨Ûœô¨Ð
 	m_strFileName = get_basepath();
 
 	int iPointPos = (int)m_strFileName.find_first_of( '.' );
-	int iSlashPos = (int)m_strFileName.find_last_of( '\\' ) + 1;
+	//TODO: for windows - its "\"
+	int iSlashPos = (int)m_strFileName.find_last_of( '/' ) + 1;
+
 	m_strFileName = m_strFileName.substr( iSlashPos, iPointPos - iSlashPos );
+
 	time_t tTime;
 	time( &tTime );
 	struct tm* lt = localtime( &tTime );
+
 	std::stringstream ss;
 	ss << lt->tm_mday << lt->tm_mon << lt->tm_year << "_" << lt->tm_hour << lt->tm_min << lt->tm_sec << ".log";
+
 	m_strFileName += ss.str();
 }
 
@@ -35,16 +39,19 @@ void CLog::SetModuleName( const std::string& strModuleName )
 	m_strFileName = strModuleName;
 
 	time_t tTime;
+
 	time( &tTime );
 	struct tm* lt = localtime( &tTime );
+
 	std::stringstream ss;
+
 	ss << lt->tm_mday << lt->tm_mon << lt->tm_year << "_" << lt->tm_hour << lt->tm_min << lt->tm_sec << ".log";
+
 	m_strFileName += ss.str();
 }
 
 void CLog::Trace(int iLevel, char* trace_text, ...)
 {
-	//œô¨µœô¨áœô¨Ûœô¨Ø œô¨ßœô¨àœô¨Øœô¨Þœô¨àœô¨Øœô¨âœô¨Õœô¨â œô¨×œô¨Ðœô¨ßœô¨Øœô¨áœô¨Ø œô¨Ñœô¨Þœô¨Ûœô¨ìœô¨èœô¨Õ œô¨çœô¨Õœô¨Ü œô¨ãœô¨áœô¨âœô¨Ðœô¨Ýœô¨Þœô¨Òœô¨Ûœô¨Õœô¨Ýœô¨Ýœô¨ëœô¨Ù - œô¨Ýœô¨Õ œô¨Òœô¨ëœô¨ßœô¨Þœô¨Ûœô¨Ýœô¨ïœô¨Õœô¨Ü œô¨Ýœô¨Øœô¨Úœô¨Ðœô¨Úœô¨Øœô¨å œô¨Ôœô¨Õœô¨Ùœô¨áœô¨âœô¨Òœô¨Øœô¨Ù
 	if( iLevel > m_iLogLevel ) return;
 
 	FILE* fp;
@@ -56,22 +63,26 @@ void CLog::Trace(int iLevel, char* trace_text, ...)
 	time_t tTime;
 	time( &tTime );
 	struct tm* lt = localtime( &tTime );
-	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d-%d	", lt->tm_mday, lt->tm_mon, lt->tm_year, lt->tm_hour, lt->tm_min, lt->tm_sec, iLevel );
-	va_list args;
-	va_start(args, trace_text);
 
+	fprintf(fp, "%02d.%02d.%04d %02d:%02d:%02d-%d	", lt->tm_mday, lt->tm_mon, lt->tm_year, lt->tm_hour, lt->tm_min, lt->tm_sec, iLevel );
+
+	va_list args;
+
+	va_start(args, trace_text);
 	vfprintf(fp, trace_text, args);
+
 	putc('\n', fp);
 	putc('\n', fp);
 
 	va_end(args);
+
 	fclose(fp);
+
 	m_mutex.Unlock();
 }
 
 void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ... )
 {
-	//œô¨µœô¨áœô¨Ûœô¨Ø œô¨ßœô¨àœô¨Øœô¨Þœô¨àœô¨Øœô¨âœô¨Õœô¨â œô¨×œô¨Ðœô¨ßœô¨Øœô¨áœô¨Ø œô¨Ñœô¨Þœô¨Ûœô¨ìœô¨èœô¨Õ œô¨çœô¨Õœô¨Ü œô¨ãœô¨áœô¨âœô¨Ðœô¨Ýœô¨Þœô¨Òœô¨Ûœô¨Õœô¨Ýœô¨Ýœô¨ëœô¨Ù - œô¨Ýœô¨Õ œô¨Òœô¨ëœô¨ßœô¨Þœô¨Ûœô¨Ýœô¨ïœô¨Õœô¨Ü œô¨Ýœô¨Øœô¨Úœô¨Ðœô¨Úœô¨Øœô¨å œô¨Ôœô¨Õœô¨Ùœô¨áœô¨âœô¨Òœô¨Øœô¨Ù
 	if( iLevel > m_iLogLevel ) return;
 
 	FILE* fp;
@@ -93,7 +104,6 @@ void CLog::Dump(int iLevel, BYTE* pbDumpData, int iDataSize, char* strAbout, ...
 
 	va_end(args);
 
-	//œô¨·œô¨Ðœô¨ßœô¨Øœô¨áœô¨ì œô¨Ôœô¨Ðœô¨Üœô¨ßœô¨Ð
 	char str[17];
 	BYTE *p;
 	int k = 1;
