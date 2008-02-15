@@ -3,11 +3,11 @@
 
 int main( int argc, char** argv )
 {
-  daemon( 1, 0 );
   try
 	{
-	  if( 0 != daemon( 1, 0 ) )
+	  /*	  if( 0 != daemon( 1, 0 ) )
 		std::cout << "Init error" << std::endl;
+	  */
 	  CScheduler Server;
 	  if( !Server.IsStarted() )
         return 1;

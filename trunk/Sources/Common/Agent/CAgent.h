@@ -64,7 +64,8 @@ private:
 
         CAgent* m_pAgent;
 	};
-	CThread m_ListenThread;
+
+	SmartPtr<CThread> m_pListenThread;
 };
 
 #endif

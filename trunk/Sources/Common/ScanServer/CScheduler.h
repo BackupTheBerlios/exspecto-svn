@@ -61,7 +61,7 @@ private:
 	  CScheduler* m_pScheduler;
 	};
 
-	CThread m_ListenThread;
+	SmartPtr<CThread> m_pListenThread;
 
 	CEvent m_CloseEv;
 	

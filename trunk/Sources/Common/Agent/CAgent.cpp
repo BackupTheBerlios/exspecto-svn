@@ -21,7 +21,7 @@ static char* pAgentParamTypes[] = {
 //-----------------------------------------------------CAgent------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-CAgent::CAgent():m_bStarted( false ),m_ListenThread( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) )
+CAgent::CAgent():m_bStarted( false )
 {
   int iLogLevel;
   Settings::instance().SetModule( "Agent", pAgentParamTypes, sizeof( pAgentParamTypes )/sizeof( pAgentParamTypes[0] ) );
@@ -31,8 +31,10 @@ CAgent::CAgent():m_bStarted( false ),m_ListenThread( SmartPtr<CThreadTask>( new 
   Settings::instance().GetParam( SCHEDULER_ADDRESS, m_strSchedulerAddress );
   m_pMsgSock = SmartPtr< CServerSocket >( new CServerSocket() );
 
+  m_pListenThread = SmartPtr<CThread>( new CThread( ( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) ) ) );
+	
   Sleep(2000);
-  m_bStarted = m_ListenThread.IsWorking();
+  m_bStarted = m_pListenThread->IsWorking();
 }
 
 CAgent::~CAgent(void)

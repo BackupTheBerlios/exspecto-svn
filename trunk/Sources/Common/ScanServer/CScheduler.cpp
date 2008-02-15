@@ -21,7 +21,6 @@ static char* pServerParamTypes[] = {
 
 CScheduler::CScheduler(void)
  :m_bStarted(false)
- ,m_ListenThread( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) )
 {
 	int iLogLevel;
 	Settings::instance().SetModule( "ScanServer", pServerParamTypes, sizeof( pServerParamTypes )/sizeof( pServerParamTypes[0] ) );
@@ -29,10 +28,11 @@ CScheduler::CScheduler(void)
 	Log::instance().SetLoglevel( iLogLevel );
 	DbProviderFactory::instance();
 
+	m_pListenThread = SmartPtr<CThread>( new CThread( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) ) );
 	//TODO:
 	Sleep(2000);
-	if( m_ListenThread.IsWorking() )
-		m_bStarted = true;
+	m_bStarted = m_pListenThread->IsWorking();
+		
 
 	Log::instance().Trace( 90, "CScheduler:" );
 	m_pTrigger = std::auto_ptr< CTimer >( new CTimer( this ) );
