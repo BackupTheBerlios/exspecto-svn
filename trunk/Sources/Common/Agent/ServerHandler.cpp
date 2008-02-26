@@ -72,9 +72,11 @@ void CServerHandler::Receive( CInPacket& Msg )
 
 	  Log::instance().Trace( 80, "%s: Receive buffer size: %d", __FUNCTION__, m_vecRecvBuf.size() );
 	}
+
   if( 0 == iCount )
 	//TODO:
 	throw std::runtime_error( "Connection closed" );
+
   Msg.Load( &vecPacketBuf[0], vecPacketBuf.size() );
 }
 

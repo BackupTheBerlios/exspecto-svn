@@ -33,7 +33,7 @@ CAgent::CAgent():m_bStarted( false )
 
   m_pListenThread = SmartPtr<CThread>( new CThread( ( SmartPtr<CThreadTask>( new CListenThreadTask( this ) ) ) ) );
 	
-  Sleep(2000);
+  Sleep(3000);
   m_bStarted = m_pListenThread->IsWorking();
 }
 

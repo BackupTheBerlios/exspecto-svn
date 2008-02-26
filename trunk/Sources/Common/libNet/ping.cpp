@@ -12,7 +12,6 @@ namespace Tools{
 	CPingHelper::CPingHelper()
 	{
 		WSADATA WSAData;
-		//Инициализация сокетов
 		if( 0 != ::WSAStartup( MAKEWORD( 1, 1 ), &WSAData ) )
 			throw SocketErr( WSAGetLastError() );
 
@@ -50,17 +49,15 @@ namespace Tools{
 
 	bool CPingHelper::Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount )
 	{
-		char acPingBuffer[32]={0};  // буфер для передачи
+		char acPingBuffer[32]={0};  
 		struct in_addr DestAddress;
 		struct hostent* pHostEnt;
-		// Выделяем память под пакет
+
 		PIP_ECHO_REPLY pIpe = (PIP_ECHO_REPLY)new BYTE[ sizeof(IP_ECHO_REPLY) + sizeof(acPingBuffer)];
 		if (pIpe == 0) {
 			throw SocketErr( GetLastError() );
 		}
 
-
-		// получаем адрес хоста, который надо пингануть
 		DestAddress.s_addr = inet_addr(strHost.c_str());
 		if (DestAddress.s_addr == INADDR_NONE)
 			pHostEnt = gethostbyname(strHost.c_str());
@@ -72,7 +69,7 @@ namespace Tools{
 		}
 
 		HANDLE hIP;
-		// Пытаемся создать файл сервиса
+
 		hIP = m_pIcmpCreateFile();
 
 		if (hIP == INVALID_HANDLE_VALUE) {
@@ -139,15 +136,15 @@ CPingHelper::CPingHelper():m_iSocket(-1)
     struct protoent *proto;
     if (!(proto = getprotobyname("icmp")))
     {
-        Log::instance().Trace( 0, "%s: неизвестный протокол icmp", __FUNCTION__ );
+        Log::instance().Trace( 0, "%s: getprotobyname error icmp", __FUNCTION__ );
         return;
     }
     if ((m_iSocket = socket(AF_INET, SOCK_RAW, proto->p_proto)) < 0)
     {
         if (errno==EPERM)
-            Log::instance().Trace( 0, "%s: недостаточно привелегий для выполнения ping", __FUNCTION__ );
+            Log::instance().Trace( 0, "%s: not root", __FUNCTION__ );
         else
-            Log::instance().Trace( 0, "%s: не удалось создать сокет для выполнения ping", __FUNCTION__ );
+            Log::instance().Trace( 0, "%s: error creating socket for ping", __FUNCTION__ );
     }
 
     setuid(getuid());

@@ -10,7 +10,10 @@ int main( int argc, char** argv )
 	  */
 	  CAgent agent;
 	  if( !agent.IsStarted() )
-        return 1;
+		{
+		  std::cout << "RETURN 1" << std::endl;
+		  return 1;
+		}
 
 	  while(1)
 		Sleep(1);
