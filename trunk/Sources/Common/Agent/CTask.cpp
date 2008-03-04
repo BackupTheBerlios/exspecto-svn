@@ -48,7 +48,7 @@ void CStartScan::CAvailabilityScanTask::Execute( CEvent& CancelEvent )
 
 void CStartScan::CResolveTask::Execute( CEvent& CancelEvent )
 {
-  Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
+  Log::instance().Trace( 10, "CStartScan::Execute: Resolve %s", m_strAddr.c_str() );
   hostent* res;
   unsigned long addr = inet_addr( m_strAddr.c_str() );
   if( NULL != ( res = ::gethostbyaddr( (char *) &addr, 4, AF_INET ) ) )
