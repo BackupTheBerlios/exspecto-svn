@@ -17,8 +17,6 @@ namespace Tools{
 		CPingHelper();
 		~CPingHelper();
 
-		//œô¨àœô¨Õœô¨Ðœô¨Ûœô¨Øœô¨×œô¨Þœô¨Òœô¨Ðœô¨Ýœô¨Ð œô¨çœô¨Õœô¨àœô¨Õœô¨× œô¨Òœô¨ëœô¨×œô¨Þœô¨Òœô¨ë icmp.dll, œô¨Õœô¨áœô¨Ûœô¨Ø œô¨Øœô¨áœô¨ßœô¨Þœô¨Ûœô¨ìœô¨×œô¨Þœô¨Òœô¨Ðœô¨âœô¨ì RAW œô¨áœô¨Þœô¨Úœô¨Õœô¨âœô¨ë  - œô¨ßœô¨Þœô¨Ýœô¨Ðœô¨Ôœô¨Þœô¨Ñœô¨ïœô¨âœô¨áœô¨ï œô¨Ðœô¨Ôœô¨Üœô¨Øœô¨Ýœô¨áœô¨Úœô¨Øœô¨Õ œô¨ßœô¨àœô¨Ðœô¨Òœô¨Ð
-		//œô¨Ð œô¨ßœô¨Þœô¨Úœô¨Ð œô¨àœô¨Ðœô¨Ñœô¨Þœô¨âœô¨Ðœô¨Õœô¨â œô¨Ø œô¨Ñœô¨Õœô¨× œô¨Ýœô¨Øœô¨å
 		bool Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount );
 
 	private:
@@ -57,9 +55,10 @@ namespace Tools{
 #else
         int in_cksum(u_short *addr, int len);
         void pinger(sockaddr& where, int iDataLen, int iSocket, int iIdent, int iTiming);
-        bool pr_pack(char *buf, int cc, struct sockaddr_in *from, int iDataLen, int iIdent);
+        int pr_pack(char *buf, int cc, struct sockaddr_in *from, int iDataLen, int iIdent);
 
         int m_iSocket;
+		CMutex m_mtxLock;
 #endif
 
 	};

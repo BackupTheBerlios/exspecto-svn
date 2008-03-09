@@ -41,7 +41,7 @@ namespace
 void CStartScan::CAvailabilityScanTask::Execute( CEvent& CancelEvent )
 {
   Log::instance().Trace( 10, "CStartScan::Execute: Ping %s", m_strAddr.c_str() );
-  m_bResult = Tools::PingHelper::instance().Ping( m_strAddr, 3000, 1 );
+  m_bResult = Tools::PingHelper::instance().Ping( m_strAddr, 5000, 1 );
   Log::instance().Trace( 10, "CStartScan::Execute: Ping %s END", m_strAddr.c_str() );
 }
 
@@ -60,7 +60,9 @@ void CStartScan::CScanThreadTask::Execute( CEvent& CancelEvent )
   try
 	{
 	  //TODO: 
+          Log::instance().Trace( 10, "CStartScan::CScanThreadTask::Execute: Scanning %s", m_strAddr.c_str() );
 	  m_pScanner( m_strAddr.c_str(), CStartScan::CScanThreadTask::StorageFunc, 0 );
+          Log::instance().Trace( 10, "CStartScan::CScanThreadTask::Execute: Finished scanning %s", m_strAddr.c_str() );
 	}
   catch( std::exception& e )
 	{
