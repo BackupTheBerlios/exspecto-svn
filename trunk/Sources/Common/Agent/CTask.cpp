@@ -235,6 +235,7 @@ void CStartScan::CScanThreadTask::Execute( CEvent& CancelEvent )
 	Log::instance().Trace( 99, "%s: Sending event", __FUNCTION__ );
 	m_ServerHandler.SendEvent( Event );
 
+	Log::instance().Trace( 99, "%s: Event sended - idling", __FUNCTION__ );
 	m_mtxCurState.Lock();
 	m_CurState = IDLING;
 	m_mtxCurState.Unlock();

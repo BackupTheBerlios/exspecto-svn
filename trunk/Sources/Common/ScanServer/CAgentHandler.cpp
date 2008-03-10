@@ -37,6 +37,7 @@ void CAgentHandler::SendMessage( COutPacket &Msg, CInPacket& Response )
 	}
 	Log::instance().Trace( 80, "CAgentHandler(%s)::SendMessage: Sending message: %s", m_strAddress.c_str(), Msg.ToString().c_str() );
 	m_Sock << Msg;
+	Log::instance().Trace( 80, "CAgentHandler(%s)::SendMessage: message sended", m_strAddress.c_str() );
 
 	int iCount;
 	bool bEnd = false;
