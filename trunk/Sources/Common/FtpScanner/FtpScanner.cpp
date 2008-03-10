@@ -154,11 +154,18 @@ DllExport bool Scan( IN const char* strAddress, IN StoreDataFunc pStoreFunc, IN 
 	unsigned int ItemLevel = 0;
 	string strAns, strPath = "";
 
-	try{ ctrl_sock.Connect(strAddress, 21);
-	}catch(...){
-	  Log::instance().Trace( 0, "FTP::Scan: %s:21 - Catched exception while connect.", strAddress );
-	  return 0;
-	}
+	try
+	  { 
+		ctrl_sock.Connect( strAddress, 21, 5000 );
+	  }catch( std::exception& e )
+	  {
+		Log::instance().Trace( 0, "FTP::Scan: %s:21 - Catched exception while connect: %s.", strAddress, e.what() );
+		return 0;
+	  }catch(...)
+	  {
+		Log::instance().Trace( 0, "FTP::Scan: %s:21 - Catched unknown exception while connect.", strAddress );
+		return 0;
+	  }
 	Log::instance().Trace( 0, "FTP::Scan: %s:21 - Connected.", strAddress );
 				
 	ReceiveAns( ctrl_sock );

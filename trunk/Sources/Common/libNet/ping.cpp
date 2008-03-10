@@ -173,6 +173,7 @@ namespace Tools{
     if( 0 != getuid() )
 	  {
 		fprintf( stderr,  "ping:not root\r\n" );
+		close( iSocket );
 		return true;
 	  }
 
@@ -188,6 +189,7 @@ namespace Tools{
 		  {
             (void)fprintf(stderr,
                           "ping: unknown host %s\n", strHost.c_str() );
+			close( iSocket );
             return false;
 		  }
         to->sin_family = hp->h_addrtype;
@@ -206,6 +208,7 @@ namespace Tools{
     if (!packet)
 	  {
         (void)fprintf(stderr, "ping: out of memory.\n");
+		close( iSocket );
         return false;
 	  }
     for (i = 8; i < datalen; ++i)
@@ -241,12 +244,16 @@ namespace Tools{
             while( ulSize == 0 )
 			  {
                 if( ioctl( iSocket, FIONREAD, &ulSize ) == -1 )
-				  return false;
+				  {
+					close( iSocket );
+					return false;
+				  }
                 gettimeofday( &tv, NULL );
                 long long t2 = (tv.tv_sec) * (long long)1000 + tv.tv_usec/(long long)1000;
                 if( (t2-t1) > iTimeout )
 				  {
                     printf( "timeout\r\n" );
+					close( iSocket );
                     return false;
 				  }
                 usleep(100000);
@@ -259,11 +266,15 @@ namespace Tools{
 			  {
                 continue;
 			  }else if( 1 == pack_ret )
-			  return false;
+			  {
+				close( iSocket );
+				return false;
+			  }
             printf( "packet ok\r\n" );
             break;
 			}
 		  }
+	close( iSocket );
     return true;
   }
 
