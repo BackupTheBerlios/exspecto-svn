@@ -57,7 +57,6 @@ namespace Tools{
         void pinger(sockaddr& where, int iDataLen, int iSocket, int iIdent, int iTiming);
         int pr_pack(char *buf, int cc, struct sockaddr_in *from, int iDataLen, int iIdent);
 
-        int m_iSocket;
 		CMutex m_mtxLock;
 #endif
 

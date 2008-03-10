@@ -131,23 +131,8 @@ namespace Tools{
 
   /* protos */
 
-  CPingHelper::CPingHelper():m_iSocket(-1)
+  CPingHelper::CPingHelper()
   {
-    struct protoent *proto;
-    if (!(proto = getprotobyname("icmp")))
-	  {
-        Log::instance().Trace( 0, "%s: getprotobyname error icmp", __FUNCTION__ );
-        return;
-	  }
-    if ((m_iSocket = socket(AF_INET, SOCK_RAW, proto->p_proto)) < 0)
-	  {
-        if (errno==EPERM)
-		  Log::instance().Trace( 0, "%s: not root", __FUNCTION__ );
-        else
-		  Log::instance().Trace( 0, "%s: error creating socket for ping", __FUNCTION__ );
-	  }
-
-    setuid(getuid());
   }
 
   CPingHelper::~CPingHelper()
@@ -156,7 +141,23 @@ namespace Tools{
 
   bool CPingHelper::Ping( const std::string& strHost, unsigned int iTimeout, unsigned int iRequestCount )
   {
-	CLock lock( m_mtxLock );
+	int iSocket;
+    struct protoent *proto;
+    if (!(proto = getprotobyname("icmp")))
+	  {
+        Log::instance().Trace( 0, "%s: getprotobyname error icmp", __FUNCTION__ );
+        return true;
+	  }
+    if ((iSocket = socket(AF_INET, SOCK_RAW, proto->p_proto)) < 0)
+	  {
+        if (errno==EPERM)
+		  Log::instance().Trace( 0, "%s: not root", __FUNCTION__ );
+        else
+		  Log::instance().Trace( 0, "%s: error creating socket for ping", __FUNCTION__ );
+	  }
+
+    setuid(getuid());
+
     /* timing */
     int timing;		/* flag to do timing */
     int ident;		/* process id to identify our packets */
@@ -219,7 +220,7 @@ namespace Tools{
 	//* ethernet, or just want to fill the arp cache to get some stuff for
 	//* /etc/ethers.
 	hold = 48 * 1024;
-    (void)setsockopt(m_iSocket, SOL_SOCKET, SO_RCVBUF, (char *)&hold,
+    (void)setsockopt(iSocket, SOL_SOCKET, SO_RCVBUF, (char *)&hold,
                      sizeof(hold));
 
 
@@ -230,7 +231,7 @@ namespace Tools{
     unsigned int j = 0;
     for ( j = 0;j < iRequestCount; j++)
 	  {
-		pinger(whereto, datalen, m_iSocket, ident, timing);
+		pinger(whereto, datalen, iSocket, ident, timing);
         for (;;)
 		  {
             struct sockaddr_in from;
@@ -239,7 +240,7 @@ namespace Tools{
             unsigned long ulSize = 0;
             while( ulSize == 0 )
 			  {
-                if( ioctl( m_iSocket, FIONREAD, &ulSize ) == -1 )
+                if( ioctl( iSocket, FIONREAD, &ulSize ) == -1 )
 				  return false;
                 gettimeofday( &tv, NULL );
                 long long t2 = (tv.tv_sec) * (long long)1000 + tv.tv_usec/(long long)1000;
@@ -251,7 +252,7 @@ namespace Tools{
                 usleep(100000);
 			  }
             fromlen = sizeof(from);
-            if ( (cc = recvfrom(m_iSocket, (char *)packet, packlen, 0, (struct sockaddr *)&from, &fromlen) ) < 0)
+            if ( (cc = recvfrom(iSocket, (char *)packet, packlen, 0, (struct sockaddr *)&from, &fromlen) ) < 0)
 			  continue;
 			int pack_ret;
             if ( -1 == ( pack_ret = pr_pack((char *)packet, cc, &from, datalen, ident) ) )
